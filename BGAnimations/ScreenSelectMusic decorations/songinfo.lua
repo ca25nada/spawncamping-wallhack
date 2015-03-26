@@ -63,9 +63,10 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:diffuse(getMainColor(1))
 	end;
 	SetCommand=function(self)
-		local steps = tostring(GAMESTATE:GetCurrentSteps(PLAYER_1))
-		if steps ~= nil then
-			self:settext(tostring(GAMESTATE:GetCurrentSteps(PLAYER_1):GetDifficulty())..tostring(GAMESTATE:GetCurrentSteps(PLAYER_1):GetMeter()))
+		local diff = GAMESTATE:GetCurrentSteps(PLAYER_1):GetDifficulty()
+		local meter = GAMESTATE:GetCurrentSteps(PLAYER_1):GetMeter()
+		if diff ~= nil and meter ~= nil then
+			self:settext(tostring(diff)..tostring(meter))
 		else
 			self:settext("")
 		end
