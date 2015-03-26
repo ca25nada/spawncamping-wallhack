@@ -7,7 +7,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:settext("uwaaaaa")
 	end;
 	SetCommand=function(self)
-		self:settext(GAMESTATE:GetCurrentSong():GetDisplayFullTitle())
+		local song = GAMESTATE:GetCurrentSong()
+		if song ~= nil then
+			self:settext(song:GetDisplayFullTitle())
+		else
+			self:settext("")
+		end
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
@@ -19,7 +24,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:settext("uwaaaaa")
 	end;
 	SetCommand=function(self)
-		self:settext(GAMESTATE:GetCurrentSong():GetDisplayArtist())
+		local song = GAMESTATE:GetCurrentSong()
+		if song ~= nil then
+			self:settext(song:GetDisplayArtist())
+		else
+			self:settext("")
+		end
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
@@ -31,7 +41,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:settext("uwaaaaa")
 	end;
 	SetCommand=function(self)
-		self:settext(GAMESTATE:GetCurrentSong():GetGroupName())
+		local song = GAMESTATE:GetCurrentSong()
+		if song ~= nil then
+			self:settext(song:GetGroupName())
+		else
+			self:settext("")
+		end
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
