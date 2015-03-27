@@ -5,8 +5,8 @@ themeColors = {
 	},
 	main = {
 		[1] = color("#00AEEF"), --Primary light blue
-		[2] = color("009AEF"),-- Slightly darker blue
-		[3] = color("00C2EF") -- Slightly lighter blue
+		[2] = color("#009AEF"),-- Slightly darker blue
+		[3] = color("#00C2EF") -- Slightly lighter blue
 	}
 
 }
