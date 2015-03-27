@@ -20,7 +20,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=cmd(xy,53,SCREEN_HEIGHT-30;halign,0;zoom,0.35;diffuse,getMainColor(3));
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
-		self:settext(profileP1:GetTotalNumSongsPlayed().." Plays")
+		self:settext(profileP1:GetTotalNumSongsPlayed().." Plays");
 	end;
 };
 

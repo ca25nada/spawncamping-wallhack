@@ -36,8 +36,6 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
-
-
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songGroup";
 	InitCommand=cmd(xy,10,220;visible,true;halign,0;zoom,0.45);
