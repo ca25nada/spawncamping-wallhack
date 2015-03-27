@@ -1,6 +1,6 @@
 local t = Def.ActorFrame{};
 
-local topFrameHeight = 30
+local topFrameHeight = 35
 local bottomFrameHeight = 70
 local borderWidth = 4
 
