@@ -4,3 +4,4 @@ return Def.ActorFrame {
 		InitCommand=cmd(horizalign,right;zoom,0.50;);
 	};
 };
+

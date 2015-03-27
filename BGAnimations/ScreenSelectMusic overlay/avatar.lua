@@ -36,11 +36,8 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=cmd(xy,53,SCREEN_HEIGHT-10;halign,0;zoom,0.35;diffuse,getMainColor(3));
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
-		local rawSeconds = profileP1:GetTotalSessionSeconds()
-		local minutes = math.floor(rawSeconds/60)%60
-		local hours = math.floor(math.floor(rawSeconds/60)/60)
-		local seconds = rawSeconds%60
-		self:settextf("%02d:%02d:%02d PlayTime",hours,minutes,seconds)
+		local time = SecondsToHHMMSS(profileP1:GetTotalSessionSeconds())
+		self:settextf(time.." PlayTime")
 	end;
 };
 
