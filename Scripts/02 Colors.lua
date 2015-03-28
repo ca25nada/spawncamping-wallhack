@@ -58,5 +58,5 @@ function getGradeColor (grade)
 end;
 
 function getDifficultyColor(diff)
-	return themeColors.Difficulty[diff] or color("#ffffff");
+	return themeColors.Difficulty[diff] or "ED";
 end;

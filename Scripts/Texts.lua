@@ -18,5 +18,9 @@ local shortDiff = {
 }
 
 function getShortDifficulty(diff)
-	return shortDiff[diff]
+	if diff ~= nil and diff ~= "" then
+		return shortDiff[diff]
+	else
+		return "ED"
+	end;
 end;
