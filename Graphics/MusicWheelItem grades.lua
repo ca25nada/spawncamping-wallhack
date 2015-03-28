@@ -22,20 +22,4 @@ return Def.ActorFrame{
 			end;
 		end;
 	};
-
-	LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,280,-10;zoom,0.35;diffuse,getMainColor(3));
-	OnCommand=cmd(effectclock,"beat";diffusealpha,0.70;diffuseshift;effectcolor1,color("#FFCC00");effectcolor2,color("#FFFF66");rotationz,30;);
-	BeginCommand=cmd(queuecommand,"Set");
-	SetGradeCommand=function(self,params)
-		local sGrade = params.Grade or 'Grade_None';
-		self:settext("New!")
-		if sGrade == 'Grade_None' then
-			self:visible(true)
-		else
-			self:visible(false)
-		end;
-
-	end;
-	};
 }

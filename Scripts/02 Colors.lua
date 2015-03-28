@@ -19,7 +19,29 @@ themeColors = {
 		Grade_Tier07	= color("#8c6239"), -- D
 		Grade_Failed	= color("0.8,0.8,0.8,1"), -- F
 		Grade_None		= color("#666666"), -- no play
-	}
+	},
+
+	Difficulty = {
+		Difficulty_Beginner	= color("#c97bff"),		-- purple
+		Difficulty_Easy		= color("#099948"),		-- green
+		Difficulty_Medium	= color("#ddaa00"),		-- yellow
+		Difficulty_Hard		= color("#e61e25"),		-- red
+		Difficulty_Challenge= color("#66ccff"),	-- light blue
+		Difficulty_Edit 	= color("0.8,0.8,0.8,1"),	-- gray
+		Difficulty_Couple	= color("#ed0972"),			-- hot pink
+		Difficulty_Routine	= color("#ff9a00"),			-- orange
+		Beginner	= color("#c97bff"),		-- purple
+		Easy		= color("#099948"),		-- green
+		Medium		= color("#ddaa00"),		-- yellow
+		Normal		= color("#ddaa00"),		-- yellow
+		Hard		= color("#e61e25"),		-- red
+		Challenge 		= color("#66ccff"),	-- light blue
+		Insane 		= color("#66ccff"),	-- light blue
+		Expert 		= color("#66ccff"),	-- light blue
+		Edit 		= color("0.8,0.8,0.8,1"),	-- gray
+		Couple		= color("#ed0972"),			-- hot pink
+		Routine		= color("#ff9a00")			-- orange
+	},
 
 }
 
@@ -33,4 +55,8 @@ end
 
 function getGradeColor (grade)
 	return themeColors.grade[grade] or color("#ffffff");
+end;
+
+function getDifficultyColor(diff)
+	return themeColors.Difficulty[diff] or color("#ffffff");
 end;
