@@ -2,13 +2,24 @@ return Def.ActorFrame{
 	Def.Quad{
 			InitCommand=cmd(halign,1;x,-30;y,-2;zoomto,8,24;diffuse,color("#ffcccc"););
 			SetGradeCommand=function(self,params)
-				local player = params.Player
+				local player = params.PlayerNumber
 				local song = params.Song
 				local sGrade = params.Grade or 'Grade_None';
-
-				--local gradeString = THEME:GetString("Grade",ToEnumShortString(sGrade))
+				if GAMESTATE:GetNumPlayersEnabled() == 2 then
+					self:zoomy(12)
+					if player == PLAYER_1 then
+						self:valign(1)
+					elseif player == PLAYER_2 then
+						self:valign(0)
+					else
+						self:valign(0.5)
+					end;
+				else
+					self:zoomy(24)
+					self:valign(0.5)
+				end;
 				self:diffuse(getGradeColor(sGrade))
-				--self:diffuse(color(tostring(math.random(1,100)/100)..','..tostring(math.random(1,100)/100)..','..tostring(math.random(1,100)/100)..','..tostring(math.random(50,100)/100)))
+				
 			end;
 	};
 	Def.Quad{

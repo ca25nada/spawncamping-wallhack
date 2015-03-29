@@ -1,20 +1,20 @@
 local t = Def.ActorFrame{};
 
---ohlookpso2stars
--- bit messy atm
+-- ohlookpso2stars
+-- this became a mess rather quickly
 
 local starsX = 10
-local starsY = 260
+local starsY = 208
 local maxStars = 18
 local starDistX = 18
 local starDistY = 0
 local starSize = 0.5
-local playerDistY = 35
+local playerDistY = 40
 
 
 function stars(ind,pn)
 	return LoadActor("ossstar")..{
-		InitCommand=cmd(xy,starsX+35+(ind*starDistX),starsY+2+(ind*starDistY););
+		InitCommand=cmd(xy,starsX+43+(ind*starDistX),starsY+2+(ind*starDistY););
 		SetCommand=function(self)
 			local diff = 0;
 			local steps = GAMESTATE:GetCurrentSteps(pn);
@@ -93,16 +93,28 @@ t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,starsX,starsY-18;zoomto,384,30;halign,0;valign,0;diffuse,color("#333333"));
 };
 
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,starsX,starsY-18;zoomto,8,30;halign,0;valign,0;diffuse,color("#FFFFFF"));
+	BeginCommand=cmd(playcommand,"Set");
+	SetCommand=function(self)
+		self:diffuse(getClearType(PLAYER_1,2))
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	PlayerJoinedMessageCommand=cmd(playcommand,"Set");
+	PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
+};
+
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+5,starsY-12;zoom,0.3;halign,0);
+	InitCommand=cmd(xy,starsX+13,starsY-12;zoom,0.3;halign,0);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		local steps = GAMESTATE:GetCurrentSteps(PLAYER_1) ;
 		local diff;
 		local stype;
 		if steps ~= nil then
-			diff = steps:GetDifficulty()
-			stype = steps:GetStepsType()
+			diff = getDifficulty(steps:GetDifficulty())
+			stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			self:settext(stype.." "..diff);
 		else
 			self:settext("Disabled");
@@ -117,17 +129,18 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,starsX+379,starsY-12;zoom,0.3;halign,1);
 	BeginCommand=function(self)
-		self:settext("Player 1 Difficulty")
+		self:settext("Player 1")
 	end;
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+13,starsY+2;zoom,0.6;);
+	InitCommand=cmd(xy,starsX+21,starsY+2;zoom,0.6;);
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
 		local diff = 0;
 		local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_1);
 		local steps = GAMESTATE:GetCurrentSteps(PLAYER_1);
+
 		if enabled and steps~= nil then
 			diff = steps:GetMeter() or 0;
 			self:settext(diff);
@@ -147,16 +160,30 @@ t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,384,30;halign,0;valign,0;diffuse,color("#333333"));
 };
 
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,8,30;halign,0;valign,0;diffuse,color("#FFFFFF"));
+	BeginCommand=cmd(playcommand,"Set");
+	SetCommand=function(self)
+		self:diffuse(getClearType(PLAYER_2,2))
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	PlayerJoinedMessageCommand=cmd(playcommand,"Set");
+	PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
+};
+
+
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+5,starsY-12+playerDistY;zoom,0.3;halign,0);
+	InitCommand=cmd(xy,starsX+13,starsY-12+playerDistY;zoom,0.3;halign,0);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		local steps = GAMESTATE:GetCurrentSteps(PLAYER_2) ;
 		local diff;
 		local stype;
 		if steps ~= nil then
-			diff = steps:GetDifficulty()
-			stype = steps:GetStepsType()
+			diff = getDifficulty(steps:GetDifficulty())
+			stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			self:settext(stype.." "..diff);
 		else
 			self:settext("Disabled");
@@ -171,12 +198,12 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,starsX+379,starsY-12+playerDistY;zoom,0.3;halign,1);
 	BeginCommand=function(self)
-		self:settext("Player 2 Difficulty")
+		self:settext("Player 2")
 	end;
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+13,starsY+playerDistY+2;zoom,0.6;);
+	InitCommand=cmd(xy,starsX+21,starsY+playerDistY+2;zoom,0.6;);
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
 		local diff = 0;
