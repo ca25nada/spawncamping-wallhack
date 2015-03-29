@@ -2,6 +2,7 @@ local t = Def.ActorFrame{}
 --local t = LoadFallbackB();
 t[#t+1] = LoadActor("songinfo");
 t[#t+1] = LoadActor("currenttime");
+t[#t+1] = LoadActor("stars");
 --t[#t+1] = StandardDecorationFromFileOptional("StepsDisplayList","StepsDisplayList");
 --t[#t+1] = LoadActor("../_frame");
 

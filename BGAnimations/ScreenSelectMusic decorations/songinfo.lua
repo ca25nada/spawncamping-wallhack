@@ -56,5 +56,22 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
+t[#t+1] = LoadFont("Common Normal") .. {
+	Name="songTitle";
+	InitCommand=cmd(xy,10,230;visible,true;halign,0;zoom,0.45);
+	BeginCommand=function(self)
+		self:settext("uwaaaaa")
+		self:diffuse(getMainColor(1))
+	end;
+	SetCommand=function(self)
+		local step = GAMESTATE:GetCurrentSteps(PLAYER_1)
+		if step ~= nil then
+			self:settext(step:GetRadarValues(PLAYER_1):GetValue('RadarCategory_TapsAndHolds'));
+		else
+			self:settext("")
+		end
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+};
 
 return t
