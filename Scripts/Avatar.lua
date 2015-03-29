@@ -23,8 +23,15 @@ function getAvatarPath(pn)
 	local fileName = "generic.gif"
 	if GAMESTATE:IsPlayerEnabled(pn) then
 		profile = GetPlayerOrMachineProfile(pn)
-		profilePath = PROFILEMAN:GetProfileDir('ProfileSlot_Player1')
-		fileName = ReadAvatarFile(profilePath.."/avatar.txt")
+		if pn == PLAYER_1 then
+			profilePath = PROFILEMAN:GetProfileDir('ProfileSlot_Player1')
+			fileName = ReadAvatarFile(profilePath.."/avatar.txt")
+		elseif pn == PLAYER_2 then
+			profilePath = PROFILEMAN:GetProfileDir('ProfileSlot_Player2')
+			fileName = ReadAvatarFile(profilePath.."/avatar.txt")
+		else
+			fileName = nil
+		end;	
 		if fileName == nil then
 			fileName = "generic.gif"
 		end

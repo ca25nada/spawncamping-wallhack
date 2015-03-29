@@ -4,17 +4,17 @@ local t = Def.ActorFrame{};
 -- bit messy atm
 
 local starsX = 10
-local starsY = 250
+local starsY = 260
 local maxStars = 18
-local starDistX = 20
+local starDistX = 18
 local starDistY = 0
 local starSize = 0.5
-local playerDistY = 20
+local playerDistY = 35
 
 
 function stars(ind,pn)
 	return LoadActor("ossstar")..{
-		InitCommand=cmd(xy,starsX+35+(ind*starDistX),starsY+(ind*starDistY););
+		InitCommand=cmd(xy,starsX+35+(ind*starDistX),starsY+2+(ind*starDistY););
 		SetCommand=function(self)
 			local diff = 0;
 			local steps = GAMESTATE:GetCurrentSteps(pn);
@@ -50,7 +50,7 @@ function stars(ind,pn)
 					self:effectperiod(0.5)
 				end;
 				if ind < diff then
-					self:sleep(ind/20);
+					self:sleep((ind/math.min(diff,maxStars))/2);
 					self:decelerate(0.5);
 					self:zoom(starSize);
 					self:rotationz(360);
@@ -85,18 +85,51 @@ function stars(ind,pn)
 	};
 end;
 
+
+--1P
+
+
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,starsX,starsY;halign,0;zoomto,384,20;diffuse,color("#000000");diffusealpha,0.6;);
+	InitCommand=cmd(xy,starsX,starsY-18;zoomto,384,30;halign,0;valign,0;diffuse,color("#333333"));
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+8,starsY;zoom,0.7;);
+	InitCommand=cmd(xy,starsX+5,starsY-12;zoom,0.3;halign,0);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		local steps = GAMESTATE:GetCurrentSteps(PLAYER_1) ;
+		local diff;
+		local stype;
+		if steps ~= nil then
+			diff = steps:GetDifficulty()
+			stype = steps:GetStepsType()
+			self:settext(stype.." "..diff);
+		else
+			self:settext("Disabled");
+		end;
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	PlayerJoinedMessageCommand=cmd(playcommand,"Set");
+	PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+379,starsY-12;zoom,0.3;halign,1);
+	BeginCommand=function(self)
+		self:settext("Player 1 Difficulty")
+	end;
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+13,starsY+2;zoom,0.6;);
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
 		local diff = 0;
 		local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_1);
-		if enabled then
-			diff = GAMESTATE:GetCurrentSteps(PLAYER_1):GetMeter() or 0;
+		local steps = GAMESTATE:GetCurrentSteps(PLAYER_1);
+		if enabled and steps~= nil then
+			diff = steps:GetMeter() or 0;
 			self:settext(diff);
 		else
 			self:settext(0);
@@ -109,13 +142,47 @@ t[#t+1] = LoadFont("Common Normal")..{
 };
 
 
+------------------------------------------2P
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,384,30;halign,0;valign,0;diffuse,color("#333333"));
+};
+
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+8,starsY+playerDistY;zoom,0.7;);
+	InitCommand=cmd(xy,starsX+5,starsY-12+playerDistY;zoom,0.3;halign,0);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		local steps = GAMESTATE:GetCurrentSteps(PLAYER_2) ;
+		local diff;
+		local stype;
+		if steps ~= nil then
+			diff = steps:GetDifficulty()
+			stype = steps:GetStepsType()
+			self:settext(stype.." "..diff);
+		else
+			self:settext("Disabled");
+		end;
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	PlayerJoinedMessageCommand=cmd(playcommand,"Set");
+	PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+379,starsY-12+playerDistY;zoom,0.3;halign,1);
+	BeginCommand=function(self)
+		self:settext("Player 2 Difficulty")
+	end;
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+13,starsY+playerDistY+2;zoom,0.6;);
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
 		local diff = 0;
 		local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_2);
-		if enabled then
+		local steps = GAMESTATE:GetCurrentSteps(PLAYER_2);
+		if enabled and steps~= nil then
 			diff = GAMESTATE:GetCurrentSteps(PLAYER_2):GetMeter() or 0;
 			self:settext(diff);
 		else
