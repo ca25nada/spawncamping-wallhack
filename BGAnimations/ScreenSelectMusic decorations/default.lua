@@ -1,4 +1,5 @@
 local t = Def.ActorFrame{}
+t[#t+1] = LoadActor("tabs") -- MUST BE LOADED FIRST
 --local t = LoadFallbackB();
 t[#t+1] = LoadActor("songinfo");
 t[#t+1] = LoadActor("currenttime");
@@ -9,6 +10,16 @@ t[#t+1] = LoadActor("stars");
 
 t[#t+1] = Def.ActorFrame {
 	InitCommand=cmd(xy,410,72,halign,0;valign,0);
+	OffCommand=cmd(bouncebegin,0.2;xy,410-500,72;); -- visible(false) doesn't seem to work with sleep
+	OnCommand=cmd(bouncebegin,0.2;xy,410,72;);
+	CodeMessageCommand=function(self)
+		self:finishtweening()
+		if getTabIndex() == 0 then
+			self:playcommand("On");
+		else 
+			self:playcommand("Off");
+		end;
+	end;
 	CurrentSongChangedMessageCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong(); 
 		if song then

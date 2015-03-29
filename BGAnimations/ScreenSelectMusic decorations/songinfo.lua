@@ -1,4 +1,15 @@
-local t = Def.ActorFrame{};
+local t = Def.ActorFrame{
+	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;); -- visible(false) doesn't seem to work with sleep
+	OnCommand=cmd(bouncebegin,0.2;xy,0,0;);
+	CodeMessageCommand=function(self)
+		self:finishtweening()
+		if getTabIndex() == 0 then
+			self:playcommand("On");
+		else 
+			self:playcommand("Off");
+		end;
+	end;
+};
 
 
 t[#t+1] = Def.Quad{
