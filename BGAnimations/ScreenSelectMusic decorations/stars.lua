@@ -127,7 +127,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+379,starsY-12;zoom,0.3;halign,1);
+	InitCommand=cmd(xy,starsX+382,starsY-12;zoom,0.3;halign,1);
 	BeginCommand=function(self)
 		self:settext("Player 1")
 	end;
@@ -196,7 +196,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+379,starsY-12+playerDistY;zoom,0.3;halign,1);
+	InitCommand=cmd(xy,starsX+382,starsY-12+playerDistY;zoom,0.3;halign,1);
 	BeginCommand=function(self)
 		self:settext("Player 2")
 	end;
