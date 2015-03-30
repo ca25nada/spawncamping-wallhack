@@ -20,7 +20,7 @@ local maxStars = 18
 local starDistX = 18
 local starDistY = 0
 local starSize = 0.5
-local playerDistY = 40
+local playerDistY = 60
 
 
 function stars(ind,pn)
@@ -105,6 +105,10 @@ t[#t+1] = Def.Quad{
 };
 
 t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,starsX+384+5,starsY-18;zoomto,66,30;halign,0;valign,0;diffuse,color("#333333"));
+};
+
+t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,starsX,starsY-18;zoomto,8,30;halign,0;valign,0;diffuse,color("#FFFFFF"));
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
@@ -165,12 +169,29 @@ t[#t+1] = LoadFont("Common Normal")..{
 	PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
 };
 
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+382+5+64,starsY-12;zoom,0.3;halign,1);
+	BeginCommand=function(self)
+		self:settext("123.45%")
+	end;
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+382+5+35,starsY+2;zoom,0.65;);
+	BeginCommand=function(self)
+		self:settext("AAAA")
+	end;
+};
+
 
 ------------------------------------------2P
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,384,30;halign,0;valign,0;diffuse,color("#333333"));
 };
 
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,starsX+384+5,starsY-18+playerDistY;zoomto,66,30;halign,0;valign,0;diffuse,color("#333333"));
+};
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,8,30;halign,0;valign,0;diffuse,color("#FFFFFF"));
