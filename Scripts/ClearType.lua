@@ -1,6 +1,7 @@
 -------------------------------------------------------------------
 --Methods for generating IIDX-ish ClearType texts given the score--
 -------------------------------------------------------------------
+--EDIT: scores no longer needed since it grabs it for you
 
 
 

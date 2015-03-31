@@ -1,5 +1,7 @@
+
+
 local t = Def.ActorFrame{}
-t[#t+1] = LoadActor("tabs") -- MUST BE LOADED FIRST
+t[#t+1] = LoadActor("tabs")
 --local t = LoadFallbackB();
 t[#t+1] = LoadActor("songinfo");
 t[#t+1] = LoadActor("currenttime");

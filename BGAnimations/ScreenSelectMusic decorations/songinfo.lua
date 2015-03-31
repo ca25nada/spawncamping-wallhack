@@ -22,7 +22,7 @@ t[#t+1] = Def.Quad{
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songTitle";
-	InitCommand=cmd(xy,15,170;visible,true;halign,0;zoom,0.45;maxwidth,360/0.45);
+	InitCommand=cmd(xy,15,170;visible,true;halign,0;zoom,0.45;maxwidth,340/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if update then
@@ -37,5 +37,21 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
+t[#t+1] = LoadFont("Common Normal") .. {
+	Name="songTitle";
+	InitCommand=cmd(xy,5+384,170;visible,true;halign,1;zoom,0.45;maxwidth,360/0.45);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if update then
+			local song = GAMESTATE:GetCurrentSong()
+			if song ~= nil then
+				self:settext(SecondsToMMSS(song:MusicLengthSeconds()))
+			else
+				self:settext("")
+			end
+		end
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+};
 
 return t

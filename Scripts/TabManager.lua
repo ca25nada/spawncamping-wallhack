@@ -1,7 +1,7 @@
 
 
 local tabIndex = 0
-local tabSize = 4
+local tabSize = 5
 
 function resetTabIndex()
 	tabIndex = 0

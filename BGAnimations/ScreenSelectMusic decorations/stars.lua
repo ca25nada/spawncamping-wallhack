@@ -20,13 +20,30 @@ local t = Def.ActorFrame{
 -- this became a mess rather quickly
 
 local starsX = 10
-local starsY = 208
+local starsY = 230
 local maxStars = 18
-local starDistX = 18
+local starDistX = 23
 local starDistY = 0
-local starSize = 0.5
-local playerDistY = 60
+local starSize = 0.55
+local playerDistY = 95
+local frameWidth = 455
 
+local song
+
+local stepsP1
+local stepsP2
+
+local profileP1
+local profileP2
+
+local topScoreP1
+local topScoreP2
+
+
+function scoreBar(x,y,h,w,pn)
+
+
+end;
 
 function stars(ind,pn)
 	return LoadActor("ossstar")..{
@@ -104,20 +121,37 @@ function stars(ind,pn)
 end;
 
 
+
+--Things i need: 
+-- Grades, Clearlamp, 3 scores, max score 
+t[#t+1] = Def.Actor{
+	BeginCommand=cmd(playcommand,"Set");
+	SetCommand=function(self)
+		song = GAMESTATE:GetCurrentSong()
+		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
+			stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1)
+		end;
+		initScoreListP1()
+		initScoreP1(1)
+		initJudgeStatsP1()
+	end;
+	CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(playcommand,"Set");
+}
+
 --1P
-
-
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,starsX,starsY-18;zoomto,384,30;halign,0;valign,0;diffuse,color("#333333"));
+	InitCommand=cmd(xy,starsX,starsY-18;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333"));
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,starsX+384+5,starsY-18;zoomto,66,30;halign,0;valign,0;diffuse,color("#333333"));
+	InitCommand=cmd(xy,starsX,starsY+18;zoomto,frameWidth,50;halign,0;valign,0;diffuse,color("#333333"));
 };
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,starsX,starsY-18;zoomto,8,30;halign,0;valign,0;diffuse,color("#FFFFFF"));
-	BeginCommand=cmd(playcommand,"Set");
+	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if update then
 			self:diffuse(getClearType(PLAYER_1,2))
@@ -125,8 +159,6 @@ t[#t+1] = Def.Quad{
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
-	PlayerJoinedMessageCommand=cmd(playcommand,"Set");
-	PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
@@ -134,12 +166,11 @@ t[#t+1] = LoadFont("Common Normal")..{
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if update then
-			local steps = GAMESTATE:GetCurrentSteps(PLAYER_1) ;
 			local diff;
 			local stype;
-			if steps ~= nil then
-				diff = getDifficulty(steps:GetDifficulty())
-				stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
+			if stepsP1 ~= nil then
+				diff = getDifficulty(stepsP1:GetDifficulty())
+				stype = ToEnumShortString(stepsP1:GetStepsType()):gsub("%_"," ")
 				self:settext(stype.." "..diff);
 			else
 				self:settext("Disabled");
@@ -148,12 +179,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
-	PlayerJoinedMessageCommand=cmd(playcommand,"Set");
-	PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+382,starsY-12;zoom,0.3;halign,1);
+	InitCommand=cmd(xy,starsX+frameWidth-5,starsY-12;zoom,0.3;halign,1);
 	BeginCommand=function(self)
 		self:settext("Player 1")
 	end;
@@ -161,49 +190,84 @@ t[#t+1] = LoadFont("Common Normal")..{
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,starsX+21,starsY+2;zoom,0.6;);
-	BeginCommand=cmd(playcommand,"Set");
+	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if update then
 			local diff = 0;
 			local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_1);
-			local steps = GAMESTATE:GetCurrentSteps(PLAYER_1);
-
-			if enabled and steps~= nil then
-				diff = steps:GetMeter() or 0;
+			if enabled and stepsP1 ~= nil then
+				diff = stepsP1:GetMeter() or 0;
 				self:settext(diff);
 			else
 				self:settext(0);
 			end;
 		end;
 	end;
-	CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
-	CurrentStepsP1ChangedMessageCommand=cmd(playcommand,"Set");
-	PlayerJoinedMessageCommand=cmd(playcommand,"Set");
-	PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+382+5+64,starsY-12;zoom,0.3;halign,1);
-	BeginCommand=function(self)
-		self:settext("123.45%")
+	InitCommand=cmd(xy,starsX+60,starsY+35;zoom,1.2;maxwidth,110/1.2);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		self:settext(getGradeStrings(getScoreGradeP1()))
 	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+382+5+35,starsY+2;zoom,0.65;);
+	InitCommand=cmd(xy,starsX+60,starsY+58;zoom,0.5;maxwidth,110/0.5);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		self:settext(getClearType(PLAYER_1,0))
+		self:diffuse(getClearType(PLAYER_1,2))
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+200,starsY+30;zoom,0.9;halign,1;maxwidth,70/0.8);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		local score = getScoreP1(0)
+		local maxscore = getMaxScoreP1(0)
+		if maxscore == 0 or maxscore == nil then
+			maxscore = 1
+		end;
+		local pscore = (score/maxscore) * 100
+
+		self:settextf("%05.2f%%",pscore)
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+};
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+182,starsY+48;zoom,0.5;halign,1;maxwidth,60/0.5);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		local score = string.format("%04d",getScoreP1(0))
+		local maxscore = string.format("%04d",getMaxScoreP1(0))
+		self:settext(score.."/"..maxscore)
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+};
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,starsX+183,starsY+47;zoom,0.3;halign,0;);
 	BeginCommand=function(self)
-		self:settext("AAAA")
+		self:settext(getScoreTypeText(0))
 	end;
 };
 
+t[#t+1] = LoadActor("bargraph");
 
 ------------------------------------------2P
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,384,30;halign,0;valign,0;diffuse,color("#333333"));
-};
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,starsX+384+5,starsY-18+playerDistY;zoomto,66,30;halign,0;valign,0;diffuse,color("#333333"));
+	InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333"));
 };
 
 t[#t+1] = Def.Quad{

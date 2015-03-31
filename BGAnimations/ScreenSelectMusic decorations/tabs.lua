@@ -26,9 +26,10 @@ t[#t+1] = LoadFont("Common Normal") .. {
 
 tabNames = {
 	[1] = "General",
-	[2] = "Score",
-	[3] = "Simfile",
-	[4] = "Profile"
+	[2] = "Simfile",
+	[3] = "Score",
+	[4] = "Profile",
+	[5] = "Other"
 }
 
 local frameX = 50
