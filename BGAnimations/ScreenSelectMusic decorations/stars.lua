@@ -207,8 +207,8 @@ t[#t+1] = LoadFont("Common Normal")..{
 	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+60,starsY+35;zoom,1.2;maxwidth,110/1.2);
+t[#t+1] = LoadFont("Common Large")..{
+	InitCommand=cmd(xy,starsX+60,starsY+35;zoom,0.6;maxwidth,110/0.6);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		self:settext(getGradeStrings(getScoreGradeP1()))
@@ -228,8 +228,8 @@ t[#t+1] = LoadFont("Common Normal")..{
 	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,starsX+200,starsY+30;zoom,0.9;halign,1;maxwidth,70/0.8);
+t[#t+1] = LoadFont("Common Large")..{
+	InitCommand=cmd(xy,starsX+195,starsY+30;zoom,0.45;halign,1;maxwidth,75/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		local score = getScoreP1(0)
