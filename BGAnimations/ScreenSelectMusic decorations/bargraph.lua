@@ -5,6 +5,8 @@ barYP1 = 290
 barWidth =300
 barHeight = 4
 showLetters = false
+animationDelay = 0.8
+animationLength = 1
 
 t[#t+1] = Def.Actor{
 	BeginCommand=cmd(playcommand,"Set");
@@ -47,8 +49,8 @@ t[#t+1] = Def.Quad{
 			maxscore = 1
 		end;
 		self:zoomx(0)
-		self:sleep(0.5)
-		self:smooth(1)
+		self:sleep(animationDelay)
+		self:smooth(animationLength)
 		self:diffuse(TapNoteScoreToColor("TapNoteScore_Miss"))
 		self:zoomx((judge/notes)*barWidth)
 	end;
@@ -76,8 +78,8 @@ t[#t+1] = Def.Quad{
 			maxscore = 1
 		end;
 		self:zoomx(0)
-		self:sleep(0.5)
-		self:smooth(1)
+		self:sleep(animationDelay)
+		self:smooth(animationLength)
 		self:diffuse(TapNoteScoreToColor("TapNoteScore_W5"))
 		self:zoomx((judge/notes)*barWidth)
 	end;
@@ -104,8 +106,8 @@ t[#t+1] = Def.Quad{
 			maxscore = 1
 		end;
 		self:zoomx(0)
-		self:sleep(0.5)
-		self:smooth(1)
+		self:sleep(animationDelay)
+		self:smooth(animationLength)
 		self:diffuse(TapNoteScoreToColor("TapNoteScore_W4"))
 		self:zoomx((judge/notes)*barWidth)
 	end;
@@ -131,8 +133,8 @@ t[#t+1] = Def.Quad{
 			maxscore = 1
 		end;
 		self:zoomx(0)
-		self:sleep(0.5)
-		self:smooth(1)
+		self:sleep(animationDelay)
+		self:smooth(animationLength)
 		self:diffuse(TapNoteScoreToColor("TapNoteScore_W3"))
 		self:zoomx((judge/notes)*barWidth)
 	end;
@@ -157,8 +159,8 @@ t[#t+1] = Def.Quad{
 			maxscore = 1
 		end;
 		self:zoomx(0)
-		self:sleep(0.5)
-		self:smooth(1)
+		self:sleep(animationDelay)
+		self:smooth(animationLength)
 		self:diffuse(TapNoteScoreToColor("TapNoteScore_W2"))
 		self:zoomx((judge/notes)*barWidth)
 	end;
@@ -182,8 +184,8 @@ t[#t+1] = Def.Quad{
 			maxscore = 1
 		end;
 		self:zoomx(0)
-		self:sleep(0.5)
-		self:smooth(1)
+		self:sleep(animationDelay)
+		self:smooth(animationLength)
 		self:diffuse(getMainColor(3))
 		self:zoomx((judge/notes)*barWidth)
 	end;
