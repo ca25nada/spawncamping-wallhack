@@ -170,7 +170,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				self:diffuse(getClearType(PLAYER_1,2))
+				self:diffuse(getHighestClearType(PLAYER_1,2))
 			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
@@ -240,8 +240,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+58;zoom,0.5;maxwidth,110/0.5);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getClearType(PLAYER_1,0))
-			self:diffuse(getClearType(PLAYER_1,2))
+			self:settext(getHighestClearType(PLAYER_1,0))
+			self:diffuse(getHighestClearType(PLAYER_1,2))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");

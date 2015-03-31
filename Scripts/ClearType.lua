@@ -56,6 +56,24 @@ local typecolors = {-- colors corresponding to cleartype
 	[14]	= color("#e61e25")
 };
 
+
+-- Methods for other uses (manually setting colors/text, etc.)
+
+function getClearTypeText(index)
+	return typetable[index];
+end;
+
+function getShortClearTypeText(index)
+	return stypetable[index];
+end;
+
+function getClearTypeColor(index)
+	return typecolors[index];
+end;
+
+--]]
+
+
 -- ClearTypes based on stage awards and grades.
 -- Stageaward based cleartypes do not work if anything causes the stageaward to not show up (disqualification, score saving is off, etc.)
 -- and will just result in "Clear". I migggggggggght just drop the SA usage and use raw values instead.
@@ -144,18 +162,46 @@ function getClearType(pn,ret)
 	return clearTypes(stageAward,grade,playCount,missCount,ret) or typetable[12]; 
 end;
 
--- Methods for other uses (manually setting colors/text, etc.)
+-- Returns the highest cleartype for player 1
+function getHighestClearType(pn,ret)
+	local song
+	local steps
+	local profile
+	local hScoreList
+	local hScore
+	local playCount = 0
+	local stageAward
+	local missCount = 0
+	local grade
+	local i = 1
+	local highest = 12
 
-function getClearTypeText(index)
-	return typetable[index];
+	song = GAMESTATE:GetCurrentSong()
+	steps = GAMESTATE:GetCurrentSteps(pn)
+	profile = GetPlayerOrMachineProfile(pn)
+	if song ~= nil and steps ~= nil then
+		hScoreList = profile:GetHighScoreList(song,steps):GetHighScores()
+	end;
+	if hScoreList ~= nil then
+		while i <= #hScoreList do
+			hScore = hScoreList[i]
+			if hScore ~= nil then
+				playCount = profile:GetSongNumTimesPlayed(song)
+				missCount = hScore:GetTapNoteScore('TapNoteScore_Miss')+hScore:GetTapNoteScore('TapNoteScore_W5')+hScore:GetTapNoteScore('TapNoteScore_W4');
+				grade = hScore:GetGrade()
+				stageAward = hScore:GetStageAward()
+			end;
+			highest = math.min(highest,clearTypes(stageAward,grade,playCount,missCount,3))
+			i = i+1
+		end;
+	end;
+	if ret == 0 then
+		return getClearTypeText(highest)
+	elseif ret == 1 then
+		return getShortClearTypeText(highest)
+	elseif ret == 2 then
+		return getClearTypeColor(highest)
+	else
+		return highest
+	end;
 end;
-
-function getShortClearTypeText(index)
-	return stypetable[index];
-end;
-
-function getClearTypeColor(index)
-	return typecolors[index];
-end;
-
---]]
