@@ -43,7 +43,7 @@ Open the file:
 ```
 Themes\spawncamping-wallhack\Scripts\Scores.lua
 ```
-Then change the variable below to the number corresponding to the scoretype you want to use.
+Then change the variable below to the number corresponding to the scoretype you want to use. Restart StepMania.
 ```lua
 local defaultScoreType = 2 --1DP 2PS 3MIGS
 ```
