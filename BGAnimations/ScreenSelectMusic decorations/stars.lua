@@ -125,13 +125,21 @@ t[#t+1] = Def.Actor{
 		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
 			stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			initScoreList(PLAYER_1)
+			initScore(PLAYER_1,1)
+			initJudgeStats(PLAYER_1)
 		end;
-		initScoreListP1()
-		initScoreP1(1)
-		initJudgeStatsP1()
+		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+			profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
+			stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2)
+			initScoreList(PLAYER_2)
+			initScore(PLAYER_2,1)
+			initJudgeStats(PLAYER_2)
+		end;
 	end;
 	CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
 	CurrentStepsP1ChangedMessageCommand=cmd(playcommand,"Set");
+	CurrentStepsP2ChangedMessageCommand=cmd(playcommand,"Set");
 }
 
 --1P
@@ -184,10 +192,16 @@ t[#t+1] = Def.ActorFrame{
 			if update then
 				local diff;
 				local stype;
+				local taps = 0
+				local holds = 0
+				local mines = 0
 				if stepsP1 ~= nil then
+					taps = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_TapsAndHolds")
+					holds = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Holds")
+					mines = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Mines")
 					diff = getDifficulty(stepsP1:GetDifficulty())
 					stype = ToEnumShortString(stepsP1:GetStepsType()):gsub("%_"," ")
-					self:settext(stype.." "..diff);
+					self:settextf("%s %s // Notes:%s // Holds:%s // Mines:%s",stype,diff,taps,holds,mines);
 				else
 					self:settext("Disabled");
 				end;
@@ -230,7 +244,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+35;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getGradeStrings(getScoreGradeP1()))
+			self:settext(getGradeStrings(getScoreGrade(PLAYER_1)))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -251,8 +265,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+195,starsY+30;zoom,0.45;halign,1;maxwidth,75/0.45);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local score = getScoreP1(0)
-			local maxscore = getMaxScoreP1(0)
+			local score = getScore(PLAYER_1,0)
+			local maxscore = getMaxScore(PLAYER_1,0)
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -268,8 +282,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+182,starsY+48;zoom,0.5;halign,1;maxwidth,60/0.5);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local score = string.format("%04d",getScoreP1(0))
-			local maxscore = string.format("%04d",getMaxScoreP1(0))
+			local score = string.format("%04d",getScore(PLAYER_1,0))
+			local maxscore = string.format("%04d",getMaxScore(PLAYER_1,0))
 			self:settext(score.."/"..maxscore)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
@@ -282,10 +296,44 @@ t[#t+1] = Def.ActorFrame{
 			self:settext(getScoreTypeText(0))
 		end;
 	};
-	LoadActor("bargraph");
+
+	--MaxCombo
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+210,starsY+25;zoom,0.4;halign,0);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext("Max Combo: "..getMaxCombo(PLAYER_1))
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	--MissCount
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+210,starsY+37;zoom,0.4;halign,0);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext("Miss Count: "..getMissCount(PLAYER_1))
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	--MissCount
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+210,starsY+49;zoom,0.4;halign,0);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext("Date Achieved: "..getScoreDate(PLAYER_1))
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
 };
 
+ 
+------------------------------------------
 ------------------------------------------2P
+
 t[#t+1] = Def.ActorFrame{
 	BeginCommand=function(self)
 		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
@@ -304,37 +352,46 @@ t[#t+1] = Def.ActorFrame{
 			self:visible(false);
 		end;
 	end;
+	--Upper Bar
 	Def.Quad{
 		InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333"));
 	};
+	--Lower Bar
+	Def.Quad{
+		InitCommand=cmd(xy,starsX,starsY+18+playerDistY;zoomto,frameWidth,50;halign,0;valign,0;diffuse,color("#333333"));
+	};
+
+	--===Upper Bar Stuff===--
 
 	Def.Quad{
 		InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,8,30;halign,0;valign,0;diffuse,color("#FFFFFF"));
-		BeginCommand=cmd(playcommand,"Set");
+		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				self:diffuse(getClearType(PLAYER_2,2))
-			end;
+				self:diffuse(getHighestClearType(PLAYER_2,2))
+			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
-		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
-		PlayerJoinedMessageCommand=cmd(playcommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
-
 
 	LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,starsX+13,starsY-12+playerDistY;zoom,0.3;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local steps = GAMESTATE:GetCurrentSteps(PLAYER_2) ;
 				local diff;
 				local stype;
-				if steps ~= nil then
-					diff = getDifficulty(steps:GetDifficulty())
-					stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-					self:settext(stype.." "..diff);
+				local taps = 0
+				local holds = 0
+				local mines = 0
+				if stepsP2 ~= nil then
+					taps = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_TapsAndHolds")
+					holds = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Holds")
+					mines = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Mines")
+					diff = getDifficulty(stepsP2:GetDifficulty())
+					stype = ToEnumShortString(stepsP2:GetStepsType()):gsub("%_"," ")
+					self:settextf("%s %s // Notes:%s // Holds:%s // Mines:%s",stype,diff,taps,holds,mines);
 				else
 					self:settext("Disabled");
 				end;
@@ -342,39 +399,128 @@ t[#t+1] = Def.ActorFrame{
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
-		PlayerJoinedMessageCommand=cmd(playcommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
 	};
 
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,starsX+382,starsY-12+playerDistY;zoom,0.3;halign,1);
+		InitCommand=cmd(xy,starsX+frameWidth-5,starsY-12+playerDistY;zoom,0.3;halign,1);
 		BeginCommand=function(self)
 			self:settext("Player 2")
 		end;
 	};
 
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,starsX+21,starsY+playerDistY+2;zoom,0.6;);
-		BeginCommand=cmd(playcommand,"Set");
+		InitCommand=cmd(xy,starsX+21,starsY+2+playerDistY;zoom,0.6;);
+		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
 				local diff = 0;
 				local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_2);
-				local steps = GAMESTATE:GetCurrentSteps(PLAYER_2);
-				if enabled and steps~= nil then
-					diff = GAMESTATE:GetCurrentSteps(PLAYER_2):GetMeter() or 0;
+				if enabled and stepsP2 ~= nil then
+					diff = stepsP2:GetMeter() or 0;
 					self:settext(diff);
 				else
 					self:settext(0);
 				end;
 			end;
 		end;
-		CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
-		CurrentStepsP2ChangedMessageCommand=cmd(playcommand,"Set");
-		PlayerJoinedMessageCommand=cmd(playcommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(playcommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	--===Lower Bar Stuff===--
+
+	--Grades
+	LoadFont("Common Large")..{
+		InitCommand=cmd(xy,starsX+60,starsY+35+playerDistY;zoom,0.6;maxwidth,110/0.6);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext(getGradeStrings(getScoreGrade(PLAYER_2)))
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	--ClearType
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+60,starsY+58+playerDistY;zoom,0.5;maxwidth,110/0.5);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext(getHighestClearType(PLAYER_2,0))
+			self:diffuse(getHighestClearType(PLAYER_2,2))
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	-- Percentage Score
+	LoadFont("Common Large")..{
+		InitCommand=cmd(xy,starsX+195,starsY+30+playerDistY;zoom,0.45;halign,1;maxwidth,75/0.45);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			local score = getScore(PLAYER_2,0)
+			local maxscore = getMaxScore(PLAYER_2,0)
+			if maxscore == 0 or maxscore == nil then
+				maxscore = 1
+			end;
+			local pscore = (score/maxscore) * 100
+
+			self:settextf("%05.2f%%",pscore)
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	--Player DP/Exscore / Max DP/Exscore
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+182,starsY+48+playerDistY;zoom,0.5;halign,1;maxwidth,60/0.5);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			local score = string.format("%04d",getScore(PLAYER_2,0))
+			local maxscore = string.format("%04d",getMaxScore(PLAYER_2,0))
+			self:settext(score.."/"..maxscore)
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	--ScoreType superscript(?)
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+183,starsY+47+playerDistY;zoom,0.3;halign,0;);
+		BeginCommand=function(self)
+			self:settext(getScoreTypeText(0))
+		end;
+	};
+
+	--MaxCombo
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+210,starsY+25+playerDistY;zoom,0.4;halign,0);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext("Max Combo: "..getMaxCombo(PLAYER_2))
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	--MissCount
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+210,starsY+37+playerDistY;zoom,0.4;halign,0);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext("Miss Count: "..getMissCount(PLAYER_2))
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	--MissCount
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,starsX+210,starsY+49+playerDistY;zoom,0.4;halign,0);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext("Date Achieved: "..getScoreDate(PLAYER_2))
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 };
+
+t[#t+1] = LoadActor("bargraph");
+
 local index = 0
 while index < maxStars do
 	t[#t+1] = stars(index,PLAYER_1)
