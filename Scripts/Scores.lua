@@ -350,8 +350,10 @@ function getLowestMissCount(pn)
 			while i <= #hsTableP1 do
 				indexScore = hsTableP1[i]
 				if indexScore ~= nil then
-					temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
-					lowest = math.min(lowest,temp)
+					if indexScore:GetGrade() ~= "Grade_Failed" then
+						temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
+						lowest = math.min(lowest,temp)
+					end;
 				end;
 				i = i+1
 			end;
@@ -363,8 +365,10 @@ function getLowestMissCount(pn)
 			while i <= #hsTableP2 do
 				indexScore = hsTableP2[i]
 				if indexScore ~= nil then
-					temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
-					lowest = math.min(lowest,temp)
+					if indexScore:GetGrade() ~= "Grade_Failed" then
+						temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
+						lowest = math.min(lowest,temp)
+					end;
 				end;
 				i = i+1
 			end;
