@@ -244,7 +244,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+35;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getGradeStrings(getScoreGrade(PLAYER_1)))
+			self:settext(getGradeStrings(getHighestGrade(PLAYER_1)))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -434,7 +434,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+35+playerDistY;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getGradeStrings(getScoreGrade(PLAYER_2)))
+			self:settext(getGradeStrings(getHighestGrade(PLAYER_2)))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");

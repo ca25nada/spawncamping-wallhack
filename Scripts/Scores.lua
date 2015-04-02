@@ -10,6 +10,30 @@ local scoreTypeText = {
 	[3] = "MIGS"
 }
 
+local gradeTiers = {
+	Grade_Tier01 = 0,
+	Grade_Tier02 = 1,
+	Grade_Tier03 = 2,
+	Grade_Tier04 = 3,
+	Grade_Tier05 = 4,
+	Grade_Tier06 = 5,
+	Grade_Tier07 = 6,
+	Grade_Tier08 = 7,
+	Grade_Tier09 = 8,
+	Grade_Tier10 = 9,
+	Grade_Tier11 = 10,
+	Grade_Tier12 = 11,
+	Grade_Tier13 = 12,
+	Grade_Tier14 = 13,
+	Grade_Tier15 = 14,
+	Grade_Tier16 = 15,
+	Grade_Tier17 = 16,
+	Grade_Tier18 = 17,
+	Grade_Tier19 = 18,
+	Grade_Tier20 = 19,
+	Grade_Failed = 20
+}
+
 local scoreWeight =  { -- Score Weights for DP score (MAX2)
 	TapNoteScore_W1				= 2,--PREFSMAN:GetPreference("GradeWeightW1"),					--  2
 	TapNoteScore_W2				= 2,--PREFSMAN:GetPreference("GradeWeightW2"),					--  2
@@ -168,10 +192,6 @@ end;
 --============================================================
 -- Call only after calling initScoreList
 --============================================================
-function getScoreList(pn)
-
-end;
-
 
 function initScore(pn,index)
 	if pn == PLAYER_1 then
@@ -238,6 +258,48 @@ function getMaxScore(pn,scoreType) -- dp, ps, migs = 1,2,3 respectively, 0 rever
 	end
 end;
 
+
+function getHighestGrade(pn)
+	local highest = 21
+	local indexScore
+	local grade = "~"
+	local temp = 0
+	local i = 0
+	if pn == PLAYER_1 then
+		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
+			while i <= #hsTableP1 do
+				indexScore = hsTableP1[i]
+				if indexScore ~= nil then
+					temp = gradeTiers[indexScore:GetGrade()] or 21
+					if temp <= highest then
+						grade = indexScore:GetGrade()
+						highest = temp
+					end;
+				end;
+				i = i+1
+			end;
+		end;
+	end;
+
+	if pn == PLAYER_2 then
+		if hsTableP1 ~= nil and #hsTableP2 >= 1 then
+			while i <= #hsTableP2 do
+				indexScore = hsTableP2[i]
+				if indexScore ~= nil then
+					temp = gradeTiers[indexScore:GetGrade()] or 21
+					if temp <= highest then
+						grade = indexScore:GetGrade()
+						highest = temp
+					end;
+				end;
+				i = i+1
+			end;
+		end;
+	end;
+
+	return grade
+end;
+
 --============================================================
 -- Call only after calling initScoreListP1 and initScoreP1
 --============================================================
@@ -246,7 +308,7 @@ function initJudgeStats(pn)
 	if pn == PLAYER_1 then
 		if indexScoreP1 ~= nil then
 			for k,_ in pairs(judgeStatsP1) do
-				if k == 'HoldNoteScore_LetGo' or k == 'HoldNoteScore_Held' or k == 'HoldNoteScore_MissedHold' then
+				if k == "HoldNoteScore_LetGo" or k == "HoldNoteScore_Held" or k == "HoldNoteScore_MissedHold" then
 					judgeStatsP1[k] = indexScoreP1:GetHoldNoteScore(k)
 				else 
 					judgeStatsP1[k] = indexScoreP1:GetTapNoteScore(k)
@@ -257,7 +319,7 @@ function initJudgeStats(pn)
 	if pn == PLAYER_2 then
 		if indexScoreP2 ~= nil then
 			for k,_ in pairs(judgeStatsP2) do
-				if k == 'HoldNoteScore_LetGo' or k == 'HoldNoteScore_Held' or k == 'HoldNoteScore_MissedHold' then
+				if k == "HoldNoteScore_LetGo" or k == "HoldNoteScore_Held"or k == "HoldNoteScore_MissedHold" then
 					judgeStatsP2[k] = indexScoreP2:GetHoldNoteScore(k)
 				else 
 					judgeStatsP2[k] = indexScoreP2:GetTapNoteScore(k)
@@ -266,6 +328,7 @@ function initJudgeStats(pn)
 		end
 	end
 end;	
+
 
 function getScoreGrade(pn)
 	if pn == PLAYER_1 then
@@ -308,14 +371,14 @@ function getScoreDate(pn)
 		if indexScoreP1 ~= nil then
 			return indexScoreP1:GetDate()
 		else
-			return ''
+			return ""
 		end;
 	end;
 	if pn == PLAYER_2 then
 		if indexScoreP2 ~= nil then
 			return indexScoreP2:GetDate()
 		else
-			return ''
+			return ""
 		end;
 	end;
 end;
