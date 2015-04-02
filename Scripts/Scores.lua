@@ -259,6 +259,12 @@ function getMaxScore(pn,scoreType) -- dp, ps, migs = 1,2,3 respectively, 0 rever
 end;
 
 
+--============================================================
+-- Functions for Highest/Lowest values in a scoretable. 
+--Call only after calling initScoreList
+--============================================================
+
+
 function getHighestGrade(pn)
 	local highest = 21
 	local indexScore
@@ -355,6 +361,7 @@ function getLowestMissCount(pn)
 	if pn == PLAYER_2 then
 		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
 			while i <= #hsTableP2 do
+				indexScore = hsTableP2[i]
 				if indexScore ~= nil then
 					temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
 					lowest = math.min(lowest,temp)
@@ -364,7 +371,7 @@ function getLowestMissCount(pn)
 		end;
 	end;
 	if lowest == math.huge then
-		lowest = 0
+		lowest = "-"
 	end;
 	return lowest 
 end;
