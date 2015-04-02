@@ -282,7 +282,7 @@ function getHighestGrade(pn)
 	end;
 
 	if pn == PLAYER_2 then
-		if hsTableP1 ~= nil and #hsTableP2 >= 1 then
+		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
 			while i <= #hsTableP2 do
 				indexScore = hsTableP2[i]
 				if indexScore ~= nil then
@@ -298,6 +298,39 @@ function getHighestGrade(pn)
 	end;
 
 	return grade
+end;
+
+function getHighestMaxCombo(pn)
+	local highest = 0
+	local indexScore
+	local i = 0
+	if pn == PLAYER_1 then
+		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
+			while i <= #hsTableP1 do
+				indexScore = hsTableP1[i]
+				if indexScore ~= nil then
+					temp = indexScore:GetMaxCombo()
+					highest = math.max(temp,highest)
+				end;
+				i = i+1
+			end;
+		end;
+	end;
+
+	if pn == PLAYER_2 then
+		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
+			while i <= #hsTableP2 do
+				indexScore = hsTableP2[i]
+				if indexScore ~= nil then
+					temp = indexScore:GetMaxCombo()
+					highest = math.max(temp,highest)
+				end;
+				i = i+1
+			end;
+		end;
+	end;
+
+	return highest
 end;
 
 --============================================================
