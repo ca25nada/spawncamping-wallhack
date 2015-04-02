@@ -333,6 +333,42 @@ function getHighestMaxCombo(pn)
 	return highest
 end;
 
+function getLowestMissCount(pn)
+	local lowest = math.huge
+	local temp
+	local indexScore
+	local i = 0
+
+	if pn == PLAYER_1 then
+		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
+			while i <= #hsTableP1 do
+				indexScore = hsTableP1[i]
+				if indexScore ~= nil then
+					temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
+					lowest = math.min(lowest,temp)
+				end;
+				i = i+1
+			end;
+		end;
+	end;
+
+	if pn == PLAYER_2 then
+		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
+			while i <= #hsTableP2 do
+				if indexScore ~= nil then
+					temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
+					lowest = math.min(lowest,temp)
+				end;
+				i = i+1
+			end;
+		end;
+	end;
+	if lowest == math.huge then
+		lowest = 0
+	end;
+	return lowest 
+end;
+
 --============================================================
 -- Call only after calling initScoreListP1 and initScoreP1
 --============================================================
@@ -415,7 +451,6 @@ function getScoreDate(pn)
 		end;
 	end;
 end;
-
 
 --=========================================================================
 -- Call only after calling initScoreListP1,initScoreP1 and initJudgeStatsP1
