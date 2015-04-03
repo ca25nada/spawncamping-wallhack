@@ -6,6 +6,10 @@ t[#t+1] = LoadActor("tabs")
 t[#t+1] = LoadActor("songinfo");
 t[#t+1] = LoadActor("currenttime");
 t[#t+1] = LoadActor("stars");
+t[#t+1] = LoadActor("simfile");
+t[#t+1] = LoadActor("score");
+t[#t+1] = LoadActor("profile");
+t[#t+1] = LoadActor("other");
 --t[#t+1] = StandardDecorationFromFileOptional("StepsDisplayList","StepsDisplayList");
 --t[#t+1] = LoadActor("../_frame");
 
