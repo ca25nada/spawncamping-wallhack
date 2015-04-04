@@ -178,8 +178,13 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+7;halign,1;zoom,0.6;shadowlength,1;maxwidth,180/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(profileNameP2)
+			local temp1 = getCurScoreST(PLAYER_2,0)
+			local temp2 = getMaxScoreST(PLAYER_2,0)
+			temp2 = math.max(temp2,1)
+			local text = string.format("%05.2f%%",math.floor((temp1/temp2)*10000)/100)
+			self:settext(text.." "..profileNameP2)
 		end;
+		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
 
 	LoadFont("Common Normal") .. {
