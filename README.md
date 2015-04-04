@@ -52,9 +52,11 @@ Press the key to which you mapped the "Select" button to rotate between tabs.
 Since i'm too lazy to make this into a preference at this moment,
 Open the file:
 ```
-Themes\spawncamping-wallhack\Scripts\Scores.lua
+Themes\spawncamping-wallhack\Scripts\02 TempThemePrefs.lua
 ```
 Then change the variable below to the number corresponding to the scoretype you want to use. Restart StepMania.
 ```lua
-local defaultScoreType = 2 --1DP 2PS 3MIGS
+local preferences = {
+	DefaultScoreType = 2; -- 1 = MAX2 DP, 2 = Oni Percent Score, 3 = MIGS
+}
 ```
