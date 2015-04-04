@@ -11,7 +11,7 @@ It's currently being made on StepMania 5.0.7 for a 16:9 display.
 * (There's no eval screen............. rip)
 * Scoretracking still tracks scores while autoplay is enabled
 * Theme does not grab the highest scores for anything other than whatever the player has as default.
-* 
+
 ---
 ##### [Global] Adding avatar/profile images to a profile
 Drop the image you wish to use into the following folder
