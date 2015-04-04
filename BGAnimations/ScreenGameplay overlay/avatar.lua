@@ -111,20 +111,18 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+7;halign,0;zoom,0.6;shadowlength,1;maxwidth,180/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(profileNameP1)
+			local temp1 = getCurScoreST(PLAYER_1,0)
+			local temp2 = getMaxScoreST(PLAYER_1,0)
+			temp2 = math.max(temp2,1)
+			local text = string.format("%05.2f%%",math.floor((temp1/temp2)*10000)/100)
+			self:settext(profileNameP1.." "..text)
 		end;
+		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
+
 
 	LoadFont("Common Normal") .. {
 		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+20;halign,0;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			self:settext(GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString('ModsLevel_Current'))
-		end;
-	};
-
-	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+32;halign,0;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local steps = GAMESTATE:GetCurrentSteps(PLAYER_1);
@@ -132,6 +130,14 @@ t[#t+1] = Def.ActorFrame{
 			local meter = steps:GetMeter()
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			self:settext(stype.." "..diff.." "..meter)
+		end;
+	};
+
+	LoadFont("Common Normal") .. {
+		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+32;halign,0;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext(GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString('ModsLevel_Current'))
 		end;
 	};
 
@@ -180,14 +186,6 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+20;halign,1;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(GAMESTATE:GetPlayerState(PLAYER_2):GetPlayerOptionsString('ModsLevel_Current'))
-		end;
-	};
-
-	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+32;halign,1;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
 			local steps = GAMESTATE:GetCurrentSteps(PLAYER_2);
 			local diff = getDifficulty(steps:GetDifficulty())
 			local meter = steps:GetMeter()
@@ -195,6 +193,15 @@ t[#t+1] = Def.ActorFrame{
 			self:settext(stype.." "..diff.." "..meter)
 		end;
 	};
+
+	LoadFont("Common Normal") .. {
+		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+32;halign,1;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext(GAMESTATE:GetPlayerState(PLAYER_2):GetPlayerOptionsString('ModsLevel_Current'))
+		end;
+	};
+
 
 };
 

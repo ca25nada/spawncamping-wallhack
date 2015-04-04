@@ -2,7 +2,7 @@
 
 -- Change this to change the scoretype the theme returns 
 --(should be made into a preference eventually)
-local defaultScoreType = 2 --1DP 2PS 3MIGS
+local defaultScoreType =getTempThemePref("DefaultScoreType") --1DP 2PS 3MIGS
 
 local scoreTypeText = {
 	[1] = "DP",
@@ -76,7 +76,7 @@ local migsWeight =  { -- Score Weights for MIGS score
 	HoldNoteScore_Held			= 6,
 	TapNoteScore_HitMine			= -8,
 	HoldNoteScore_LetGo			= 0,
-	HoldNoteScore_Missed = 0,
+	HoldNoteScore_MissedHold	 = 0,
 	TapNoteScore_AvoidMine		= 0,
 	TapNoteScore_CheckpointHit		= 0,
 	TapNoteScore_CheckpointMiss 	= 0

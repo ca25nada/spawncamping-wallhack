@@ -98,7 +98,7 @@ local function judgeText(pn,judge,index)
 		frameY = frameY2P
 	end
 	local t = LoadFont("Common normal")..{
-		InitCommand=cmd(xy,frameX+5,frameY+5+(index*spacing);zoom,judgeFontSize;halign,0);
+		InitCommand=cmd(xy,frameX+5,frameY+7+(index*spacing);zoom,judgeFontSize;halign,0);
 		BeginCommand=function(self)
 			self:settext(judgeString[judge])
 			self:diffuse(judgeColor[judge])
@@ -119,7 +119,7 @@ local function judgeCount(pn,judge,index)
 		frameY = frameY2P
 	end
 	local t = LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,frameWidth+frameX-5,frameY+5+(index*spacing);zoom,countFontSize;horizalign,right);
+		InitCommand=cmd(xy,frameWidth+frameX-5,frameY+7+(index*spacing);zoom,countFontSize;horizalign,right);
 		BeginCommand=function(self)
 			self:settext(0)
 		end;
@@ -180,7 +180,7 @@ if judgeTypeP1 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	end
 
 	t[#t+1] = LoadFont("Common Normal") .. { --grade
-	        InitCommand=cmd(xy,frameX1P+5,frameY1P+6+(index*spacing);zoom,gradeFontSize;horizalign,left);
+	        InitCommand=cmd(xy,frameX1P+5,frameY1P+8+(index*spacing);zoom,gradeFontSize;horizalign,left);
 			BeginCommand=function(self)
 				self:settext(gradeString[getGradeST(PLAYER_1)])
 			end;
@@ -212,7 +212,7 @@ if judgeTypeP2 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 	end
 
 	t[#t+1] = LoadFont("Common Normal") .. { --grade
-	        InitCommand=cmd(xy,frameX2P+5,frameY2P+6+(index*spacing);zoom,gradeFontSize;horizalign,left);
+	        InitCommand=cmd(xy,frameX2P+5,frameY2P+8+(index*spacing);zoom,gradeFontSize;horizalign,left);
 			BeginCommand=function(self)
 				self:settext(gradeString[getGradeST(PLAYER_2)])
 			end;

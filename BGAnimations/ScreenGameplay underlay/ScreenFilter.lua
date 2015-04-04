@@ -26,9 +26,11 @@ if numPlayers == 1 then
 	local player = GAMESTATE:GetMasterPlayerNumber()
 	local pNum = (player == PLAYER_1) and 1 or 2
 
-	filterAlphas[player] = tonumber(getenv("ScreenFilterP"..pNum));
+	filterAlphas[player] = getenv("ScreenFilterP"..pNum) or 0;
 	if filterAlphas[player] == nil then
 		filterAlphas[player] = 0
+	else
+		filterAlphas[player] = tonumber(filterAlphas[player])
 	end;
 
 	local pos;

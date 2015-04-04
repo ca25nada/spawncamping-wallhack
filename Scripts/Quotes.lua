@@ -194,7 +194,8 @@ local Phrases = {
         "Everlasting Message", -- AKA: For UltraPlayers hoooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
         "\"And I'm not a noob I got 227 pp\"",
         "whats more dense, a black hole or an icyworld file", -- choof
-        "fuk LN" -- Staiain's twitch chat
+        "fuk LN", -- Staiain's twitch chat
+        "Which edition of IIDX is |999999^999999 from?" --  ARC  of #bemaniso
 }
 
 local temp;

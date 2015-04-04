@@ -5,9 +5,11 @@ local JudgeTableP1 = {}
 local JudgeTableP2 = {}
 
 
+local paramP1
 if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	t[#t+1] = Def.Actor{
-		JudgmentMessageCommand=function(self,params)
+		SetCommand=function(self)
+			local params = paramP1
 			if params.Player == PLAYER_1 then
 				if params.HoldNoteScore then
 					addJudgeST(PLAYER_1,params.HoldNoteScore,true)
@@ -25,11 +27,18 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 				end;
 			end;
 		end;
+		JudgmentMessageCommand=function(self,params)
+			paramP1 = params
+			self:queuecommand("Set");
+		end;
 	}
 end;
+
+local paramP2
 if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 	t[#t+1] = Def.Actor{
-		JudgmentMessageCommand=function(self,params)
+		SetCommand=function(self)
+			local params = paramP2
 			if params.Player == PLAYER_2 then
 				if params.HoldNoteScore then
 					addJudgeST(PLAYER_2,params.HoldNoteScore,true)
@@ -46,6 +55,10 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 					end;
 				end;
 			end;
+		end;
+		JudgmentMessageCommand=function(self,params)
+			paramP2 = params
+			self:queuecommand("Set");
 		end;
 	}
 end;
