@@ -61,18 +61,18 @@ local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer(); -- For relocating g
 local center1P = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")); -- For relocating graph/judgecount frame
 
 local spacing = 10 -- Spacing between the judgetypes
-local frameWidth = 55 -- Width of the Frame
+local frameWidth = 60 -- Width of the Frame
 local frameHeight = ((#judges+1)*spacing)+8 -- Height of the Frame
 local judgeFontSize = 0.40 -- Font sizes for different text elements 
 local countFontSize = 0.35
 local gradeFontSize = 0.45
 
 local frameX1P = 20 -- X position of the frame when center1player is on
-local frameXR1P = 50 -- X offset from the very left of the lane when center1player is off
+local frameXR1P = 20 -- X position of the frame when center1player is off
 local frameY1P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 
 local frameX2P = SCREEN_WIDTH-20-frameWidth -- X position of the frame when center1player is on
-local frameXR2P = 50 -- X offset from the very right of the lane when center1player is off
+local frameXR2P = 20 -- X offset from the very right of the lane when center1player is off
 local frameY2P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 
 
@@ -80,9 +80,6 @@ local frameY2P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 --=========================================================================--
 --=========================================================================--
 
-if center1P == false then
-	frameX1P = (SCREEN_CENTER_X/2)-(64*(cols/2))-frameXR1P
-end
 
 local judgeTypeP1 = tonumber(GetUserPref("JudgeTypeP1"));
 local judgeTypeP2 = tonumber(GetUserPref("JudgeTypeP2"));
