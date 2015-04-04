@@ -1,11 +1,11 @@
 local t = Def.ActorFrame {
         LoadFont("Common Normal") .. {
                 Name="Player1BPM";
-				InitCommand=cmd(x,5;y,25;halign,0;zoom,0.40;halign,0;);
+				InitCommand=cmd(x,5;y,25;halign,0;zoom,0.40;halign,0;shadowlength,1);
         };
         LoadFont("Common Normal") .. {
                 Name="Player2BPM";
-                InitCommand=cmd(x,SCREEN_WIDTH-5;y,25;halign,1;zoom,0.4;);
+                InitCommand=cmd(x,SCREEN_WIDTH-5;y,25;halign,1;zoom,0.4;shadowlength,1);
         };
 };
 
