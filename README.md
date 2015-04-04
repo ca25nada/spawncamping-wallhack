@@ -7,6 +7,17 @@ It's currently being made on StepMania 5.0.7 for a 16:9 display.
 (I don't think I can do 4:3 because everything is already cramped as is)
 
 ---
+##### Current Issues
+* (There's no eval screen............. rip)
+* Scoretracking still tracks scores while autoplay is enabled
+* Theme does not grab the highest scores for anything other than whatever the player has as default.
+
+##### To be added soon 
+* CDTitles for ScreenSelectMusic
+* Song progress bar for ScreenGameplay
+* .........a eval screen
+
+---
 ##### [Global] Adding avatar/profile images to a profile
 Drop the image you wish to use into the following folder
 ```
