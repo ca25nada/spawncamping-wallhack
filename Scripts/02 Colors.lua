@@ -3,10 +3,18 @@ themeColors = {
 	placeholder = {
 		[1] = color("#FFFFFF")
 	},
+
+	songlength = {
+		[1] = color("#FFFFFF"), -- normal
+		[2] = color("#ff9a00"), --orange
+		[3] = color("#da5757") -- red
+
+	},
+
 	main = {
-		[1] = color("#00AEEF"), --Primary light blue
-		[2] = color("#009AEF"),-- Slightly darker blue
-		[3] = color("#00C2EF") -- Slightly lighter blue
+		[1] = color("#ff8bb2"),--color("#00AEEF"), --Primary light blue
+		[2] = color("#ff6699"),--color("#009AEF"),-- Slightly darker blue
+		[3] = color("#ff99cc")--color("#00C2EF") -- Slightly lighter blue
 	},
 
 	grade = {
@@ -94,6 +102,16 @@ end;
 
 function getVividDifficultyColor(diff)
 	return themeColors.DifficultyVivid[diff] or color("#ffffff");
+end;
+
+function getSongLengthColor(s)
+	if s < PREFSMAN:GetPreference("LongVerSongSeconds") then
+		return themeColors.songlength[1]
+	elseif s < PREFSMAN:GetPreference("MarathonVerSongSeconds") then
+		return themeColors.songlength[2]
+	else
+		return themeColors.songlength[3]
+	end;
 end;
 
 function TapNoteScoreToColor(tns) return themeColors.tnsColors[tns] or color("#ffffff"); end;

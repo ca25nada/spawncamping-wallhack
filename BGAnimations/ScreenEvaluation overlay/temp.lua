@@ -33,7 +33,7 @@ local judgeStatsP2 = { -- Table containing the # of judgements made so far
 	TapNoteScore_CheckpointMiss 	= 0,
 }
 local temptextP1 = "PLAYER1 \n"
-if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+if GAMESTATE:IsHumanPlayer(PLAYER_1) then
 	for k,_ in pairs(judgeStatsP1) do
 		if k == "HoldNoteScore_LetGo" or k == "HoldNoteScore_Held" or k == "HoldNoteScore_MissedHold" then
 			judgeStatsP1[k] = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1):GetHoldNoteScores(k)
@@ -45,12 +45,12 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 end;
 
 local temptextP2 = "PLAYER2 \n"
-if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+if GAMESTATE:IsHumanPlayer(PLAYER_2) then
 	for k,_ in pairs(judgeStatsP2) do
 		if k == "HoldNoteScore_LetGo" or k == "HoldNoteScore_Held" or k == "HoldNoteScore_MissedHold" then
-			judgeStatsP1[k] = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2):GetHoldNoteScores(k)
+			judgeStatsP2[k] = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2):GetHoldNoteScores(k)
 		else
-			judgeStatsP1[k] = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2):GetTapNoteScores(k)
+			judgeStatsP2[k] = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2):GetTapNoteScores(k)
 		end;
 		temptextP2 = temptextP2..k..":"..judgeStatsP2[k].."\n" 
 	end;

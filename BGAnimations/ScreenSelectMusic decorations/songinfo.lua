@@ -44,8 +44,11 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	SetCommand=function(self)
 		if update then
 			local song = GAMESTATE:GetCurrentSong()
+			local seconds = 0
 			if song ~= nil then
-				self:settext(SecondsToMMSS(song:MusicLengthSeconds()))
+				seconds = song:MusicLengthSeconds()
+				self:settext(SecondsToMMSS(seconds))
+				self:diffuse(getSongLengthColor(seconds))
 			else
 				self:settext("")
 			end

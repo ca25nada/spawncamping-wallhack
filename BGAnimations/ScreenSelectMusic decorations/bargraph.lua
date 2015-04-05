@@ -34,7 +34,7 @@ t[#t+1] = Def.Actor{
 
 t[#t+1] = Def.ActorFrame{
 	BeginCommand=function(self)
-		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+		if GAMESTATE:IsHumanPlayer(PLAYER_1) then
 			self:visible(true)
 		else
 			self:visible(false)
@@ -226,7 +226,7 @@ t[#t+1] = Def.ActorFrame{
 
 t[#t+1] = Def.ActorFrame{
 	BeginCommand=function(self)
-		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+		if GAMESTATE:IsHumanPlayer(PLAYER_2) then
 			self:visible(true)
 		else
 			self:visible(false)
