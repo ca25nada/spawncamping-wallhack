@@ -337,7 +337,16 @@ function getGradeST(pn)
 	local curMaxDPScore = getCurMaxScoreST(pn,1)
 	local curMaxPSScore = getCurMaxScoreST(pn,2)
 
-	if SCREENMAN:GetTopScreen():GetLifeMeter(pn):IsFailing() then
+	local failing
+	local ts = SCREENMAN:GetTopScreen():GetLifeMeter(pn)
+	if ts ~= nil then
+		failing = ts:IsFailing()
+	end;
+	if GAMESTATE:IsBattleMode() then
+		failing = false
+	end;
+
+	if failing then
 		return 'Grade_Failed'
 	elseif curDPScore <= 0 and curPSScore <= 0 then
 		return GetGradeFromPercent(0)

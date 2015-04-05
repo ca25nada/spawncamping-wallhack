@@ -18,13 +18,13 @@ end;
 
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
-	if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+	if GAMESTATE:IsHumanPlayer(PLAYER_1) then
 		self:GetChild("Player1BPM"):settext(getPlayerBPM(PLAYER_1).." BPM")
 	else
 		self:GetChild("Player1BPM"):visible(false)
 	end;
 
-	if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+	if GAMESTATE:IsHumanPlayer(PLAYER_2) then
 		self:GetChild("Player2BPM"):settext(getPlayerBPM(PLAYER_2).." BPM")
 	else
 		self:GetChild("Player2BPM"):visible(false)
