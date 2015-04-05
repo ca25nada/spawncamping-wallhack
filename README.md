@@ -8,14 +8,17 @@ It's currently being made on StepMania 5.0.7 for a 16:9 display.
 
 ---
 ##### Current Issues
-* (There's no eval screen............. rip)
-* Scoretracking still tracks scores while autoplay is enabled
+* There's no eval screen (aside from the jumbled text straight from a lua table).
+* Scoretracking still tracks scores while autoplay is enabled.
 * Theme does not grab the highest scores for anything other than whatever the player has as default.
+* Everything blows up for rave and various course modes.
+* Lamps on the music wheel currently shows grades not cleartypes.
 
 ##### To be added soon 
 * CDTitles for ScreenSelectMusic
-* Song progress bar for ScreenGameplay
-* .........a eval screen
+* .........a usable eval screen
+* Pacemaker graph (not porting the ultralight-edit one because it's really messy-)
+* Info for various tabs on ScreenSelectMusic
 
 ---
 ##### [Global] Adding avatar/profile images to a profile
