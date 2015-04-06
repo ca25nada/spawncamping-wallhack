@@ -155,14 +155,14 @@ function addJudgeST(pn,judge,isHold)
 	if isHold then
 		if pn == PLAYER_1 then
 			if isFailingST(PLAYER_1) == false then
-				judgeTableP1[#judgeTableP1+1] = judge
+				--judgeTableP1[#judgeTableP1+1] = judge
 				judgeStatsP1[judge] = judgeStatsP1[judge]+1 --breaks on autoplay atm STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetHoldNoteScores(judge) --revert to just incrmenting by 1 when autoplay conditions are available
 			end
 			curMaxHoldsP1 = curMaxHoldsP1+1
 		end
 		if pn == PLAYER_2 then
 			if isFailingST(PLAYER_2) == false then
-				judgeTableP2[#judgeTableP2+1] = judge
+				--judgeTableP2[#judgeTableP2+1] = judge
 				judgeStatsP2[judge] = judgeStatsP2[judge]+1 --STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetHoldNoteScores(judge)
 			end
 			curMaxHoldsP2 = curMaxHoldsP2+1
@@ -170,7 +170,14 @@ function addJudgeST(pn,judge,isHold)
 	else
 		if pn == PLAYER_1 then
 			if isFailingST(PLAYER_1) == false then
-				judgeTableP1[#judgeTableP1+1] = judge
+				if (judge ="TapNoteScore_W1") or
+					(judge ="TapNoteScore_W2") or
+					(judge ="TapNoteScore_W3") or
+					(judge ="TapNoteScore_W4") or
+					(judge ="TapNoteScore_W5") or
+					(judge ="TapNoteScore_Miss") then
+					judgeTableP1[#judgeTableP1+1] = judge
+				end;
 				judgeStatsP1[judge] = judgeStatsP1[judge]+1 --STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetTapNoteScores(judge)
 			end
 			if (judge ~= 'TapNoteScore_HitMine') and (judge ~= 'TapNoteScore_AvoidMine') then
@@ -181,7 +188,14 @@ function addJudgeST(pn,judge,isHold)
 		end
 		if pn == PLAYER_2 then
 			if isFailingST(PLAYER_2) == false then
-				judgeTableP2[#judgeTableP2+1] = judge
+				if (judge ="TapNoteScore_W1") or
+					(judge ="TapNoteScore_W2") or
+					(judge ="TapNoteScore_W3") or
+					(judge ="TapNoteScore_W4") or
+					(judge ="TapNoteScore_W5") or
+					(judge ="TapNoteScore_Miss") then
+					judgeTableP2[#judgeTableP2+1] = judge
+				end;
 				judgeStatsP2[judge] = judgeStatsP2[judge]+1--STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetTapNoteScores(judge)
 			end
 			if (judge ~= 'TapNoteScore_HitMine') and (judge ~= 'TapNoteScore_AvoidMine') then
