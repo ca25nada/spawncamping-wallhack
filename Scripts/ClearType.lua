@@ -130,12 +130,7 @@ local function clearTypes(stageaward,grade,playcount,misscount,returntype)
 end;
 
 
-
---				=0 -> ClearType, 
---				=1 -> ShortClearType, 
--- 				=2 -> ClearTypeColor, 
--- 				=else -> ClearTypeLevel
--- Returns the ClearType for Player1
+--Returns the cleartype of the top score
 function getClearType(pn,ret)
 	local song
 	local steps
@@ -162,17 +157,38 @@ function getClearType(pn,ret)
 	return clearTypes(stageAward,grade,playCount,missCount,ret) or typetable[12]; 
 end;
 
--- Returns the highest cleartype for player 1
+-- Returns the cleartype given the score
+function getClearTypeFromScore(pn,score,ret)
+	local song
+	local steps
+	local profile
+	local playCount = 0
+	local stageAward
+	local missCount = 0
+	if score == nil then
+		return typetable[12];
+	end;
+	song = GAMESTATE:GetCurrentSong()
+	steps = GAMESTATE:GetCurrentSteps(pn)
+	profile = GetPlayerOrMachineProfile(pn)
+
+	if score ~= nil and song ~= nil and steps ~= nil then
+		playCount = profile:GetSongNumTimesPlayed(song)
+		stageAward = score:GetStageAward();
+		grade = score:GetGrade();
+		missCount = score:GetTapNoteScore('TapNoteScore_Miss')+score:GetTapNoteScore('TapNoteScore_W5')+score:GetTapNoteScore('TapNoteScore_W4');
+	end;
+
+	return clearTypes(stageAward,grade,playCount,missCount,ret) or typetable[12]; 
+end;
+
+-- Returns the highest cleartype
 function getHighestClearType(pn,ret)
 	local song
 	local steps
 	local profile
 	local hScoreList
 	local hScore
-	local playCount = 0
-	local stageAward
-	local missCount = 0
-	local grade
 	local i = 1
 	local highest = 12
 
@@ -186,12 +202,8 @@ function getHighestClearType(pn,ret)
 		while i <= #hScoreList do
 			hScore = hScoreList[i]
 			if hScore ~= nil then
-				playCount = profile:GetSongNumTimesPlayed(song)
-				missCount = hScore:GetTapNoteScore('TapNoteScore_Miss')+hScore:GetTapNoteScore('TapNoteScore_W5')+hScore:GetTapNoteScore('TapNoteScore_W4');
-				grade = hScore:GetGrade()
-				stageAward = hScore:GetStageAward()
+				highest = math.min(highest,getClearTypeFromScore(pn,hScore,3))
 			end;
-			highest = math.min(highest,clearTypes(stageAward,grade,playCount,missCount,3))
 			i = i+1
 		end;
 	end;

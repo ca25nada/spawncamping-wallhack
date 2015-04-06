@@ -27,26 +27,17 @@ local offsetX1 = 100
 local offsetX2 = 10
 local offsetY = 20
 
-local stringList1 = {
-	[1] = "StepMania Version:",
-	[2] = "Build Date:",
-	[3] = "Theme Version:",
-	[4] = "Global Offset:",
-	[5]	= "Life Difficulty:",
-	[6] = "Timing Difficulty:",
-	[7] = "Max Machine Scores:",
-	[8] = "Max Personal Scores:",
-}
-
-local stringList2 = {
-	[1] = ProductFamily().." "..ProductVersion(),
-	[2] = VersionDate().." "..VersionTime(),
-	[3] = getThemeName().." "..getThemeVersion(),
-	[4] = string.format("%2.4f",(PREFSMAN:GetPreference("GlobalOffsetSeconds") or 0)*1000).." ms",
-	[5] = GetLifeDifficulty(),
-	[6] = GetTimingDifficulty(),
-	[7] = PREFSMAN:GetPreference("MaxHighScoresPerListForMachine") or 0,
-	[8] = PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0,
+local stringList = {
+	{"StepMania Version:",		ProductFamily().." "..ProductVersion()},
+	{"Build Date:",				VersionDate().." "..VersionTime()},
+	{"Theme Version:",			getThemeName().." "..getThemeVersion()},
+	{"Total Songs:",			SONGMAN:GetNumSongs().." Songs in "..SONGMAN:GetNumSongGroups().." Groups"},
+	{"Total Courses:",			SONGMAN:GetNumCourses().." Courses in "..SONGMAN:GetNumCourseGroups().." Groups"},
+	{"Global Offset:",			string.format("%2.4f",(PREFSMAN:GetPreference("GlobalOffsetSeconds") or 0)*1000).." ms"},
+	{"Life Difficulty:",			GetLifeDifficulty()},
+	{"Timing Difficulty:",		GetTimingDifficulty()},
+	{"Max Machine Scores:",		PREFSMAN:GetPreference("MaxHighScoresPerListForMachine") or 0},
+	{"Max Personal Scores:",		PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0}
 }
 
 t[#t+1] = Def.Quad{
@@ -75,7 +66,7 @@ local function makeText1(index)
 		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,offsetX1/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(stringList1[index])
+			self:settext(stringList[index][1])
 		end;
 		CodeMessageCommand=cmd(queuecommand,"Set");
 	};
@@ -86,13 +77,13 @@ local function makeText2(index)
 		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(stringList2[index])
+			self:settext(stringList[index][2])
 		end;
 		CodeMessageCommand=cmd(queuecommand,"Set");
 	};
 end;
 
-for i=1,#stringList1 do 
+for i=1,#stringList do 
 	t[#t+1] = makeText1(i)
 	t[#t+1] = makeText2(i)
 end;

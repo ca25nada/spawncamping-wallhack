@@ -73,13 +73,15 @@ themeColors = {
 		Routine		= color("#ff9a00")			-- orange
 	},
 
-	tnsColors = {
-		TapNoteScore_W1 = HSV(48,0.2,1),
-		TapNoteScore_W2 = HSV(48,0.8,0.95),
-		TapNoteScore_W3 = HSV(160,0.9,0.8),
-		TapNoteScore_W4 = HSV(200,0.9,1),
-		TapNoteScore_W5 = HSV(320,0.9,1),
-		TapNoteScore_Miss = HSV(0,0.8,0.8),
+	judgeColor = { -- Colors of each Judgment types
+		TapNoteScore_W1 = color("#99ccff"),
+		TapNoteScore_W2	= HSV(48,0.8,0.95),
+		TapNoteScore_W3	 = HSV(160,0.9,0.8),
+		TapNoteScore_W4	= HSV(200,0.9,1),
+		TapNoteScore_W5	= HSV(320,0.9,1),
+		TapNoteScore_Miss = HSV(0,0.8,0.8),			
+		HoldNoteScore_Held = HSV(48,0.8,0.95),	
+		HoldNoteScore_LetGo = HSV(0,0.8,0.8)
 	}
 
 }
@@ -114,4 +116,4 @@ function getSongLengthColor(s)
 	end;
 end;
 
-function TapNoteScoreToColor(tns) return themeColors.tnsColors[tns] or color("#ffffff"); end;
+function TapNoteScoreToColor(tns) return themeColors.judgeColor[tns] or color("#ffffff"); end;

@@ -13,27 +13,6 @@ local judges = { -- do not edit
 	"HoldNoteScore_LetGo",
 }
 
-local gradeString = { -- Grades
-	Grade_Tier01 = 'AAAA',
-	Grade_Tier02 = 'AAA',
-	Grade_Tier03 = 'AA',
-	Grade_Tier04 = 'A',
-	Grade_Tier05 = 'B',
-	Grade_Tier06 = 'C',
-	Grade_Tier07 = 'D',
-	Grade_Failed = 'F'
-};
-
-local judgeString = { -- Text strings for each Judgment types
-	TapNoteScore_W1 = 'MA',
-	TapNoteScore_W2	= 'PR',
-	TapNoteScore_W3	 = 'GR',
-	TapNoteScore_W4	= 'GD',
-	TapNoteScore_W5	= 'BD',
-	TapNoteScore_Miss = 'MS',			
-	HoldNoteScore_Held = 'OK',	
-	HoldNoteScore_LetGo = 'NG',	
-}
 
 local judgeColor = { -- Colors of each Judgment types
 	TapNoteScore_W1 = color("#99ccff"),
@@ -97,7 +76,7 @@ local function judgeText(pn,judge,index)
 	local t = LoadFont("Common normal")..{
 		InitCommand=cmd(xy,frameX+5,frameY+7+(index*spacing);zoom,judgeFontSize;halign,0);
 		BeginCommand=function(self)
-			self:settext(judgeString[judge])
+			self:settext(getShortJudgeStrings(judge))
 			self:diffuse(judgeColor[judge])
 		end;
 	}
@@ -179,14 +158,14 @@ if judgeTypeP1 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	t[#t+1] = LoadFont("Common Normal") .. { --grade
 	        InitCommand=cmd(xy,frameX1P+5,frameY1P+8+(index*spacing);zoom,gradeFontSize;horizalign,left);
 			BeginCommand=function(self)
-				self:settext(gradeString[getGradeST(PLAYER_1)])
+				self:settext(getGradeStrings(getGradeST(PLAYER_1)))
 			end;
 			SetCommand=function(self)
 				local temp = GetGradeFromPercent(0)
 				if curmaxdp ~= 0 then -- bunch of error messages pop up when getgradefrompercent is called with a undefined value
 					temp = getGradeST(PLAYER_1)
 				end
-				self:settext(gradeString[temp])
+				self:settext(getGradeStrings(temp))
 			end;
 			JudgmentMessageCommand=cmd(queuecommand,"Set")
 	}
@@ -211,14 +190,14 @@ if judgeTypeP2 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 	t[#t+1] = LoadFont("Common Normal") .. { --grade
 	        InitCommand=cmd(xy,frameX2P+5,frameY2P+8+(index*spacing);zoom,gradeFontSize;horizalign,left);
 			BeginCommand=function(self)
-				self:settext(gradeString[getGradeST(PLAYER_2)])
+				self:settext(getGradeStrings(getGradeST(PLAYER_2)))
 			end;
 			SetCommand=function(self)
 				local temp = GetGradeFromPercent(0)
 				if curmaxdp ~= 0 then -- bunch of error messages pop up when getgradefrompercent is called with a undefined value
 					temp = getGradeST(PLAYER_2)
 				end
-				self:settext(gradeString[temp])
+				self:settext(getGradeStrings(temp))
 			end;
 			JudgmentMessageCommand=cmd(queuecommand,"Set")
 	}
