@@ -26,9 +26,12 @@ local judgeColors = { -- Colors of each Judgment types
 	[6] = HSV(0,0.8,0.8),	
 };
 
-local cellTable = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-local cells = #cellTable
-local availCells = math.floor(#cellTable*(#judgeTableP1/stepsP1))
+local cellTable = {}
+local cells = 50
+for i=1,cells do
+	cellTable[#cellTable+1] = 0
+end;
+local availCells = math.max(math.floor((#cellTable-1)*(#judgeTableP1/stepsP1)),1) -- number of available cells, must have at least 1
 local maxCellWidth = SCREEN_WIDTH/2 --SCREEN_WIDTH/(math.max(1,GAMESTATE:GetNumPlayersEnabled()))
 local cellHeight = 10
 local cellX = 0
