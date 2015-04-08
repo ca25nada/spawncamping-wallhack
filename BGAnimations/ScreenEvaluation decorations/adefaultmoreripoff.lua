@@ -26,7 +26,7 @@ local judgeValues = { -- Colors of each Judgment types
 }
 
 local judgeColors = { -- Colors of each Judgment types
-	[0] = color("#00000000"),
+	[0] = color("#FFFFFF"),
 	[1] = color("#99ccff"),
 	[2] = HSV(48,0.8,0.95),
 	[3] = HSV(160,0.9,0.8),
@@ -66,7 +66,7 @@ if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 		end;
 	else -- if celltable is larger
 		for k,v in ipairs(cellTable) do
-			cellTable[k] = judgeValues[judgeTable[math.floor(k/cellsPerNote)+1]]
+			cellTable[k] = judgeValues[judgeTable[math.floor(k/cellsPerNote)+1]] or 0
 		end;
 	end;
 
@@ -76,7 +76,7 @@ if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 
 	for k,v in ipairs(cellTable) do
 		t[#t+1] = Def.Quad{
-			InitCommand=cmd(xy,0,cellY;zoomto,(maxCellWidth/cells)-1,cellHeight;halign,0;valign,0;diffuse,judgeColors[v];sleep,k/cells;smooth,1;x,math.random(0,maxCellWidth);smooth,0.5;x,((k-1)*maxCellWidth/cells)+cellX);
+			InitCommand=cmd(xy,0,cellY;zoomto,(maxCellWidth/cells)-1,cellHeight;halign,0;valign,0;diffuse,judgeColors[v];diffusealpha,0;sleep,k/cells;smooth,1;x,math.random(0,maxCellWidth);diffusealpha,1;smooth,0.5;x,((k-1)*maxCellWidth/cells)+cellX);
 		};
 	end
 end;
@@ -99,7 +99,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 2 then
 		end;
 	else -- if celltable is larger
 		for k,v in ipairs(cellTable) do
-			cellTable[k] = judgeValues[judgeTableP2[math.floor(k/cellsPerNote)+1]]
+			cellTable[k] = judgeValues[judgeTableP2[math.floor(k/cellsPerNote)+1]] or 0
 		end;
 	end;
 
@@ -109,7 +109,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 2 then
 
 	for k,v in ipairs(cellTable) do
 		t[#t+1] = Def.Quad{
-			InitCommand=cmd(xy,SCREEN_WIDTH,cellY;zoomto,((maxCellWidth/cells)-1),cellHeight;halign,1;valign,0;diffuse,judgeColors[v];sleep,k/cells;smooth,1;x,SCREEN_WIDTH-math.random(0,maxCellWidth);smooth,0.5;x,SCREEN_WIDTH-((k-1)*maxCellWidth/cells)-cellX);
+			InitCommand=cmd(xy,SCREEN_WIDTH,cellY;zoomto,((maxCellWidth/cells)-1),cellHeight;halign,1;valign,0;diffuse,judgeColors[v];diffusealpha,0;sleep,k/cells;smooth,1;x,SCREEN_WIDTH-math.random(0,maxCellWidth);diffusealpha,1;smooth,0.5;x,SCREEN_WIDTH-((k-1)*maxCellWidth/cells)-cellX);
 		};
 	end
 end;

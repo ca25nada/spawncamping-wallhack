@@ -1,8 +1,5 @@
 
 themeColors = {
-	placeholder = {
-		[1] = color("#FFFFFF")
-	},
 
 	songlength = {
 		[1] = color("#FFFFFF"), -- normal
@@ -12,9 +9,9 @@ themeColors = {
 	},
 
 	main = {
-		[1] = color("#ff8bb2"),--color("#00AEEF"), --Primary light blue
-		[2] = color("#ff6699"),--color("#009AEF"),-- Slightly darker blue
-		[3] = color("#ff99cc")--color("#00C2EF") -- Slightly lighter blue
+		[1] = color("#00AEEF"), --Primary light blue
+		[2] = color("#009AEF"),-- Slightly darker blue
+		[3] = color("#00C2EF") -- Slightly lighter blue
 	},
 
 	grade = {
@@ -86,9 +83,6 @@ themeColors = {
 
 }
 
-function getPlaceholderColor()
-	return themeColors.placeholder[1] or color("#FFFFFF")
-end
 
 function getMainColor(i)
 	return themeColors.main[i] or color("#FFFFFF")
