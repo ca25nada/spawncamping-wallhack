@@ -1,4 +1,32 @@
 return Def.ActorFrame{
+	LoadFont("Common Normal") .. { --testing
+        InitCommand=cmd(xy,-33,-1;zoom,0.5;maxwidth,15/0.5);
+        SetGradeCommand=function(self,params)
+        	local player = params.PlayerNumber
+			local song = params.Song
+			local sGrade = params.Grade or 'Grade_None';
+			if GAMESTATE:GetNumPlayersEnabled() == 2 then
+				if player == PLAYER_1 then
+					self:valign(1)
+					self:y(-5)
+				elseif player == PLAYER_2 then
+					self:valign(0)
+					self:y(3)
+				else
+					self:valign(0.5)
+					self:y(-1)
+				end;
+			else
+				self:valign(0.5)
+			end;
+			self:settext(THEME:GetString("Grade",ToEnumShortString(sGrade)) or "")
+			self:diffuse(getGradeColor(sGrade))
+        end;
+	};
+
+
+
+	--[[ Revert to letter grades for the time being
 	Def.Quad{
 			InitCommand=cmd(halign,1;x,-30;y,-2;zoomto,8,24;diffuse,color("#ffcccc"););
 			SetGradeCommand=function(self,params)
@@ -33,4 +61,5 @@ return Def.ActorFrame{
 			end;
 		end;
 	};
+	--]]
 }
