@@ -97,8 +97,8 @@ local Phrases = {
         "Fuga Fuuuga Fuuuuuckga Fuuuuuuuuckga Darkstar PAZO light TRASH ACE WOOD HELL", -- Fuga Hall of Shame
         "JESUS WON'T COME TO SAVE YOU IN RHYTHM GAME HELL SON",
         "slapping colorful hamburgers is one of my many hobbies",
-        "our park isn't very sunny in fact its raining",
-        "big colorful buttons",
+        "our park isn't very sunny in fact its raining", -- popn
+        "big colorful buttons", -- popn
         --"\"did you seirously pay peppy $4 to upload a fucking dump chart for the thomas and friends theme\" - fullerene-",
         "\"I'LL NEVER PLAY 'BEAT-BEAT REVELATION' AGAIN!\"",
         "\"What is SOWS? I tried to Google it but all I get is pictures of female pigs\"",
@@ -139,10 +139,10 @@ local Phrases = {
 		"にっこにっこにー☆", -- raburaibu
 		"%E3%83%96%E3%83%B3%E3%82%BF%E3%83%B3 ～Falling in \"B\" mix～", -- buntan
 		"~koreastep~",
-		"solocock.png", -- "Mine is Bigger"
+		"solocock.png", -- "Mine is Bigger" also solorulz
 		"Gigadelicious",
 		"hot sexy touhou", -- AKA: HST
-		"Today's Popn",
+		"Today's Popn", -- leonid
 		"B..bbut... you're supposed to play this on a dance mat", -- Every youtube comment ever on stepmania vids
 		"WinDEU hates you",
 		"nerd",
@@ -195,7 +195,9 @@ local Phrases = {
         "\"And I'm not a noob I got 227 pp\"",
         "whats more dense, a black hole or an icyworld file", -- choof
         "fuk LN", -- Staiain's twitch chat
-        "Which edition of IIDX is |999999^999999 from?" --  ARC  of #bemaniso
+        "Which edition of IIDX is |999999^999999 from?", --  ARC of #bemaniso
+        "\"78%\"", -- rip iidx players
+        "\"Mine Infested Files Killed The Game\"" -- http://www.flashflashrevolution.com/vbz/showthread.php?p=4300456#post4300456
 }
 
 local temp;

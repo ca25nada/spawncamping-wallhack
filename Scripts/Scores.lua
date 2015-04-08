@@ -380,6 +380,80 @@ function getLowestMissCount(pn)
 	return lowest 
 end;
 
+function getHighestScore(pn,scoreType)
+	local lowest = 0
+	if scoreType == 0 or scoreType == nil then
+		scoreType = defaultScoreType
+	end
+	local table
+	local indexScore
+
+	if pn == PLAYER_1 then
+		table = hsTableP1
+	elseif pn == PLAYER_2 then
+		table = hsTableP2
+	end
+
+	if table ~= nil then
+		for k,v in pairs(table) do
+			indexScore = table[k]
+			if indexScore ~= nil then
+				if scoreType == 1 then
+					lowest = math.max(lowest,
+					indexScore:GetTapNoteScore("TapNoteScore_W1")*scoreWeight["TapNoteScore_W1"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W2")*scoreWeight["TapNoteScore_W2"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W3")*scoreWeight["TapNoteScore_W3"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W4")*scoreWeight["TapNoteScore_W4"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W5")*scoreWeight["TapNoteScore_W5"]+
+					indexScore:GetTapNoteScore("TapNoteScore_Miss")*scoreWeight["TapNoteScore_Miss"]+
+					indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*scoreWeight["TapNoteScore_CheckpointHit"]+
+					indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*scoreWeight["TapNoteScore_CheckpointMiss"]+
+					indexScore:GetTapNoteScore("TapNoteScore_HitMine")*scoreWeight["TapNoteScore_HitMine"]+
+					indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*scoreWeight["TapNoteScore_AvoidMine"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*scoreWeight["HoldNoteScore_LetGo"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_Held")*scoreWeight["HoldNoteScore_Held"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*scoreWeight["HoldNoteScore_MissedHold"]
+					)
+				elseif scoreType == 2 then
+					lowest = math.max(lowest,
+					indexScore:GetTapNoteScore("TapNoteScore_W1")*psWeight["TapNoteScore_W1"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W2")*psWeight["TapNoteScore_W2"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W3")*psWeight["TapNoteScore_W3"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W4")*psWeight["TapNoteScore_W4"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W5")*psWeight["TapNoteScore_W5"]+
+					indexScore:GetTapNoteScore("TapNoteScore_Miss")*psWeight["TapNoteScore_Miss"]+
+					indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*psWeight["TapNoteScore_CheckpointHit"]+
+					indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*psWeight["TapNoteScore_CheckpointMiss"]+
+					indexScore:GetTapNoteScore("TapNoteScore_HitMine")*psWeight["TapNoteScore_HitMine"]+
+					indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*psWeight["TapNoteScore_AvoidMine"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*psWeight["HoldNoteScore_LetGo"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_Held")*psWeight["HoldNoteScore_Held"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*psWeight["HoldNoteScore_MissedHold"]
+					)
+				elseif scoreType == 3 then
+					lowest = math.max(lowest,
+					indexScore:GetTapNoteScore("TapNoteScore_W1")*migsWeight["TapNoteScore_W1"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W2")*migsWeight["TapNoteScore_W2"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W3")*migsWeight["TapNoteScore_W3"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W4")*migsWeight["TapNoteScore_W4"]+
+					indexScore:GetTapNoteScore("TapNoteScore_W5")*migsWeight["TapNoteScore_W5"]+
+					indexScore:GetTapNoteScore("TapNoteScore_Miss")*migsWeight["TapNoteScore_Miss"]+
+					indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*migsWeight["TapNoteScore_CheckpointHit"]+
+					indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*migsWeight["TapNoteScore_CheckpointMiss"]+
+					indexScore:GetTapNoteScore("TapNoteScore_HitMine")*migsWeight["TapNoteScore_HitMine"]+
+					indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*migsWeight["TapNoteScore_AvoidMine"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*migsWeight["HoldNoteScore_LetGo"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_Held")*migsWeight["HoldNoteScore_Held"]+
+					indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*migsWeight["HoldNoteScore_MissedHold"]
+					)
+				end;
+			end;
+		end
+	end
+
+	return lowest
+end;
+
 --============================================================
 -- Call only after calling initScoreListP1 and initScoreP1
 --============================================================
@@ -532,7 +606,6 @@ function getScore(pn,scoreType)
 		getJudgeStatsCount(pn,"HoldNoteScore_Held")*migsWeight["HoldNoteScore_Held"]+
 		getJudgeStatsCount(pn,"HoldNoteScore_MissedHold")*migsWeight["HoldNoteScore_MissedHold"]
 	else
-		return "????"
+		return 0
 	end
-
 end;

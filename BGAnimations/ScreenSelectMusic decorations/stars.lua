@@ -264,7 +264,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+195,starsY+30;zoom,0.45;halign,1;maxwidth,75/0.45);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local score = getScore(PLAYER_1,0)
+			local score = getHighestScore(PLAYER_1,0)
 			local maxscore = getMaxScore(PLAYER_1,0)
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1

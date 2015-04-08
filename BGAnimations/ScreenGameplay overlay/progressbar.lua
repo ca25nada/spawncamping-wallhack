@@ -14,7 +14,7 @@ local t = Def.ActorFrame {
     };
     LoadFont("Common Normal") .. {
         Name="Song Name";
-        InitCommand=cmd(xy,SCREEN_CENTER_X,frameY;zoom,0.35;maxwidth,(width-50)/0.3;settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().."/"..GAMESTATE:GetCurrentSong():GetDisplayArtist(););
+        InitCommand=cmd(xy,SCREEN_CENTER_X,frameY;zoom,0.35;maxwidth,(width-50)/0.35;settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist(););
     };
     LoadFont("Common Normal") .. {
         Name="CurrentTime";
