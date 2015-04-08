@@ -76,7 +76,7 @@ if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 
 	for k,v in ipairs(cellTable) do
 		t[#t+1] = Def.Quad{
-			InitCommand=cmd(xy,0,cellY;zoomto,(maxCellWidth/cells)-1,cellHeight;halign,0;valign,0;diffuse,judgeColors[v];diffusealpha,0;sleep,k/cells;smooth,1;x,math.random(0,maxCellWidth);diffusealpha,1;smooth,0.5;x,((k-1)*maxCellWidth/cells)+cellX);
+			InitCommand=cmd(xy,0,cellY;zoomto,(maxCellWidth/cells)-2,cellHeight;halign,0;valign,0;diffuse,judgeColors[v];diffusealpha,0;sleep,k/cells;smooth,1;x,math.random(0,maxCellWidth);diffusealpha,0.2;smooth,0.5;x,((k-1)*maxCellWidth/cells)+cellX;diffusealpha,1);
 		};
 	end
 end;
@@ -109,7 +109,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 2 then
 
 	for k,v in ipairs(cellTable) do
 		t[#t+1] = Def.Quad{
-			InitCommand=cmd(xy,SCREEN_WIDTH,cellY;zoomto,((maxCellWidth/cells)-1),cellHeight;halign,1;valign,0;diffuse,judgeColors[v];diffusealpha,0;sleep,k/cells;smooth,1;x,SCREEN_WIDTH-math.random(0,maxCellWidth);diffusealpha,1;smooth,0.5;x,SCREEN_WIDTH-((k-1)*maxCellWidth/cells)-cellX);
+			InitCommand=cmd(xy,SCREEN_WIDTH,cellY;zoomto,((maxCellWidth/cells)-2),cellHeight;halign,1;valign,0;diffuse,judgeColors[v];diffusealpha,0;sleep,k/cells;smooth,1;x,SCREEN_WIDTH-math.random(0,maxCellWidth);diffusealpha,0.2;smooth,0.5;x,SCREEN_WIDTH-((k-1)*maxCellWidth/cells)-cellX;diffusealpha,1);
 		};
 	end
 end;
