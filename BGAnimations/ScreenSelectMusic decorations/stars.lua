@@ -237,14 +237,13 @@ t[#t+1] = Def.ActorFrame{
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 
-	--===Lower Bar Stuff===--
-
 	--Grades
 	LoadFont("Common Large")..{
 		InitCommand=cmd(xy,starsX+60,starsY+35;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getGradeStrings(getHighestGrade(PLAYER_1)))
+			self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_1))))
+			self:diffuse(getGradeColor(getHighestGrade(PLAYER_1)))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");

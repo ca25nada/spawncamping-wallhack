@@ -268,7 +268,7 @@ end;
 function getHighestGrade(pn)
 	local highest = 21
 	local indexScore
-	local grade = "~"
+	local grade = "Grade_None"
 	local temp = 0
 	local i = 0
 	if pn == PLAYER_1 then
@@ -415,14 +415,14 @@ function getScoreGrade(pn)
 		if indexScoreP1 ~= nil then
 			return indexScoreP1:GetGrade()
 		else
-			return '~'
+			return "Grade_None"
 		end;
 	end;
 	if pn == PLAYER_2 then
 		if indexScoreP2 ~= nil then
 			return indexScoreP2:GetGrade()
 		else
-			return '~'
+			return "Grade_None"
 		end;
 	end;
 end;
