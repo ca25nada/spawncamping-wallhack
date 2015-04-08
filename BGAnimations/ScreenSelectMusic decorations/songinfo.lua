@@ -38,7 +38,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	Name="songTitle";
+	Name="songLength";
 	InitCommand=cmd(xy,5+384,170;visible,true;halign,1;zoom,0.45;maxwidth,360/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)

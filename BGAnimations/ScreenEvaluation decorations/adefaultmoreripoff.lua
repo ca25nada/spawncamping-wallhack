@@ -10,7 +10,7 @@ t = Def.ActorFrame{}
 	local stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2):GetRadarValues(PLAYER_2):GetValue('RadarCategory_TapsAndHolds')
 
 
-local cells = 200 / GAMESTATE:GetNumPlayersEnabled()
+local cells = 100 / GAMESTATE:GetNumPlayersEnabled()
 local cellX = 0
 local cellY = 415
 local maxCellWidth = SCREEN_WIDTH/(math.max(1,GAMESTATE:GetNumPlayersEnabled())) - (GAMESTATE:GetNumPlayersEnabled()-1)*30
@@ -26,7 +26,7 @@ local judgeValues = { -- Colors of each Judgment types
 }
 
 local judgeColors = { -- Colors of each Judgment types
-	[0] = color("#FFFFFF"),
+	[0] = color("#666666"),
 	[1] = color("#99ccff"),
 	[2] = HSV(48,0.8,0.95),
 	[3] = HSV(160,0.9,0.8),

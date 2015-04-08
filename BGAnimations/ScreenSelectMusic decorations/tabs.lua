@@ -12,7 +12,7 @@ t[#t+1] = Def.Actor{
 	end;
 }
 -- temporary
-
+--[[
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=cmd(xy,300,300;halign,0;zoom,2;diffuse,getMainColor(2));
 	BeginCommand=cmd(queuecommand,"Set");
@@ -21,7 +21,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	end;
 	CodeMessageCommand=cmd(queuecommand,"Set");
 };
-
+--]]
 --======================================================================================
 
 tabNames = {

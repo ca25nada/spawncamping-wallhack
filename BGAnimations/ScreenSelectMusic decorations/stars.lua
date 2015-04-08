@@ -433,7 +433,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+35+playerDistY;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getGradeStrings(getHighestGrade(PLAYER_2)))
+			self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_2))))
+			self:diffuse(getGradeColor(getHighestGrade(PLAYER_2)))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
