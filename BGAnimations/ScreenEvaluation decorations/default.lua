@@ -1,3 +1,4 @@
+addExtraQuotes()
 local t = Def.ActorFrame{}
 
 t[#t+1] = LoadActor("currenttime")
@@ -7,10 +8,43 @@ t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,SCREEN_CENTER_X,135;zoom,0.4;maxwidth,400/0.4);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self) 
-		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplaySubTitle().."\n"..GAMESTATE:GetCurrentSong():GetDisplayArtist()) 
+		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist()) 
 	end;
 };
 
+local function GraphDisplay( pn )
+	local t = Def.ActorFrame {
+		Def.GraphDisplay {
+			InitCommand=cmd(Load,"GraphDisplay";);
+			BeginCommand=function(self)
+				local ss = SCREENMAN:GetTopScreen():GetStageStats();
+				self:Set( ss, ss:GetPlayerStageStats(pn) );
+				self:diffusealpha(0.7);
+				self:GetChild("Line"):diffusealpha(0)
+				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
+					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35))
+				end;
+			end
+		};
+	};
+	return t;
+end
+
+local function ComboGraph( pn )
+	local t = Def.ActorFrame {
+		Def.ComboGraph {
+			InitCommand=cmd(Load,"ComboGraph"..ToEnumShortString(pn););
+			BeginCommand=function(self)
+				local ss = SCREENMAN:GetTopScreen():GetStageStats();
+				self:Set( ss, ss:GetPlayerStageStats(pn) );
+				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35))
+				end;
+			end
+		};
+	};
+	return t;
+end;
 
 --ScoreBoard
 local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss'}
@@ -302,14 +336,42 @@ end;
 if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 	if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 		t[#t+1] = scoreBoard(PLAYER_1,0)
+		if ShowStandardDecoration("GraphDisplay") then
+			t[#t+1] = StandardDecorationFromTable( "GraphDisplay" .. ToEnumShortString(PLAYER_1), GraphDisplay(PLAYER_1) )
+		end;
+		if ShowStandardDecoration("ComboGraph") then
+			t[#t+1] = StandardDecorationFromTable( "ComboGraph" .. ToEnumShortString(PLAYER_1),ComboGraph(PLAYER_1) );
+		end;
 	elseif GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 		t[#t+1] = scoreBoard(PLAYER_2,0)
+		if ShowStandardDecoration("GraphDisplay") then
+			t[#t+1] = StandardDecorationFromTable( "GraphDisplay" .. ToEnumShortString(PLAYER_2), GraphDisplay(PLAYER_2) )
+		end;
+		if ShowStandardDecoration("ComboGraph") then
+			t[#t+1] = StandardDecorationFromTable( "ComboGraph" .. ToEnumShortString(PLAYER_2),ComboGraph(PLAYER_2) );
+		end;
 	end;
 end;
 if GAMESTATE:GetNumPlayersEnabled() == 2 then
 	if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 		t[#t+1] = scoreBoard(PLAYER_2,1)
+		if ShowStandardDecoration("GraphDisplay") then
+			t[#t+1] = StandardDecorationFromTable( "GraphDisplay" .. ToEnumShortString(PLAYER_2), GraphDisplay(PLAYER_2) )
+		end;
+		if ShowStandardDecoration("ComboGraph") then
+			t[#t+1] = StandardDecorationFromTable( "ComboGraph" .. ToEnumShortString(PLAYER_2),ComboGraph(PLAYER_2) );
+		end;
 	end;
 end;
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_BOTTOM-70;zoom,0.35;settext,getRandomQuotes();diffusealpha,0;zoomy,0;);
+	BeginCommand=function(self)
+		self:sleep(2)
+		self:smooth(1)
+		self:diffusealpha(0.7)
+		self:zoomy(0.35)
+	end;
+};
 
 return t
