@@ -13,7 +13,7 @@ t = Def.ActorFrame{}
 local cells = 100 / GAMESTATE:GetNumPlayersEnabled()
 local cellX = 0
 local cellY = 415
-local maxCellWidth = SCREEN_WIDTH/(math.max(1,GAMESTATE:GetNumPlayersEnabled())) - (GAMESTATE:GetNumPlayersEnabled()-1)*30
+local maxCellWidth = SCREEN_WIDTH/(math.max(1,GAMESTATE:GetNumPlayersEnabled())) - (GAMESTATE:GetNumPlayersEnabled()-1)*10
 local cellHeight = 10
 
 local judgeValues = { -- Colors of each Judgment types

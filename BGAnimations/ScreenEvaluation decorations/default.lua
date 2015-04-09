@@ -131,6 +131,10 @@ function scoreBoard(pn,position)
 		t[#t+1] = Def.Quad{
 			InitCommand=cmd(xy,frameX,frameY+80+((k-1)*22);zoomto,frameWidth,18;halign,0;diffuse,TapNoteScoreToColor(v);diffusealpha,0.5;);
 		};
+		t[#t+1] = Def.Quad{
+			InitCommand=cmd(xy,frameX,frameY+80+((k-1)*22);zoomto,0,18;halign,0;diffuse,TapNoteScoreToColor(v);diffusealpha,0.5;);
+			BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.325");effectcolor2,color("1,1,1,0");sleep,0.5;decelerate,2;zoomx,frameWidth*pss:GetPercentageOfTaps(v));
+		};
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand=cmd(xy,frameX+10,frameY+80+((k-1)*22);zoom,0.50;halign,0);
 			BeginCommand=cmd(queuecommand,"Set");
@@ -266,6 +270,10 @@ function rightScoreBoard(pn)
 	for k,v in ipairs(judges) do
 		t[#t+1] = Def.Quad{
 			InitCommand=cmd(xy,frameX,frameY+80+((k-1)*22);zoomto,frameWidth,18;halign,0;diffuse,TapNoteScoreToColor(v);diffusealpha,0.5;);
+		};
+		t[#t+1] = Def.Quad{
+			InitCommand=cmd(xy,frameX,frameY+80+((k-1)*22);zoomto,0,18;halign,0;diffuse,TapNoteScoreToColor(v);diffusealpha,0.5;);
+			BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.325");effectcolor2,color("1,1,1,0");decelerate,1;zoomx,frameWidth*pss:GetPercentageOfTaps(v));
 		};
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand=cmd(xy,frameX+10,frameY+80+((k-1)*22);zoom,0.50;halign,0);

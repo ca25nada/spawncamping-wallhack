@@ -200,7 +200,7 @@ t[#t+1] = Def.ActorFrame{
 
 	Def.Quad{
 		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0);
-		BeginCommand=cmd(queuecommand,"Set");
+		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.325");effectcolor2,color("1,1,1,0");queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
 			local judge = getJudgeStatsCount(PLAYER_1,"TapNoteScore_W1")
