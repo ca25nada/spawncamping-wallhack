@@ -269,9 +269,9 @@ t[#t+1] = Def.ActorFrame{
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
-			local pscore = (score/maxscore) * 100
+			local pscore = (score/maxscore)
 
-			self:settextf("%05.2f%%",pscore)
+			self:settextf("%05.2f%%",math.floor((pscore)*10000)/100)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -460,9 +460,9 @@ t[#t+1] = Def.ActorFrame{
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
-			local pscore = (score/maxscore) * 100
+			local pscore = (score/maxscore)
 
-			self:settextf("%05.2f%%",pscore)
+			self:settextf("%05.2f%%",math.floor((pscore)*10000)/100)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
