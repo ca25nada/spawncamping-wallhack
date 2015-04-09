@@ -46,7 +46,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		if sort == nil then
 			self:settext("Sort: ")
 		elseif sort == "SortOrder_Group" and song ~= nil then
-			self:settext("Sort: "..song:GetGroupName())
+			self:settext(song:GetGroupName())
 		else
 			self:settext("Sort: "..sortTable[sort])
 		end

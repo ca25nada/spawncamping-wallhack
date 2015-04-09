@@ -3,6 +3,16 @@ local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("currenttime")
 t[#t+1] = LoadActor("adefaultmoreripoff")
 
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,SCREEN_CENTER_X,135;zoom,0.4;maxwidth,400/0.4);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self) 
+		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplaySubTitle().."\n"..GAMESTATE:GetCurrentSong():GetDisplayArtist()) 
+	end;
+};
+
+
+--ScoreBoard
 local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss'}
 
 local pssP1 = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
@@ -110,6 +120,47 @@ function scoreBoard(pn,position)
 		};
 	end;
 
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+35,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Holds %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Holds"),pss:GetRadarPossible():GetValue("RadarCategory_Holds"))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+105,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Rolls %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Rolls"),pss:GetRadarPossible():GetValue("RadarCategory_Rolls"))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+175,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Mines %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Mines"),pss:GetRadarPossible():GetValue("RadarCategory_Mines"))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+245,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Lifts %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Lifts"),pss:GetRadarPossible():GetValue("RadarCategory_Lifts"))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+315,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Fakes %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Fakes"),pss:GetRadarPossible():GetValue("RadarCategory_Fakes"))
+		end;
+	};
+
+
 	return t
 end;
 
@@ -205,6 +256,46 @@ function rightScoreBoard(pn)
 		};
 	end;
 
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+35,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Holds %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Holds"),pss:GetRadarPossible():GetValue("RadarCategory_Holds"))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+105,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Rolls %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Rolls"),pss:GetRadarPossible():GetValue("RadarCategory_Rolls"))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+175,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Mines %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Mines"),pss:GetRadarPossible():GetValue("RadarCategory_Mines"))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+245,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Lifts %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Lifts"),pss:GetRadarPossible():GetValue("RadarCategory_Lifts"))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+315,frameY+210;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Fakes %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Fakes"),pss:GetRadarPossible():GetValue("RadarCategory_Fakes"))
+		end;
+	};
+
 	return t
 end;
 
@@ -215,7 +306,6 @@ if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 		t[#t+1] = scoreBoard(PLAYER_2,0)
 	end;
 end;
-
 if GAMESTATE:GetNumPlayersEnabled() == 2 then
 	if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 		t[#t+1] = scoreBoard(PLAYER_2,1)

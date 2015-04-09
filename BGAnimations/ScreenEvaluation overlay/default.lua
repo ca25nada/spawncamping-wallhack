@@ -8,8 +8,24 @@ t[#t+1] = LoadFont("Common Large")..{
 	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor(2);settext,"Results:";);
 }
 
-t[#t+1] = LoadFont("Common Large")..{
-	InitCommand=cmd(xy,SCREEN_CENTER_X+20,70;halign,0;zoom,0.50;settext,"A SONG TITLE OR SOMETHING";);
-}
+local frameWidth = 280
+local frameHeight = 20
+local frameX = SCREEN_WIDTH-5
+local frameY = 15
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,frameX,frameY;halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor(1););
+};
+
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand=cmd(xy,frameX-frameWidth+5,frameY;halign,0;zoom,0.45;maxwidth,(frameWidth-10)/0.45);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		local song = GAMESTATE:GetCurrentSong()
+		if song ~= nil then
+			self:settext(song:GetGroupName())
+		end;
+	end;
+};
 
 return t
