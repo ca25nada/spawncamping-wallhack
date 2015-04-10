@@ -33,6 +33,7 @@ if center1P == false then
 end
 
 function ghostScore(pn)
+
 	local frameX = SCREEN_CENTER_X
 	local frameY = SCREEN_CENTER_Y
 	local ghostType = 1
@@ -54,45 +55,50 @@ function ghostScore(pn)
 			frameY = frameYRP2
 		end
 	end;
-	local t = LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,frameX,frameY;shadowlength,1;zoom,0.45;diffuse,color("#ff9999");halign,0);
-		BeginCommand=function(self)
-			self:settext('+0')
-			self:visible(false)
+	local t = Def.ActorFrame{
+		JudgmentMessageCommand=function(self,params)
+			if params.TapNoteScore ~= 'TapNoteScore_AvoidMine' and params.HoldNoteScore ~= 'HoldNoteScore_MissedHold' then
+				self:finishtweening()
+				self:diffusealpha(1)
+				self:sleep(0.25)
+				self:smooth(0.75)
+				self:diffusealpha(0)
+			end;
 		end;
-		SetCommand=function(self,params)
-			if ghostType == 1 or ghostType == nil then
-				self:visible(false);
-			else
-				if STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentCombo() > 1 then
-					self:visible(true);
-				else
-					self:visible(false);
+		LoadFont("Common Normal") .. {
+			InitCommand=cmd(xy,frameX,frameY;shadowlength,1;zoom,0.45;diffuse,color("#ffffff00");halign,0);
+			BeginCommand=function(self)
+				self:settext('+0')
+				if ghostType == 1 or ghostType == nil then
+					self:visible(false)
 				end;
 			end;
-			local targetDiff = 0
-			if ghostType == 2 then
-				targetDiff = getCurScoreST(pn,1)-(math.ceil(getCurMaxScoreST(pn,1)*target))
-			elseif ghostType == 3 then
-				targetDiff = getCurScoreST(pn,2)-(math.ceil(getCurMaxScoreST(pn,2)*target))
-			elseif ghostType == 4 then
-				targetDiff = getCurScoreST(pn,3)-(math.ceil(getCurMaxScoreST(pn,3)*target))
-			end;
-			if targetDiff > 0 then
-				self:settext('+'..targetDiff)
-				self:diffuse(color("#66ccff"))
-			elseif targetDiff == 0 then
-				self:settext('+'..targetDiff)
-				self:diffuse(color("#FFFFFF"))
-			else
-				self:settext('-'..(math.abs(targetDiff)))
-				self:diffuse(color("#FF9999"))
-			end;
+			SetCommand=function(self,params)
+				self:diffusealpha(1)
+				local targetDiff = 0
+				if ghostType == 2 then
+					targetDiff = getCurScoreST(pn,1)-(math.ceil(getCurMaxScoreST(pn,1)*target))
+				elseif ghostType == 3 then
+					targetDiff = getCurScoreST(pn,2)-(math.ceil(getCurMaxScoreST(pn,2)*target))
+				elseif ghostType == 4 then
+					targetDiff = getCurScoreST(pn,3)-(math.ceil(getCurMaxScoreST(pn,3)*target))
+				end;
 
-		end;
-		JudgmentMessageCommand=function(self,params)
-			self:queuecommand("Set");
-		end;
+				if targetDiff > 0 then
+					self:settext('+'..targetDiff)
+					self:diffuse(color("#66ccff"))
+				elseif targetDiff == 0 then
+					self:settext('+'..targetDiff)
+					self:diffuse(color("#FFFFFF"))
+				else
+					self:settext('-'..(math.abs(targetDiff)))
+					self:diffuse(color("#FF9999"))
+				end;
+			end;
+			JudgmentMessageCommand=function(self,params)
+				self:queuecommand("Set");
+			end;
+		};
 	};
 	return t
 end;
@@ -116,34 +122,38 @@ function avgScore(pn)
 			frameY = frameYRP1
 		end
 	end
-	local t = LoadFont("Common Normal") .. { -- Current/Average Percentage Score
-		InitCommand=cmd(xy,frameX,frameY;shadowlength,1;zoom,0.45;diffuse,color("#ffffff");halign,1);
-		BeginCommand=function(self)
-			self:settext('0.00%')
-			self:visible(false)
-		end;
-		SetCommand=function(self,params)
-			if avgScoreType == 1 or avgScoreType == nil then
-				self:visible(false);
-			else
-				if STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentCombo() > 1 then
-					self:visible(true);
-				else
-					self:visible(false);
-				end;
-			end;
-
-			if avgScoreType ~= 1 or avgScore ~= nil then
-				if getCurMaxScoreST(pn,avgScoreType-1) ~= 0 then
-					self:settextf("%.2f%%",(math.floor(getCurScoreST(pn,avgScoreType-1)/getCurMaxScoreST(pn,avgScoreType-1)*10000))/100); 
-				else
-					self:settext('0.00%')
-				end;
+	local t = Def.ActorFrame{
+		JudgmentMessageCommand=function(self,params)
+			if params.TapNoteScore ~= 'TapNoteScore_AvoidMine' and params.HoldNoteScore ~= 'HoldNoteScore_MissedHold' then
+				self:finishtweening()
+				self:diffusealpha(1)
+				self:sleep(0.25)
+				self:smooth(0.75)
+				self:diffusealpha(0)
 			end;
 		end;
-		JudgmentMessageCommand=function(self)
-			self:queuecommand("Set");
-		end;
+		LoadFont("Common Normal") .. { -- Current/Average Percentage Score
+			InitCommand=cmd(xy,frameX,frameY;shadowlength,1;zoom,0.45;diffuse,color("#ffffff00");halign,1);
+			BeginCommand=function(self)
+				self:settext('0.00%')
+				if avgScoreType == 1 or avgScoreType == nil then
+					self:visible(false)
+				end;
+			end;
+			SetCommand=function(self,params)
+				self:diffusealpha(1)
+				if avgScoreType ~= 1 or avgScore ~= nil then
+					if getCurMaxScoreST(pn,avgScoreType-1) ~= 0 then
+						self:settextf("%.2f%%",(math.floor(getCurScoreST(pn,avgScoreType-1)/getCurMaxScoreST(pn,avgScoreType-1)*10000))/100); 
+					else
+						self:settext('0.00%')
+					end;
+				end;
+			end;
+			JudgmentMessageCommand=function(self)
+				self:queuecommand("Set");
+			end;
+		};
 	};
 	return t
 end;
