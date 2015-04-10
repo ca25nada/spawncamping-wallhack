@@ -14,7 +14,8 @@ local t = Def.ActorFrame {
     };
     LoadFont("Common Normal") .. {
         Name="Song Name";
-        InitCommand=cmd(xy,SCREEN_CENTER_X,frameY;zoom,0.35;maxwidth,(width-50)/0.35;settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist(););
+        InitCommand=cmd(xy,SCREEN_CENTER_X,frameY;zoom,0.35;maxwidth,(width-50)/0.35;);
+        BeginCommand=cmd(settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist(););
     };
     LoadFont("Common Normal") .. {
         Name="CurrentTime";
@@ -22,7 +23,8 @@ local t = Def.ActorFrame {
     };
     LoadFont("Common Normal") .. {
         Name="TotalTime";
-        InitCommand=cmd(xy,SCREEN_CENTER_X+(width/2),frameY;halign,1;zoom,0.35;settext,SecondsToMMSS(GAMESTATE:GetCurrentSong():GetStepsSeconds()));
+        InitCommand=cmd(xy,SCREEN_CENTER_X+(width/2),frameY;halign,1;zoom,0.35;);
+        BeginCommand=cmd(settext,SecondsToMMSS(GAMESTATE:GetCurrentSong():GetStepsSeconds()));
     };  
 };
 local function getMusicProgress()

@@ -8,7 +8,11 @@ t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,SCREEN_CENTER_X,135;zoom,0.4;maxwidth,400/0.4);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self) 
-		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist()) 
+		if GAMESTATE:IsCourseMode() then
+			self:settext(GAMESTATE:GetCurrentCourse():GetDisplayFullTitle().." // "..GAMESTATE:GetCurrentCourse():GetScripter())
+		else
+			self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist()) 
+		end;
 	end;
 };
 

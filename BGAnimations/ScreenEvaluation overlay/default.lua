@@ -22,8 +22,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
-		if song ~= nil then
+		local course = GAMESTATE:GetCurrentCourse()
+		if song ~= nil and (not GAMESTATE:IsCourseMode()) then
 			self:settext(song:GetGroupName())
+		end;
+		if course ~= nil and GAMESTATE:IsCourseMode() then
+			self:settext(course:GetGroupName())
 		end;
 	end;
 };

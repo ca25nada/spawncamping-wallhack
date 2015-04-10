@@ -1,14 +1,16 @@
 t = Def.ActorFrame{}
 
+local judgeTableP1 = {}
+local stepsP1 = 0
+local judgeTableP2 = {}
+local stepsP2 = 0
 
-	local judgeTableP1 = getJudgeTableST(PLAYER_1)
-	local stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1):GetRadarValues(PLAYER_1):GetValue('RadarCategory_TapsAndHolds')
-
-
-
-	local judgeTableP2 = getJudgeTableST(PLAYER_2)
-	local stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2):GetRadarValues(PLAYER_2):GetValue('RadarCategory_TapsAndHolds')
-
+if not GAMESTATE:IsCourseMode() then
+	judgeTableP1 = getJudgeTableST(PLAYER_1)
+	stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1):GetRadarValues(PLAYER_1):GetValue('RadarCategory_TapsAndHolds')
+	judgeTableP2 = getJudgeTableST(PLAYER_2)
+	stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2):GetRadarValues(PLAYER_2):GetValue('RadarCategory_TapsAndHolds')
+end;
 
 local cells = 100 / GAMESTATE:GetNumPlayersEnabled()
 local cellX = 0
@@ -46,7 +48,7 @@ local cellsPerNote
 local judgeTable
 
 -- if judgetable is larger or equal to celltable
-if GAMESTATE:GetNumPlayersEnabled() >= 1 then
+if GAMESTATE:GetNumPlayersEnabled() >= 1 and (not GAMESTATE:IsCourseMode()) then
 	if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 		availCells = math.max(math.floor((#cellTable-1)*(#judgeTableP1/stepsP1)),0)+1 -- number of available cells, must have at least 1
 		notesPerCell = math.floor(#judgeTableP1/availCells)
@@ -88,7 +90,7 @@ for i=1,cells do
 end;
 
 
-if GAMESTATE:GetNumPlayersEnabled() == 2 then
+if GAMESTATE:GetNumPlayersEnabled() == 2 and (not GAMESTATE:IsCourseMode()) then
 		availCells = math.max(math.floor((#cellTable-1)*(#judgeTableP2/stepsP2)),0)+1 -- number of available cells, must have at least 1
 		notesPerCell = math.floor(#judgeTableP2/availCells)
 		cellsPerNote = math.floor(availCells/#judgeTableP2)

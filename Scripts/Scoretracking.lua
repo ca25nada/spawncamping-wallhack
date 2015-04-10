@@ -247,7 +247,11 @@ end
 
 
 function getMaxNotesST(pn)
-	return GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0 -- Radarvalue, maximum number of notes
+	if GAMESTATE:IsCourseMode() then
+		return 0
+	else
+		return GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0 -- Radarvalue, maximum number of notes
+	end
 end
 
 function getCurMaxNotesST(pn)
@@ -261,7 +265,11 @@ function getCurMaxNotesST(pn)
 end
 
 function getMaxHoldsST(pn)
-	return (GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_Holds") + GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_Rolls")) or 0 -- Radarvalue, maximum number of holds
+	if GAMESTATE:IsCourseMode() then
+		return 0
+	else
+		return (GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_Holds") + GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_Rolls")) or 0 -- Radarvalue, maximum number of holds
+	end
 end
 
 function getCurMaxHoldsST(pn)
