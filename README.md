@@ -27,4 +27,5 @@ It's currently being made on StepMania 5.0.7 for a 16:9 display.
 
 ---
 ##### Acknowledgements
-* 
+* The StepMania 5 devs (notably freem and Kyzentun) for making this possible in the first place.
+* lurker,rulululull, and people in #vsrg for feedbacks..!
