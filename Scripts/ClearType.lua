@@ -183,7 +183,7 @@ function getClearTypeFromScore(pn,score,ret)
 end;
 
 -- Returns the highest cleartype
-function getHighestClearType(pn,ret)
+function getHighestClearType(pn,ignore,ret)
 	local song
 	local steps
 	local profile
@@ -200,9 +200,11 @@ function getHighestClearType(pn,ret)
 	end;
 	if hScoreList ~= nil then
 		while i <= #hScoreList do
-			hScore = hScoreList[i]
-			if hScore ~= nil then
-				highest = math.min(highest,getClearTypeFromScore(pn,hScore,3))
+			if i ~= ignore then
+				hScore = hScoreList[i]
+				if hScore ~= nil then
+					highest = math.min(highest,getClearTypeFromScore(pn,hScore,3))
+				end;
 			end;
 			i = i+1
 		end;

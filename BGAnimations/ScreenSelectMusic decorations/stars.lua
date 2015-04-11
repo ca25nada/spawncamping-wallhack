@@ -178,7 +178,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				self:diffuse(getHighestClearType(PLAYER_1,2))
+				self:diffuse(getHighestClearType(PLAYER_1,0,2))
 			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
@@ -242,8 +242,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+35;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_1))))
-			self:diffuse(getGradeColor(getHighestGrade(PLAYER_1)))
+			self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_1,0))))
+			self:diffuse(getGradeColor(getHighestGrade(PLAYER_1,0)))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -253,8 +253,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+58;zoom,0.5;maxwidth,110/0.5);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getHighestClearType(PLAYER_1,0))
-			self:diffuse(getHighestClearType(PLAYER_1,2))
+			self:settext(getHighestClearType(PLAYER_1,0,0))
+			self:diffuse(getHighestClearType(PLAYER_1,0,2))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -264,8 +264,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+195,starsY+30;zoom,0.45;halign,1;maxwidth,75/0.45);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local score = getHighestScore(PLAYER_1,0)
-			local maxscore = getMaxScore(PLAYER_1,0)
+			local score = getHighestScore(PLAYER_1,0,0)
+			local maxscore = getMaxScore(PLAYER_1,0,0)
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -301,7 +301,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+25;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext("Max Combo: "..getHighestMaxCombo(PLAYER_1))
+			self:settext("Max Combo: "..getHighestMaxCombo(PLAYER_1,0))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -367,7 +367,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				self:diffuse(getHighestClearType(PLAYER_2,2))
+				self:diffuse(getHighestClearType(PLAYER_2,0,2))
 			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
@@ -433,8 +433,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+35+playerDistY;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_2))))
-			self:diffuse(getGradeColor(getHighestGrade(PLAYER_2)))
+			self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_2,0))))
+			self:diffuse(getGradeColor(getHighestGrade(PLAYER_2,0)))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -444,8 +444,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+58+playerDistY;zoom,0.5;maxwidth,110/0.5);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getHighestClearType(PLAYER_2,0))
-			self:diffuse(getHighestClearType(PLAYER_2,2))
+			self:settext(getHighestClearType(PLAYER_2,0,0))
+			self:diffuse(getHighestClearType(PLAYER_2,0,2))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -492,7 +492,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+25+playerDistY;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext("Max Combo: "..getHighestMaxCombo(PLAYER_2))
+			self:settext("Max Combo: "..getHighestMaxCombo(PLAYER_2,0))
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");

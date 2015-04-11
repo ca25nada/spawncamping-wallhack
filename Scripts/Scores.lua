@@ -265,7 +265,7 @@ end;
 --============================================================
 
 
-function getHighestGrade(pn)
+function getHighestGrade(pn,ignore)
 	local highest = 21
 	local indexScore
 	local grade = "Grade_None"
@@ -274,12 +274,14 @@ function getHighestGrade(pn)
 	if pn == PLAYER_1 then
 		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
 			while i <= #hsTableP1 do
-				indexScore = hsTableP1[i]
-				if indexScore ~= nil then
-					temp = gradeTiers[indexScore:GetGrade()] or 21
-					if temp <= highest then
-						grade = indexScore:GetGrade()
-						highest = temp
+				if i ~= ignore then
+					indexScore = hsTableP1[i]
+					if indexScore ~= nil then
+						temp = gradeTiers[indexScore:GetGrade()] or 21
+						if temp <= highest then
+							grade = indexScore:GetGrade()
+							highest = temp
+						end;
 					end;
 				end;
 				i = i+1
@@ -290,12 +292,14 @@ function getHighestGrade(pn)
 	if pn == PLAYER_2 then
 		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
 			while i <= #hsTableP2 do
-				indexScore = hsTableP2[i]
-				if indexScore ~= nil then
-					temp = gradeTiers[indexScore:GetGrade()] or 21
-					if temp <= highest then
-						grade = indexScore:GetGrade()
-						highest = temp
+				if i ~= ignore then
+					indexScore = hsTableP2[i]
+					if indexScore ~= nil then
+						temp = gradeTiers[indexScore:GetGrade()] or 21
+						if temp <= highest then
+							grade = indexScore:GetGrade()
+							highest = temp
+						end;
 					end;
 				end;
 				i = i+1
@@ -306,53 +310,18 @@ function getHighestGrade(pn)
 	return grade
 end;
 
-function getHighestMaxCombo(pn)
+function getHighestMaxCombo(pn,ignore)
 	local highest = 0
 	local indexScore
 	local i = 0
 	if pn == PLAYER_1 then
 		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
 			while i <= #hsTableP1 do
-				indexScore = hsTableP1[i]
-				if indexScore ~= nil then
-					temp = indexScore:GetMaxCombo()
-					highest = math.max(temp,highest)
-				end;
-				i = i+1
-			end;
-		end;
-	end;
-
-	if pn == PLAYER_2 then
-		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
-			while i <= #hsTableP2 do
-				indexScore = hsTableP2[i]
-				if indexScore ~= nil then
-					temp = indexScore:GetMaxCombo()
-					highest = math.max(temp,highest)
-				end;
-				i = i+1
-			end;
-		end;
-	end;
-
-	return highest
-end;
-
-function getLowestMissCount(pn)
-	local lowest = math.huge
-	local temp
-	local indexScore
-	local i = 0
-
-	if pn == PLAYER_1 then
-		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
-			while i <= #hsTableP1 do
-				indexScore = hsTableP1[i]
-				if indexScore ~= nil then
-					if indexScore:GetGrade() ~= "Grade_Failed" then
-						temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
-						lowest = math.min(lowest,temp)
+				if i ~= ignore then
+					indexScore = hsTableP1[i]
+					if indexScore ~= nil then
+						temp = indexScore:GetMaxCombo()
+						highest = math.max(temp,highest)
 					end;
 				end;
 				i = i+1
@@ -363,11 +332,54 @@ function getLowestMissCount(pn)
 	if pn == PLAYER_2 then
 		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
 			while i <= #hsTableP2 do
-				indexScore = hsTableP2[i]
-				if indexScore ~= nil then
-					if indexScore:GetGrade() ~= "Grade_Failed" then
-						temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
-						lowest = math.min(lowest,temp)
+				if i ~= ignore then
+					indexScore = hsTableP2[i]
+					if indexScore ~= nil then
+						temp = indexScore:GetMaxCombo()
+						highest = math.max(temp,highest)
+					end;
+				end;
+				i = i+1
+			end;
+		end;
+	end;
+
+	return highest
+end;
+
+function getLowestMissCount(pn,ignore)
+	local lowest = math.huge
+	local temp
+	local indexScore
+	local i = 0
+
+	if pn == PLAYER_1 then
+		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
+			while i <= #hsTableP1 do
+				if i ~= ignore then
+					indexScore = hsTableP1[i]
+					if indexScore ~= nil then
+						if indexScore:GetGrade() ~= "Grade_Failed" then
+							temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
+							lowest = math.min(lowest,temp)
+						end;
+					end;
+				end;
+				i = i+1
+			end;
+		end;
+	end;
+
+	if pn == PLAYER_2 then
+		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
+			while i <= #hsTableP2 do
+				if i ~= ignore then
+					indexScore = hsTableP2[i]
+					if indexScore ~= nil then
+						if indexScore:GetGrade() ~= "Grade_Failed" then
+							temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
+							lowest = math.min(lowest,temp)
+						end;
 					end;
 				end;
 				i = i+1
@@ -380,7 +392,7 @@ function getLowestMissCount(pn)
 	return lowest 
 end;
 
-function getHighestScore(pn,scoreType)
+function getHighestScore(pn,ignore,scoreType)
 	local lowest = 0
 	if scoreType == 0 or scoreType == nil then
 		scoreType = defaultScoreType
@@ -395,57 +407,59 @@ function getHighestScore(pn,scoreType)
 	end
 
 	if table ~= nil then
-		for k,v in pairs(table) do
-			indexScore = table[k]
-			if indexScore ~= nil then
-				if scoreType == 1 then
-					lowest = math.max(lowest,
-					indexScore:GetTapNoteScore("TapNoteScore_W1")*scoreWeight["TapNoteScore_W1"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W2")*scoreWeight["TapNoteScore_W2"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W3")*scoreWeight["TapNoteScore_W3"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W4")*scoreWeight["TapNoteScore_W4"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W5")*scoreWeight["TapNoteScore_W5"]+
-					indexScore:GetTapNoteScore("TapNoteScore_Miss")*scoreWeight["TapNoteScore_Miss"]+
-					indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*scoreWeight["TapNoteScore_CheckpointHit"]+
-					indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*scoreWeight["TapNoteScore_CheckpointMiss"]+
-					indexScore:GetTapNoteScore("TapNoteScore_HitMine")*scoreWeight["TapNoteScore_HitMine"]+
-					indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*scoreWeight["TapNoteScore_AvoidMine"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*scoreWeight["HoldNoteScore_LetGo"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_Held")*scoreWeight["HoldNoteScore_Held"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*scoreWeight["HoldNoteScore_MissedHold"]
-					)
-				elseif scoreType == 2 then
-					lowest = math.max(lowest,
-					indexScore:GetTapNoteScore("TapNoteScore_W1")*psWeight["TapNoteScore_W1"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W2")*psWeight["TapNoteScore_W2"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W3")*psWeight["TapNoteScore_W3"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W4")*psWeight["TapNoteScore_W4"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W5")*psWeight["TapNoteScore_W5"]+
-					indexScore:GetTapNoteScore("TapNoteScore_Miss")*psWeight["TapNoteScore_Miss"]+
-					indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*psWeight["TapNoteScore_CheckpointHit"]+
-					indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*psWeight["TapNoteScore_CheckpointMiss"]+
-					indexScore:GetTapNoteScore("TapNoteScore_HitMine")*psWeight["TapNoteScore_HitMine"]+
-					indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*psWeight["TapNoteScore_AvoidMine"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*psWeight["HoldNoteScore_LetGo"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_Held")*psWeight["HoldNoteScore_Held"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*psWeight["HoldNoteScore_MissedHold"]
-					)
-				elseif scoreType == 3 then
-					lowest = math.max(lowest,
-					indexScore:GetTapNoteScore("TapNoteScore_W1")*migsWeight["TapNoteScore_W1"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W2")*migsWeight["TapNoteScore_W2"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W3")*migsWeight["TapNoteScore_W3"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W4")*migsWeight["TapNoteScore_W4"]+
-					indexScore:GetTapNoteScore("TapNoteScore_W5")*migsWeight["TapNoteScore_W5"]+
-					indexScore:GetTapNoteScore("TapNoteScore_Miss")*migsWeight["TapNoteScore_Miss"]+
-					indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*migsWeight["TapNoteScore_CheckpointHit"]+
-					indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*migsWeight["TapNoteScore_CheckpointMiss"]+
-					indexScore:GetTapNoteScore("TapNoteScore_HitMine")*migsWeight["TapNoteScore_HitMine"]+
-					indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*migsWeight["TapNoteScore_AvoidMine"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*migsWeight["HoldNoteScore_LetGo"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_Held")*migsWeight["HoldNoteScore_Held"]+
-					indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*migsWeight["HoldNoteScore_MissedHold"]
-					)
+		for k,v in ipairs(table) do
+			if k ~= ignore then
+				indexScore = table[k]
+				if indexScore ~= nil then
+					if scoreType == 1 then
+						lowest = math.max(lowest,
+						indexScore:GetTapNoteScore("TapNoteScore_W1")*scoreWeight["TapNoteScore_W1"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W2")*scoreWeight["TapNoteScore_W2"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W3")*scoreWeight["TapNoteScore_W3"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W4")*scoreWeight["TapNoteScore_W4"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W5")*scoreWeight["TapNoteScore_W5"]+
+						indexScore:GetTapNoteScore("TapNoteScore_Miss")*scoreWeight["TapNoteScore_Miss"]+
+						indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*scoreWeight["TapNoteScore_CheckpointHit"]+
+						indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*scoreWeight["TapNoteScore_CheckpointMiss"]+
+						indexScore:GetTapNoteScore("TapNoteScore_HitMine")*scoreWeight["TapNoteScore_HitMine"]+
+						indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*scoreWeight["TapNoteScore_AvoidMine"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*scoreWeight["HoldNoteScore_LetGo"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_Held")*scoreWeight["HoldNoteScore_Held"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*scoreWeight["HoldNoteScore_MissedHold"]
+						)
+					elseif scoreType == 2 then
+						lowest = math.max(lowest,
+						indexScore:GetTapNoteScore("TapNoteScore_W1")*psWeight["TapNoteScore_W1"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W2")*psWeight["TapNoteScore_W2"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W3")*psWeight["TapNoteScore_W3"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W4")*psWeight["TapNoteScore_W4"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W5")*psWeight["TapNoteScore_W5"]+
+						indexScore:GetTapNoteScore("TapNoteScore_Miss")*psWeight["TapNoteScore_Miss"]+
+						indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*psWeight["TapNoteScore_CheckpointHit"]+
+						indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*psWeight["TapNoteScore_CheckpointMiss"]+
+						indexScore:GetTapNoteScore("TapNoteScore_HitMine")*psWeight["TapNoteScore_HitMine"]+
+						indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*psWeight["TapNoteScore_AvoidMine"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*psWeight["HoldNoteScore_LetGo"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_Held")*psWeight["HoldNoteScore_Held"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*psWeight["HoldNoteScore_MissedHold"]
+						)
+					elseif scoreType == 3 then
+						lowest = math.max(lowest,
+						indexScore:GetTapNoteScore("TapNoteScore_W1")*migsWeight["TapNoteScore_W1"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W2")*migsWeight["TapNoteScore_W2"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W3")*migsWeight["TapNoteScore_W3"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W4")*migsWeight["TapNoteScore_W4"]+
+						indexScore:GetTapNoteScore("TapNoteScore_W5")*migsWeight["TapNoteScore_W5"]+
+						indexScore:GetTapNoteScore("TapNoteScore_Miss")*migsWeight["TapNoteScore_Miss"]+
+						indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*migsWeight["TapNoteScore_CheckpointHit"]+
+						indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*migsWeight["TapNoteScore_CheckpointMiss"]+
+						indexScore:GetTapNoteScore("TapNoteScore_HitMine")*migsWeight["TapNoteScore_HitMine"]+
+						indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*migsWeight["TapNoteScore_AvoidMine"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*migsWeight["HoldNoteScore_LetGo"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_Held")*migsWeight["HoldNoteScore_Held"]+
+						indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*migsWeight["HoldNoteScore_MissedHold"]
+						)
+					end;
 				end;
 			end;
 		end

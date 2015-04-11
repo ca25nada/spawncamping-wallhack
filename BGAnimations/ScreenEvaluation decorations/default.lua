@@ -33,10 +33,18 @@ local function GraphDisplay( pn )
 		};
 		LoadFont("Common Large")..{
 			InitCommand=cmd(xy,-SCREEN_CENTER_X*0.30,15;zoom,0.8;maxwidth,70/0.8;halign,0;);
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self) 
-			self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
-			self:diffuse(getGradeColor(pss:GetGrade()))
+			BeginCommand=function(self) 
+				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
+				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
+					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)-(SCREEN_CENTER_X*0.30))
+				end;
+				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
+					self:x(SCREEN_CENTER_X*0.30)
+					self:halign(1)
+				end;
+				self:glowshift()
+				self:effectcolor1(getGradeColor(pss:GetGrade()))
+				self:effectcolor2(color("1,1,1,0"))
 		end;
 		};
 	};
@@ -107,6 +115,18 @@ function scoreBoard(pn,position)
 			if score ~= nil then
 				self:settext(getClearTypeFromScore(pn,score,0)); 
 				self:diffuse(getClearTypeFromScore(pn,score,2))
+			end;
+		end;
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX,frameY+28;zoom,0.50;halign,0);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			local score = pss:GetHighScore();
+			if score ~= nil then
+				local index = pss:GetPersonalHighScoreIndex()+1
+				self:settext(getHighestClearType(pn,index,0)); 
+				self:diffuse(getHighestClearType(pn,index,2))
 			end;
 		end;
 	};

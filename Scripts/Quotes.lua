@@ -239,28 +239,6 @@ local Phrases = {
     "\"we should impersonize the scratch from lr2 into some annoying anime chick\"" -- sarachan >w
 }
 
-local temp;
-function addExtraQuotes() -- for adding dynamic Phrases, call this function somewhere before calling getRandomQuotes()
-	local p1name = GAMESTATE:GetPlayerDisplayName(PLAYER_1);
-	if p1name ~= nil then
-
-		temp = p1name.."'s waifu is: Gundam-Dude. You listen to Tsukasa CDs together."
-		if contains(Phrases,temp) == false then
-			table.insert(Phrases,temp);
-		end;
-
-		temp = "Xx{"..p1name.."}xX"
-		if contains(Phrases,temp) == false then
-			table.insert(Phrases,temp);
-		end;
-
-		temp = p1name.." got disregarded faster than 300BPM"
-		if contains(Phrases,temp) == false then
-			table.insert(Phrases,temp);
-		end;
-	end;
-end;
-
 function getRandomQuotes()
     if show == 1 then
         return "TIP: "..Tips[math.random(#Tips)];
