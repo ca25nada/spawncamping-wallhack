@@ -1,4 +1,4 @@
-addExtraQuotes()
+
 local t = Def.ActorFrame{}
 
 t[#t+1] = LoadActor("currenttime")
@@ -17,6 +17,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 };
 
 local function GraphDisplay( pn )
+	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 	local t = Def.ActorFrame {
 		Def.GraphDisplay {
 			InitCommand=cmd(Load,"GraphDisplay";);
@@ -29,6 +30,14 @@ local function GraphDisplay( pn )
 					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35))
 				end;
 			end
+		};
+		LoadFont("Common Large")..{
+			InitCommand=cmd(xy,-SCREEN_CENTER_X*0.30,15;zoom,0.8;maxwidth,70/0.8;halign,0;);
+			BeginCommand=cmd(queuecommand,"Set");
+			SetCommand=function(self) 
+			self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
+			self:diffuse(getGradeColor(pss:GetGrade()))
+		end;
 		};
 	};
 	return t;
@@ -77,15 +86,6 @@ function scoreBoard(pn,position)
 
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY+40;zoomto,frameWidth,2;halign,0;)
-	};
-
-	t[#t+1] = LoadFont("Common Large")..{
-		InitCommand=cmd(xy,frameX+45,frameY+20;zoom,0.8;maxwidth,70/0.8);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
-			self:diffuse(getGradeColor(pss:GetGrade()))
-		end;
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -375,15 +375,5 @@ if GAMESTATE:GetNumPlayersEnabled() == 2 then
 		end;
 	end;
 end;
-
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_BOTTOM-70;zoom,0.35;settext,getRandomQuotes();diffusealpha,0;zoomy,0;);
-	BeginCommand=function(self)
-		self:sleep(2)
-		self:smooth(1)
-		self:diffusealpha(0.7)
-		self:zoomy(0.35)
-	end;
-};
 
 return t

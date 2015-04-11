@@ -1,5 +1,4 @@
 local t = Def.ActorFrame{}
-
 t[#t+1] = LoadActor("../_frame");
 t[#t+1] = LoadActor("avatar");
 --t[#t+1] = LoadActor("temp");
@@ -31,5 +30,6 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		end;
 	end;
 };
+
 
 return t
