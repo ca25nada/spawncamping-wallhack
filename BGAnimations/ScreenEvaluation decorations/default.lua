@@ -138,7 +138,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+13;zoom,0.50;);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+13;zoom,0.40;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local score = pss:GetHighScore();
@@ -151,7 +151,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+13;zoom,0.50;);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+13;zoom,0.40;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local score = pss:GetHighScore();
@@ -194,7 +194,7 @@ function scoreBoard(pn,position)
 
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+28;zoom,0.45;);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+28;zoom,0.4;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
@@ -206,7 +206,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+28;zoom,0.45;);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+28;zoom,0.4;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local score = getCurScoreST(pn,0)
@@ -244,7 +244,7 @@ function scoreBoard(pn,position)
 
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+43;zoom,0.45;);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+43;zoom,0.4;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
@@ -254,7 +254,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+43;zoom,0.45;);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+43;zoom,0.4;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local missCount = pss:GetTapNoteScores('TapNoteScore_W4')+pss:GetTapNoteScores('TapNoteScore_W5')+pss:GetTapNoteScores('TapNoteScore_Miss')
@@ -279,7 +279,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+10,frameY+65;zoom,0.40;halign,0;maxwidth,frameWidth/0.4);
+		InitCommand=cmd(xy,frameX+5,frameY+63;zoom,0.40;halign,0;maxwidth,frameWidth/0.4);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			self:settext(pss:GetHighScore():GetModifiers())
