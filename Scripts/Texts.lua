@@ -61,6 +61,12 @@ local judgeString = { -- Text strings for each Judgment types
 	HoldNoteScore_LetGo = 'NG',	
 }
 
+local scoreTypeText = {
+	[1] = "DP",
+	[2] = "PS",
+	[3] = "MIGS"
+}
+
 function getShortDifficulty(diff)
 	if diff ~= nil and diff ~= "" then
 		return shortDiffName[diff]
@@ -96,4 +102,13 @@ function getShortJudgeStrings(judge)
 	if judge ~= nil then
 		return shortJudgeString[judge] or judge
 	end
+end;
+
+--This should be moved somewhere else
+function getScoreTypeText(scoreType)
+	if scoreType == 0 then
+		return scoreTypeText[getTempThemePref("DefaultScoreType")]
+	else
+		return scoreTypeText[scoreType]
+	end;
 end;

@@ -4,11 +4,6 @@
 --(should be made into a preference eventually)
 local defaultScoreType =getTempThemePref("DefaultScoreType") --1DP 2PS 3MIGS
 
-local scoreTypeText = {
-	[1] = "DP",
-	[2] = "PS",
-	[3] = "MIGS"
-}
 
 local gradeTiers = {
 	Grade_Tier01 = 0,
@@ -131,15 +126,7 @@ local indexScoreP2
 -- These should run without any dependencies
 --============================================================
 
---This should be moved somewhere else
-function getScoreTypeText(scoreType)
-	if scoreType == 0 then
-		return scoreTypeText[defaultScoreType]
-	else
-		return scoreTypeText[scoreType]
-	end;
-end;
-
+-- Resets the scoretable for P1
 local function resetScoreListP1()
 	song = nil
 	profileP1 = nil
@@ -152,6 +139,7 @@ local function resetScoreListP1()
 	end
 end;
 
+-- Resets the scoretable for P1
 local function resetScoreListP2()
 	song = nil
 	profileP2 = nil
@@ -164,6 +152,7 @@ local function resetScoreListP2()
 	end
 end;
 
+--Initializes highscoretable of the player, as well as songs, steps and profile of the player associated.
 function initScoreList(pn)
 	if pn == PLAYER_1 then
 		resetScoreListP1()
@@ -194,6 +183,7 @@ end;
 -- Call only after calling initScoreList
 --============================================================
 
+--Initializes the score with the score at index 
 function initScore(pn,index)
 	if pn == PLAYER_1 then
 		if hsTableP1 ~= nil and #hsTableP1 >= 1 and index <= #hsTableP1 then
@@ -207,6 +197,7 @@ function initScore(pn,index)
 	end;
 end;
 
+-- Returns the highest possible # of notes of the song (radarcategory)
 function getMaxNotes(pn)
 	if pn == PLAYER_1 then
 		if stepsP1 ~= nil then
@@ -224,6 +215,7 @@ function getMaxNotes(pn)
 	 end;
 end;
 
+-- Returns the highest possible # of anything that has a ok/ng hold judgment. (Holds and Rolls)
 function getMaxHolds(pn)
 	if pn == PLAYER_1 then
 		if stepsP1 ~= nil then
@@ -241,6 +233,7 @@ function getMaxHolds(pn)
 	 end;
 end;
 
+--Gets the highest score possible for the scoretype
 function getMaxScore(pn,scoreType) -- dp, ps, migs = 1,2,3 respectively, 0 reverts to default
 	local maxNotes = getMaxNotes(pn)
 	local maxHolds = getMaxHolds(pn)
@@ -265,7 +258,8 @@ end;
 --Call only after calling initScoreList
 --============================================================
 
-
+-- Grabs the highest grade available from all currently saved scores.
+-- Ignore parameter will ignore the score at that index.
 function getHighestGrade(pn,ignore)
 	local highest = 21
 	local indexScore
@@ -311,6 +305,8 @@ function getHighestGrade(pn,ignore)
 	return grade
 end;
 
+-- Grabs the highest max combo from all currently saved scores.
+-- Ignore parameter will ignore the score at that index.
 function getHighestMaxCombo(pn,ignore)
 	local highest = 0
 	local indexScore
@@ -348,6 +344,8 @@ function getHighestMaxCombo(pn,ignore)
 	return highest
 end;
 
+-- Grabs the lowest misscount from all currently saved scores.
+-- Ignore parameter will ignore the score at that index.
 function getLowestMissCount(pn,ignore)
 	local lowest = math.huge
 	local temp
@@ -393,6 +391,8 @@ function getLowestMissCount(pn,ignore)
 	return lowest 
 end;
 
+-- Grabs the highest score available from all currently saved scores for a certain scoretype.
+-- Ignore parameter will ignore the score at that index.
 function getHighestScore(pn,ignore,scoreType)
 	local lowest = 0
 	if scoreType == 0 or scoreType == nil then
@@ -473,6 +473,7 @@ end;
 -- Call only after calling initScoreListP1 and initScoreP1
 --============================================================
 
+-- Initialize judgments for the score that was initialized
 function initJudgeStats(pn)
 	if pn == PLAYER_1 then
 		if indexScoreP1 ~= nil then
@@ -498,7 +499,7 @@ function initJudgeStats(pn)
 	end
 end;	
 
-
+-- Returns grade of the initialized score
 function getScoreGrade(pn)
 	if pn == PLAYER_1 then
 		if indexScoreP1 ~= nil then
@@ -516,7 +517,7 @@ function getScoreGrade(pn)
 	end;
 end;
 
-
+-- Returns max combo of the initialized score
 function getMaxCombo(pn)
 	if pn == PLAYER_1 then
 		if indexScoreP1 ~= nil then
@@ -534,7 +535,7 @@ function getMaxCombo(pn)
 	end;
 end;
 
-
+-- Returns date of the initialized score
 function getScoreDate(pn)
 	if pn == PLAYER_1 then
 		if indexScoreP1 ~= nil then
@@ -556,6 +557,7 @@ end;
 -- Call only after calling initScoreListP1,initScoreP1 and initJudgeStatsP1
 --=========================================================================
 
+--return # of judgments made for a certain tns or hns for the initialized judgestats
 function getJudgeStatsCount(pn,tns)
 	if pn == PLAYER_1 then
 		return judgeStatsP1[tns]
@@ -565,10 +567,13 @@ function getJudgeStatsCount(pn,tns)
 	end;
 end;
 
+
+--return # of misscounts for the initialized judgestats
 function getMissCount(pn)
 	return getJudgeStatsCount(pn,"TapNoteScore_Miss")+getJudgeStatsCount(pn,"TapNoteScore_W5")+getJudgeStatsCount(pn,"TapNoteScore_W4")
 end;
 
+--return score for the initialized judgestats
 function getScore(pn,scoreType)
 	if scoreType == 0 or scoreType == nil then
 		scoreType = defaultScoreType
