@@ -131,6 +131,7 @@ local indexScoreP2
 -- These should run without any dependencies
 --============================================================
 
+--This should be moved somewhere else
 function getScoreTypeText(scoreType)
 	if scoreType == 0 then
 		return scoreTypeText[defaultScoreType]
