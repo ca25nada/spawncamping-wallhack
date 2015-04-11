@@ -24,7 +24,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 local function Update(self)
 	if update then
 		local year = Year()
-		local month = MonthOfYear()
+		local month = MonthOfYear()+1
 		local day = DayOfMonth()
 		local hour = Hour()
 		local minute = Minute()
