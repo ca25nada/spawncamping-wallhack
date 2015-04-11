@@ -13,6 +13,8 @@ It's currently being made on StepMania 5.0.7 for a 16:9 display.
 * Everything blows up for rave and various course modes. (I disabled it from the menus for now)
 * SMO works but it's somewhat messy, also you can't grab any server-side scores.
 * Scripts for fetching various stuff are kinda everywhere right now. Needs some cleanup.
+
+
 ---
 ##### To be added soon 
 * Title menu
@@ -20,4 +22,6 @@ It's currently being made on StepMania 5.0.7 for a 16:9 display.
 * Pacemaker graph (not porting the ultralight-edit one because it's really messy-)
 * Info for various tabs on ScreenSelectMusic
 * scoreboard for eval screen from ultralight-edit
+
+
 ---
