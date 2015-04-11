@@ -58,7 +58,7 @@ function ghostScore(pn)
 	local t = Def.ActorFrame{
 		JudgmentMessageCommand=function(self,params)
 			if params.TapNoteScore ~= 'TapNoteScore_AvoidMine' and params.HoldNoteScore ~= 'HoldNoteScore_MissedHold' then
-				self:finishtweening()
+				self:stoptweening()
 				self:diffusealpha(1)
 				self:sleep(0.25)
 				self:smooth(0.75)
@@ -125,7 +125,7 @@ function avgScore(pn)
 	local t = Def.ActorFrame{
 		JudgmentMessageCommand=function(self,params)
 			if params.TapNoteScore ~= 'TapNoteScore_AvoidMine' and params.HoldNoteScore ~= 'HoldNoteScore_MissedHold' then
-				self:finishtweening()
+				self:stoptweening()
 				self:diffusealpha(1)
 				self:sleep(0.25)
 				self:smooth(0.75)
