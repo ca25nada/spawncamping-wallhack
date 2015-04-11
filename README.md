@@ -13,6 +13,7 @@ It's currently being made on StepMania 5.0.7 for a 16:9 display.
 * Everything blows up for rave and various course modes. (I disabled it from the menus for now)
 * SMO works but it's somewhat messy, also you can't grab any server-side scores.
 * Scripts for fetching various stuff are kinda everywhere right now. Needs some cleanup.
+* The cells at the bottom of the eval screen doesn't fill when there are less judgments than the cells themselves. 
 
 
 ---
@@ -25,3 +26,5 @@ It's currently being made on StepMania 5.0.7 for a 16:9 display.
 
 
 ---
+##### Acknowledgements
+* 
