@@ -303,12 +303,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+25;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local notes = 0
-			if stepsP1 ~= nil then
-				notes = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Notes")
-			end;
 			maxCombo = getHighestMaxCombo(PLAYER_1,0)
-			self:settextf("MaxCombo: %04d/%04d",maxCombo,notes)
+			self:settextf("MaxCombo: %d",maxCombo)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -501,12 +497,8 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+25+playerDistY;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local notes = 0
-			if stepsP2 ~= nil then
-				notes = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Notes")
-			end;
 			maxCombo = getHighestMaxCombo(PLAYER_2,0)
-			self:settextf("MaxCombo: %04d/%04d",maxCombo,notes)
+			self:settextf("MaxCombo: %d",maxCombo)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
