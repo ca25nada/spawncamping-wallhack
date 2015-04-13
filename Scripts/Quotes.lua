@@ -2,10 +2,6 @@
 --(that you may or may not be familar with)
 --mainly from ossu, stepman and bms
 
--- 0 = do not show, 1 = tips, 2 = randomquotes
-local show = 1
-
-
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
 local function contains(table, value)
@@ -239,10 +235,12 @@ local Phrases = {
     "\"we should impersonize the scratch from lr2 into some annoying anime chick\"" -- sarachan >w
 }
 
-function getRandomQuotes()
-    if show == 1 then
+--tip
+
+function getRandomQuotes(tipType)
+    if tipType == 1 then
         return "TIP: "..Tips[math.random(#Tips)];
-    elseif show == 2 then
+    elseif tipType == 2 then
         return Phrases[math.random(#Phrases)];
     else
         return "";
