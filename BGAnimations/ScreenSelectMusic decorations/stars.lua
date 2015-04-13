@@ -185,6 +185,16 @@ t[#t+1] = Def.ActorFrame{
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 
+	Def.Quad{
+		InitCommand=cmd(xy,starsX,starsY-18;zoomto,8,30;halign,0;valign,0;diffuse,color("#FFFFFF"));
+		BeginCommand=function(self)
+			self:diffuseramp()
+			self:effectcolor2(color("1,1,1,0.6"))
+			self:effectcolor1(color("1,1,1,0"))
+			self:effecttiming(2,1,0,0)
+		end;
+	};
+
 	LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,starsX+13,starsY-12;zoom,0.3;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
@@ -380,6 +390,16 @@ t[#t+1] = Def.ActorFrame{
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	Def.Quad{
+		InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,8,30;halign,0;valign,0;diffuse,color("#FFFFFF"));
+		BeginCommand=function(self)
+			self:diffuseramp()
+			self:effectcolor2(color("1,1,1,0.6"))
+			self:effectcolor1(color("1,1,1,0"))
+			self:effecttiming(2,1,0,0)
+		end;
 	};
 
 	LoadFont("Common Normal")..{
