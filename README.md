@@ -3,7 +3,7 @@ A WIP Stepmania 5 theme aimed primarily for KB players.
 Hopefully won't be as broken as the ultralight-fork I made previously.
 
 
-It's currently being made on StepMania 5.0.7 for a 16:9 display. 
+It's currently being made on StepMania 5.0.x for a 16:9 display. (Currently it'll only run on a SM5 nightly 20150410 or later. which you can grab from: http://smnightly.katzepower.com/
 (I don't think I can do 4:3 because everything is already cramped as is)
 
 ---
