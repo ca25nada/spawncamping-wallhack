@@ -36,16 +36,13 @@ local steps
 local hstable
 local scoreindex
 
-if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
-	profile = GetPlayerOrMachineProfile(PLAYER_1)
-	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1):GetPlayedSteps()[1]
+local player = GAMESTATE:GetEnabledPlayers()[1]
+
+if GAMESTATE:IsPlayerEnabled(player) then
+	profile = GetPlayerOrMachineProfile(player)
+	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
 	hstable = profile:GetHighScoreList(song,steps):GetHighScores()
-	scoreindex = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1):GetPersonalHighScoreIndex()+1
-elseif GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-	profile = GetPlayerOrMachineProfile(PLAYER_2)
-	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2):GetPlayedSteps()[1]
-	hstable = profile:GetHighScoreList(song,steps):GetHighScores()
-	scoreindex = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2):GetPersonalHighScoreIndex()+1
+	scoreindex = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1
 end;
 
 
@@ -185,7 +182,7 @@ elseif scoreindex>math.floor(lines/2) then
 end;
 
 while drawindex<#hstable and startind<=finishind do
-	t[#t+1] = scoreitem(PLAYER_2,startind,scoreindex,drawindex)
+	t[#t+1] = scoreitem(player,startind,scoreindex,drawindex)
 	startind = startind+1
 	drawindex  = drawindex+1
 end;

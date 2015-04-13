@@ -1,3 +1,7 @@
+--Temporary theme prefs page.
+--Will be either removed or changed when I eventually add a screen for changing theme prefs ingame.
+--No prefs for screengameplay are here since they're added already.
+
 local preferences = {
 	DefaultScoreType = 2, -- 1 = MAX2 DP, 2 = Oni Percent Score, 3 = MIGS
 	TipType = 1, -- 1 = Tips, 2= random quotes phrases, 3 = hide
