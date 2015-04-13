@@ -79,7 +79,7 @@ local function GraphDisplay( pn )
 				if steps ~= nil then
 					notes = stepsP1:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 				end;
-				self:settextf("%04d Notes",notes)
+				self:settextf("%d Notes",notes)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
 					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+135)
 				end;
