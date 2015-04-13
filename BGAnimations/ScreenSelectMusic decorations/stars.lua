@@ -192,16 +192,18 @@ t[#t+1] = Def.ActorFrame{
 			if update then
 				local diff;
 				local stype;
+				local notes = 0
 				local taps = 0
 				local holds = 0
 				local mines = 0
 				if stepsP1 ~= nil then
+					notes = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Notes")
 					taps = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_TapsAndHolds")
 					holds = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Holds")
 					mines = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Mines")
 					diff = getDifficulty(stepsP1:GetDifficulty())
 					stype = ToEnumShortString(stepsP1:GetStepsType()):gsub("%_"," ")
-					self:settextf("%s %s // Notes:%s // Holds:%s // Mines:%s",stype,diff,taps,holds,mines);
+					self:settextf("%s %s // Notes:%s // Taps:%s // Holds:%s // Mines:%s",stype,diff,notes,taps,holds,mines);
 				else
 					self:settext("Disabled");
 				end;
@@ -301,7 +303,12 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+25;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext("Max Combo: "..getHighestMaxCombo(PLAYER_1,0))
+			local notes = 0
+			if stepsP1 ~= nil then
+				notes = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Notes")
+			end;
+			maxCombo = getHighestMaxCombo(PLAYER_1,0)
+			self:settextf("MaxCombo: %04d/%04d",maxCombo,notes)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -384,13 +391,15 @@ t[#t+1] = Def.ActorFrame{
 				local taps = 0
 				local holds = 0
 				local mines = 0
+				local notes = 0
 				if stepsP2 ~= nil then
+					notes = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Notes")
 					taps = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_TapsAndHolds")
 					holds = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Holds")
 					mines = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Mines")
 					diff = getDifficulty(stepsP2:GetDifficulty())
 					stype = ToEnumShortString(stepsP2:GetStepsType()):gsub("%_"," ")
-					self:settextf("%s %s // Notes:%s // Holds:%s // Mines:%s",stype,diff,taps,holds,mines);
+					self:settextf("%s %s // Notes:%s // Taps:%s // Holds:%s // Mines:%s",stype,diff,notes,taps,holds,mines);
 				else
 					self:settext("Disabled");
 				end;
@@ -492,7 +501,12 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+25+playerDistY;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext("Max Combo: "..getHighestMaxCombo(PLAYER_2,0))
+			local notes = 0
+			if stepsP2 ~= nil then
+				notes = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Notes")
+			end;
+			maxCombo = getHighestMaxCombo(PLAYER_2,0)
+			self:settextf("MaxCombo: %04d/%04d",maxCombo,notes)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
