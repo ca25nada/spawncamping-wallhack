@@ -268,7 +268,11 @@ function scoreBoard(pn,position)
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
 			local missCount = getLowestMissCount(pn,index)
-			self:settext(missCount)
+			if missCount ~= nil then
+				self:settext(missCount)
+			else
+				self:settext("-")
+			end;
 		end;
 	};
 
@@ -286,14 +290,17 @@ function scoreBoard(pn,position)
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
-			local recMissCount = getLowestMissCount(pn,index)
-			local curMissCount = pss:GetTapNoteScores('TapNoteScore_W4')+pss:GetTapNoteScores('TapNoteScore_W5')+pss:GetTapNoteScores('TapNoteScore_Miss')
-			local diff = curMissCount - recMissCount
+			local recMissCount = (getLowestMissCount(pn,index)) or 0
+			local curMissCount = (pss:GetTapNoteScores('TapNoteScore_W4')+pss:GetTapNoteScores('TapNoteScore_W5')+pss:GetTapNoteScores('TapNoteScore_Miss')) or 0
+			local diff = "-"
 			local extra = ""
-			if diff >= 0 then
-				extra = "+"
+			if recMissCount ~= nil then
+				diff = curMissCount - recMissCount
+				if diff >= 0 then
+					extra = "+"
+				end;
 			end;
-			self:settextf("%s%d",extra,diff)
+			self:settextf(extra..diff)
 		end;
 	};
 

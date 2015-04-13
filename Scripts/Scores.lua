@@ -386,7 +386,7 @@ function getLowestMissCount(pn,ignore)
 		end;
 	end;
 	if lowest == math.huge then
-		lowest = "-"
+		lowest = nil
 	end;
 	return lowest 
 end;

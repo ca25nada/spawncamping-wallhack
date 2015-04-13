@@ -314,7 +314,12 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+37;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext("Miss Count: "..getLowestMissCount(PLAYER_1))
+			local missCount = getLowestMissCount(PLAYER_1)
+			if missCount ~= nil then
+				self:settext("Miss Count: "..missCount)
+			else
+				self:settext("Miss Count: -")
+			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -508,7 +513,12 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+37+playerDistY;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext("Miss Count: "..getLowestMissCount(PLAYER_2))
+			local missCount = getLowestMissCount(PLAYER_2)
+			if missCount ~= nil then
+				self:settext("Miss Count: "..missCount)
+			else
+				self:settext("Miss Count: -")
+			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
