@@ -55,7 +55,7 @@ local function GraphDisplay( pn )
 					self:settextf("Life: %.0f%%\n%.2fs Survived",pss:GetCurrentLife()*100,pss:GetAliveSeconds())
 				end;
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)-(SCREEN_CENTER_X*0.30))
+					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+135)
 				end;
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(SCREEN_CENTER_X*0.30)
@@ -73,7 +73,7 @@ local function GraphDisplay( pn )
 				end;
 				self:settextf("%04d Notes",notes)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)-(SCREEN_CENTER_X*0.30))
+					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+135)
 				end;
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(SCREEN_CENTER_X*0.30)
