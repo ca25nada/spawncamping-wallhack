@@ -28,13 +28,15 @@ local Tips = {
     "Please don't bug the StepMania devs regarding bugs on this theme. (bug whoever made this theme instead.!! who will likely bug the devs anyway-)",
     "Feel free to suggest feature requests on the github issue tracker or on the forum thread.",
     "You can choose to not show help tips (or have it display random quotes instead) by changing the \"show\" value on \"scripts/Quotes.lua\"",
-    "The theme is only supported for the latest release of SM5, so pleeeeeeeeassssssseeeee update ;w;. (That being said, any 5.0.x versions should work as of right now.)",
+    "The theme is only supported for the nightly release build of SM5, please download from the 5.0.7 branch instead if you're not on the nightly build.",
     "Pressing <PrintScr/SysRq> takes a screenshot of the game, pressing <Shift>+<PrintScr/SysRq> will do so in a .png format and in original size.",
     "You can make profiles by going into \"Options > Profiles > Create Profile\"",
     "You can map keys/inputs by going into \"Options > Config Key/Joy Mappings\"",
     "This theme updates rather often, so make sure to check the thread/github page once every while for bugfixes and updates.",
     "Poke Jousway in the forums for anything noteskin related.",
-    "Check the \"Other\" tab for general information regarding StepMania and the theme"
+    "Check the \"Other\" tab for general information regarding StepMania and the theme",
+    "Rave and Course modes are disabled in this theme because it's terribly broken right now.",
+    "SMO should work without errors but do note that the theme can't display server-side scores at the moment."
 }
 
 local Phrases = {
