@@ -304,7 +304,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			maxCombo = getHighestMaxCombo(PLAYER_1,0)
-			self:settextf("MaxCombo: %d",maxCombo)
+			self:settextf("Max Combo: %d",maxCombo)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -498,7 +498,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			maxCombo = getHighestMaxCombo(PLAYER_2,0)
-			self:settextf("MaxCombo: %d",maxCombo)
+			self:settextf("Max Combo: %d",maxCombo)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
