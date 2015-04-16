@@ -89,6 +89,8 @@ function stars(ind,pn)
 				else
 					self:visible(false);
 				end;
+			else
+				self:visible(false);
 			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
@@ -122,20 +124,22 @@ end;
 t[#t+1] = Def.Actor{
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
-		song = GAMESTATE:GetCurrentSong()
-		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
-			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
-			stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1)
-			initScoreList(PLAYER_1)
-			initScore(PLAYER_1,1)
-			initJudgeStats(PLAYER_1)
-		end;
-		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-			profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
-			stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2)
-			initScoreList(PLAYER_2)
-			initScore(PLAYER_2,1)
-			initJudgeStats(PLAYER_2)
+		if update then
+			song = GAMESTATE:GetCurrentSong()
+			if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+				profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
+				stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1)
+				initScoreList(PLAYER_1)
+				initScore(PLAYER_1,1)
+				initJudgeStats(PLAYER_1)
+			end;
+			if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+				profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
+				stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2)
+				initScoreList(PLAYER_2)
+				initScore(PLAYER_2,1)
+				initJudgeStats(PLAYER_2)
+			end;
 		end;
 	end;
 	CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
@@ -255,8 +259,10 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+35;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_1,0))))
-			self:diffuse(getGradeColor(getHighestGrade(PLAYER_1,0)))
+			if update then
+				self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_1,0))))
+				self:diffuse(getGradeColor(getHighestGrade(PLAYER_1,0)))
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -266,8 +272,10 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+58;zoom,0.5;maxwidth,110/0.5);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getHighestClearType(PLAYER_1,0,0))
-			self:diffuse(getHighestClearType(PLAYER_1,0,2))
+			if update then
+				self:settext(getHighestClearType(PLAYER_1,0,0))
+				self:diffuse(getHighestClearType(PLAYER_1,0,2))
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -277,14 +285,16 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+195,starsY+30;zoom,0.45;halign,1;maxwidth,75/0.45);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local score = getHighestScore(PLAYER_1,0,0)
-			local maxscore = getMaxScore(PLAYER_1,0,0)
-			if maxscore == 0 or maxscore == nil then
-				maxscore = 1
-			end;
-			local pscore = (score/maxscore)
+			if update then
+				local score = getHighestScore(PLAYER_1,0,0)
+				local maxscore = getMaxScore(PLAYER_1,0,0)
+				if maxscore == 0 or maxscore == nil then
+					maxscore = 1
+				end;
+				local pscore = (score/maxscore)
 
-			self:settextf("%05.2f%%",math.floor((pscore)*10000)/100)
+				self:settextf("%05.2f%%",math.floor((pscore)*10000)/100)
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -294,9 +304,11 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+182,starsY+48;zoom,0.5;halign,1;maxwidth,60/0.5);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local score = string.format("%04d",getScore(PLAYER_1,0))
-			local maxscore = string.format("%04d",getMaxScore(PLAYER_1,0))
-			self:settext(score.."/"..maxscore)
+			if update then
+				local score = string.format("%04d",getScore(PLAYER_1,0))
+				local maxscore = string.format("%04d",getMaxScore(PLAYER_1,0))
+				self:settext(score.."/"..maxscore)
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -314,8 +326,10 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+25;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			maxCombo = getHighestMaxCombo(PLAYER_1,0)
-			self:settextf("Max Combo: %d",maxCombo)
+			if update then
+				maxCombo = getHighestMaxCombo(PLAYER_1,0)
+				self:settextf("Max Combo: %d",maxCombo)
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -325,12 +339,14 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+37;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local missCount = getLowestMissCount(PLAYER_1)
-			if missCount ~= nil then
-				self:settext("Miss Count: "..missCount)
-			else
-				self:settext("Miss Count: -")
-			end
+			if update then
+				local missCount = getLowestMissCount(PLAYER_1)
+				if missCount ~= nil then
+					self:settext("Miss Count: "..missCount)
+				else
+					self:settext("Miss Count: -")
+				end
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -340,7 +356,9 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+49;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext("Date Achieved: "..getScoreDate(PLAYER_1))
+			if update then
+				self:settext("Date Achieved: "..getScoreDate(PLAYER_1))
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -464,8 +482,10 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+35+playerDistY;zoom,0.6;maxwidth,110/0.6);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_2,0))))
-			self:diffuse(getGradeColor(getHighestGrade(PLAYER_2,0)))
+			if update then
+				self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_2,0))))
+				self:diffuse(getGradeColor(getHighestGrade(PLAYER_2,0)))
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -475,8 +495,10 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+60,starsY+58+playerDistY;zoom,0.5;maxwidth,110/0.5);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(getHighestClearType(PLAYER_2,0,0))
-			self:diffuse(getHighestClearType(PLAYER_2,0,2))
+			if update then
+				self:settext(getHighestClearType(PLAYER_2,0,0))
+				self:diffuse(getHighestClearType(PLAYER_2,0,2))
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -486,14 +508,16 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+195,starsY+30+playerDistY;zoom,0.45;halign,1;maxwidth,75/0.45);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local score = getScore(PLAYER_2,0)
-			local maxscore = getMaxScore(PLAYER_2,0)
-			if maxscore == 0 or maxscore == nil then
-				maxscore = 1
-			end;
-			local pscore = (score/maxscore)
+			if update then
+				local score = getScore(PLAYER_2,0)
+				local maxscore = getMaxScore(PLAYER_2,0)
+				if maxscore == 0 or maxscore == nil then
+					maxscore = 1
+				end;
+				local pscore = (score/maxscore)
 
-			self:settextf("%05.2f%%",math.floor((pscore)*10000)/100)
+				self:settextf("%05.2f%%",math.floor((pscore)*10000)/100)
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -503,9 +527,11 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+182,starsY+48+playerDistY;zoom,0.5;halign,1;maxwidth,60/0.5);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local score = string.format("%04d",getScore(PLAYER_2,0))
-			local maxscore = string.format("%04d",getMaxScore(PLAYER_2,0))
-			self:settext(score.."/"..maxscore)
+			if update then
+				local score = string.format("%04d",getScore(PLAYER_2,0))
+				local maxscore = string.format("%04d",getMaxScore(PLAYER_2,0))
+				self:settext(score.."/"..maxscore)
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -523,8 +549,10 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+25+playerDistY;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			maxCombo = getHighestMaxCombo(PLAYER_2,0)
-			self:settextf("Max Combo: %d",maxCombo)
+			if update then
+				maxCombo = getHighestMaxCombo(PLAYER_2,0)
+				self:settextf("Max Combo: %d",maxCombo)
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -534,12 +562,14 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+37+playerDistY;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			local missCount = getLowestMissCount(PLAYER_2)
-			if missCount ~= nil then
-				self:settext("Miss Count: "..missCount)
-			else
-				self:settext("Miss Count: -")
-			end
+			if update then
+				local missCount = getLowestMissCount(PLAYER_2)
+				if missCount ~= nil then
+					self:settext("Miss Count: "..missCount)
+				else
+					self:settext("Miss Count: -")
+				end
+			end;	
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -549,7 +579,9 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(xy,starsX+210,starsY+49+playerDistY;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext("Date Achieved: "..getScoreDate(PLAYER_2))
+			if update then
+				self:settext("Date Achieved: "..getScoreDate(PLAYER_2))
+			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");

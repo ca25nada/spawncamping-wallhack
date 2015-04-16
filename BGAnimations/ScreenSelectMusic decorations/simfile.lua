@@ -28,7 +28,7 @@ local offsetX1 = 100
 local offsetX2 = 10
 local offsetY = 20
 
-local stringList = {"Title","SubTitle","Artist","Group"}
+local stringList = {"Title:","SubTitle:","Artist:","Group:","Song Length:","BPM:","Play Count:"}
 
 local function makeText(index)
 	return LoadFont("Common Normal")..{
@@ -144,6 +144,69 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 					self:settext(song:GetGroupName())
 				else
 					self:settext("Not Available")
+					self:diffuse(color("#666666"))
+				end
+			end
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(5*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local song = GAMESTATE:GetCurrentSong()
+				if song ~= nil then
+					local length = song:MusicLengthSeconds()
+					self:settext(SecondsToMMSS(length))
+					self:diffuse(getSongLengthColor(length))
+				else
+					self:settext("0:00")
+					self:diffuse(color("#666666"))
+				end
+			end
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(6*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local song = GAMESTATE:GetCurrentSong()
+				if song ~= nil then
+					self:diffuse(color("#FFFFFF"))
+					if song:HasSignificantBPMChangesOrStops() then
+						self:settextf("%04.2f~%04.2f",song:GetTimingData():GetActualBPM()[1],song:GetTimingData():GetActualBPM()[2])
+					else
+						self:settextf("%04.2f",song:GetTimingData():GetActualBPM()[1])
+					end
+				else
+					self:settext("0.00")
+					self:diffuse(color("#666666"))
+				end
+			end
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(7*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local profile = GetPlayerOrMachineProfile(GAMESTATE:GetEnabledPlayers()[1])
+				local song = GAMESTATE:GetCurrentSong()
+				if song ~= nil then
+					self:diffuse(color("#FFFFFF"))
+					self:settext(profile:GetSongNumTimesPlayed(song))
+				else
+					self:settext("0")
 					self:diffuse(color("#666666"))
 				end
 			end
