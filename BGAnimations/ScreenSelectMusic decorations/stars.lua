@@ -51,7 +51,7 @@ function stars(ind,pn)
 				self:finishtweening();
 				self:stopeffect();
 				if enabled and pn == PLAYER_2 then
-					self:y(starsY+(ind*starDistY)+playerDistY);
+					self:y(starsY+(ind*starDistY)+playerDistY+2);
 				end;
 				if enabled and steps ~= nil then
 					diff = steps:GetMeter() or 0;
