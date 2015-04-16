@@ -14,6 +14,7 @@ local t = Def.ActorFrame{
 		end;
 	end;
 	CodeMessageCommand=cmd(queuecommand,"Set");
+	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 };
 
 -- ohlookpso2stars

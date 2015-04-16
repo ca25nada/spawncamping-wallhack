@@ -10,6 +10,9 @@ t[#t+1] = Def.Actor{
 			incrementTabIndex()
 		end;
 	end;
+	PlayerJoinedMessageCommand=function(self)
+		resetTabIndex()
+	end;
 }
 -- temporary
 --[[
@@ -51,17 +54,22 @@ function tabs(index)
 			end;
 		end;
 		CodeMessageCommand=cmd(queuecommand,"Set");
+		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 		Def.Quad{
 			InitCommand=cmd(xy,frameX+((index-1)*frameWidth),frameY;valign,0;zoomto,frameWidth,20);
 		};
 		LoadFont("Common Normal") .. {
 			InitCommand=cmd(xy,frameX+((index-1)*frameWidth),frameY+4;valign,0;zoom,0.45;diffuse,getMainColor(1));
-			BeginCommand=function(self)
+			BeginCommand=cmd(queuecommand,"Set");
+			SetCommand=function(self)
 				self:settext(tabNames[index])
-				if not isTabEnabled(index) then
+				if isTabEnabled(index) then
+					self:diffuse(getMainColor(1))
+				else
 					self:diffuse(color("#666666"))
 				end;
 			end;
+			PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 		};
 	};
 end;
