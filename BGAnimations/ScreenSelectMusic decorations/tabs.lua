@@ -56,7 +56,12 @@ function tabs(index)
 		};
 		LoadFont("Common Normal") .. {
 			InitCommand=cmd(xy,frameX+((index-1)*frameWidth),frameY+4;valign,0;zoom,0.45;diffuse,getMainColor(1));
-			BeginCommand=cmd(settext,tabNames[index]);
+			BeginCommand=function(self)
+				self:settext(tabNames[index])
+				if not isTabEnabled(index) then
+					self:diffuse(color("#666666"))
+				end;
+			end;
 		};
 	};
 end;

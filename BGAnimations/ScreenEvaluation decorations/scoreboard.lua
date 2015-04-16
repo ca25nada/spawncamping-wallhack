@@ -190,7 +190,11 @@ end;
 t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(xy,framex,framey-15;zoom,0.35;halign,0);
 	BeginCommand=function(self)
-		self:settextf("Rank %d/%d (Max Scores: %d)",scoreindex,(#hstable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
+		if scoreindex ~= 0 then
+			self:settextf("Rank %d/%d (Max Scores: %d)",scoreindex,(#hstable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
+		else
+			self:settextf("Out of rank (Max Scores: %d)",PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
+		end;
 	end;
 };
 

@@ -27,13 +27,18 @@ local offsetX1 = 100
 local offsetX2 = 10
 local offsetY = 20
 
-local stringList1 = {
-	[1] = "Soon"
-}
+local stringList = {"Title","SubTitle","Artist","Group"}
 
-local stringList2 = {
-	[1] = "(tm)"
-}
+local function makeText(index)
+	return LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,offsetX1/fontScale);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext(stringList[index])
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
+	};
+end;
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333"));
@@ -56,33 +61,105 @@ t[#t+1] = LoadFont("Common Normal")..{
 	BeginCommand=cmd(settext,"Simfile Info")
 };
 
-local function makeText1(index)
-	return LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,offsetX1/fontScale);
+
+if GAMESTATE:GetNumPlayersEnabled() == 1 then
+	local pn = GAMESTATE:GetEnabledPlayers()[1]
+	local profile = GetPlayerOrMachineProfile(pn)
+
+	for i=1,#stringList do 
+		t[#t+1] = makeText(i)
+	end;
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(1*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(stringList1[index])
+			if update then
+				local song = GAMESTATE:GetCurrentSong()
+				if song ~= nil then
+					self:diffuse(color("#FFFFFF"))
+					self:settext(song:GetDisplayMainTitle())
+				else
+					self:settext("Not Available")
+					self:diffuse(color("#666666"))
+				end
+			end
 		end;
 		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 	};
-end;
 
-local function makeText2(index)
-	return LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(2*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(stringList2[index])
+			if update then
+				local song = GAMESTATE:GetCurrentSong()
+				self:diffuse(color("#FFFFFF"))
+				if song ~= nil then
+					local text = song:GetDisplaySubTitle()
+					if text == "" then
+						text = "Not Available"
+						self:diffuse(color("#666666"))
+					end;
+					self:settext(text)
+				else
+					self:settext("Not Available")
+					self:diffuse(color("#666666"))
+				end
+			end
 		end;
 		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(3*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local song = GAMESTATE:GetCurrentSong()
+				if song ~= nil then
+					self:diffuse(color("#FFFFFF"))
+					self:settext(song:GetDisplayArtist())
+				else
+					self:settext("Not Available")
+					self:diffuse(color("#666666"))
+				end
+			end
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(4*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local song = GAMESTATE:GetCurrentSong()
+				if song ~= nil then
+					self:diffuse(color("#FFFFFF"))
+					self:settext(song:GetGroupName())
+				else
+					self:settext("Not Available")
+					self:diffuse(color("#666666"))
+				end
+			end
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+else
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(1*distY);zoom,fontScale;halign,0;)	;
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext("Currently not available for multiplayer")
+		end;
 	};
 end;
-
-
-t[#t+1] = makeText1(1)
-t[#t+1] = makeText2(1)
-
-
 
 
 return t
