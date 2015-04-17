@@ -6,7 +6,6 @@ Hopefully won't be as broken as the ultralight-fork I made previously.
 It's being made on StepMania 5.0.7 for a 16:9 display. 
 
 Currently it'll only run on a SM5 nightly 20150410 or later. which you can grab from: http://smnightly.katzepower.com/ 
-(However, do note there are issues with the 20150410's nightly regarding timingdata that kyzentun pointed out here: http://www.flashflashrevolution.com/vbz/showthread.php?p=4303796#post4303796 )
 
 ---
 ##### Current Issues
@@ -22,9 +21,10 @@ Currently it'll only run on a SM5 nightly 20150410 or later. which you can grab 
 ##### To be added soon 
 * Title menu
 * CDTitles for ScreenSelectMusic
-* Pacemaker graph (not porting the ultralight-edit one because it's really messy-)
+* IIDX-esque Pacemaker graph
 * Info for various tabs on ScreenSelectMusic
-* scoreboard for eval screen from ultralight-edit
+* General Protiming stuff (fast/slow indicator, ms offsets)
+* Error/Protiming bar similar to the one currently in osu!
 
 
 ---
