@@ -67,6 +67,47 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	local pn = GAMESTATE:GetEnabledPlayers()[1]
 	local profile = GetPlayerOrMachineProfile(pn)
 
+
+	t[#t+1] = Def.Sprite {
+		InitCommand=cmd(xy,frameX+frameWidth-50-offsetX2,frameY+offsetY+40;diffusealpha,0.6;zoomy,0;sleep,0.5;decelerate,0.25;zoomy,1);
+		Name="CDTitle";
+		SetCommand=function(self)
+			local song = GAMESTATE:GetCurrentSong();
+			
+			--cdtitle
+			
+			if song then
+				if song:HasCDTitle() then
+					self:visible(true);
+					self:Load(song:GetCDTitlePath());
+				else
+					self:visible(false);
+				end;
+			else
+				self:visible(false);
+			end;
+
+			local height = self:GetHeight();
+			local width = self:GetWidth();
+			
+			if height >= 80 and width >= 100 then
+				if height*(100/80) >= width then
+				self:zoom(80/height);
+				else
+				self:zoom(100/width);
+				end;
+			elseif height >= 80 then
+				self:zoom(80/height);
+			elseif width >= 100 then
+				self:zoom(100/width);
+			else 
+				self:zoom(1);
+			end;
+		end;
+		BeginCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
 	for i=1,#stringList do 
 		t[#t+1] = makeText(i)
 	end;
