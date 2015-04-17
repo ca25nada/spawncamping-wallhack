@@ -256,6 +256,14 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(9*distY);zoom,fontScale;halign,0;)	;
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext("More to be added later o/~")
+		end;
+	};
+
 else
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(1*distY);zoom,fontScale;halign,0;)	;
