@@ -49,6 +49,19 @@ function proTimingTicks(pn,index)
 	};
 end;
 
+local frameX = SCREEN_CENTER_X
+local frameY = SCREEN_BOTTOM-35
+local frameHeight = 10
+local frameWidth = 300
+local maxOffsetRange = 0.18 --in seconds. 0.18 for upto bads, 0.135 for goods, 0.09 for greats, etc.
+
+local barcount = 500 -- Number of bars to initialize.
+local protimingsum = 0
+local duration = 5
+local currentbar = 1
+
+local offset = 0
+
 if enabled then
 	t[#t+1] = Def.Actor{
 		JudgmentMessageCommand=function(self,params)
@@ -88,7 +101,6 @@ if enabled then
 		JudgmentMessageCommand=cmd(playcommand,"Set");
 	};
 	--]]
-
 	-- Initialize a bunch of bars
 	for i=1,barcount do
 		t[#t+1] = proTimingTicks(pn,i)
