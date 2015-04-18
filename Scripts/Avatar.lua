@@ -13,7 +13,7 @@ local function ReadAvatarFile(path)
 	return contents
 end
 
--- Returns a path to the avatar image (relative to the ultralight theme folder) for the specified player.
+-- Returns a path to the avatar image (relative to the theme folder) for the specified player.
 function getAvatarPath(pn)
 	if pn == nil then
 		return "Graphics/Player avatar/generic"

@@ -110,4 +110,21 @@ function getSongLengthColor(s)
 	end;
 end;
 
+function offsetToJudgeColor(offset)
+	offset = math.abs(offset)
+	if offset <= PREFSMAN:GetPreference("TimingWindowSecondsW1") then
+		return themeColors.judgeColor["TapNoteScore_W1"]
+	elseif offset <= PREFSMAN:GetPreference("TimingWindowSecondsW2") then
+		return themeColors.judgeColor["TapNoteScore_W2"]
+	elseif offset <= PREFSMAN:GetPreference("TimingWindowSecondsW3") then
+		return themeColors.judgeColor["TapNoteScore_W3"]
+	elseif offset <= PREFSMAN:GetPreference("TimingWindowSecondsW4") then
+		return themeColors.judgeColor["TapNoteScore_W4"]
+	elseif offset <= PREFSMAN:GetPreference("TimingWindowSecondsW5") then
+		return themeColors.judgeColor["TapNoteScore_W5"]
+	else
+		return themeColors.judgeColor["TapNoteScore_Miss"]
+	end;
+end;
+
 function TapNoteScoreToColor(tns) return themeColors.judgeColor[tns] or color("#ffffff"); end;
