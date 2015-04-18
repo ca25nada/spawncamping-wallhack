@@ -37,7 +37,7 @@ local stringList2 = {
 }
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333"));
+	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333CC"));
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 	end;

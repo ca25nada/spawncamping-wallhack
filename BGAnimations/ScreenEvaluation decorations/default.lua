@@ -12,6 +12,8 @@ if getTempEvalPref("JudgmentBarEnabled") then
 	t[#t+1] = LoadActor("adefaultmoreripoff")
 end;
 
+--t[#t+1] = LoadActor("mousetest")
+
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,SCREEN_CENTER_X,135;zoom,0.4;maxwidth,400/0.4);
 	BeginCommand=cmd(queuecommand,"Set");

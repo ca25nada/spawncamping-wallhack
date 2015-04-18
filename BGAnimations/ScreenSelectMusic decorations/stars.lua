@@ -169,11 +169,11 @@ t[#t+1] = Def.ActorFrame{
 	end;
 	--Upper Bar
 	Def.Quad{
-		InitCommand=cmd(xy,starsX,starsY-18;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333"));
+		InitCommand=cmd(xy,starsX,starsY-18;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333CC"));
 	};
 	--Lower Bar
 	Def.Quad{
-		InitCommand=cmd(xy,starsX,starsY+18;zoomto,frameWidth,50;halign,0;valign,0;diffuse,color("#333333"));
+		InitCommand=cmd(xy,starsX,starsY+18;zoomto,frameWidth,50;halign,0;valign,0;diffuse,color("#333333CC"));
 	};
 
 	--===Upper Bar Stuff===--
@@ -390,11 +390,11 @@ t[#t+1] = Def.ActorFrame{
 	end;
 	--Upper Bar
 	Def.Quad{
-		InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333"));
+		InitCommand=cmd(xy,starsX,starsY-18+playerDistY;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333CC"));
 	};
 	--Lower Bar
 	Def.Quad{
-		InitCommand=cmd(xy,starsX,starsY+18+playerDistY;zoomto,frameWidth,50;halign,0;valign,0;diffuse,color("#333333"));
+		InitCommand=cmd(xy,starsX,starsY+18+playerDistY;zoomto,frameWidth,50;halign,0;valign,0;diffuse,color("#333333CC"));
 	};
 
 	--===Upper Bar Stuff===--

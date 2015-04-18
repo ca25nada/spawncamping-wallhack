@@ -2,11 +2,28 @@ local magnitude = 0.1
 local maxDistX = SCREEN_WIDTH*magnitude
 local maxDistY = SCREEN_HEIGHT*magnitude
 
+
 local t = Def.ActorFrame{}
 if not(GAMESTATE:IsCourseMode()) then
-	t[#t+1] = LoadSongBackground()..{
+	t[#t+1] = Def.Sprite {
 		Name="MouseXY";
-		BeginCommand=cmd(scaletocover,0,0,SCREEN_WIDTH+maxDistX/4,SCREEN_BOTTOM+maxDistY/4;diffusealpha,0.3;);
+		CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"ModifySongBackground");
+		--BeginCommand=cmd(scaletocover,0,0,SCREEN_WIDTH+maxDistX/4,SCREEN_BOTTOM+maxDistY/4;diffusealpha,0.3;);
+		ModifySongBackgroundCommand=function(self)
+			if GAMESTATE:GetCurrentSong() then
+				if GAMESTATE:GetCurrentSong():GetBackgroundPath() then
+					self:visible(true);
+					self:LoadBackground(GAMESTATE:GetCurrentSong():GetBackgroundPath());
+					self:scaletocover(0,0,SCREEN_WIDTH+maxDistX/4,SCREEN_BOTTOM+maxDistY/4);
+					self:smooth(0.5)
+					self:diffusealpha(0.3)
+				else
+					self:visible(false);
+				end;
+			else
+				self:visible(false);
+			end;
+		end;	
 	};
 end;
 
@@ -62,6 +79,15 @@ local function Update(self)
     self:GetChild("MouseXY"):xy(getPosX(),getPosY())
 end; 
 t.InitCommand=cmd(SetUpdateFunction,Update);
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,SCREEN_WIDTH-350,0;halign,0;valign,0;zoomto,SCREEN_WIDTH-350,SCREEN_HEIGHT;diffuse,color("#33333399"));
+};
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,SCREEN_WIDTH-350,0;halign,0;valign,0;zoomto,4,SCREEN_HEIGHT;diffuse,color("#FFFFFF"));
+};
+
 
 
 return t
