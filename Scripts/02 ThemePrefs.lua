@@ -220,3 +220,41 @@ function GhostTarget()
 	setmetatable( t, t )
 	return t
 end
+
+function ErrorBar()
+	local t = {
+		Name = "ErrorBar";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = false;
+		ExportOnChange = true;
+		Choices = { THEME:GetString('OptionNames','Off'),'On'};
+		LoadSelections = function(self, list, pn)
+			local pName = ToEnumShortString(pn)
+			if ReadPrefFromFile("ErrorBar"..pName) ~= nil then
+				if GetUserPref("ErrorBar"..pName) == "1" then
+					list[2] = true;
+				else
+					list[1] = true;
+				end;
+			else
+				WritePrefToFile("ErrorBar"..pName,"0");
+				list[1] = true;
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local val;
+			local pName = ToEnumShortString(pn)
+			if list[2] then
+				val = "1";
+			else
+				val = "0";
+			end;
+			WritePrefToFile("ErrorBar"..pName,val);
+			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
+			--THEME:ReloadMetrics();
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end	
