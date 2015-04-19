@@ -2,11 +2,23 @@ local magnitude = 0.1
 local maxDistX = SCREEN_WIDTH*magnitude
 local maxDistY = SCREEN_HEIGHT*magnitude
 
+local enabled = true and not(GAMESTATE:IsCourseMode())
+local moveBG = true and enabled
+local brightness = 0.3
+
 local t = Def.ActorFrame{}
-if not(GAMESTATE:IsCourseMode()) then
+if enabled then
 	t[#t+1] = LoadSongBackground()..{
 		Name="MouseXY";
-		BeginCommand=cmd(scaletocover,0,0,SCREEN_WIDTH+maxDistX/4,SCREEN_BOTTOM+maxDistY/4;diffusealpha,0.3;);
+		BeginCommand=function(self)
+			if moveBG then
+				self:scaletocover(0-maxDistX/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8)
+				self:diffusealpha(brightness);
+			else
+				self:scaletocover(0,0,SCREEN_WIDTH,SCREEN_BOTTOM)
+				self:diffusealpha(brightness);
+			end;
+		end;
 	};
 end;
 
@@ -61,7 +73,9 @@ local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
     self:GetChild("MouseXY"):xy(getPosX(),getPosY())
 end; 
-t.InitCommand=cmd(SetUpdateFunction,Update);
 
+if moveBG then
+	t.InitCommand=cmd(SetUpdateFunction,Update);
+end;
 
 return t
