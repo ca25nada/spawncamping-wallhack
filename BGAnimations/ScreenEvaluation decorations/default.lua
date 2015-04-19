@@ -73,14 +73,14 @@ local function GraphDisplay( pn )
 			end;
 		};
 		LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,135,-35;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
+			InitCommand=cmd(xy,(SCREEN_WIDTH*(140/853)-5),-35;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
 			BeginCommand=function(self) 
 				self:settextf("Life: %.0f%%",pss:GetCurrentLife()*100)
 				if pss:GetCurrentLife() == 0 then
 					self:settextf("Life: %.0f%%\n%.2fs Survived",pss:GetCurrentLife()*100,pss:GetAliveSeconds())
 				end;
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+135)
+					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+(SCREEN_WIDTH*(140/853)-5))
 				end;
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(SCREEN_CENTER_X*0.30)
@@ -89,7 +89,7 @@ local function GraphDisplay( pn )
 			end;
 		};
 		LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,135,25;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
+			InitCommand=cmd(xy,(SCREEN_WIDTH*(140/853)-5),25;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
 			BeginCommand=function(self) 
 				local steps = GAMESTATE:GetCurrentSteps(pn);
 				local notes = 0
@@ -98,7 +98,7 @@ local function GraphDisplay( pn )
 				end;
 				self:settextf("%d Notes",notes)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+135)
+					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+(SCREEN_WIDTH*(140/853)-5))
 				end;
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(SCREEN_CENTER_X*0.30)

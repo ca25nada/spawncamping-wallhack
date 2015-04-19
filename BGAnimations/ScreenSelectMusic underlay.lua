@@ -90,11 +90,11 @@ if moveBG then
 	t.InitCommand=cmd(SetUpdateFunction,Update);
 end;
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,SCREEN_WIDTH,0;halign,1;valign,0;zoomto,350,SCREEN_HEIGHT;diffuse,color("#33333399"));
+	InitCommand=cmd(xy,SCREEN_WIDTH,0;halign,1;valign,0;zoomto,SCREEN_WIDTH*(350/853),SCREEN_HEIGHT;diffuse,color("#33333399"));
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,SCREEN_WIDTH-350,0;halign,0;valign,0;zoomto,4,SCREEN_HEIGHT;diffuse,color("#FFFFFF"));
+	InitCommand=cmd(xy,SCREEN_WIDTH-(SCREEN_WIDTH*(350/853)),0;halign,0;valign,0;zoomto,4,SCREEN_HEIGHT;diffuse,color("#FFFFFF"));
 };
 
 

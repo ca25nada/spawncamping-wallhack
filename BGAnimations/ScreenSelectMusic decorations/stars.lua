@@ -23,11 +23,11 @@ local t = Def.ActorFrame{
 local starsX = 10
 local starsY = 230
 local maxStars = 18
-local starDistX = 23
+local starDistX = SCREEN_WIDTH*(23/853)
 local starDistY = 0
 local starSize = 0.55
 local playerDistY = 95
-local frameWidth = 455
+local frameWidth = SCREEN_WIDTH*(455/853)
 
 local song
 

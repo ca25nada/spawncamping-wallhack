@@ -9,7 +9,7 @@ local barXP2 = 157
 local barYP2 = 290+playerDistY
 
 
-local barWidth =300
+local barWidth = SCREEN_WIDTH*(300/853)-(barXP1-SCREEN_WIDTH*(barXP1/853))
 local barHeight = 4
 local showLetters = false
 local animationDelay = 0.8

@@ -1,6 +1,6 @@
 return Def.ActorFrame{
 	LoadFont("Common Normal") .. { --testing
-        InitCommand=cmd(xy,-33,-1;zoom,0.5;maxwidth,20/0.5);
+        InitCommand=cmd(xy,-33,-1;zoom,0.5;maxwidth,(SCREEN_WIDTH*(20/853))/0.5);
         SetGradeCommand=function(self,params)
         	local player = params.PlayerNumber
 			local song = params.Song

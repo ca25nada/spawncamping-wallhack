@@ -35,9 +35,10 @@ tabNames = {
 	[5] = "Other"
 }
 
-local frameX = 50
+local frameWidth = (SCREEN_WIDTH*(403/853))/(#tabNames-1)
+local frameX = frameWidth/2
 local frameY = SCREEN_HEIGHT-70
-local frameWidth = 100
+
 
 function tabs(index)
 	return Def.ActorFrame{
