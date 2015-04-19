@@ -20,16 +20,14 @@ Currently it'll only run on a SM5 nightly 20150410 or later. which you can grab 
 ---
 ##### To be added soon 
 * Title menu
-* CDTitles for ScreenSelectMusic
 * IIDX-esque Pacemaker graph
 * Info for various tabs on ScreenSelectMusic
 * General Protiming stuff (fast/slow indicator, ms offsets)
-* Error/Protiming bar similar to the one currently in osu!
 
 
 ---
 ##### Acknowledgements
 * The StepMania 5 devs (notably freem and Kyzentun) for making this possible in the first place.
-* lurker,rulululull, and people in #vsrg for feedbacks..!
-* ScreenFilter.lua was taken from the Default theme.
-* Some of the codebase that uses UpdateFunctions are based off of Jousway's code snippets.
+* lurker,rulululull, and people in #vsrg,#stepmania-devs for feedbacks..!
+* ScreenFilter.lua was taken from the Default theme by Midiman.
+* CDTitle Resizer, ScreenSelectMusic Backgrounds are adapted from Jousway's code.
