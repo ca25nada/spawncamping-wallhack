@@ -3,9 +3,10 @@ A WIP Stepmania 5 theme aimed primarily for KB players.
 Hopefully won't be as broken as the ultralight-fork I made previously.
 
 
-It's being made on StepMania 5.0.7 for a 16:9 display. 
+It's being made on StepMania 5.0.7 for a 16:9 display. Currently, any screen that isn't wider than 16:9 (This includes 16:10) will have bunch of elements overlapping with each other and I should probably address them. 
+4:3 support however, would require me having to redesign the whole layout for ScreenSelectMusic and that's probably not happening anytime soon.
 
-Currently it'll only run on a SM5 nightly 20150410 or later. which you can grab from: http://smnightly.katzepower.com/ 
+Currently, it'll only run properly on a SM5 nightly build. which you can grab from: http://smnightly.katzepower.com/ 
 
 ---
 ##### Current Issues
@@ -14,8 +15,8 @@ Currently it'll only run on a SM5 nightly 20150410 or later. which you can grab 
 * Everything blows up for rave and various course modes. (I disabled it from the menus for now)
 * SMO works but it's somewhat messy, also you can't grab any server-side scores.
 * Scripts for fetching various stuff are kinda everywhere right now. Needs some cleanup.
-* The cells at the bottom of the eval screen doesn't fill when there are less judgments than the cells themselves. 
-
+* The cells at the bottom of the eval screen doesn't fill completely when there are less judgments than the cells themselves. 
+* Overlapping elements for screens that are not wide enough.
 
 ---
 ##### To be added soon 
@@ -24,10 +25,9 @@ Currently it'll only run on a SM5 nightly 20150410 or later. which you can grab 
 * Info for various tabs on ScreenSelectMusic
 * General Protiming stuff (fast/slow indicator, ms offsets)
 
-
 ---
 ##### Acknowledgements
 * The StepMania 5 devs (notably freem and Kyzentun) for making this possible in the first place.
-* lurker,rulululull, and people in #vsrg,#stepmania-devs for feedbacks..!
+* people in #vsrg,#stepmania-devs and various other people for feedbacks..!
 * ScreenFilter.lua was taken from the Default theme by Midiman.
 * CDTitle Resizer, ScreenSelectMusic Backgrounds are adapted from Jousway's code.
