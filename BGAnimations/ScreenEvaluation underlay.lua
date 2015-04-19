@@ -2,8 +2,8 @@ local magnitude = 0.1
 local maxDistX = SCREEN_WIDTH*magnitude
 local maxDistY = SCREEN_HEIGHT*magnitude
 
-local enabled = true and not(GAMESTATE:IsCourseMode())
-local moveBG = true and enabled
+local enabled = getTempThemePref("SongBGEnabled") and not(GAMESTATE:IsCourseMode())
+local moveBG = getTempThemePref("SongBGMouseEnabled") and enabled
 local brightness = 0.3
 
 local t = Def.ActorFrame{}

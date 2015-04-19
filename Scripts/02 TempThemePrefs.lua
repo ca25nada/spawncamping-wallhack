@@ -5,6 +5,8 @@
 local preferences = {
 	DefaultScoreType = 2, -- 1 = MAX2 DP, 2 = Oni Percent Score, 3 = MIGS
 	TipType = 1, -- 1 = Tips, 2= random quotes phrases, 3 = hide
+	SongBGEnabled = true,
+	SongBGMouseEnabled = true,
 	--AvatarEnabled = true, -- Unused
 }
 
@@ -24,3 +26,15 @@ end;
 function getTempEvalPref(prefs)
 	return evalPreferences[prefs]
 end;
+
+local defautCustomPrefs = {
+	GlobalScoreType = 2, -- 1 = MAX2 DP, 2 = Oni Percent Score, 3 = MIGS
+	GlobalTipType = 1, -- 1 = Tips, 2= random quotes phrases, 3 = hide
+	--AvatarEnabled = true, -- Unused
+	EvalCurrentTimeEnabled = true,
+	EvalJudgmentBarEnabled = true,
+	EvalJudgmentBarCellCount = 100, --Will be halved for 2p
+	EvalScoreBoardEnabled = true,
+	EvalScoreBoardMaxEntry = math.min(10,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")),
+
+}

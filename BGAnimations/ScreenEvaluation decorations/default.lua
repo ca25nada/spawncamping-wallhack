@@ -14,6 +14,21 @@ end;
 
 --t[#t+1] = LoadActor("mousetest")
 
+t[#t+1] = Def.ActorFrame{
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,20,140;zoom,0.4;maxwidth,100/0.4;halign,0;);
+		BeginCommand=function(self)
+			self:settextf("Timing Difficulty: %d",GetTimingDifficulty())
+		end;
+	};
+	LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,20,155;zoom,0.4;maxwidth,100/0.4;halign,0;);
+		BeginCommand=function(self)
+			self:settextf("Life Difficulty: %d",GetLifeDifficulty())
+		end;
+	};
+};
+
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,SCREEN_CENTER_X,135;zoom,0.4;maxwidth,400/0.4);
 	BeginCommand=cmd(queuecommand,"Set");
@@ -134,7 +149,7 @@ function scoreBoard(pn,position)
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX-5,frameY;zoomto,frameWidth+10,220;halign,0;valign,0;diffuse,color("#333333"););
+		InitCommand=cmd(xy,frameX-5,frameY;zoomto,frameWidth+10,220;halign,0;valign,0;diffuse,color("#333333CC"););
 	};
 
 

@@ -2,8 +2,9 @@ local magnitude = 0.1
 local maxDistX = SCREEN_WIDTH*magnitude
 local maxDistY = SCREEN_HEIGHT*magnitude
 
-local enabled = true and not(GAMESTATE:IsCourseMode())
-local moveBG = true and enabled
+local enabled = getTempThemePref("SongBGEnabled") and not(GAMESTATE:IsCourseMode())
+local moveBG = getTempThemePref("SongBGMouseEnabled") and enabled
+local brightness = 0.3
 
 local function getPosX()
 	local offset = magnitude*(INPUTFILTER:GetMouseX()-SCREEN_CENTER_X)
@@ -69,7 +70,7 @@ if enabled then
 					end;
 					self:sleep(0.25)
 					self:smooth(0.5)
-					self:diffusealpha(0.5)
+					self:diffusealpha(brightness)
 				else
 					self:visible(false);
 				end;
