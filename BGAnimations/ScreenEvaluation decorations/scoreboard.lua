@@ -23,9 +23,9 @@ function gradestring(tier) --to be moved
 end;
 
 local lines = getTempEvalPref("ScoreBoardMaxEntry") -- number of scores to display
-local framex = SCREEN_WIDTH-270
+local framex = SCREEN_WIDTH-SCREEN_WIDTH*(270/853)
 local framey = 65
-local frameWidth = 260
+local frameWidth = SCREEN_WIDTH*(260/853)
 local spacing = 35
 
 

@@ -172,12 +172,12 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX,frameY+13;zoom,0.50;halign,0);
+		InitCommand=cmd(xy,frameX,frameY+13;zoom,0.45;halign,0);
 		BeginCommand=cmd(settext,"ClearType:")
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+13;zoom,0.50);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+13;zoom,0.45);
 		BeginCommand=cmd(settext,">>")
 	};
 
@@ -225,14 +225,14 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX,frameY+28;zoom,0.50;halign,0);
+		InitCommand=cmd(xy,frameX,frameY+28;zoom,0.45;halign,0);
 		BeginCommand=function(self)
 			self:settextf("Score(%s):",getScoreTypeText(0))
 		end;
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+28;zoom,0.50);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+28;zoom,0.45);
 		BeginCommand=cmd(settext,">>")
 	};
 
@@ -245,7 +245,11 @@ function scoreBoard(pn,position)
 			local score = getHighestScore(pn,index,0)
 			local maxScore = getMaxScoreST(pn,0)
 			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
-			self:settextf("%s (%d/%d)",percentText,score,maxScore)
+			if IsUsingWideScreen() then
+				self:settextf("%s (%d/%d)",percentText,score,maxScore)
+			else
+				self:settextf("%s",percentText)
+			end
 		end;
 	};
 
@@ -256,7 +260,11 @@ function scoreBoard(pn,position)
 			local score = getCurScoreST(pn,0)
 			local maxScore = getMaxScoreST(pn,0)
 			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
-			self:settextf("%s (%d/%d)",percentText,score,maxScore)
+			if IsUsingWideScreen() then
+				self:settextf("%s (%d/%d)",percentText,score,maxScore)
+			else
+				self:settextf("%s",percentText)
+			end
 		end;
 	};
 
@@ -277,12 +285,12 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX,frameY+43;zoom,0.50;halign,0);
+		InitCommand=cmd(xy,frameX,frameY+43;zoom,0.45;halign,0);
 		BeginCommand=cmd(settext,"MissCount:")
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+43;zoom,0.50);
+		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+43;zoom,0.45);
 		BeginCommand=cmd(settext,">>")
 	};
 
@@ -369,7 +377,7 @@ function scoreBoard(pn,position)
 	end;
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+35,frameY+210;zoom,0.35;);
+		InitCommand=cmd(xy,frameX+(frameWidth*0.1),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			self:settextf("Holds %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Holds"),pss:GetRadarPossible():GetValue("RadarCategory_Holds"))
@@ -377,7 +385,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+105,frameY+210;zoom,0.35;);
+		InitCommand=cmd(xy,frameX+(frameWidth*0.3),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			self:settextf("Rolls %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Rolls"),pss:GetRadarPossible():GetValue("RadarCategory_Rolls"))
@@ -385,7 +393,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+175,frameY+210;zoom,0.35;);
+		InitCommand=cmd(xy,frameX+(frameWidth*0.5),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			self:settextf("Mines %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Mines"),pss:GetRadarPossible():GetValue("RadarCategory_Mines"))
@@ -393,7 +401,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+245,frameY+210;zoom,0.35;);
+		InitCommand=cmd(xy,frameX+(frameWidth*0.7),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			self:settextf("Lifts %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Lifts"),pss:GetRadarPossible():GetValue("RadarCategory_Lifts"))
@@ -401,7 +409,7 @@ function scoreBoard(pn,position)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+315,frameY+210;zoom,0.35;);
+		InitCommand=cmd(xy,frameX+(frameWidth*0.9),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			self:settextf("Fakes %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Fakes"),pss:GetRadarPossible():GetValue("RadarCategory_Fakes"))
