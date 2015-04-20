@@ -20,7 +20,7 @@ local t = Def.ActorFrame{
 
 local frameX = 10
 local frameY = 45
-local frameWidth = 400
+local frameWidth = capWideScale(320,400)
 local frameHeight = 350
 local fontScale = 0.4
 local distY = 15
@@ -113,7 +113,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	end;
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(1*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(1*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1-offsetX2*2)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
@@ -132,7 +132,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(2*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(2*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1-offsetX2*2)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
@@ -156,7 +156,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(3*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(3*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1-offsetX2*2)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
@@ -175,7 +175,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(4*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(4*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1-offsetX2*2)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
@@ -194,7 +194,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(5*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(5*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1-offsetX2*2)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
@@ -214,7 +214,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(6*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(6*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1-offsetX2*2)/fontScale);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then

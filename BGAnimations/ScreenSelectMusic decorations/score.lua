@@ -20,7 +20,7 @@ local t = Def.ActorFrame{
 
 local frameX = 10
 local frameY = 45
-local frameWidth = 400
+local frameWidth = capWideScale(320,400)
 local frameHeight = 350
 local fontScale = 0.4
 local distY = 15
