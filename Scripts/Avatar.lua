@@ -16,7 +16,7 @@ end
 -- Returns a path to the avatar image (relative to the theme folder) for the specified player.
 function getAvatarPath(pn)
 	if pn == nil then
-		return "Graphics/Player avatar/generic"
+		return "Graphics/Player avatar/generic.gif"
 	end
 	local profile
 	local profilePath = ""
@@ -39,8 +39,9 @@ function getAvatarPath(pn)
 
 	if FILEMAN:DoesFileExist("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/"..fileName) then
 		return "Graphics/Player avatar/"..fileName
-	end
-	return "Graphics/Player avatar/generic"
+	else
+		return "Graphics/Player avatar/generic.gif"
+	end;
 end;
 
 -- Creates an actor with the avatar image.
