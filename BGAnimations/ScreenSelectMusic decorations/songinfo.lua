@@ -18,12 +18,12 @@ local t = Def.ActorFrame{
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,10,170;zoomto,384,20;halign,0;diffuse,color("#000000");diffusealpha,0.7);
+	InitCommand=cmd(xy,10,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10);zoomto,capWideScale(get43size(384),384),capWideScale(get43size(20),20);halign,0;diffuse,color("#000000");diffusealpha,0.7);
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songTitle";
-	InitCommand=cmd(xy,15,170;visible,true;halign,0;zoom,0.45;maxwidth,340/0.45);
+	InitCommand=cmd(xy,15,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10);visible,true;halign,0;zoom,capWideScale(get43size(0.45),0.45);maxwidth,capWideScale(get43size(340),340)/capWideScale(get43size(0.45),0.45));
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if update then
@@ -40,7 +40,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songLength";
-	InitCommand=cmd(xy,5+384,170;visible,true;halign,1;zoom,0.45;maxwidth,360/0.45);
+	InitCommand=cmd(xy,5+(capWideScale(get43size(384),384)),60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10);visible,true;halign,1;zoom,capWideScale(get43size(0.45),0.45);maxwidth,capWideScale(get43size(360),360)/capWideScale(get43size(0.45),0.45));
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if update then

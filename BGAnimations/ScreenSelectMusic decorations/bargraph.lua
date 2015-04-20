@@ -1,15 +1,15 @@
 t = Def.ActorFrame{}
 
 local barXP1 = 157
-local barYP1 = 290
+local barYP1 = 170+capWideScale(get43size(120),120)
 
 local playerDistY = 95
 
 local barXP2 = 157
-local barYP2 = 290+playerDistY
+local barYP2 = barYP1+playerDistY
 
 
-local barWidth = SCREEN_WIDTH*(300/853)-(barXP1-SCREEN_WIDTH*(barXP1/853))
+local barWidth = capWideScale(get43size(300),300)-(barXP1-capWideScale(get43size(barXP1),barXP1))
 local barHeight = 4
 local showLetters = false
 local animationDelay = 0.8

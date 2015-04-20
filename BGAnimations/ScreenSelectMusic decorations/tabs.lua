@@ -35,7 +35,7 @@ tabNames = {
 	[5] = "Other"
 }
 
-local frameWidth = (SCREEN_WIDTH*(403/853))/(#tabNames-1)
+local frameWidth = (SCREEN_WIDTH*(403/854))/(#tabNames-1)
 local frameX = frameWidth/2
 local frameY = SCREEN_HEIGHT-70
 

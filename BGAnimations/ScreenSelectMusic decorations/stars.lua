@@ -21,14 +21,14 @@ local t = Def.ActorFrame{
 -- this became a mess rather quickly
 
 local starsX = 10
-local starsY = 230
+local starsY = 110+capWideScale(get43size(120),120)
 local maxStars = 18
-local starDistX = SCREEN_WIDTH*(23/853)
+local starDistX = capWideScale(get43size(23),23)
 local starDistY = 0
 local starSize = 0.55
 local playerDistY = 95
-local frameWidth = SCREEN_WIDTH*(455/853)
-
+local frameWidth = capWideScale(get43size(455),455)
+	
 local song
 
 local stepsP1
@@ -351,13 +351,17 @@ t[#t+1] = Def.ActorFrame{
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
-	--MissCount
+	--Score Date
 	LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,starsX+210,starsY+49;zoom,0.4;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				self:settext("Date Achieved: "..getScoreDate(PLAYER_1))
+				if IsUsingWideScreen() then
+					self:settext("Date Achieved: "..getScoreDate(PLAYER_1))
+				else
+					self:settext(getScoreDate(PLAYER_1))
+				end;
 			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
@@ -580,7 +584,11 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				self:settext("Date Achieved: "..getScoreDate(PLAYER_2))
+				if IsUsingWideScreen() then
+					self:settext("Date Achieved: "..getScoreDate(PLAYER_2))
+				else
+					self:settext(getScoreDate(PLAYER_2))
+				end;
 			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
