@@ -77,7 +77,8 @@ if enabled then
 			else
 				self:visible(false);
 			end;
-		end;	
+		end;
+		OffCommand=cmd(smooth,0.5;diffusealpha,0)	
 	};
 end;
 

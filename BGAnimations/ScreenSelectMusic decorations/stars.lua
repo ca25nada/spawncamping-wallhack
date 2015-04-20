@@ -208,17 +208,19 @@ t[#t+1] = Def.ActorFrame{
 				local diff;
 				local stype;
 				local notes = 0
-				local taps = 0
 				local holds = 0
+				local rolls = 0
 				local mines = 0
+				local lifts = 0
 				if stepsP1 ~= nil then
 					notes = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Notes")
-					taps = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_TapsAndHolds")
 					holds = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Holds")
+					rolls = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Rolls")
 					mines = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Mines")
+					lifts = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Lifts")
 					diff = getDifficulty(stepsP1:GetDifficulty())
 					stype = ToEnumShortString(stepsP1:GetStepsType()):gsub("%_"," ")
-					self:settextf("%s %s // Notes:%s // Taps:%s // Holds:%s // Mines:%s",stype,diff,notes,taps,holds,mines);
+					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts);
 				else
 					self:settext("Disabled");
 				end;
@@ -432,18 +434,20 @@ t[#t+1] = Def.ActorFrame{
 			if update then
 				local diff;
 				local stype;
-				local taps = 0
-				local holds = 0
-				local mines = 0
 				local notes = 0
+				local holds = 0
+				local rolls = 0
+				local mines = 0
+				local lifts = 0
 				if stepsP2 ~= nil then
 					notes = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Notes")
-					taps = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_TapsAndHolds")
 					holds = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Holds")
+					rolls = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Rolls")
 					mines = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Mines")
+					lifts = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Lifts")
 					diff = getDifficulty(stepsP2:GetDifficulty())
 					stype = ToEnumShortString(stepsP2:GetStepsType()):gsub("%_"," ")
-					self:settextf("%s %s // Notes:%s // Taps:%s // Holds:%s // Mines:%s",stype,diff,notes,taps,holds,mines);
+					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts);
 				else
 					self:settext("Disabled");
 				end;
