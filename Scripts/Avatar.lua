@@ -44,6 +44,27 @@ function getAvatarPath(pn)
 	end;
 end;
 
+function getAvatarPathFromProfileID(id)
+	if id == nil then
+		return "Graphics/Player avatar/generic.gif"
+	end
+	local profilePath = ""
+	local fileName = "generic.gif"
+
+	profilePath = PROFILEMAN:LocalProfileIDToDir(id)
+	fileName = ReadAvatarFile(profilePath.."/avatar.txt")
+
+	if fileName == nil then
+		fileName = "generic.gif"
+	end
+
+	if FILEMAN:DoesFileExist("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/"..fileName) then
+		return "Graphics/Player avatar/"..fileName
+	else
+		return "Graphics/Player avatar/generic.gif"
+	end;
+end;
+
 -- Creates an actor with the avatar image.
 function getAvatar(pn)
 	local profile
