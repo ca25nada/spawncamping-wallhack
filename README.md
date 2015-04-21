@@ -3,8 +3,7 @@ A WIP Stepmania 5 theme aimed primarily for KB players.
 Hopefully won't be as broken as the ultralight-fork I made previously.
 
 
-It's being made on StepMania 5.0.7 for a 16:9 display. Currently, any screen that isn't wider than 16:9 (This includes 16:10) will have bunch of elements overlapping with each other and I should probably address them. 
-4:3 support however, would require me having to redesign the whole layout for ScreenSelectMusic and that's probably not happening anytime soon.
+It's being made on StepMania 5.0.7 for a 16:9 display. (Anything between 4:3 and 16:9 will work now but some elements will be cut for non-widescreen displays)
 
 Currently, it'll only run properly on a SM5 nightly build. which you can grab from: http://smnightly.katzepower.com/ 
 
