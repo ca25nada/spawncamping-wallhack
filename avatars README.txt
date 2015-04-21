@@ -1,5 +1,5 @@
 before doing anything:
-DO NOT DELETE the generic.gif image inside \Graphics\Player avatar. It's the image currently being used as fallback.
+DO NOT DELETE the _fallback.png image inside \Graphics\Player avatar. It's the image currently being used as fallback.
 
 1.Drop the image you want to use as a avatar in the following folder:
 \Graphics\Player avatar
