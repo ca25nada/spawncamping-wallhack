@@ -9,12 +9,12 @@ function GetLocalProfiles()
 				InitCommand=cmd(zoomto,200,1;y,40/2);
 				OnCommand=cmd(diffuse,Color('Outline'););
 			}; --]]
-			LoadFont("Common Normal") .. {
+			LoadFont("Common Large") .. {
 				Text=profile:GetDisplayName();
-				InitCommand=cmd(shadowlength,1;y,-10;zoom,1;ztest,true);
+				InitCommand=cmd(y,-10;zoom,0.5;ztest,true);
 			};
 			LoadFont("Common Normal") .. {
-				InitCommand=cmd(shadowlength,1;y,8;zoom,0.5;vertspacing,-8;ztest,true);
+				InitCommand=cmd(y,8;zoom,0.5;vertspacing,-8;ztest,true);
 				BeginCommand=function(self)
 					local numSongsPlayed = profile:GetNumTotalSongsPlayed();
 					local s = numSongsPlayed == 1 and "Song" or "Songs";
@@ -24,7 +24,7 @@ function GetLocalProfiles()
 			};
 
 			Def.Sprite {
-				InitCommand=cmd(visible,true;halign,0;xy,-100,0);
+				InitCommand=cmd(visible,true;halign,0;xy,-100,-2);
 				BeginCommand=cmd(queuecommand,"ModifyAvatar");
 				ModifyAvatarCommand=function(self)
 					self:finishtweening();
@@ -42,10 +42,19 @@ end;
 
 function LoadCard(cColor)
 	local t = Def.ActorFrame {
-		LoadActor( THEME:GetPathG("ScreenSelectProfile","CardBackground") ) .. {
-			InitCommand=cmd(diffuse,cColor);
+		--LoadActor( THEME:GetPathG("ScreenSelectProfile","CardBackground") ) .. {
+		--	InitCommand=cmd(diffuse,cColor);
+		--};
+		--LoadActor( THEME:GetPathG("ScreenSelectProfile","CardFrame") );
+
+		Def.Quad {
+			InitCommand=cmd(zoomto,200+4,230+4);
+			OnCommand=cmd(diffuse,color("1,1,1,1"));
 		};
-		LoadActor( THEME:GetPathG("ScreenSelectProfile","CardFrame") );
+		Def.Quad {
+			InitCommand=cmd(zoomto,200,230);
+			OnCommand=cmd(diffusealpha,0.5;diffuse,cColor);
+		};
 	};
 	return t
 end
@@ -83,21 +92,9 @@ function LoadPlayerStuff(Player)
 		Name = 'SmallFrame';
 		InitCommand=cmd(y,-2);
 		Def.Quad {
-			InitCommand=cmd(zoomto,200-10,40+2);
-			OnCommand=cmd(diffuse,Color('Black');diffusealpha,0.5);
+			InitCommand=cmd(zoomto,200,40+2);
+			OnCommand=cmd(diffusealpha,0.3);
 		};
-		Def.Quad {
-			InitCommand=cmd(zoomto,200-10,40);
-			OnCommand=cmd(diffuse,PlayerColor(Player);fadeleft,0.25;faderight,0.25;glow,color("1,1,1,0.25"));
-		};
-		Def.Quad {
-			InitCommand=cmd(zoomto,200-10,40;y,-40/2+20);
-			OnCommand=cmd(diffuse,Color("Black");fadebottom,1;diffusealpha,0.35);
-		};
-		Def.Quad {
-			InitCommand=cmd(zoomto,200-10,1;y,-40/2+1);
-			OnCommand=cmd(diffuse,PlayerColor(Player);glow,color("1,1,1,0.25"));
-		};	
 	};
 
 	t[#t+1] = Def.ActorScroller{
@@ -281,5 +278,8 @@ t[#t+1] = Def.ActorFrame{
 	};
 };
 t[#t+1] = LoadActor("_frame");
+t[#t+1] = LoadFont("Common Large")..{
+	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor(2);settext,"Select Profile:";);
+}
 
 return t;
