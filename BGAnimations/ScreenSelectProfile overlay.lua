@@ -11,10 +11,10 @@ function GetLocalProfiles()
 			}; --]]
 			LoadFont("Common Large") .. {
 				Text=profile:GetDisplayName();
-				InitCommand=cmd(y,-10;zoom,0.5;ztest,true);
+				InitCommand=cmd(xy,34/2,-10;zoom,0.4;ztest,true,maxwidth,(200-34-4)/0.4);
 			};
 			LoadFont("Common Normal") .. {
-				InitCommand=cmd(y,8;zoom,0.5;vertspacing,-8;ztest,true);
+				InitCommand=cmd(xy,34/2,8;zoom,0.5;vertspacing,-8;ztest,true;maxwidth,(200-34-4)/0.5);
 				BeginCommand=function(self)
 					local numSongsPlayed = profile:GetNumTotalSongsPlayed();
 					local s = numSongsPlayed == 1 and "Song" or "Songs";
@@ -24,7 +24,7 @@ function GetLocalProfiles()
 			};
 
 			Def.Sprite {
-				InitCommand=cmd(visible,true;halign,0;xy,-100,-2);
+				InitCommand=cmd(visible,true;halign,0;xy,-98,-2);
 				BeginCommand=cmd(queuecommand,"ModifyAvatar");
 				ModifyAvatarCommand=function(self)
 					self:finishtweening();
