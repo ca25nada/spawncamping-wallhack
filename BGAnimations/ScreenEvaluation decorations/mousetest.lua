@@ -9,7 +9,7 @@ local t = Def.ActorFrame {
 
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
-    self:GetChild("MouseXY"):settextf("X:%5.2f Y:%5.2f",INPUTFILTER:GetMouseX(),INPUTFILTER:GetMouseY())
+    self:GetChild("MouseXY"):settextf("X:%5.2f Y:%5.2f W:%5.2f",INPUTFILTER:GetMouseX(),INPUTFILTER:GetMouseY(),INPUTFILTER:GetMouseWheel())
 end; 
 t.InitCommand=cmd(SetUpdateFunction,Update);
 

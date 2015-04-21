@@ -13,6 +13,7 @@ if getTempEvalPref("JudgmentBarEnabled") then
 end;
 
 --t[#t+1] = LoadActor("mousetest")
+--t[#t+1] = LoadActor("soundtest")
 
 t[#t+1] = Def.ActorFrame{
 	LoadFont("Common Normal")..{
@@ -43,6 +44,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 
 local function GraphDisplay( pn )
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+
 	local t = Def.ActorFrame {
 		Def.GraphDisplay {
 			InitCommand=cmd(Load,"GraphDisplay";);
