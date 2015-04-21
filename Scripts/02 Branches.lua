@@ -116,13 +116,13 @@ Branch = {
 	AfterSelectProfile = function()
 		if ( THEME:GetMetric("Common","AutoSetStyle") == true ) then
 			-- use SelectStyle in online...
-			return IsNetConnected() and "ScreenSelectStyle" or "ScreenSelectPlayMode"
+			return IsNetConnected() and "ScreenSelectStyle" or "ScreenSelectMusic"--"ScreenSelectPlayMode"
 		else
-			return "ScreenSelectStyle"
+			return "ScreenSelectMusic"--"ScreenSelectStyle"
 		end
 	end,
 	AfterProfileLoad = function()
-		return "ScreenSelectPlayMode"
+		return "ScreenSelectMusic"--"ScreenSelectPlayMode"
 	end,
 	AfterProfileSave = function()
 		-- Might be a little too broken? -- Midiman
