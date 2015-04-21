@@ -1,7 +1,11 @@
-local width = 300
+--=======================================
+--ONLY EDIT THESE VALUES
+--=======================================
+local width = capWideScale(get43size(300),300)
 local height = 7
 local frameX = SCREEN_CENTER_X
 local frameY = SCREEN_BOTTOM-20
+--=======================================
 
 local t = Def.ActorFrame {
     Def.Quad{

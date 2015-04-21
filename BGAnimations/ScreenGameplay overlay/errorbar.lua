@@ -16,7 +16,7 @@ local barcount = 500 -- Number of bars to initialize.
 local frameX = SCREEN_CENTER_X -- X Positon (Center of the bar)
 local frameY = SCREEN_BOTTOM-35 -- Y Positon (Center of the bar)
 local frameHeight = 10 -- Height of the bar
-local frameWidth = 300 -- Width of the bar
+local frameWidth = capWideScale(get43size(300),300) -- Width of the bar
 local tickWidth = 2 -- Width of the ticks
 local tickDuration = 5 -- Time duration in seconds before the ticks fade out
 --=======================================
@@ -25,18 +25,8 @@ local tickDuration = 5 -- Time duration in seconds before the ticks fade out
 local currentbar = 1
 local protimingsum = 0
 local offset = 0
-
-local frameX = SCREEN_CENTER_X
-local frameY = SCREEN_BOTTOM-35
-local frameHeight = 10
-local frameWidth = 300
-local maxOffsetRange = 0.18 --in seconds. 0.18 for upto bads, 0.135 for goods, 0.09 for greats, etc.
-
-local barcount = 500 -- Number of bars to initialize.
 local protimingsum = 0
-local duration = 5
 local currentbar = 1
-
 local offset = 0
 
 function proTimingTicks(pn,index)
