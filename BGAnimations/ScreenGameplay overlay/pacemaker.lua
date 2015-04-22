@@ -34,13 +34,15 @@ local markerPoints = { --DP/PS/MIGS in that order.
 	[3] = {["100%"]=1,["90%"]=0.9,["80%"]=0.8,["70%"]=0.7,["60%"]=0.6,["50%"]=0.5,[""]=0},
 }
 
+-- Dynamic Graph
+-- Represents the current score/possible score for the specified scoreType
 function currentScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.7;);
 		SetCommand=function(self)
-			curScore = getCurScoreST(player,scoreType)
-			maxScore = getMaxScoreST(player,scoreType)
+			local curScore = getCurScoreST(player,scoreType)
+			local maxScore = getMaxScoreST(player,scoreType)
 			if maxScore <= 0 then
 				self:zoomy(1)
 			else
@@ -52,13 +54,35 @@ function currentScoreGraph(index,scoreType,color)
 	return t
 end;
 
+-- Static Graph
+-- Represents the best score achieved for the specified scoreType
+function bestScoreGraph(index,scoreType,color)
+	local t = Def.ActorFrame{}
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.1;);
+		BeginCommand=function(self)
+			local bestScore = getHighestScore(player,0,scoreType)
+			local maxScore = getMaxScoreST(player,scoreType)
+			self:smooth(1.5)
+			if maxScore <= 0 then
+				self:visible(false)
+			else
+				self:zoomy(math.max(1,barHeight*(bestScore/maxScore)))
+			end;
+		end;
+	};
+	return t
+end;
+
+-- Dynamic Graph
+-- Represents the current target score for the specified scoreType
 function targetScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.7;);
 		SetCommand=function(self)
-			curScore = getCurMaxScoreST(player,scoreType)*targetP1
-			maxScore = getMaxScoreST(player,scoreType)
+			local curScore = math.ceil(getCurMaxScoreST(player,scoreType)*targetP1)
+			local maxScore = getMaxScoreST(player,scoreType)
 			if maxScore <= 0 then
 				self:zoomy(1)
 			else
@@ -67,18 +91,24 @@ function targetScoreGraph(index,scoreType,color)
 		end;
 		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
+	return t
+end;
+
+-- Static Graph
+-- Represents the total target score for the specified scoreType
+function targetMaxGraph(index,scoreType,color)
+	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.7;);
-		SetCommand=function(self)
-			curScore = getCurMaxScoreST(player,scoreType)*targetP1
-			maxScore = getMaxScoreST(player,scoreType)
+		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.1;);
+		BeginCommand=function(self)
+			local maxScore = getMaxScoreST(player,scoreType)
+			self:smooth(1.5)
 			if maxScore <= 0 then
-				self:zoomy(1)
+				self:visible(false)
 			else
-				self:zoomy(math.max(1,barHeight*(curScore/maxScore)))
+				self:zoomy(math.max(1,barHeight*(math.ceil(maxScore*targetP1)/maxScore)))
 			end;
 		end;
-		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
 	return t
 end;
@@ -105,6 +135,8 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)
 	};
+	t[#t+1] = targetMaxGraph(2,ghostTypeP1-1,getMainColor(2))
+	t[#t+1] = bestScoreGraph(1,ghostTypeP1-1,getMainColor(1))
 	t[#t+1] = currentScoreGraph(1,ghostTypeP1-1,getMainColor(1))
 	t[#t+1] = targetScoreGraph(2,ghostTypeP1-1,getMainColor(2))
 	t[#t+1] = markers(ghostTypeP1-1,true)
