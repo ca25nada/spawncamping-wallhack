@@ -30,8 +30,6 @@ elseif player == PLAYER_2 then
 	frameX = 0
 end;
 
-
-
 local markerPoints = { --DP/PS/MIGS in that order.
 	[1] = {["AAA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier02"), 
 			["AA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier03") , 

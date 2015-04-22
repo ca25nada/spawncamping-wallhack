@@ -236,8 +236,7 @@ local Phrases = {
     "\"Nanahira is love. I hope she makes collab with Prim sometime.\"", -- shortly followed by "Have mercy on our ears"
     "\"we should impersonize the scratch from lr2 into some annoying anime chick\"", -- sarachan >w
     "be-music salt",
-    "ㅁㄴㅇㄹ = MANIERA",
-    "where the fuck did you get this email address" --ppy
+    "fry EOS" -- Hazelnut: try*
 }
 
 --tip
