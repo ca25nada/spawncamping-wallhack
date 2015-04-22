@@ -1,12 +1,6 @@
-local ghostTypeP1 = tonumber(GetUserPref("GhostScoreTypeP1")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-local targetP1 = (tonumber(GetUserPref("GhostTargetP1") or "0")+1)/100; -- target score from 0% to 100%.
+local ghostType
+local target
 
-local ghostTypeP2 = tonumber(GetUserPref("GhostScoreTypeP2")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-local targetP2 = (tonumber(GetUserPref("GhostTargetP2") or "0")+1)/100; -- target score from 0% to 100%.
-
-local enabled = true
-
-local player = PLAYER_1
 
 local frameWidth = 105
 local frameHeight = SCREEN_HEIGHT
@@ -23,6 +17,20 @@ local barHeight = 350 -- Max Height of graphs
 local textSpacing = 10
 local bottomTextY = barY+frameY+10
 local topTextY = frameY+barY-barHeight-10-(textSpacing*barCount)
+
+local enabled = true and GAMESTATE:GetNumPlayersEnabled() == 1
+
+local player = GAMESTATE:GetEnabledPlayers()[1]
+if player == PLAYER_1 then
+	ghostType = tonumber(GetUserPref("GhostScoreTypeP1")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
+	target = (tonumber(GetUserPref("GhostTargetP1") or "0")+1)/100; -- target score from 0% to 100%.
+elseif player == PLAYER_2 then
+	ghostType = tonumber(GetUserPref("GhostScoreTypeP2")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
+	target = (tonumber(GetUserPref("GhostTargetP2") or "0")+1)/100; -- target score from 0% to 100%.
+	frameX = 0
+end;
+
+
 
 local markerPoints = { --DP/PS/MIGS in that order.
 	[1] = {["AAA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier02"), 
@@ -97,7 +105,7 @@ function targetScoreGraph(index,scoreType,color)
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.7;);
 		SetCommand=function(self)
-			local curScore = math.ceil(getCurMaxScoreST(player,scoreType)*targetP1)
+			local curScore = math.ceil(getCurMaxScoreST(player,scoreType)*target)
 			local maxScore = getMaxScoreST(player,scoreType)
 			if maxScore <= 0 then
 				self:zoomy(1)
@@ -116,7 +124,7 @@ function targetScoreGraph(index,scoreType,color)
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
 		SetCommand=function(self)
-			local curScore = math.ceil(getCurMaxScoreST(player,scoreType)*targetP1)
+			local curScore = math.ceil(getCurMaxScoreST(player,scoreType)*target)
 			self:settext(curScore)
 		end;
 		JudgmentMessageCommand=cmd(queuecommand,"Set");
@@ -137,7 +145,7 @@ function targetMaxGraph(index,scoreType,color)
 			if maxScore <= 0 then
 				self:visible(false)
 			else
-				self:zoomy(math.max(1,barHeight*(math.ceil(maxScore*targetP1)/maxScore)))
+				self:zoomy(math.max(1,barHeight*(math.ceil(maxScore*target)/maxScore)))
 			end;
 		end;
 	};
@@ -166,11 +174,11 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)
 	};
-	t[#t+1] = targetMaxGraph(2,ghostTypeP1-1,getMainColor(2))
-	t[#t+1] = bestScoreGraph(1,ghostTypeP1-1,getMainColor(1))
-	t[#t+1] = currentScoreGraph(1,ghostTypeP1-1,getMainColor(1))
-	t[#t+1] = targetScoreGraph(2,ghostTypeP1-1,getMainColor(2))
-	t[#t+1] = markers(ghostTypeP1-1,true)
+	t[#t+1] = targetMaxGraph(2,ghostType-1,getMainColor(2))
+	t[#t+1] = bestScoreGraph(1,ghostType-1,getMainColor(1))
+	t[#t+1] = currentScoreGraph(1,ghostType-1,getMainColor(1))
+	t[#t+1] = targetScoreGraph(2,ghostType-1,getMainColor(2))
+	t[#t+1] = markers(ghostType-1,true)
 end;
 
 
