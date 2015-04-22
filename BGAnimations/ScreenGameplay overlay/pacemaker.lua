@@ -4,23 +4,25 @@ local targetP1 = (tonumber(GetUserPref("GhostTargetP1") or "0")+1)/100; -- targe
 local ghostTypeP2 = tonumber(GetUserPref("GhostScoreTypeP2")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
 local targetP2 = (tonumber(GetUserPref("GhostTargetP2") or "0")+1)/100; -- target score from 0% to 100%.
 
-enabled = true
+local enabled = true
 
-player = PLAYER_1
+local player = PLAYER_1
 
-frameWidth = 105
-frameHeight = SCREEN_HEIGHT
+local frameWidth = 105
+local frameHeight = SCREEN_HEIGHT
 
-frameX = SCREEN_WIDTH-frameWidth
-frameY = 0
+local frameX = SCREEN_WIDTH-frameWidth
+local frameY = 0
 
-barY = 420-- Starting point/bottom of graph
-barCount = 2 -- Number of graphs
-barWidth = 0.6
-barTrim = 0 -- Final width of each graph = ((frameWidth/barCount)*barWidth) - barTrim
-barHeight = 350 -- Max Height of graphs
+local barY = 420-- Starting point/bottom of graph
+local barCount = 2 -- Number of graphs
+local barWidth = 0.6
+local barTrim = 0 -- Final width of each graph = ((frameWidth/barCount)*barWidth) - barTrim
+local barHeight = 350 -- Max Height of graphs
 
-bottomTextY = barHeight+frameX
+local textSpacing = 10
+local bottomTextY = barY+frameY+10
+local topTextY = frameY+barY-barHeight-10-(textSpacing*barCount)
 
 local markerPoints = { --DP/PS/MIGS in that order.
 	[1] = {["AAA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier02"), 
@@ -48,6 +50,20 @@ function currentScoreGraph(index,scoreType,color)
 			else
 				self:zoomy(math.max(1,barHeight*(curScore/maxScore)))
 			end;
+		end;
+		JudgmentMessageCommand=cmd(queuecommand,"Set");
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"BOTTOM TEXT 1";)
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settext,"TOP TEXT 1";)
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
+		SetCommand=function(self)
+			local curScore = getCurScoreST(player,scoreType)
+			self:settext(curScore)
 		end;
 		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
@@ -91,6 +107,21 @@ function targetScoreGraph(index,scoreType,color)
 		end;
 		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"BOTTOM TEXT 2";)
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settext,"TOP TEXT 2";)
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
+		SetCommand=function(self)
+			local curScore = math.ceil(getCurMaxScoreST(player,scoreType)*targetP1)
+			self:settext(curScore)
+		end;
+		JudgmentMessageCommand=cmd(queuecommand,"Set");
+	};
+
 	return t
 end;
 
