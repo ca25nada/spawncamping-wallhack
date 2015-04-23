@@ -5,7 +5,7 @@ local defaultConfig = {
 		SongBGEnabled = true,
 		SongBGMouseEnabled = true,
 		--AvatarEnabled = true, -- Unused
-	}
+	},
 	eval = {
 		CurrentTimeEnabled = true,
 		JudgmentBarEnabled = true,
@@ -25,7 +25,7 @@ function pn_to_profile_slot(pn)
 end
 
 function LoadProfileCustom(profile, dir)
-	local players = GAMESTATE:GetEnabledPLayers()
+	local players = GAMESTATE:GetEnabledPlayers()
 	local playerProfile
 	local pn
 	for k,v in pairs(players) do
@@ -41,7 +41,7 @@ function LoadProfileCustom(profile, dir)
 end
 
 function SaveProfileCustom(profile, dir)
-	local players = GAMESTATE:GetEnabledPLayers()
+	local players = GAMESTATE:GetEnabledPlayers()
 	local playerProfile
 	local pn
 	for k,v in pairs(players) do
