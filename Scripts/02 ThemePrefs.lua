@@ -13,7 +13,7 @@ function OptionRowScreenFilter()
 		LayoutType = "ShowAllInRow",
 		SelectType = "SelectOne",
 		OneChoiceForAllPlayers = false,
-		ExportOnChange = false,
+		ExportOnChange = true,
 		Choices = { THEME:GetString('OptionNames','Off'), '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0', },
 		LoadSelections = function(self, list, pn)
 			local pName = ToEnumShortString(pn)
@@ -251,6 +251,88 @@ function ErrorBar()
 				val = "0";
 			end;
 			WritePrefToFile("ErrorBar"..pName,val);
+			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
+			--THEME:ReloadMetrics();
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end	
+
+function PaceMaker()
+	local t = {
+		Name = "PaceMaker";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = false;
+		ExportOnChange = true;
+		Choices = { THEME:GetString('OptionNames','Off'),'On'};
+		LoadSelections = function(self, list, pn)
+			local pName = ToEnumShortString(pn)
+			if ReadPrefFromFile("PaceMaker"..pName) ~= nil then
+				if GetUserPref("PaceMaker"..pName) == "1" then
+					list[2] = true;
+				else
+					list[1] = true;
+				end;
+			else
+				WritePrefToFile("PaceMaker"..pName,"0");
+				list[1] = true;
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local val;
+			local pName = ToEnumShortString(pn)
+			if list[2] then
+				val = "1";
+			else
+				val = "0";
+			end;
+			WritePrefToFile("PaceMaker"..pName,val);
+			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
+			--THEME:ReloadMetrics();
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end	
+
+
+--===============================================
+
+
+function DefaultScoreType()
+	local t = {
+		Name = "DefaultScoreType";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = true;
+		Choices = { "DP","PS","MIGS"};
+		LoadSelections = function(self, list, pn)
+			if ReadPrefFromFile("DefaultScoreType") ~= nil then
+				if GetUserPref("DefaultScoreType") == "3" then
+					list[3] = true;
+				elseif GetUserPref("DefaultScoreType") == "2" then
+					list[2] = true;
+				else
+					list[1] = true;
+				end;
+			else
+				WritePrefToFile("DefaultScoreType","2");
+				list[2] = true;
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local val;
+			if list[3] then
+				val = "3";
+			elseif list[2] then
+				val = "2";
+			else
+				val = "1";
+			end;
+			WritePrefToFile("DefaultScoreType",val);
 			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
 			--THEME:ReloadMetrics();
 		end;

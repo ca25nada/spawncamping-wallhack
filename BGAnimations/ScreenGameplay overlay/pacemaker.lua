@@ -22,15 +22,17 @@ local textSpacing = 10
 local bottomTextY = barY+frameY+10
 local topTextY = frameY+barY-barHeight-10-(textSpacing*barCount)
 
-local enabled = true and GAMESTATE:GetNumPlayersEnabled() == 1
+local enabled = GAMESTATE:GetNumPlayersEnabled() == 1 
 
 local player = GAMESTATE:GetEnabledPlayers()[1]
 if player == PLAYER_1 then
 	ghostType = tonumber(GetUserPref("GhostScoreTypeP1")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
 	target = (tonumber(GetUserPref("GhostTargetP1") or "0")+1)/100; -- target score from 0% to 100%.
+	enabled =  enabled and (tonumber(GetUserPref("PaceMakerP1"))==1);
 elseif player == PLAYER_2 then
 	ghostType = tonumber(GetUserPref("GhostScoreTypeP2")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
 	target = (tonumber(GetUserPref("GhostTargetP2") or "0")+1)/100; -- target score from 0% to 100%.
+	enabled =  enabled and (tonumber(GetUserPref("PaceMakerP2"))==1);
 	frameX = 0
 end;
 local profile = GetPlayerOrMachineProfile(player)
