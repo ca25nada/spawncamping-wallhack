@@ -1,3 +1,7 @@
+--IIDX-esque scoregraph.
+--Supports arbituary bar dimensions, number of bars so far. (although none of them are in preferences atm.)
+--Support for arbituary display range to be added eventually.
+
 local ghostType
 local target
 
@@ -31,6 +35,7 @@ elseif player == PLAYER_2 then
 end;
 local profile = GetPlayerOrMachineProfile(player)
 
+--Strings and the percent value for the goal/grade
 local markerPoints = { --DP/PS/MIGS in that order.
 	[1] = {["AAA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier02"), 
 			["AA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier03") , 
@@ -186,6 +191,7 @@ function targetMaxGraph(index,scoreType,color)
 	return t
 end;
 
+--The Background markers with the lines corresponding to the minimum required for the grade,etc.
 function markers(scoreType,showMessage)
 	local t = Def.ActorFrame{
 		InitCommand=cmd(diffusealpha,0.3);
@@ -202,8 +208,8 @@ function markers(scoreType,showMessage)
 
 end;
 
+--Make the graph
 local t = Def.ActorFrame{}
-
 if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)

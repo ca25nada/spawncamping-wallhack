@@ -1,3 +1,5 @@
+--Displays the current BPM taking rate/haste mods into account.
+
 local t = Def.ActorFrame {
         LoadFont("Common Normal") .. {
                 Name="Player1BPM";
@@ -29,8 +31,6 @@ local function Update(self)
 	else
 		self:GetChild("Player2BPM"):visible(false)
 	end;
-
-
 end; 
 t.InitCommand=cmd(SetUpdateFunction,Update);
 

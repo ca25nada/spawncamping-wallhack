@@ -1,3 +1,5 @@
+-- Song Progress bar with current/end time and the song title+artist.
+
 --=======================================
 --ONLY EDIT THESE VALUES
 --=======================================

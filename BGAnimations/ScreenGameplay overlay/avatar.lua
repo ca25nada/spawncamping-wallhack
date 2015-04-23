@@ -1,4 +1,4 @@
---avatars should work minus in the case when a 2nd player joins midway, because i have no idea how to re-load the image.
+--Avatar frames which also includes current additive %score, mods, and the song stepsttype/difficulty.
 
 local t = Def.ActorFrame{};
 

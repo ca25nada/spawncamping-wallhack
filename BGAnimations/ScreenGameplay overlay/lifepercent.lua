@@ -1,3 +1,5 @@
+--Displays the current life percentage for each player
+
 local t = Def.ActorFrame {
 		Def.Quad{
 			Name="Player1LifeBG";

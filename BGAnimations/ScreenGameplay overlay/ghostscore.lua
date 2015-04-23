@@ -1,4 +1,5 @@
 -- Dependencies: Scoretracking.lua
+-- Displays average score and the score difference between the player score and the ghost/target score.
 
 local ghostTypeP1 = tonumber(GetUserPref("GhostScoreTypeP1")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
 local avgScoreTypeP1 = tonumber(GetUserPref("AvgScoreTypeP1"));-- 1 = off, 2 = DP, 3 = PS, 4 = MIGS

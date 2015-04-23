@@ -1,4 +1,5 @@
 -- Dependencies: Scoretracking.lua
+-- Simple Judgecounter that tracks #of occurences for each judgment and the current grade from the average DP score.
 
 local t = Def.ActorFrame{}
 
@@ -13,7 +14,7 @@ local judges = { -- do not edit
 	"HoldNoteScore_LetGo",
 }
 
-
+--These should be moved to 02 colors.lua
 local judgeColor = { -- Colors of each Judgment types
 	TapNoteScore_W1 = color("#99ccff"),
 	TapNoteScore_W2	= HSV(48,0.8,0.95),
@@ -58,8 +59,6 @@ local frameY2P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 --=========================================================================--
 --=========================================================================--
 --=========================================================================--
-
-
 local judgeTypeP1 = tonumber(GetUserPref("JudgeTypeP1"));
 local judgeTypeP2 = tonumber(GetUserPref("JudgeTypeP2"));
 

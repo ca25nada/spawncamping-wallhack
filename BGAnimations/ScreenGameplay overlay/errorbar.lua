@@ -1,6 +1,6 @@
 local t = Def.ActorFrame{}
 
--- A somewhat naive implementation for now.
+-- A somewhat naive implementation of the osu's error bar.
 -- Single Player only until I figure out where to put everything
 -- Hopefully I can change it so I don't have to initialize 300 quads beforehand.
 local enabled = (((GetUserPref("ErrorBarP1") == "1") and GAMESTATE:IsHumanPlayer(PLAYER_1)) or 
@@ -12,7 +12,7 @@ local pn = GAMESTATE:GetEnabledPlayers()[1]
 --ONLY EDIT THESE VALUES
 --=======================================
 local maxOffsetRange = 0.18 --timing range to show in seconds. 0.18 for upto bads, 0.135 for goods, 0.09 for greats, etc.
-local barcount = 500 -- Number of bars to initialize.
+local barcount = 300 -- Number of bars to initialize.
 local frameX = SCREEN_CENTER_X -- X Positon (Center of the bar)
 local frameY = SCREEN_BOTTOM-35 -- Y Positon (Center of the bar)
 local frameHeight = 10 -- Height of the bar
