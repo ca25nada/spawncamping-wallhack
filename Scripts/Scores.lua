@@ -2,7 +2,8 @@
 
 -- Change this to change the scoretype the theme returns 
 --(should be made into a preference eventually)
-local defaultScoreType =getTempThemePref("DefaultScoreType") --1DP 2PS 3MIGS
+local defaultScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).global.DefaultScoreType
+--local defaultScoreType = tonumber(GetUserPref("DefaultScoreType")) --1DP 2PS 3MIGS
 
 
 local gradeTiers = {
@@ -128,6 +129,7 @@ local indexScoreP2
 
 -- Resets the scoretable for P1
 local function resetScoreListP1()
+
 	song = nil
 	profileP1 = nil
 	stepsP1 = nil
@@ -154,6 +156,8 @@ end;
 
 --Initializes highscoretable of the player, as well as songs, steps and profile of the player associated.
 function initScoreList(pn)
+	local defaultScoreType = playerConfig:get_data(pn_to_profile_slot(pn)).global.DefaultScoreType
+	--local defaultScoreType = tonumber(GetUserPref("DefaultScoreType")) --1DP 2PS 3MIGS
 	if pn == PLAYER_1 then
 		resetScoreListP1()
 	end;
