@@ -79,14 +79,20 @@ themeColors = {
 		TapNoteScore_Miss = HSV(0,0.8,0.8),			
 		HoldNoteScore_Held = HSV(48,0.8,0.95),	
 		HoldNoteScore_LetGo = HSV(0,0.8,0.8)
-	}
+	},
 
+	paceMaker = {
+		Current = color("#0099ff"),
+		Target = color("#ff9999"),
+		Ghost = "" -- unused,
+	}
 }
+
 
 
 function getMainColor(i)
 	return themeColors.main[i] or color("#FFFFFF")
-end
+end;
 
 function getGradeColor (grade)
 	return themeColors.grade[grade] or color("#ffffff");
@@ -98,6 +104,10 @@ end;
 
 function getVividDifficultyColor(diff)
 	return themeColors.DifficultyVivid[diff] or color("#ffffff");
+end;
+
+function getPaceMakerColor(type)
+	return themeColors.paceMaker[type] or color("#ffffff");
 end;
 
 function getSongLengthColor(s)

@@ -29,6 +29,7 @@ elseif player == PLAYER_2 then
 	target = (tonumber(GetUserPref("GhostTargetP2") or "0")+1)/100; -- target score from 0% to 100%.
 	frameX = 0
 end;
+local profile = GetPlayerOrMachineProfile(player)
 
 local markerPoints = { --DP/PS/MIGS in that order.
 	[1] = {["AAA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier02"), 
@@ -60,10 +61,10 @@ function currentScoreGraph(index,scoreType,color)
 		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"BOTTOM TEXT 1";)
+		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Current Score";)
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settext,"TOP TEXT 1";)
+		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settext,profile:GetDisplayName();)
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
@@ -81,7 +82,7 @@ end;
 function bestScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.1;);
+		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.2;);
 		BeginCommand=function(self)
 			local bestScore = getHighestScore(player,0,scoreType)
 			local maxScore = getMaxScoreST(player,scoreType)
@@ -91,6 +92,24 @@ function bestScoreGraph(index,scoreType,color)
 			else
 				self:zoomy(math.max(1,barHeight*(bestScore/maxScore)))
 			end;
+		end;
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY-12;zoom,0.35;maxwidth,((frameWidth/barCount)*barWidth)/0.35;diffusealpha,0);
+		BeginCommand=function(self)
+			local bestScore = getHighestScore(player,0,scoreType)
+			local maxScore = getMaxScoreST(player,scoreType)
+			self:smooth(1.5)
+			self:settext("Best\n"..bestScore)
+			self:diffusealpha(1)
+			if maxScore <= 0 then
+				self:visible(false)
+			else
+				self:y(frameY+barY-math.max(12,(barHeight*(bestScore/maxScore))))
+			end;
+			self:sleep(0.5)
+			self:smooth(0.5)
+			self:diffusealpha(0)
 		end;
 	};
 	return t
@@ -114,10 +133,10 @@ function targetScoreGraph(index,scoreType,color)
 		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"BOTTOM TEXT 2";)
+		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Target Score");
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settext,"TOP TEXT 2";)
+		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settext,"Rank %s");
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
@@ -136,7 +155,7 @@ end;
 function targetMaxGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.1;);
+		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.2;);
 		BeginCommand=function(self)
 			local maxScore = getMaxScoreST(player,scoreType)
 			self:smooth(1.5)
@@ -145,6 +164,23 @@ function targetMaxGraph(index,scoreType,color)
 			else
 				self:zoomy(math.max(1,barHeight*(math.ceil(maxScore*target)/maxScore)))
 			end;
+		end;
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoom,0.35;maxwidth,((frameWidth/barCount)*barWidth)/0.35;diffusealpha,0);
+		BeginCommand=function(self)
+			local maxScore = getMaxScoreST(player,scoreType)
+			self:smooth(1.5)
+			self:settext("Target\n"..math.ceil(maxScore*target))
+			self:diffusealpha(1)
+			if maxScore <= 0 then
+				self:visible(false)
+			else
+				self:y(frameY+barY-math.max(12,(barHeight*(math.ceil(maxScore*target)/maxScore))))
+			end;
+			self:sleep(0.5)
+			self:smooth(0.5)
+			self:diffusealpha(0)
 		end;
 	};
 	return t
@@ -172,10 +208,10 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)
 	};
-	t[#t+1] = targetMaxGraph(2,ghostType-1,getMainColor(2))
-	t[#t+1] = bestScoreGraph(1,ghostType-1,getMainColor(1))
-	t[#t+1] = currentScoreGraph(1,ghostType-1,getMainColor(1))
-	t[#t+1] = targetScoreGraph(2,ghostType-1,getMainColor(2))
+	t[#t+1] = targetMaxGraph(2,ghostType-1,getPaceMakerColor("Target"))
+	t[#t+1] = bestScoreGraph(1,ghostType-1,getPaceMakerColor("Current"))
+	t[#t+1] = currentScoreGraph(1,ghostType-1,getPaceMakerColor("Current"))
+	t[#t+1] = targetScoreGraph(2,ghostType-1,getPaceMakerColor("Target"))
 	t[#t+1] = markers(ghostType-1,true)
 end;
 
