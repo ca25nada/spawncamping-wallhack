@@ -17,19 +17,3 @@ local defaultConfig = {
 
 themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig, -1)
 themeConfig:load()
-themeConfig:set_dirty()
-themeConfig:save()
-
-local slot_conversion= {
-	[PLAYER_1]= "ProfileSlot_Player1", [PLAYER_2]= "ProfileSlot_Player2",}
-function pn_to_profile_slot(pn)
-	return slot_conversion[pn] or "ProfileSlot_Invalid"
-end
-
-function LoadProfileCustom(profile, dir)
-end
-
-function SaveProfileCustom(profile, dir)
-	themeConfig:set_dirty()
-	themeConfig:save()
-end

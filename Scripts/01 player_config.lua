@@ -1,3 +1,4 @@
+--[[
 local defaultConfig = {
 	temp = 0
 }
@@ -43,3 +44,4 @@ function SaveProfileCustom(profile, dir)
 		playerConfig:save(pn_to_profile_slot(pn))
 	end
 end
+--]]
