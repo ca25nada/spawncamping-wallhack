@@ -299,7 +299,7 @@ end
 
 
 --===============================================
-
+--Globals
 
 function DefaultScoreType()
 	local t = {

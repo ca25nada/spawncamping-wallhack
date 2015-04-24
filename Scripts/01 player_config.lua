@@ -1,13 +1,11 @@
 
 local defaultConfig = {
-	temp = 0
+	temp = {0}
 }
 
 playerConfig = create_setting("playerConfig", "playerConfig.lua", defaultConfig, -1)
 playerConfig:load()
 
-local slot_conversion= {
-	[PLAYER_1]= "ProfileSlot_Player1", [PLAYER_2]= "ProfileSlot_Player2",}
 
 
 function LoadProfileCustom(profile, dir)
@@ -22,7 +20,7 @@ function LoadProfileCustom(profile, dir)
 	end; 
 
 	if pn then
-		local config = playerConfig:get_data(pn_to_profile_slot(pn))
+		playerConfig:load(pn_to_profile_slot(pn))
 	end
 end
 
