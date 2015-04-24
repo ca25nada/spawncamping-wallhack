@@ -15,14 +15,14 @@ Currently, it'll only run properly on a SM5 nightly build. which you can grab fr
 * SMO works but it's somewhat messy, also you can't grab any server-side scores.
 * Scripts for fetching various stuff are kinda everywhere right now. Needs some cleanup.
 * The cells at the bottom of the eval screen doesn't fill completely when there are less judgments than the cells themselves. 
-* Overlapping elements for screens that are not wide enough.
 
 ---
 ##### To be added soon 
 * Title menu
-* IIDX-esque Pacemaker graph
 * Info for various tabs on ScreenSelectMusic
 * General Protiming stuff (fast/slow indicator, ms offsets)
+* Theme preferences
+* maybe mouse interactions....?
 
 ---
 ##### Acknowledgements
@@ -30,3 +30,4 @@ Currently, it'll only run properly on a SM5 nightly build. which you can grab fr
 * people in #vsrg,#stepmania-devs and various other people for feedbacks..!
 * ScreenFilter.lua was taken from the Default theme by Midiman.
 * CDTitle Resizer, ScreenSelectMusic Backgrounds are adapted from Jousway's code.
+* Kyzentun's system is used for setting profile/theme preferences.
