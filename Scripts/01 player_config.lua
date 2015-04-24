@@ -1,4 +1,4 @@
---[[
+
 local defaultConfig = {
 	temp = 0
 }
@@ -8,9 +8,7 @@ playerConfig:load()
 
 local slot_conversion= {
 	[PLAYER_1]= "ProfileSlot_Player1", [PLAYER_2]= "ProfileSlot_Player2",}
-function pn_to_profile_slot(pn)
-	return slot_conversion[pn] or "ProfileSlot_Invalid"
-end
+
 
 function LoadProfileCustom(profile, dir)
 	local players = GAMESTATE:GetEnabledPlayers()
@@ -44,4 +42,3 @@ function SaveProfileCustom(profile, dir)
 		playerConfig:save(pn_to_profile_slot(pn))
 	end
 end
---]]

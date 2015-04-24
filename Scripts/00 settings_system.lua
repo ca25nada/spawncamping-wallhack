@@ -142,3 +142,99 @@ function write_str_to_file(str, fname, str_name)
 		file_handle:destroy()
 	end
 end
+
+function string_needs_escape(str)
+	if str:match("^[a-zA-Z_][a-zA-Z_0-9]*$") then
+		return false
+	else
+		return true
+	end
+end
+
+function lua_table_to_string(t, indent, line_pos)
+	indent= indent or ""
+	line_pos= (line_pos or #indent) + 1
+	local internal_indent= indent .. "  "
+	local ret= "{"
+	local has_table= false
+	for k, v in pairs(t) do if type(v) == "table" then has_table= true end
+	end
+	if has_table then
+		ret= "{\n" .. internal_indent
+		line_pos= #internal_indent
+	end
+	local separator= ""
+	local function do_value_for_key(k, v, need_key_str)
+		if type(v) == "nil" then return end
+		local k_str= k
+		if type(k) == "number" then
+			k_str= "[" .. k .. "]"
+		else
+			if string_needs_escape(k) then
+				k_str= "[" .. ("%q"):format(k) .. "]"
+			else
+				k_str= k
+			end
+		end
+		if need_key_str then
+			k_str= k_str .. "= "
+		else
+			k_str= ""
+		end
+		local v_str= ""
+		if type(v) == "table" then
+			v_str= lua_table_to_string(v, internal_indent, line_pos + #k_str)
+		elseif type(v) == "string" then
+			v_str= ("%q"):format(v)
+		elseif type(v) == "number" then
+			if v ~= math.floor(v) then
+				v_str= ("%.6f"):format(v)
+				local last_nonz= v_str:reverse():find("[^0]")
+				if last_nonz then
+					v_str= v_str:sub(1, -last_nonz)
+				end
+			else
+				v_str= tostring(v)
+			end
+		else
+			v_str= tostring(v)
+		end
+		local to_add= k_str .. v_str
+		if type(v) == "table" then
+			if separator == "" then
+				to_add= separator .. to_add
+			else
+				to_add= separator .."\n" .. internal_indent .. to_add
+			end
+		else
+			if line_pos + #separator + #to_add > 80 then
+				line_pos= #internal_indent + #to_add
+				to_add= separator .. "\n" .. internal_indent .. to_add
+			else
+				to_add= separator .. to_add
+				line_pos= line_pos + #to_add
+			end
+		end
+		ret= ret .. to_add
+		separator= ", "
+	end
+	-- do the integer indices from 0 to n first, in order.
+	do_value_for_key(0, t[0], true)
+	for n= 1, #t do
+		do_value_for_key(n, t[n], false)
+	end
+	for k, v in pairs(t) do
+		local is_integer_key= (type(k) == "number") and (k == math.floor(k)) and k >= 0 and k <= #t
+		if not is_integer_key then
+			do_value_for_key(k, v, true)
+		end
+	end
+	ret= ret .. "}"
+	return ret
+end
+
+local slot_conversion= {
+	[PLAYER_1]= "ProfileSlot_Player1", [PLAYER_2]= "ProfileSlot_Player2",}
+function pn_to_profile_slot(pn)
+	return slot_conversion[pn] or "ProfileSlot_Invalid"
+end
