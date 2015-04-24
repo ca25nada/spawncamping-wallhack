@@ -330,7 +330,7 @@ function DefaultScoreType()
 			end;
 			themeConfig:get_data().global.DefaultScoreType = value
 			themeConfig:set_dirty()
-			--themeConfig:save()
+			themeConfig:save()
 		end;
 	};
 	setmetatable( t, t );
