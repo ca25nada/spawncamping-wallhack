@@ -96,7 +96,7 @@ local function GraphDisplay( pn )
 				local steps = GAMESTATE:GetCurrentSteps(pn);
 				local notes = 0
 				if steps ~= nil then
-					notes = stepsP1:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+					notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 				end;
 				self:settextf("%d Notes",notes)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then

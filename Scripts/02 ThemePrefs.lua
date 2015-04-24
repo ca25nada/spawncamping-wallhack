@@ -310,31 +310,27 @@ function DefaultScoreType()
 		ExportOnChange = true;
 		Choices = { "DP","PS","MIGS"};
 		LoadSelections = function(self, list, pn)
-			if ReadPrefFromFile("DefaultScoreType") ~= nil then
-				if GetUserPref("DefaultScoreType") == "3" then
-					list[3] = true;
-				elseif GetUserPref("DefaultScoreType") == "2" then
-					list[2] = true;
-				else
-					list[1] = true;
-				end;
-			else
-				WritePrefToFile("DefaultScoreType","2");
-				list[2] = true;
+			local pref = themeConfig:get_data().global.DefaultScoreType
+			if pref == 1 then
+				list[1] = true
+			elseif pref == 2 then
+				list[2] = true
+			else 
+				list[3] = true
 			end;
 		end;
 		SaveSelections = function(self, list, pn)
-			local val;
-			if list[3] then
-				val = "3";
-			elseif list[2] then
-				val = "2";
+			local value
+			if list[1] == true then
+				value = 1
+			elseif list[2] == true then
+				value = 2
 			else
-				val = "1";
+				value = 3
 			end;
-			WritePrefToFile("DefaultScoreType",val);
-			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
-			--THEME:ReloadMetrics();
+			themeConfig:get_data().global.DefaultScoreType = value
+			themeConfig:set_dirty()
+			--themeConfig:save()
 		end;
 	};
 	setmetatable( t, t );

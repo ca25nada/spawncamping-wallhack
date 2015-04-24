@@ -107,7 +107,7 @@ end;
 --This should be moved somewhere else
 function getScoreTypeText(scoreType)
 	if scoreType == 0 then
-		return scoreTypeText[tonumber(GetUserPref("DefaultScoreType"))]
+		return scoreTypeText[themeConfig:get_data().global.DefaultScoreType]
 	else
 		return scoreTypeText[scoreType]
 	end;

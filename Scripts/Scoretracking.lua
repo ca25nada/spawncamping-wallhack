@@ -1,6 +1,6 @@
 --Assortment of wrapped functions related to score/grade tracking
 
-local defaultScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).global.DefaultScoreType
+local defaultScoreType = themeConfig:get_data().global.DefaultScoreType
 --local defaultScoreType = tonumber(GetUserPref("DefaultScoreType"))
 
 local gradeString = {
@@ -134,8 +134,8 @@ end
 
 -- call this before doing anything
 function resetJudgeST()
-	local defaultScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).global.DefaultScoreType
-	--local defaultScoreType = tonumber(GetUserPref("DefaultScoreType"))
+	defaultScoreType = themeConfig:get_data().global.DefaultScoreType
+	-- defaultScoreType = tonumber(GetUserPref("DefaultScoreType"))
 	for k,_ in pairs(judgeStatsP1) do
 		judgeStatsP1[k] = 0
 		judgeStatsP2[k] = 0

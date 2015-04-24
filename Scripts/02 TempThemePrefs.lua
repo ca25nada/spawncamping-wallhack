@@ -3,7 +3,7 @@
 --No prefs for screengameplay are here since they're added already.
 
 local preferences = {
-	DefaultScoreType = playerConfig:get_data(pn_to_profile_slot(pn)).global.DefaultScoreType,
+	DefaultScoreType = themeConfig:get_data().global.DefaultScoreType,
 	--DefaultScoreType = tonumber(GetUserPref("DefaultScoreType")), -- 1 = MAX2 DP, 2 = Oni Percent Score, 3 = MIGS
 	TipType = 1, -- 1 = Tips, 2= random quotes phrases, 3 = hide
 	SongBGEnabled = true,
