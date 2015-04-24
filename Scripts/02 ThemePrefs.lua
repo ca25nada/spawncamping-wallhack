@@ -336,3 +336,103 @@ function DefaultScoreType()
 	setmetatable( t, t );
 	return t;
 end	
+
+function TipType()
+	local t = {
+		Name = "TipType";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = true;
+		Choices = { "Off","Tips","Random Phrases"};
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.TipType
+			if pref == 1 then
+				list[1] = true
+			elseif pref == 2 then
+				list[2] = true
+			else 
+				list[3] = true
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] == true then
+				value = 1
+			elseif list[2] == true then
+				value = 2
+			else
+				value = 3
+			end;
+			themeConfig:get_data().global.TipType = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end	
+
+function SongBGEnabled()
+	local t = {
+		Name = "SongBGEnabled";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = true;
+		Choices = { "Off","On"};
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.SongBGEnabled
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end;
+			themeConfig:get_data().global.SongBGEnabled = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end	
+
+function SongBGMouseEnabled()
+	local t = {
+		Name = "SongBGMouseEnabled";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = true;
+		Choices = { "Off","On"};
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.SongBGMouseEnabled
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end;
+			themeConfig:get_data().global.SongBGMouseEnabled = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end	

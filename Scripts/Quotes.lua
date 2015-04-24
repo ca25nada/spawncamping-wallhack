@@ -242,9 +242,9 @@ local Phrases = {
 --tip
 
 function getRandomQuotes(tipType)
-    if tipType == 1 then
+    if tipType == 2 then
         return "TIP: "..Tips[math.random(#Tips)];
-    elseif tipType == 2 then
+    elseif tipType == 3 then
         return Phrases[math.random(#Phrases)];
     else
         return "";

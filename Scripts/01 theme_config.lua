@@ -1,7 +1,7 @@
 local defaultConfig = {
 	global = {
 		DefaultScoreType = 2, -- 1 = MAX2 DP, 2 = Oni Percent Score, 3 = MIGS
-		TipType = 1, -- 1 = Tips, 2= random quotes phrases, 3 = hide
+		TipType = 2, -- 1 = Hide,2=tips 3= random quotes phrases,
 		SongBGEnabled = true,
 		SongBGMouseEnabled = true,
 		--AvatarEnabled = true, -- Unused

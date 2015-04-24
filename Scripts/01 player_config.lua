@@ -1,6 +1,6 @@
 
 local defaultConfig = {
-	temp = {0}
+	temp = 0
 }
 
 playerConfig = create_setting("playerConfig", "playerConfig.lua", defaultConfig, -1)
