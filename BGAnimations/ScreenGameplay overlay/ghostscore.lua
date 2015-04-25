@@ -3,11 +3,11 @@
 
 local ghostTypeP1 = tonumber(GetUserPref("GhostScoreTypeP1")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
 local avgScoreTypeP1 = tonumber(GetUserPref("AvgScoreTypeP1"));-- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-local targetP1 = (tonumber(GetUserPref("GhostTargetP1") or "0")+1)/100; -- target score from 0% to 100%.
+local targetP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1))/100; -- target score from 0% to 100%.
 
 local ghostTypeP2 = tonumber(GetUserPref("GhostScoreTypeP2")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
 local avgScoreTypeP2 = tonumber(GetUserPref("AvgScoreTypeP2"));-- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-local targetP2 = (tonumber(GetUserPref("GhostTargetP2") or "0")+1)/100; -- target score from 0% to 100%.
+local targetP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2))/100; -- target score from 0% to 100%.
 
 
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer(); -- For relocating graph/judgecount frame

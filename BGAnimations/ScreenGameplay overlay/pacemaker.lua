@@ -27,12 +27,12 @@ local enabled = GAMESTATE:GetNumPlayersEnabled() == 1
 local player = GAMESTATE:GetEnabledPlayers()[1]
 if player == PLAYER_1 then
 	ghostType = tonumber(GetUserPref("GhostScoreTypeP1")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-	target = (tonumber(GetUserPref("GhostTargetP1") or "0")+1)/100; -- target score from 0% to 100%.
-	enabled =  enabled and (tonumber(GetUserPref("PaceMakerP1"))==1);
+	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
+	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
 elseif player == PLAYER_2 then
 	ghostType = tonumber(GetUserPref("GhostScoreTypeP2")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-	target = (tonumber(GetUserPref("GhostTargetP2") or "0")+1)/100; -- target score from 0% to 100%.
-	enabled =  enabled and (tonumber(GetUserPref("PaceMakerP2"))==1);
+	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
+	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
 	frameX = 0
 end;
 local profile = GetPlayerOrMachineProfile(player)

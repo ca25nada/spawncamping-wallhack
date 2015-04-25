@@ -182,7 +182,6 @@ local tChoices = {};
 for i=1,100  do
 tChoices[i] = tostring(i)..'%';
 end;
-
 function GhostTarget()
 	local t = {
 		Name = "GhostTarget";
@@ -192,29 +191,22 @@ function GhostTarget()
 		ExportOnChange = true;
 		Choices = tChoices;
 		LoadSelections = function(self, list, pn)
-			local pName = ToEnumShortString(pn)
-			if ReadPrefFromFile("GhostTarget"..pName) ~= nil then
-				local loadval = GetUserPrefN("GhostTarget"..pName)+1;
-				list[loadval] = true;
-			else
-				WritePrefToFile("GhostTarget"..pName,"1");
-				list[1] = true;
-			end;
+			local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget
+			list[prefs] = true;
 		end;
 		SaveSelections = function(self, list, pn)
 			local found = false
 			for i=1,#list do
 				if not found then
 					if list[i] == true then
-						local val = i-1;
-						local pName = ToEnumShortString(pn)
-						WritePrefToFile("GhostTarget"..pName,val);
+						local value = i;
+						playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget = value
 						found = true
 					end
 				end
 			end
-			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
-			--THEME:ReloadMetrics();
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
 		end
 	}
 	setmetatable( t, t )
@@ -230,29 +222,19 @@ function ErrorBar()
 		ExportOnChange = true;
 		Choices = { THEME:GetString('OptionNames','Off'),'On'};
 		LoadSelections = function(self, list, pn)
-			local pName = ToEnumShortString(pn)
-			if ReadPrefFromFile("ErrorBar"..pName) ~= nil then
-				if GetUserPref("ErrorBar"..pName) == "1" then
-					list[2] = true;
-				else
-					list[1] = true;
-				end;
+			local pref = playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar
+			if pref then
+				list[2] = true;
 			else
-				WritePrefToFile("ErrorBar"..pName,"0");
 				list[1] = true;
 			end;
 		end;
 		SaveSelections = function(self, list, pn)
-			local val;
-			local pName = ToEnumShortString(pn)
-			if list[2] then
-				val = "1";
-			else
-				val = "0";
-			end;
-			WritePrefToFile("ErrorBar"..pName,val);
-			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
-			--THEME:ReloadMetrics();
+			local value
+			value = list[2]
+			playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
 		end;
 	};
 	setmetatable( t, t );
@@ -268,29 +250,19 @@ function PaceMaker()
 		ExportOnChange = true;
 		Choices = { THEME:GetString('OptionNames','Off'),'On'};
 		LoadSelections = function(self, list, pn)
-			local pName = ToEnumShortString(pn)
-			if ReadPrefFromFile("PaceMaker"..pName) ~= nil then
-				if GetUserPref("PaceMaker"..pName) == "1" then
-					list[2] = true;
-				else
-					list[1] = true;
-				end;
+			local pref = playerConfig:get_data(pn_to_profile_slot(pn)).PaceMaker
+			if pref then
+				list[2] = true;
 			else
-				WritePrefToFile("PaceMaker"..pName,"0");
 				list[1] = true;
 			end;
 		end;
 		SaveSelections = function(self, list, pn)
-			local val;
-			local pName = ToEnumShortString(pn)
-			if list[2] then
-				val = "1";
-			else
-				val = "0";
-			end;
-			WritePrefToFile("PaceMaker"..pName,val);
-			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
-			--THEME:ReloadMetrics();
+			local value
+			value = list[2]
+			playerConfig:get_data(pn_to_profile_slot(pn)).PaceMaker = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
 		end;
 	};
 	setmetatable( t, t );

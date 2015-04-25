@@ -1,12 +1,16 @@
 
 local defaultConfig = {
-	temp = 0
+	ScreenFilter = 0,
+	JudgeType = 0,
+	AvgScoreType = 0,
+	GhostScoreType = 0,
+	GhostTarget = 1,
+	ErrorBar = false,
+	PaceMaker = false,
 }
 
 playerConfig = create_setting("playerConfig", "playerConfig.lua", defaultConfig, -1)
-playerConfig:load()
-
-
+--playerConfig:load()
 
 function LoadProfileCustom(profile, dir)
 	local players = GAMESTATE:GetEnabledPlayers()
