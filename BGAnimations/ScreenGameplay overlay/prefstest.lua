@@ -22,6 +22,14 @@ local stringListP2 = {
 
 local t = Def.ActorFrame{}
 
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,SCREEN_CENTER_X+200,SCREEN_CENTER_Y;zoomto,150,200;diffuse,color("#33333399"));
+};
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,SCREEN_CENTER_X-200,SCREEN_CENTER_Y;zoomto,150,200;diffuse,color("#33333399"));
+};
+
 t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,SCREEN_CENTER_X+200,SCREEN_CENTER_Y;zoom,0.6;shadowlength,1);
 		BeginCommand=cmd(queuecommand,"Set");
