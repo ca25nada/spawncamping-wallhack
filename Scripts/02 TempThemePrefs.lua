@@ -2,6 +2,7 @@
 --Will be either removed or changed when I eventually add a screen for changing theme prefs ingame.
 --No prefs for screengameplay are here since they're added already.
 
+--[[ Deprecated 
 local preferences = {
 	DefaultScoreType = themeConfig:get_data().global.DefaultScoreType,
 	--DefaultScoreType = tonumber(GetUserPref("DefaultScoreType")), -- 1 = MAX2 DP, 2 = Oni Percent Score, 3 = MIGS
@@ -10,8 +11,8 @@ local preferences = {
 	SongBGMouseEnabled = true,
 	--AvatarEnabled = true, -- Unused
 }
-
-local evalPreferences = {
+--]]
+local evalPreferences = { -- soon to be preferences when i'm not lazy
 	CurrentTimeEnabled = true,
 	JudgmentBarEnabled = true,
 	JudgmentBarCellCount = 100, --Will be halved for 2p
