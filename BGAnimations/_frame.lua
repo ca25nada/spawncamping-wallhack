@@ -23,7 +23,7 @@ t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,0,SCREEN_HEIGHT-bottomFrameHeight;halign,0;valign,0;zoomto,SCREEN_WIDTH,borderWidth;diffuse,getMainColor(2));
 };
 
-if getTempThemePref("TipType") == 1 or getTempThemePref("TipType") == 2 then
+if themeConfig:get_data().global.TipType == 2 or themeConfig:get_data().global.TipType == 3 then
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_BOTTOM-7;zoom,0.35;settext,getRandomQuotes(themeConfig:get_data().global.TipType);diffuse,getMainColor(3);diffusealpha,0;zoomy,0;maxwidth,(SCREEN_WIDTH-350)/0.35;);
 		BeginCommand=function(self)
