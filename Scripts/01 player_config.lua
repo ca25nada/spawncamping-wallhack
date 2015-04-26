@@ -4,7 +4,7 @@ local defaultConfig = {
 	JudgeType = 0,
 	AvgScoreType = 0,
 	GhostScoreType = 0,
-	GhostTarget = 1,
+	GhostTarget = 0,
 	ErrorBar = false,
 	PaceMaker = false,
 }

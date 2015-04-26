@@ -178,7 +178,7 @@ if judgeTypeP2 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 	local index = 0 --purely for positional purposes
 	-- make judgecount thing
 	for k,v in pairs(judges) do
-		if judgeTypeP1 == 2 then
+		if judgeTypeP2 == 2 then
 			t[#t+1] = judgeHighlight(PLAYER_2,v,index)
 		end
 		t[#t+1] = judgeText(PLAYER_2,v,index)
