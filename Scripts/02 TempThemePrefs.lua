@@ -19,11 +19,11 @@ local evalPreferences = { -- soon to be preferences when i'm not lazy
 	ScoreBoardEnabled = true,
 	ScoreBoardMaxEntry = math.min(10,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")),
 }
-
+--[[
 function getTempThemePref(prefs)
 	return preferences[prefs]
 end;
-
+--]]
 function getTempEvalPref(prefs)
 	return evalPreferences[prefs]
 end;
