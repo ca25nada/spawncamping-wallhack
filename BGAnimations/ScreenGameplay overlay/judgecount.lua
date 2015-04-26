@@ -59,8 +59,8 @@ local frameY2P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 --=========================================================================--
 --=========================================================================--
 --=========================================================================--
-local judgeTypeP1 = tonumber(GetUserPref("JudgeTypeP1"));
-local judgeTypeP2 = tonumber(GetUserPref("JudgeTypeP2"));
+local judgeTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType
+local judgeTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType
 
 local function judgeText(pn,judge,index)
 	local frameX = 0
@@ -138,7 +138,7 @@ local function judgeHighlight(pn,judge,index)
 	return t
 end
 
-if judgeTypeP1 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+if judgeTypeP1 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	t[#t+1] = Def.Quad{ -- Judgecount Background
 		InitCommand=cmd(xy,frameX1P,frameY1P;zoomto,frameWidth,frameHeight;diffuse,color("0,0,0,0.4");horizalign,left;vertalign,top);
 	}
@@ -146,7 +146,7 @@ if judgeTypeP1 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	local index = 0 --purely for positional purposes
 	-- make judgecount thing
 	for k,v in pairs(judges) do
-		if judgeTypeP1 == 3 then
+		if judgeTypeP1 == 2 then
 			t[#t+1] = judgeHighlight(PLAYER_1,v,index)
 		end
 		t[#t+1] = judgeText(PLAYER_1,v,index)
@@ -170,7 +170,7 @@ if judgeTypeP1 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	}
 end
 
-if judgeTypeP2 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+if judgeTypeP2 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 	t[#t+1] = Def.Quad{ -- Judgecount Background
 		InitCommand=cmd(xy,frameX2P,frameY2P;zoomto,frameWidth,frameHeight;diffuse,color("0,0,0,0.4");horizalign,left;vertalign,top);
 	}
@@ -178,7 +178,7 @@ if judgeTypeP2 ~= 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 	local index = 0 --purely for positional purposes
 	-- make judgecount thing
 	for k,v in pairs(judges) do
-		if judgeTypeP1 == 3 then
+		if judgeTypeP1 == 2 then
 			t[#t+1] = judgeHighlight(PLAYER_2,v,index)
 		end
 		t[#t+1] = judgeText(PLAYER_2,v,index)

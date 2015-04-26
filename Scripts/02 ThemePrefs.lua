@@ -51,33 +51,21 @@ function JudgeType()
 		ExportOnChange = true;
 		Choices = { THEME:GetString('OptionNames','Off'),'No Highlights','On'};
 		LoadSelections = function(self, list, pn)
-			local pName = ToEnumShortString(pn)
-			if ReadPrefFromFile("JudgeType"..pName) ~= nil then
-				if GetUserPref("JudgeType"..pName) == "3" then
-					list[3] = true;
-				elseif GetUserPref("JudgeType"..pName) == "2" then
-					list[2] = true;
-				else
-					list[1] = true;
-				end;
-			else
-				WritePrefToFile("JudgeType"..pName,"1");
-				list[1] = true;
-			end;
+			local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).JudgeType
+			list[prefs+1] = true
 		end;
 		SaveSelections = function(self, list, pn)
-			local val;
-			local pName = ToEnumShortString(pn)
+			local value
 			if list[3] then
-				val = "3";
+				value = 2;
 			elseif list[2] then
-				val = "2";
+				value = 1;
 			else
-				val = "1";
+				value = 0;
 			end;
-			WritePrefToFile("JudgeType"..pName,val);
-			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
-			--THEME:ReloadMetrics();
+			playerConfig:get_data(pn_to_profile_slot(pn)).JudgeType = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
 		end;
 	};
 	setmetatable( t, t );
@@ -94,37 +82,23 @@ function AvgScoreType()
 		ExportOnChange = true;
 		Choices = {THEME:GetString('OptionNames','Off'),'DP','%Score','MIGS' };
 		LoadSelections = function(self, list, pn)
-			local pName = ToEnumShortString(pn)
-			if ReadPrefFromFile("AvgScoreType"..pName) ~= nil then
-				if GetUserPref("AvgScoreType"..pName) == "4" then
-					list[4] = true;
-				elseif GetUserPref("AvgScoreType"..pName) == "3" then
-					list[3] = true;
-				elseif GetUserPref("AvgScoreType"..pName) == "2" then
-					list[2] = true;
-				else
-					list[1] = true;
-				end;
-			else
-				WritePrefToFile("AvgScoreType"..pName,"1");
-				list[1] = true;
-			end;
+			local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).AvgScoreType
+			list[prefs+1] = true
 		end;
 		SaveSelections = function(self, list, pn)
-			local val;
-			local pName = ToEnumShortString(pn)
+			local value
 			if list[4] then
-				val = "4";
+				value = 3;
 			elseif list[3] then
-				val = "3";
+				value = 2;
 			elseif list[2] then
-				val = "2";
+				value = 1;
 			else
-				val = "1";
+				value = 0;
 			end;
-			WritePrefToFile("AvgScoreType"..pName,val);
-			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
-			--THEME:ReloadMetrics();
+			playerConfig:get_data(pn_to_profile_slot(pn)).AvgScoreType = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
 		end;
 	};
 	setmetatable( t, t );
@@ -140,37 +114,23 @@ function GhostScoreType()
 		ExportOnChange = true;
 		Choices = { THEME:GetString('OptionNames','Off'),'DP','%Score','MIGS' };
 		LoadSelections = function(self, list, pn)
-			local pName = ToEnumShortString(pn)
-			if ReadPrefFromFile("GhostScoreType"..pName) ~= nil then
-				if GetUserPref("GhostScoreType"..pName) == "4" then
-					list[4] = true;
-				elseif GetUserPref("GhostScoreType"..pName) == "3" then
-					list[3] = true;
-				elseif GetUserPref("GhostScoreType"..pName) == "2" then
-					list[2] = true;
-				else
-					list[1] = true;
-				end;
-			else
-				WritePrefToFile("GhostScoreType"..pName,"1");
-				list[1] = true;
-			end;
+			local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).GhostScoreType
+			list[prefs+1] = true
 		end;
 		SaveSelections = function(self, list, pn)
-			local val;
-			local pName = ToEnumShortString(pn)
+			local value
 			if list[4] then
-				val = "4";
+				value = 3;
 			elseif list[3] then
-				val = "3";
+				value = 2;
 			elseif list[2] then
-				val = "2";
+				value = 1;
 			else
-				val = "1";
+				value = 0;
 			end;
-			WritePrefToFile("GhostScoreType"..pName,val);
-			MESSAGEMAN:Broadcast("PreferenceSet", { Message == "Set Preference" } );
-			--THEME:ReloadMetrics();
+			playerConfig:get_data(pn_to_profile_slot(pn)).GhostScoreType = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
 		end;
 	};
 	setmetatable( t, t );

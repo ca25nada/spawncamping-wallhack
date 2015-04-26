@@ -3,8 +3,8 @@ local t = Def.ActorFrame{}
 -- A somewhat naive implementation of the osu's error bar.
 -- Single Player only until I figure out where to put everything
 -- Hopefully I can change it so I don't have to initialize 300 quads beforehand.
-local enabled = (((GetUserPref("ErrorBarP1") == "1") and GAMESTATE:IsHumanPlayer(PLAYER_1)) or 
-				((GetUserPref("ErrorBarP2") == "1") and GAMESTATE:IsHumanPlayer(PLAYER_1))) and 
+local enabled = (((playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar == true) and GAMESTATE:IsHumanPlayer(PLAYER_1)) or 
+				((playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar == true) and GAMESTATE:IsHumanPlayer(PLAYER_1))) and 
 				GAMESTATE:GetNumPlayersEnabled() == 1
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 

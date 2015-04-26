@@ -26,11 +26,11 @@ local enabled = GAMESTATE:GetNumPlayersEnabled() == 1
 
 local player = GAMESTATE:GetEnabledPlayers()[1]
 if player == PLAYER_1 then
-	ghostType = tonumber(GetUserPref("GhostScoreTypeP1")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
+	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
 	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
 elseif player == PLAYER_2 then
-	ghostType = tonumber(GetUserPref("GhostScoreTypeP2")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
+	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
 	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
 	frameX = 0
@@ -216,11 +216,11 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)
 	};
-	t[#t+1] = targetMaxGraph(2,ghostType-1,getPaceMakerColor("Target"))
-	t[#t+1] = bestScoreGraph(1,ghostType-1,getPaceMakerColor("Current"))
-	t[#t+1] = currentScoreGraph(1,ghostType-1,getPaceMakerColor("Current"))
-	t[#t+1] = targetScoreGraph(2,ghostType-1,getPaceMakerColor("Target"))
-	t[#t+1] = markers(ghostType-1,true)
+	t[#t+1] = targetMaxGraph(2,ghostType,getPaceMakerColor("Target"))
+	t[#t+1] = bestScoreGraph(1,ghostType,getPaceMakerColor("Current"))
+	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("Current"))
+	t[#t+1] = targetScoreGraph(2,ghostType,getPaceMakerColor("Target"))
+	t[#t+1] = markers(ghostType,true)
 end;
 
 

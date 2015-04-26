@@ -1,13 +1,13 @@
 -- Dependencies: Scoretracking.lua
 -- Displays average score and the score difference between the player score and the ghost/target score.
 
-local ghostTypeP1 = tonumber(GetUserPref("GhostScoreTypeP1")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-local avgScoreTypeP1 = tonumber(GetUserPref("AvgScoreTypeP1"));-- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-local targetP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1))/100; -- target score from 0% to 100%.
+local ghostTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GhostScoreType -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
+local avgScoreTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).AvgScoreType-- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
+local targetP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GhostTarget/100; -- target score from 0% to 100%.
 
-local ghostTypeP2 = tonumber(GetUserPref("GhostScoreTypeP2")); -- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-local avgScoreTypeP2 = tonumber(GetUserPref("AvgScoreTypeP2"));-- 1 = off, 2 = DP, 3 = PS, 4 = MIGS
-local targetP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2))/100; -- target score from 0% to 100%.
+local ghostTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).GhostScoreType -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
+local avgScoreTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).AvgScoreType-- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
+local targetP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).GhostTarget/100; -- target score from 0% to 100%.
 
 
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer(); -- For relocating graph/judgecount frame
@@ -70,19 +70,15 @@ function ghostScore(pn)
 			InitCommand=cmd(xy,frameX,frameY;shadowlength,1;zoom,0.45;diffuse,color("#ffffff00");halign,0);
 			BeginCommand=function(self)
 				self:settext('+0')
-				if ghostType == 1 or ghostType == nil then
+				if ghostType == 0 or ghostType == nil then
 					self:visible(false)
 				end;
 			end;
 			SetCommand=function(self,params)
 				self:diffusealpha(1)
 				local targetDiff = 0
-				if ghostType == 2 then
-					targetDiff = getCurScoreST(pn,1)-(math.ceil(getCurMaxScoreST(pn,1)*target))
-				elseif ghostType == 3 then
-					targetDiff = getCurScoreST(pn,2)-(math.ceil(getCurMaxScoreST(pn,2)*target))
-				elseif ghostType == 4 then
-					targetDiff = getCurScoreST(pn,3)-(math.ceil(getCurMaxScoreST(pn,3)*target))
+				if ghostType ~= 0 then
+					targetDiff = getCurScoreST(pn,1)-(math.ceil(getCurMaxScoreST(pn,ghostType)*target))
 				end;
 
 				if targetDiff > 0 then
@@ -137,15 +133,15 @@ function avgScore(pn)
 			InitCommand=cmd(xy,frameX,frameY;shadowlength,1;zoom,0.45;diffuse,color("#ffffff00");halign,1);
 			BeginCommand=function(self)
 				self:settext('0.00%')
-				if avgScoreType == 1 or avgScoreType == nil then
+				if avgScoreType == 0 or avgScoreType == nil then
 					self:visible(false)
 				end;
 			end;
 			SetCommand=function(self,params)
 				self:diffusealpha(1)
-				if avgScoreType ~= 1 or avgScore ~= nil then
-					if getCurMaxScoreST(pn,avgScoreType-1) ~= 0 then
-						self:settextf("%.2f%%",(math.floor(getCurScoreST(pn,avgScoreType-1)/getCurMaxScoreST(pn,avgScoreType-1)*10000))/100); 
+				if avgScoreType ~= 0 or avgScore ~= nil then
+					if getCurMaxScoreST(pn,avgScoreType) ~= 0 then
+						self:settextf("%.2f%%",(math.floor(getCurScoreST(pn,avgScoreType)/getCurMaxScoreST(pn,avgScoreType)*10000))/100); 
 					else
 						self:settext('0.00%')
 					end;
