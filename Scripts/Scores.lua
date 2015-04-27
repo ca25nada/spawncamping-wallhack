@@ -257,6 +257,42 @@ function getMaxScore(pn,scoreType) -- dp, ps, migs = 1,2,3 respectively, 0 rever
 	end
 end;
 
+function getGradeThreshold(pn,grade)
+	local maxScore = getMaxScore(pn,1)
+	if grade == "Grade_Failed" then
+		return 0
+	else
+		return math.ceil(maxScore*THEME:GetMetric("PlayerStageStats",grade:gsub("Grade_","GradePercent")))
+	end;
+end;
+
+function getNearbyGrade(pn,DPScore,grade)
+	local nextGrade
+	local gradeScore = 0
+	local nextGradeScore = 0
+	if grade == "Grade_Tier01" or grade == "Grade_Tier02" then
+		return grade,0
+	elseif grade == "Grade_Failed" then
+		return "Grade_Tier07",DPScore
+	elseif grade == "Grade_None" then
+		return "Grade_Tier07",0
+	else
+		nextGrade = string.format("Grade_Tier%02d",(tonumber(grade:sub(-2))-1))
+		gradeScore = getGradeThreshold(pn,grade)
+		nextGradeScore = getGradeThreshold(pn,nextGrade)
+
+		curGradeDiff = DPScore - gradeScore
+		nextGradeDiff = DPScore - nextGradeScore
+
+		if math.abs(curGradeDiff) < math.abs(nextGradeDiff) then
+			return grade,curGradeDiff
+		else
+			return nextGrade,nextGradeDiff
+		end;
+	end;
+
+end;
+
 
 --============================================================
 -- Functions for Highest/Lowest values in a scoretable. 

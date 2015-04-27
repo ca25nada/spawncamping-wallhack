@@ -147,9 +147,8 @@ t[#t+1] = Def.Actor{
 	CurrentStepsP2ChangedMessageCommand=cmd(playcommand,"Set");
 }
 
---1P
-
 t[#t+1] = Def.ActorFrame{
+	Name="StatFrame1P";
 	BeginCommand=function(self)
 		if GAMESTATE:IsHumanPlayer(PLAYER_1) then
 			self:visible(true)
@@ -174,6 +173,12 @@ t[#t+1] = Def.ActorFrame{
 	--Lower Bar
 	Def.Quad{
 		InitCommand=cmd(xy,starsX,starsY+18;zoomto,frameWidth,50;halign,0;valign,0;diffuse,color("#333333CC"));
+	};
+
+	--OverBar
+	Def.Quad{
+		Name = "FrameMouseOver1P";
+		InitCommand=cmd(xy,starsX+5,starsY+18;zoomto,110,35;halign,0;valign,0;diffusealpha,0);
 	};
 
 	--===Upper Bar Stuff===--
@@ -212,6 +217,7 @@ t[#t+1] = Def.ActorFrame{
 				local rolls = 0
 				local mines = 0
 				local lifts = 0
+				local test1,test2
 				if stepsP1 ~= nil then
 					notes = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Notes")
 					holds = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Holds")
@@ -220,6 +226,7 @@ t[#t+1] = Def.ActorFrame{
 					lifts = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Lifts")
 					diff = getDifficulty(stepsP1:GetDifficulty())
 					stype = ToEnumShortString(stepsP1:GetStepsType()):gsub("%_"," ")
+
 					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts);
 				else
 					self:settext("Disabled");
@@ -377,6 +384,7 @@ t[#t+1] = Def.ActorFrame{
 ------------------------------------------2P
 
 t[#t+1] = Def.ActorFrame{
+	Name="StatFrame2P";
 	BeginCommand=function(self)
 		if GAMESTATE:IsHumanPlayer(PLAYER_2) then
 			self:visible(true)
@@ -401,6 +409,12 @@ t[#t+1] = Def.ActorFrame{
 	--Lower Bar
 	Def.Quad{
 		InitCommand=cmd(xy,starsX,starsY+18+playerDistY;zoomto,frameWidth,50;halign,0;valign,0;diffuse,color("#333333CC"));
+	};
+
+	--OverBar
+	Def.Quad{
+		Name = "FrameMouseOver2P";
+		InitCommand=cmd(xy,starsX+5,starsY+18+playerDistY;zoomto,110,35;halign,0;valign,0;diffusealpha,0);
 	};
 
 	--===Upper Bar Stuff===--
@@ -609,5 +623,74 @@ while index < maxStars do
 	index = index + 1
 end;
 
+--1P
+t[#t+1] = Def.ActorFrame{
+	Name="NearbyGrade";
+	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y);
+	Def.Quad{
+		Name="NearbyGradeQuad";
+		InitCommand=cmd(zoomto,50,20;halign,0;valign,0;diffuse,color("#33333366"));
+	};
+	LoadFont("Common Normal")..{
+		Name="NearbyGradeP1";
+		InitCommand=cmd(xy,25,10;zoom,0.3;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local test1,test2 = getNearbyGrade(PLAYER_1,getHighestScore(PLAYER_1,0,1),getHighestGrade(PLAYER_1,0))
+				if test2 >= 0 then
+					test2 = tostring("+"..test2)
+				else
+					test2 = tostring(test2)
+				end;	
+				self:settextf("%s %s",THEME:GetString("Grade",ToEnumShortString(test1)),test2)
+			end;
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+	LoadFont("Common Normal")..{
+		Name="NearbyGradeP2";
+		InitCommand=cmd(xy,25,10;zoom,0.3;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local test1,test2 = getNearbyGrade(PLAYER_2,getHighestScore(PLAYER_2,0,1),getHighestGrade(PLAYER_2,0))
+				if test2 >= 0 then
+					test2 = tostring("+"..test2)
+				else
+					test2 = tostring(test2)
+				end;
+				self:settextf("%s %s",THEME:GetString("Grade",ToEnumShortString(test1)),test2)
+			end;
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+};
+
+
+local function Update(self)
+	t.InitCommand=cmd(SetUpdateFunction,Update);
+	if update then
+		if (isOver(self:GetChildren().StatFrame1P:GetChildren().FrameMouseOver1P) and self:GetChildren().StatFrame1P:GetVisible()) then
+			self:GetChild("NearbyGrade"):visible(true)
+			self:GetChild("NearbyGrade"):GetChild("NearbyGradeP1"):visible(true)
+			self:GetChild("NearbyGrade"):GetChild("NearbyGradeP2"):visible(false)
+	    	self:GetChild("NearbyGrade"):xy(INPUTFILTER:GetMouseX(),INPUTFILTER:GetMouseY())
+		elseif (isOver(self:GetChildren().StatFrame2P:GetChildren().FrameMouseOver2P) and self:GetChildren().StatFrame2P:GetVisible()) then
+			self:GetChild("NearbyGrade"):GetChild("NearbyGradeP1"):visible(false)
+			self:GetChild("NearbyGrade"):GetChild("NearbyGradeP2"):visible(true)
+			self:GetChild("NearbyGrade"):visible(true)
+	    	self:GetChild("NearbyGrade"):xy(INPUTFILTER:GetMouseX(),INPUTFILTER:GetMouseY())
+	    else
+	    	self:GetChild("NearbyGrade"):visible(false)
+	    end;
+    else
+    	self:GetChild("NearbyGrade"):visible(false)
+    end;
+end; 
+
+t.InitCommand=cmd(SetUpdateFunction,Update);
 
 return t
