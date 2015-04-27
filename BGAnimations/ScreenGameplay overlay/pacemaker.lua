@@ -43,7 +43,7 @@ local markerPoints = { --DP/PS/MIGS in that order.
 			["AA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier03") , 
 			["A"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier04") , 
 			["B"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier05") , 
-			["C"]=THEME:GetMetric("PlayerStageStats", "GradePercentTier06") , 
+			["C"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier06") , 
 			[""]=0 },
 
 	[2] = {["100%"]=1,["90%"]=0.9,["80%"]=0.8,["70%"]=0.7,["60%"]=0.6,["50%"]=0.5,[""]=0},
@@ -143,7 +143,7 @@ function targetScoreGraph(index,scoreType,color)
 		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Target Score");
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settext,"Rank %s");
+		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settextf,"%s %0.2f%%",getScoreTypeText(ghostType),target*100);
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
