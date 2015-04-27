@@ -34,6 +34,7 @@ local sortTable = {
 };
 
 t[#t+1] = Def.Quad{
+	Name="CurrentSort";
 	InitCommand=cmd(xy,frameX,frameY;halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor(1););
 };
 
@@ -58,5 +59,18 @@ t[#t+1] = LoadFont("Common Normal") .. {
 
 t[#t+1] = StandardDecorationFromFileOptional("BPMDisplay","BPMDisplay");
 t[#t+1] = StandardDecorationFromFileOptional("BPMLabel","BPMLabel");
+
+
+local function Update(self)
+	t.InitCommand=cmd(SetUpdateFunction,Update);
+	if isOver(self:GetChild("CurrentSort")) then
+    	self:GetChild("CurrentSort"):diffusealpha(0.5)
+    else
+    	self:GetChild("CurrentSort"):diffusealpha(1)
+    end;
+end; 
+
+t.InitCommand=cmd(SetUpdateFunction,Update);
+
 
 return t

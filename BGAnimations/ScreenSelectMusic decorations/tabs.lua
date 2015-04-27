@@ -1,5 +1,6 @@
 local t = Def.ActorFrame{}
 
+
 --DO NOT REMOVE
 t[#t+1] = Def.Actor{
 	BeginCommand=function(self)
@@ -14,6 +15,9 @@ t[#t+1] = Def.Actor{
 		resetTabIndex()
 	end;
 }
+
+
+
 -- temporary
 --[[
 t[#t+1] = LoadFont("Common Normal") .. {
