@@ -123,7 +123,7 @@ local function judgeHighlight(pn,judge,index)
 	local t = Def.Quad{ --JudgeHighlight
 		InitCommand=cmd(xy,frameX,frameY+5+(index*spacing);zoomto,frameWidth,5;diffuse,color("1,1,1,0.0");horizalign,left;vertalign,top;visible,true);
 		JudgmentMessageCommand=function(self,params)
-			if params.TapNoteScore == judge and params.Player == pn then
+			if (params.TapNoteScore == judge or params.HoldNoteScore == judge) and params.Player == pn then
 				self:stoptweening();
 				self:visible(true);
 				self:diffusealpha(0);
