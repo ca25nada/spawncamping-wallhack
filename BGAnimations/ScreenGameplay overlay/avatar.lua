@@ -1,6 +1,8 @@
 --Avatar frames which also includes current additive %score, mods, and the song stepsttype/difficulty.
 
-local t = Def.ActorFrame{};
+local t = Def.ActorFrame{
+	Name="Avatars";
+};
 
 local profileP1
 local profileP2
@@ -82,6 +84,7 @@ t[#t+1] = Def.Actor{
 -- P1
 if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	t[#t+1] = Def.ActorFrame{
+		Name="P1Avatar";
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if profileP1 == nil then
@@ -135,6 +138,7 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 		};
 
 		LoadFont("Common Normal") .. {
+			Name="P1AvatarOption";
 			InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+32;halign,0;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
 			BeginCommand=cmd(queuecommand,"Set");
 			SetCommand=function(self)
@@ -150,6 +154,7 @@ end;
 -- P2 Avatar
 if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 	t[#t+1] = Def.ActorFrame{
+		Name="P2Avatar";
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if profileP2 == nil then
@@ -202,6 +207,7 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 		};
 
 		LoadFont("Common Normal") .. {
+			Name="P2AvatarOption";
 			InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+32;halign,1;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
 			BeginCommand=cmd(queuecommand,"Set");
 			SetCommand=function(self)

@@ -27,7 +27,7 @@ local Tips = {
     "Check http://www.flashflashrevolution.com/vbz/showthread.php?t=133223 for a huge list of simfile packs",
     "Please don't bug the StepMania devs regarding bugs on this theme. (bug whoever made this theme instead.!! who will likely bug the devs anyway-)",
     "Feel free to suggest feature requests on the github issue tracker or on the forum thread.",
-    "You can choose to not show help tips (or have it display random quotes instead) by changing the \"show\" value on \"scripts/Quotes.lua\"",
+    "You can set preferences for various theme functions in \"Options > Theme Options\""
     "The theme is only supported for the nightly release build of SM5, please download from the 5.0.7 branch instead if you're not on the nightly build.",
     "Pressing <PrintScr/SysRq> takes a screenshot of the game, pressing <Shift>+<PrintScr/SysRq> will do so in a .png format and in original size.",
     "You can make profiles by going into \"Options > Profiles > Create Profile\"",
