@@ -314,7 +314,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local score = string.format("%04d",getScore(PLAYER_1,0))
+				local score = string.format("%04d",getHighestScore(PLAYER_1,0,0))
 				local maxscore = string.format("%04d",getMaxScore(PLAYER_1,0))
 				self:settext(score.."/"..maxscore)
 			end;
@@ -531,7 +531,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local score = getScore(PLAYER_2,0)
+				local score = getHighestScore(PLAYER_2,0,0)
 				local maxscore = getMaxScore(PLAYER_2,0)
 				if maxscore == 0 or maxscore == nil then
 					maxscore = 1
@@ -550,7 +550,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local score = string.format("%04d",getScore(PLAYER_2,0))
+				local score = string.format("%04d",getHighestScore(PLAYER_2,0,0))
 				local maxscore = string.format("%04d",getMaxScore(PLAYER_2,0))
 				self:settext(score.."/"..maxscore)
 			end;
