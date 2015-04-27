@@ -80,7 +80,7 @@ end
 --]]
 
 local t = Def.ActorFrame{
-	Name="SpeedChangeP1";
+	Name="SpeedChange";
 	CodeMessageCommand = function(self, params)
 		local pn = params.PlayerNumber
 		local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred");
