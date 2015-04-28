@@ -91,9 +91,9 @@ local t = Def.ActorFrame{
 		local avatarOption
 		local topScreen = SCREENMAN:GetTopScreen();
 
-		if pn == PLAYER_1 then
+		if pn == PLAYER_1 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 			avatarOption = topScreen:GetChildren().Overlay:GetChildren().Avatars:GetChildren().P1Avatar:GetChildren().P1AvatarOption
-		elseif pn == PLAYER_2 then
+		elseif pn == PLAYER_2 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 			avatarOption = topScreen:GetChildren().Overlay:GetChildren().Avatars:GetChildren().P2Avatar:GetChildren().P2AvatarOption
 		end
 
@@ -127,8 +127,11 @@ local t = Def.ActorFrame{
 				po:XMod(math.max(0.1,po:XMod()-(increment/100)))
 			end;
 		end
-		GAMESTATE:GetPlayerState(pn):SetPlayerOptions("ModsLevel_Preferred",GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString("ModsLevel_Preferred"));
-		avatarOption:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
+
+		if GAMESTATE:IsPlayerEnabled(pn) then
+			GAMESTATE:GetPlayerState(pn):SetPlayerOptions("ModsLevel_Preferred",GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString("ModsLevel_Preferred"));
+			avatarOption:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
+		end;
 
 	end;
 	--OnCommand=function(self) SCREENMAN:GetTopScreen():AddInputCallback(inputP1) end
