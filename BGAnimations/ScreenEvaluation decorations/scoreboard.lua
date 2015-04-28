@@ -45,8 +45,29 @@ if GAMESTATE:IsPlayerEnabled(player) then
 	scoreindex = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1
 end;
 
+local function input(event)
+	local scoreBoard = SCREENMAN:GetTopScreen():GetChildren().scoreBoard
+	if event.DeviceInput.button == 'DeviceButton_left mouse button' then
+		if event.type == "InputEventType_Release" then
+			for i=0,math.min(lines,#hstable)-1 do
+				if isOver(scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver")) then
+					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("grade"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("grade"):GetVisible())
+					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("judge"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("judge"):GetVisible())
+					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("date"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("date"):GetVisible())
+					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("option"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("option"):GetVisible())
+				end;
+			end;
+		end;
+	end
+return true;
 
-local t = Def.ActorFrame{};
+end
+
+
+local t = Def.ActorFrame{
+	Name="scoreBoard";
+	OnCommand=function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end
+};
 
 local function scoreitem(pn,index,scoreindex,drawindex)
 
@@ -57,10 +78,19 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 
 	local equals = (index == scoreindex)
 	local t = Def.ActorFrame {
+		Name="scoreItem"..tostring(drawindex);
 		Def.Quad{
 			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333");diffusealpha,1;diffuserightedge,color("#33333333"));
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn));
+			end;
+		};
+
+		Def.Quad{
+			Name="mouseOver";
+			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor(1);diffusealpha,0.2;);
+			BeginCommand=function(self)
+				self:visible(false);
 			end;
 		};
 
@@ -70,6 +100,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 				self:visible(GAMESTATE:IsHumanPlayer(pn));
 			end;
 		};
+
 
 		Def.Quad{
 			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffusealpha,0.3;diffuse,getClearTypeFromScore(pn,hstable[index],2));
@@ -112,9 +143,20 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 
 		--grade and %score
 		LoadFont("Common normal")..{
+			Name="grade";
 			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0);
 			BeginCommand=function(self)
 				self:settextf("%s %.2f%% (x%d)",(gradestring(hstable[index]:GetGrade())),hstable[index]:GetPercentDP()*100,hstable[index]:GetMaxCombo()); 
+			end;
+		};
+
+		--mods
+		LoadFont("Common normal")..{
+			Name="option";
+			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0);
+			BeginCommand=function(self)
+				self:settext(hstable[index]:GetModifiers()); 
+				self:visible(false)
 			end;
 		};
 
@@ -130,6 +172,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 		};
 
 		LoadFont("Common normal")..{
+			Name="judge";
 			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0);
 			BeginCommand=function(self)
 				if #hstable >= 1 and index>= 1 then
@@ -141,6 +184,17 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 						hstable[index]:GetTapNoteScore("TapNoteScore_W5"),
 						hstable[index]:GetTapNoteScore("TapNoteScore_Miss"))
 				end;
+			end;
+		};
+
+		LoadFont("Common normal")..{
+			Name="date";
+			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0);
+			BeginCommand=function(self)
+				if #hstable >= 1 and index>= 1 then
+					self:settext(hstable[index]:GetDate())
+				end;
+				self:visible(false)
 			end;
 		};
 
@@ -197,6 +251,24 @@ t[#t+1] = LoadFont("Common normal")..{
 		end;
 	end;
 };
+
+
+local function Update(self)
+	t.InitCommand=cmd(SetUpdateFunction,Update);
+	for i=0,drawindex-1 do
+		if isOver(self:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver")) then
+			self:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver"):visible(true)
+		else
+			self:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver"):visible(false)
+			self:GetChild("scoreItem"..tostring(i)):GetChild("grade"):visible(true)
+			self:GetChild("scoreItem"..tostring(i)):GetChild("judge"):visible(true)
+			self:GetChild("scoreItem"..tostring(i)):GetChild("date"):visible(false)
+			self:GetChild("scoreItem"..tostring(i)):GetChild("option"):visible(false)
+		end;
+	end;
+
+end; 
+t.InitCommand=cmd(SetUpdateFunction,Update);
 
 
 --[[

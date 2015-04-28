@@ -13,9 +13,11 @@ end;
 
 
 function isOver(element)
+	--[[
 	if element:GetVisible() == false then
 		return false
 	end;
+	--]]
 	local x = element:GetX()
 	local y = element:GetY()
 	local hAlign = element:GetHAlign()
