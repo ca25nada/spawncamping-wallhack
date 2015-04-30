@@ -58,6 +58,15 @@ function stars(ind,pn)
 					self:visible(true);
 					self:zoom(0);
 					self:rotationz(0);
+					self:diffuse(color("#FFFFFF"))
+					if ind < diff then
+						self:sleep((ind/math.min(diff,maxStars))/2);
+						self:decelerate(0.5);
+						self:zoom(starSize);
+						self:rotationz(360);
+					else
+						self:visible(false);
+					end;
 					if ind < 3 then
 						self:diffuse(getVividDifficultyColor('Difficulty_Beginner'))
 					elseif ind < 6 then
@@ -77,14 +86,6 @@ function stars(ind,pn)
 						self:effectcolor2(color('Difficulty_Challenge'))
 						self:glowshift()
 						self:effectperiod(0.5)
-					end;
-					if ind < diff then
-						self:sleep((ind/math.min(diff,maxStars))/2);
-						self:decelerate(0.5);
-						self:zoom(starSize);
-						self:rotationz(360);
-					else
-						self:visible(false);
 					end;
 				else
 					self:visible(false);

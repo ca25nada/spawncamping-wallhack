@@ -45,6 +45,7 @@ if GAMESTATE:IsPlayerEnabled(player) then
 	scoreindex = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1
 end;
 
+
 local function input(event)
 	local scoreBoard = SCREENMAN:GetTopScreen():GetChildren().scoreBoard
 	if event.DeviceInput.button == 'DeviceButton_left mouse button' then
