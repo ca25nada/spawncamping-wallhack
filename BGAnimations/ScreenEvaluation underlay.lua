@@ -1,4 +1,4 @@
-local magnitude = 0.1
+local magnitude = 0.03
 local maxDistX = SCREEN_WIDTH*magnitude
 local maxDistY = SCREEN_HEIGHT*magnitude
 
@@ -40,9 +40,9 @@ local function getPosX()
 		end;
 	end;
 	if neg then
-		return SCREEN_CENTER_X-offset
-	else 
 		return SCREEN_CENTER_X+offset
+	else 
+		return SCREEN_CENTER_X-offset
 	end;
 end
 
@@ -63,9 +63,9 @@ local function getPosY()
 		end;
 	end;
 	if neg then
-		return SCREEN_CENTER_Y-offset
-	else 
 		return SCREEN_CENTER_Y+offset
+	else 
+		return SCREEN_CENTER_Y-offset
 	end;
 end
 
