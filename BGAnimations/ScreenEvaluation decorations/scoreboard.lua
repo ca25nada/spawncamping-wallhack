@@ -45,7 +45,7 @@ if GAMESTATE:IsPlayerEnabled(player) then
 	scoreindex = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1
 end;
 
-
+--Input event for mouse clicks
 local function input(event)
 	local scoreBoard = SCREENMAN:GetTopScreen():GetChildren().scoreBoard
 	if event.DeviceInput.button == 'DeviceButton_left mouse button' then
@@ -61,7 +61,6 @@ local function input(event)
 		end;
 	end
 return true;
-
 end
 
 
@@ -77,9 +76,14 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 		index = 1
 	end;
 
+	--Whether the score at index is the score that was just played.
 	local equals = (index == scoreindex)
+
+	--
 	local t = Def.ActorFrame {
 		Name="scoreItem"..tostring(drawindex);
+
+		--The main quad
 		Def.Quad{
 			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333");diffusealpha,1;diffuserightedge,color("#33333333"));
 			BeginCommand=function(self)
@@ -87,6 +91,15 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			end;
 		};
 
+		--Highlight quad for the current score
+		Def.Quad{
+			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#66ccff");diffusealpha,0.2;diffuserightedge,color("#33333300"));
+			BeginCommand=function(self)
+				self:visible(GAMESTATE:IsHumanPlayer(pn) and equals);
+			end;
+		};
+
+		--Quad that will act as the bounding box for mouse rollover/click stuff.
 		Def.Quad{
 			Name="mouseOver";
 			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor(1);diffusealpha,0.2;);
@@ -95,6 +108,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			end;
 		};
 
+		--ClearType lamps
 		Def.Quad{
 			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffuse,getClearTypeFromScore(pn,hstable[index],2));
 			BeginCommand=function(self)
@@ -102,7 +116,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			end;
 		};
 
-
+		--Animation(?) for ClearType lamps
 		Def.Quad{
 			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffusealpha,0.3;diffuse,getClearTypeFromScore(pn,hstable[index],2));
 			BeginCommand=function(self)
@@ -112,14 +126,6 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 				self:effectcolor2(color("1,1,1,0.6"))
 				self:effectcolor1(color("1,1,1,0"))
 				self:effecttiming(2,1,0,0)
-			end;
-		};
-
-
-		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#66ccff");diffusealpha,0.2;diffuserightedge,color("#33333300"));
-			BeginCommand=function(self)
-				self:visible(GAMESTATE:IsHumanPlayer(pn) and equals);
 			end;
 		};
 
@@ -161,7 +167,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			end;
 		};
 
-		--cleartype
+		--cleartype text
 		LoadFont("Common normal")..{
 			InitCommand=cmd(xy,framex+10,framey+2+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
@@ -172,6 +178,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			end;
 		};
 
+		--judgment
 		LoadFont("Common normal")..{
 			Name="judge";
 			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
@@ -188,6 +195,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			end;
 		};
 
+		--date
 		LoadFont("Common normal")..{
 			Name="date";
 			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0);
@@ -199,22 +207,11 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			end;
 		};
 
-		--datetime
-		--[[
-		LoadFont("Common normal")..{
-			InitCommand=cmd(xy,framex+10,framey+19+(drawindex*spacing);zoom,0.35;halign,0);
-			BeginCommand=function(self)
-				if #hstable >= 1 and index>= 1 then
-					self:settext(hstable[index]:GetDate())
-				end;
-			end;
-		};
-		--]]
-
 	};
 	return t;
 end
 
+--can't have more lines than the # of scores huehuehu
 if lines > #hstable then
 	lines = #hstable
 end;
@@ -242,6 +239,7 @@ while drawindex<#hstable and startind<=finishind do
 	drawindex  = drawindex+1
 end;
 
+--Text that sits above the scoreboard with some info
 t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(xy,framex,framey-15;zoom,0.35;halign,0);
 	BeginCommand=function(self)
@@ -253,7 +251,7 @@ t[#t+1] = LoadFont("Common normal")..{
 	end;
 };
 
-
+--Update function for showing mouse rollovers
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
 	for i=0,drawindex-1 do

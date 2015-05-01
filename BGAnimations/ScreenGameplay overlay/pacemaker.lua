@@ -2,6 +2,8 @@
 --Supports arbituary bar dimensions, number of bars so far. (although none of them are in preferences atm.)
 --Support for arbituary display range to be added eventually.
 
+--Disable for Doubles mode? idk
+
 local ghostType
 local target
 
@@ -210,7 +212,7 @@ function markers(scoreType,showMessage)
 
 end;
 
---Make the graph
+--Make the graph...!
 local t = Def.ActorFrame{}
 if enabled then
 	t[#t+1] = Def.Quad{

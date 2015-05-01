@@ -62,6 +62,7 @@ local frameY2P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 local judgeTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType
 local judgeTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType
 
+-- The Judgment text itself (MA for marvelous, etc.)
 local function judgeText(pn,judge,index)
 	local frameX = 0
 	local frameY = 0
@@ -82,7 +83,7 @@ local function judgeText(pn,judge,index)
 	return t
 end;
 
-
+-- The judgment count text
 local function judgeCount(pn,judge,index)
 	local frameX = 0
 	local frameY = 0
@@ -110,6 +111,7 @@ local function judgeCount(pn,judge,index)
 	return t
 end
 
+-- A highlight that appears whenever the corresponding judgment occurs
 local function judgeHighlight(pn,judge,index)
 	local frameX = 0
 	local frameY = 0
@@ -138,6 +140,7 @@ local function judgeHighlight(pn,judge,index)
 	return t
 end
 
+--Make one for P1
 if judgeTypeP1 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	t[#t+1] = Def.Quad{ -- Judgecount Background
 		InitCommand=cmd(xy,frameX1P,frameY1P;zoomto,frameWidth,frameHeight;diffuse,color("0,0,0,0.4");horizalign,left;vertalign,top);
@@ -170,6 +173,7 @@ if judgeTypeP1 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	}
 end
 
+--Make one for P2
 if judgeTypeP2 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 	t[#t+1] = Def.Quad{ -- Judgecount Background
 		InitCommand=cmd(xy,frameX2P,frameY2P;zoomto,frameWidth,frameHeight;diffuse,color("0,0,0,0.4");horizalign,left;vertalign,top);

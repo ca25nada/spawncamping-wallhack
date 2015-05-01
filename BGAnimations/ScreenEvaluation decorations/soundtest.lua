@@ -1,3 +1,4 @@
+--some code snippets from waiei i think...?
 local t=Def.ActorFrame{};
 t[#t+1]=Def.ActorFrame{
 };

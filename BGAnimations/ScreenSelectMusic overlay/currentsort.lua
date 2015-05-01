@@ -60,7 +60,8 @@ t[#t+1] = LoadFont("Common Normal") .. {
 t[#t+1] = StandardDecorationFromFileOptional("BPMDisplay","BPMDisplay");
 t[#t+1] = StandardDecorationFromFileOptional("BPMLabel","BPMLabel");
 
-
+--just a simple mouse rollover test.
+--[[ 
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
 	if isOver(self:GetChild("CurrentSort")) then
@@ -71,6 +72,6 @@ local function Update(self)
 end; 
 
 t.InitCommand=cmd(SetUpdateFunction,Update);
-
+--]]
 
 return t

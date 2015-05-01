@@ -11,7 +11,7 @@ function capWideScale(AR4_3,AR16_9)
 	end;
 end;
 
-
+--Button Rollovers
 function isOver(element)
 	--[[
 	if element:GetVisible() == false then

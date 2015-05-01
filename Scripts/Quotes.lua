@@ -2,6 +2,7 @@
 --(that you may or may not be familar with)
 --mainly from ossu, stepman and bms
 
+-- Also tips regarding the game that may or may not be useful 
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
 local function contains(table, value)
