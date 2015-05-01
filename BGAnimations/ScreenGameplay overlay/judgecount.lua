@@ -56,11 +56,13 @@ local frameY1P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 local frameX2P = SCREEN_WIDTH-20-frameWidth -- X position of the frame when center1player is on
 local frameY2P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 
+--adjust for non-widescreen users.
 if ((not center1P) and (not IsUsingWideScreen())) then
 	frameX1P = SCREEN_CENTER_X+20
 	frameX2P = SCREEN_CENTER_X-20-frameWidth
 end
 
+-- tl;dr: if theres no room, don't show.
 local enabled1P = (GAMESTATE:IsPlayerEnabled(PLAYER_1) and judgeTypeP1 ~= 0) and (IsUsingWideScreen() or (GAMESTATE:GetNumPlayersEnabled() == 1 and cols <= 6))
 local enabled2P = (GAMESTATE:IsPlayerEnabled(PLAYER_2) and judgeTypeP2 ~= 0) and (IsUsingWideScreen() or (GAMESTATE:GetNumPlayersEnabled() == 1 and cols <= 6))
 

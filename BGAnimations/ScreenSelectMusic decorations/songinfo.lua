@@ -17,6 +17,28 @@ local t = Def.ActorFrame{
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 };
 
+
+t[#t+1] = Def.Banner{
+	InitCommand=cmd(x,10;y,60;halign,0;valign,0);
+	SetMessageCommand=function(self)
+		if update then
+			local top = SCREENMAN:GetTopScreen()
+			local song = GAMESTATE:GetCurrentSong()
+			local course = GAMESTATE:GetCurrentCourse()
+			local group = top:GetMusicWheel():GetSelectedSection()
+			if song then
+				self:LoadFromSong(song)
+			elseif course then
+				self:LoadFromCourse(song)
+			elseif group then
+				self:LoadFromSongGroup(group)
+			end;
+		end;
+		self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
+	end;
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+};
+
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,10,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10);zoomto,capWideScale(get43size(384),384),capWideScale(get43size(20),20);halign,0;diffuse,color("#000000");diffusealpha,0.7);
 }
