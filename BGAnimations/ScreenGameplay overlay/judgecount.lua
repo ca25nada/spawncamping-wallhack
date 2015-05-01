@@ -40,6 +40,9 @@ local highlightColor = { -- Colors of Judgment highlights
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer(); -- For relocating graph/judgecount frame
 local center1P = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")); -- For relocating graph/judgecount frame
 
+local judgeTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType
+local judgeTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType
+
 local spacing = 10 -- Spacing between the judgetypes
 local frameWidth = 60 -- Width of the Frame
 local frameHeight = ((#judges+1)*spacing)+8 -- Height of the Frame
@@ -48,19 +51,22 @@ local countFontSize = 0.35
 local gradeFontSize = 0.45
 
 local frameX1P = 20 -- X position of the frame when center1player is on
-local frameXR1P = 20 -- X position of the frame when center1player is off
 local frameY1P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 
 local frameX2P = SCREEN_WIDTH-20-frameWidth -- X position of the frame when center1player is on
-local frameXR2P = 20 -- X offset from the very right of the lane when center1player is off
 local frameY2P = (SCREEN_HEIGHT*0.62)-5 -- Y Position of the frame
 
+if ((not center1P) and (not IsUsingWideScreen())) then
+	frameX1P = SCREEN_CENTER_X+20
+	frameX2P = SCREEN_CENTER_X-20-frameWidth
+end
+
+local enabled1P = (GAMESTATE:IsPlayerEnabled(PLAYER_1) and judgeTypeP1 ~= 0) and (IsUsingWideScreen() or (GAMESTATE:GetNumPlayersEnabled() == 1 and cols <= 6))
+local enabled2P = (GAMESTATE:IsPlayerEnabled(PLAYER_2) and judgeTypeP2 ~= 0) and (IsUsingWideScreen() or (GAMESTATE:GetNumPlayersEnabled() == 1 and cols <= 6))
 
 --=========================================================================--
 --=========================================================================--
 --=========================================================================--
-local judgeTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType
-local judgeTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType
 
 -- The Judgment text itself (MA for marvelous, etc.)
 local function judgeText(pn,judge,index)
@@ -141,7 +147,7 @@ local function judgeHighlight(pn,judge,index)
 end
 
 --Make one for P1
-if judgeTypeP1 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+if enabled1P then
 	t[#t+1] = Def.Quad{ -- Judgecount Background
 		InitCommand=cmd(xy,frameX1P,frameY1P;zoomto,frameWidth,frameHeight;diffuse,color("0,0,0,0.4");horizalign,left;vertalign,top);
 	}
@@ -174,7 +180,7 @@ if judgeTypeP1 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 end
 
 --Make one for P2
-if judgeTypeP2 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+if enabled2P then
 	t[#t+1] = Def.Quad{ -- Judgecount Background
 		InitCommand=cmd(xy,frameX2P,frameY2P;zoomto,frameWidth,frameHeight;diffuse,color("0,0,0,0.4");horizalign,left;vertalign,top);
 	}
