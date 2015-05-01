@@ -145,7 +145,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 		--grade and %score
 		LoadFont("Common normal")..{
 			Name="grade";
-			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0);
+			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				self:settextf("%s %.2f%% (x%d)",(gradestring(hstable[index]:GetGrade())),hstable[index]:GetPercentDP()*100,hstable[index]:GetMaxCombo()); 
 			end;
@@ -154,7 +154,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 		--mods
 		LoadFont("Common normal")..{
 			Name="option";
-			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0);
+			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				self:settext(hstable[index]:GetModifiers()); 
 				self:visible(false)
@@ -163,7 +163,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 
 		--cleartype
 		LoadFont("Common normal")..{
-			InitCommand=cmd(xy,framex+10,framey+2+(drawindex*spacing);zoom,0.35;halign,0);
+			InitCommand=cmd(xy,framex+10,framey+2+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				if #hstable >= 1 and index>= 1 then
 					self:settext(getClearTypeFromScore(pn,hstable[index],0))
@@ -174,7 +174,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 
 		LoadFont("Common normal")..{
 			Name="judge";
-			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0);
+			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				if #hstable >= 1 and index>= 1 then
 					self:settextf("%d / %d / %d / %d / %d / %d",
