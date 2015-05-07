@@ -24,7 +24,7 @@ return Def.ActorFrame{
 			self:diffuse(getGradeColor(sGrade))
         end;
 	};
-
+	--[[
 	LoadFont("Common Normal") .. { --testing
         InitCommand=cmd(xy,16,-1;zoom,0.5;maxwidth,WideScale(get43size(20),20)/0.5);
         SetMessageCommand=function(self,params)
@@ -36,7 +36,7 @@ return Def.ActorFrame{
 			end;
         end;
 	};
-
+	--]]
 
 
 	--[[ Revert to letter grades for the time being
