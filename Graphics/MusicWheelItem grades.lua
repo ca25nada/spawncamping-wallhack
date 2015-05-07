@@ -1,4 +1,5 @@
 return Def.ActorFrame{
+	--[[]]
 	LoadFont("Common Normal") .. { --testing
         InitCommand=cmd(xy,16,-1;zoom,0.5;maxwidth,WideScale(get43size(20),20)/0.5);
         SetGradeCommand=function(self,params)
@@ -21,6 +22,18 @@ return Def.ActorFrame{
 			end;
 			self:settext(THEME:GetString("Grade",ToEnumShortString(sGrade)) or "")
 			self:diffuse(getGradeColor(sGrade))
+        end;
+	};
+
+	LoadFont("Common Normal") .. { --testing
+        InitCommand=cmd(xy,16,-1;zoom,0.5;maxwidth,WideScale(get43size(20),20)/0.5);
+        SetMessageCommand=function(self,params)
+			local song = params.Song
+			if params.HasFocus then
+				self:settext(params.Index)
+			else
+				self:settext("")
+			end;
         end;
 	};
 

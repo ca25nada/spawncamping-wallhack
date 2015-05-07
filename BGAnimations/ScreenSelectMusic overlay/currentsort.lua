@@ -39,7 +39,7 @@ t[#t+1] = Def.Quad{
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,frameX-frameWidth+5,frameY;halign,0;zoom,0.45;maxwidth,(frameWidth-10)/0.45);
+	InitCommand=cmd(xy,frameX-frameWidth+5,frameY;halign,0;zoom,0.45;maxwidth,(frameWidth-40)/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		local sort = GAMESTATE:GetSortOrder()
@@ -52,6 +52,17 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			self:settext("Sort: "..sortTable[sort])
 		end
 
+	end;
+	SortOrderChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand=cmd(xy,frameX-5,frameY;halign,1;zoom,0.3;maxwidth,40/0.45);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		local wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
+		self:settextf("%d/%d",wheel:GetCurrentIndex()+1,wheel:GetNumItems())
 	end;
 	SortOrderChangedMessageCommand=cmd(queuecommand,"Set");
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
