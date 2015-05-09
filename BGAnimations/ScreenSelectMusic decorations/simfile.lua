@@ -200,7 +200,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 			if update then
 				local song = GAMESTATE:GetCurrentSong()
 				if song ~= nil then
-					local length = song:MusicLengthSeconds()
+					local length =  song:GetStepsSeconds()
 					self:settext(SecondsToMMSS(length))
 					self:diffuse(getSongLengthColor(length))
 				else
