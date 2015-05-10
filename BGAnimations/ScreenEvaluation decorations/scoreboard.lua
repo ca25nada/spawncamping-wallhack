@@ -22,7 +22,7 @@ function gradestring(tier) --to be moved
 	end;
 end;
 
-local lines = getTempEvalPref("ScoreBoardMaxEntry") -- number of scores to display
+local lines = math.min(themeConfig:get_data().eval.ScoreBoardMaxEntry,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")) -- number of scores to display
 local framex = SCREEN_WIDTH-capWideScale(get43size(270),270)
 local framey = 65
 local frameWidth = capWideScale(get43size(260),260)

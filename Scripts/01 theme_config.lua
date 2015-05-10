@@ -11,7 +11,7 @@ local defaultConfig = {
 		JudgmentBarEnabled = true,
 		JudgmentBarCellCount = 100, --Will be halved for 2p
 		ScoreBoardEnabled = true,
-		ScoreBoardMaxEntry = math.min(10,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")),
+		ScoreBoardMaxEntry = 10,
 	}
 }
 

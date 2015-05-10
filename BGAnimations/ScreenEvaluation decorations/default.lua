@@ -1,14 +1,14 @@
 local t = Def.ActorFrame{}
 
-if GAMESTATE:GetNumPlayersEnabled() == 1 and getTempEvalPref("ScoreBoardEnabled") then
+if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
 	t[#t+1] = LoadActor("scoreboard")
 end;
 
-if getTempEvalPref("CurrentTimeEnabled") then
+if themeConfig:get_data().eval.CurrentTimeEnabled then
 	t[#t+1] = LoadActor("currenttime")
 end;
 
-if getTempEvalPref("JudgmentBarEnabled") then
+if themeConfig:get_data().eval.JudgmentBarEnabled then
 	t[#t+1] = LoadActor("adefaultmoreripoff")
 end;
 

@@ -12,7 +12,7 @@ if not GAMESTATE:IsCourseMode() then
 	stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2):GetRadarValues(PLAYER_2):GetValue('RadarCategory_TapsAndHolds')
 end;
 
-local cells = 100 / GAMESTATE:GetNumPlayersEnabled()
+local cells = themeConfig:get_data().eval.JudgmentBarCellCount / GAMESTATE:GetNumPlayersEnabled()
 local cellX = 0
 local cellY = 415
 local maxCellWidth = SCREEN_WIDTH/(math.max(1,GAMESTATE:GetNumPlayersEnabled())) - (GAMESTATE:GetNumPlayersEnabled()-1)*10
