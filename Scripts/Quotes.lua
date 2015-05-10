@@ -15,29 +15,38 @@ local function contains(table, value)
 end;
 
 local Tips = {
-    "You can change the default scoring type in \"scripts/02 TempThemePrefs.lua\" (for the time being)",
-    "You can change the color scheme of the theme by editing the values in  \"scripts/02 Colors.lua\"",
-    "See the README for instructions on adding avatars for the theme.",
+    --SM Tips
     "Pressing <Scroll Lock> immediately allows you to go to options",
     "You can mute action scounds by pressing <Pause/Break>",
     "Holding <F3> brings up the debug menu",
     "Hold down <Tab> to make things go fast, <~> for making things slow, and both to make things stop.",
-    "Press a button that is mapped to \"Select\" on your key bindings to select different tabs on ScreenSelectMusic",
     "Press <Ctrl>+<Backspace> on ScreenSelectMusic delete the song from the music wheel. Make sure \"Allow Song Deletion\" is On from \"Advanced Options\"",
     "Press <Ctrl>+<Shift>+<R> on ScreenSelectMusic to reload the selected song",
-    "Check http://www.flashflashrevolution.com/vbz/showthread.php?t=133223 for a huge list of simfile packs",
-    "Please don't bug the StepMania devs regarding bugs on this theme. (bug whoever made this theme instead.!! who will likely bug the devs anyway-)",
-    "Feel free to suggest feature requests on the github issue tracker or on the forum thread.",
-    "You can set preferences for various theme functions in \"Options > Theme Options\"",
-    "The theme is only supported for the nightly release build of SM5, please download from the 5.0.7 branch instead if you're not on the nightly build.",
     "Pressing <PrintScr/SysRq> takes a screenshot of the game, pressing <Shift>+<PrintScr/SysRq> will do so in a .png format and in original size.",
     "You can make profiles by going into \"Options > Profiles > Create Profile\"",
     "You can map keys/inputs by going into \"Options > Config Key/Joy Mappings\"",
+    "(Windows only) typing \"%appdata%\" into your explorer bar opens the AppData folder. You can find your stepmania settings folder from there.",
+    "StepMania by default will only save the top 3 scores on your profile. This can be changed in \"Arcade Options\"",
+    "Pressing <F8> Enables the autoplay. <Alt>+<F8> will do so without displaying the autoplay text.",
+
+    --Theme Specific
+    "Please don't bug the StepMania devs regarding bugs on this theme. (bug whoever made this theme instead.!! who will likely bug the devs anyway-)",
+    "Feel free to suggest feature requests on the github issue tracker or on the forum thread.",
+    "You can change the default scoring type in \"Theme Options\"",
+    "You can change the color scheme of the theme by editing the values in \"scripts/02 Colors.lua\"",
+    "See the README for instructions on adding avatars for the theme.",
+    "Press a button that is mapped to \"Select\" on your key bindings to select different tabs on ScreenSelectMusic",
+    "You can set preferences for various theme functions in \"Options > Theme Options\"",
+    "The theme is only supported for the nightly release build of SM5, please download from the 5.0.7 branch instead if you're not on the nightly build.",
     "This theme updates rather often, so make sure to check the thread/github page once every while for bugfixes and updates.",
-    "Poke Jousway in the forums for anything noteskin related.",
     "Check the \"Other\" tab for general information regarding StepMania and the theme",
     "Rave and Course modes are disabled in this theme because it's terribly broken right now.",
-    "SMO should work without errors but do note that the theme can't display server-side scores at the moment."
+    "SMO should work without errors but do note that the theme can't display server-side scores at the moment.",
+
+    --Other SM related Tips
+    "Check http://www.flashflashrevolution.com/vbz/showthread.php?t=133223 for a huge list of simfile packs",
+    "Poke Jousway in the forums for anything noteskin related."
+
 }
 
 local Phrases = {
