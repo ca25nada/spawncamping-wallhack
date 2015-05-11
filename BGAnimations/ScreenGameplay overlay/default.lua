@@ -1,8 +1,10 @@
 t = Def.ActorFrame{}
 t[#t+1] = LoadActor("scoretracking")
+t[#t+1] = LoadActor("ghostscore")
+t[#t+1] = LoadActor("lanecover")
 t[#t+1] = LoadActor("judgecount")
 t[#t+1] = LoadActor("pacemaker")
-t[#t+1] = LoadActor("ghostscore")
+
 t[#t+1] = LoadActor("progressbar")
 t[#t+1] = LoadActor("errorbar")
 t[#t+1] = LoadActor("avatar")
