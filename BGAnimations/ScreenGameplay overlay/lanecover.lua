@@ -52,6 +52,7 @@ local t = Def.ActorFrame{
 				moveUpP2 = false
 			end
 		end;
+		self:playcommand("SavePrefs")
 	end;
 	SavePrefsCommand=function(self)
 		if enabledP1 then
@@ -65,8 +66,6 @@ local t = Def.ActorFrame{
 			playerConfig:save(pn_to_profile_slot(PLAYER_2))
 		end;
 	end;
-	OffCommand=cmd(playcommand,"SavePrefs");
-	CancelCommand=cmd(playcommand,"SavePrefs");
 }
 
 if enabledP1 then
@@ -89,12 +88,17 @@ if enabledP1 then
 		InitCommand=cmd(x,P1X;settext,0;valign,1;zoom,0.5;);
 		BeginCommand=function(self)
 			if isReverseP1 then
-				self:y(SCREEN_TOP)
+				self:y(heightP1-5)
 				self:valign(1)
 			else
-				self:y(SCREEN_BOTTOM)
+				self:y(SCREEN_BOTTOM-heightP1+5)
 				self:valign(0)
 			end;
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:sleep(0.25)
+			self:smooth(0.75)
+			self:diffusealpha(0)
 		end;
 	};
 end;
@@ -119,12 +123,17 @@ if enabledP2 then
 		InitCommand=cmd(x,P2X;settext,0;valign,1;zoom,0.5;);
 		BeginCommand=function(self)
 			if isReverseP2 then
-				self:y(SCREEN_TOP-5)
+				self:y(heightP2-5)
 				self:valign(1)
 			else
-				self:y(SCREEN_BOTTOM+5)
+				self:y(SCREEN_BOTTOM-heightP2+5)
 				self:valign(0)
 			end;
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:sleep(0.25)
+			self:smooth(0.75)
+			self:diffusealpha(0)
 		end;
 	};
 end;
