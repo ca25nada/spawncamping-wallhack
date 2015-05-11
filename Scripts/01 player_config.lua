@@ -7,6 +7,8 @@ local defaultConfig = {
 	GhostTarget = 1,
 	ErrorBar = false,
 	PaceMaker = false,
+	LaneCover = false,
+	LaneCoverHeight = 0,
 }
 
 playerConfig = create_setting("playerConfig", "playerConfig.lua", defaultConfig, -1)
