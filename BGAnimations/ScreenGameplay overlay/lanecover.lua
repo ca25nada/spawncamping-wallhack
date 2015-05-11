@@ -3,6 +3,8 @@ local moveDownP1 = false
 local moveUpP2 = false
 local moveDownP2 = false
 
+local laneColor = color("#333333")
+
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer()
 
 local isCentered = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")) and GAMESTATE:GetNumPlayersEnabled() == 1-- load from prefs later
@@ -13,7 +15,7 @@ local styleType = ToEnumShortString(GAMESTATE:GetCurrentStyle():GetStyleType())
 local enabledP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCover and GAMESTATE:IsPlayerEnabled(PLAYER_1)
 local isReverseP1 = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
 
-local enabledP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCover  and GAMESTATE:IsPlayerEnabled(PLAYER_2)
+local enabledP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).LaneCover  and GAMESTATE:IsPlayerEnabled(PLAYER_2)
 local isReverseP2 = GAMESTATE:GetPlayerState(PLAYER_2):GetCurrentPlayerOptions():UsingReverse()
 
 local heightP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCoverHeight
@@ -71,7 +73,7 @@ local t = Def.ActorFrame{
 if enabledP1 then
 	t[#t+1] = Def.Quad{
 		Name="CoverP1";
-		InitCommand=cmd(xy,P1X,SCREEN_TOP;zoomto,width+padding,heightP1;valign,0;diffuse,color("#000000"));
+		InitCommand=cmd(xy,P1X,SCREEN_TOP;zoomto,width+padding,heightP1;valign,0;diffuse,laneColor);
 		BeginCommand=function(self)
 			if isReverseP1 then
 				self:y(SCREEN_TOP)
@@ -106,7 +108,7 @@ end;
 if enabledP2 then
 	t[#t+1] = Def.Quad{
 		Name="CoverP2";
-		InitCommand=cmd(xy,P2X,SCREEN_TOP;zoomto,width+padding,heightP2;valign,0;diffuse,color("#000000"));
+		InitCommand=cmd(xy,P2X,SCREEN_TOP;zoomto,width+padding,heightP2;valign,0;diffuse,laneColor);
 		BeginCommand=function(self)
 			if isReverseP2 then
 				self:y(SCREEN_TOP)
@@ -183,11 +185,11 @@ local function Update(self)
 		end;
 
 		if moveDownP2 or moveUpP2 then
-			self:GetChild("CoverTextP1"):finishtweening()
-			self:GetChild("CoverTextP1"):diffusealpha(1)
-			self:GetChild("CoverTextP1"):sleep(0.25)
-			self:GetChild("CoverTextP1"):smooth(0.75)
-			self:GetChild("CoverTextP1"):diffusealpha(0)
+			self:GetChild("CoverTextP2"):finishtweening()
+			self:GetChild("CoverTextP2"):diffusealpha(1)
+			self:GetChild("CoverTextP2"):sleep(0.25)
+			self:GetChild("CoverTextP2"):smooth(0.75)
+			self:GetChild("CoverTextP2"):diffusealpha(0)
 		end;
 	end;
 end; 
