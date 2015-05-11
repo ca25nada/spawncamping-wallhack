@@ -144,11 +144,18 @@ local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
 	if enabledP1 then
 		if moveDownP1 then
-			heightP1 = math.min(SCREEN_BOTTOM,math.max(0,heightP1+1))
+			if isReverseP1 then
+				heightP1 = math.min(SCREEN_BOTTOM,math.max(0,heightP1+1))
+			else
+				heightP1 = math.min(SCREEN_BOTTOM,math.max(0,heightP1-1))
+			end;
 		end;
 		if moveUpP1 then
-			heightP1 = math.min(SCREEN_BOTTOM,math.max(0,heightP1-1))
-
+			if isReverseP1 then
+				heightP1 = math.min(SCREEN_BOTTOM,math.max(0,heightP1-1))
+			else
+				heightP1 = math.min(SCREEN_BOTTOM,math.max(0,heightP1+1))
+			end;
 		end;
 
 		self:GetChild("CoverP1"):zoomy(heightP1)
@@ -171,10 +178,18 @@ local function Update(self)
 
 	if enabledP2 then
 		if moveDownP2 then
-			heightP2 = math.min(SCREEN_BOTTOM,math.max(0,heightP2+1))
+			if isReverseP2 then
+				heightP2 = math.min(SCREEN_BOTTOM,math.max(0,heightP2+1))
+			else
+				heightP2 = math.min(SCREEN_BOTTOM,math.max(0,heightP2-1))
+			end;
 		end;
 		if moveUpP2 then
-			heightP2 = math.min(SCREEN_BOTTOM,math.max(0,heightP2-1))
+			if isReverseP2 then
+				heightP2 = math.min(SCREEN_BOTTOM,math.max(0,heightP2-1))
+			else
+				heightP2 = math.min(SCREEN_BOTTOM,math.max(0,heightP2+1))
+			end;
 		end;
 		self:GetChild("CoverP2"):zoomy(heightP2)
 		self:GetChild("CoverTextP2"):settext(heightP2)
