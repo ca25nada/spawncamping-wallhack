@@ -24,7 +24,7 @@ function GetLocalProfiles()
 			};
 
 			Def.Sprite {
-				InitCommand=cmd(visible,true;halign,0;xy,-98,-2);
+				InitCommand=cmd(visible,true;halign,0;xy,-98,-2;ztest,true;);
 				BeginCommand=cmd(queuecommand,"ModifyAvatar");
 				ModifyAvatarCommand=function(self)
 					self:finishtweening();
