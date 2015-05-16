@@ -81,6 +81,30 @@ if enabled then
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;diffuse,color("#666666");diffusealpha,0.7);
 	};
 
+	-- Initialize a bunch of bars
+	for i=1,barcount do
+		t[#t+1] = proTimingTicks(pn,i)
+	end;
+
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(xy,frameX,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
+	};
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(xy,frameX+1-frameWidth/2,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
+	};
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(xy,frameX-1+frameWidth/2,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
+	};
+	t[#t+1] = LoadFont("Common Normal") .. {
+        InitCommand=cmd(xy,frameX+frameWidth/4,frameY;zoom,0.35;);
+        BeginCommand=cmd(settext,"Late";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
+    };
+    t[#t+1] = LoadFont("Common Normal") .. {
+        InitCommand=cmd(xy,frameX-frameWidth/4,frameY;zoom,0.35;);
+        BeginCommand=cmd(settext,"Early";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
+    };
+
+
 	--[[ Debug
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand=cmd(xy,300,300;halign,0;zoom,2;diffuse,getMainColor(2));
@@ -91,10 +115,6 @@ if enabled then
 		JudgmentMessageCommand=cmd(playcommand,"Set");
 	};
 	--]]
-	-- Initialize a bunch of bars
-	for i=1,barcount do
-		t[#t+1] = proTimingTicks(pn,i)
-	end;
 end;
 
 -- 

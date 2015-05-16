@@ -84,7 +84,7 @@ themeColors = {
 	paceMaker = {
 		Current = color("#0099ff"),
 		Target = color("#ff9999"),
-		Ghost = "" -- unused,
+		Ghost = color("#FFFFFF") -- unused,
 	}
 }
 
