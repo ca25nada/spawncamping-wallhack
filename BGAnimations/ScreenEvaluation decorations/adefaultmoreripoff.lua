@@ -79,6 +79,15 @@ if GAMESTATE:GetNumPlayersEnabled() >= 1 and (not GAMESTATE:IsCourseMode()) then
 	for k,v in ipairs(cellTable) do
 		t[#t+1] = Def.Quad{
 			InitCommand=cmd(xy,0,cellY;zoomto,(maxCellWidth/cells)-2,cellHeight;halign,0;valign,0;diffuse,judgeColors[v];diffusealpha,0;sleep,k/cells;smooth,1;x,math.random(0,maxCellWidth);diffusealpha,0.2;smooth,0.5;x,((k-1)*maxCellWidth/cells)+cellX;diffusealpha,1);
+			BeginCommand=function(self)
+				if v == 1 then
+					self:diffuseshift()
+					self:effectoffset(0.07*(cells-k))
+					self:effectcolor1(color("#ffffff"))
+					self:effectcolor2(judgeColors[v])
+					self:effectperiod(0.3)
+				end;
+			end;
 		};
 	end
 end;
