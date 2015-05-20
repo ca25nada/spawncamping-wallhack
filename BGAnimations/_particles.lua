@@ -1,5 +1,7 @@
 local t = Def.ActorFrame{}
 
+local enabled = themeConfig:get_data().global.Particles
+
 local particleAmount = 30
 local particleSize = 3
 
@@ -26,10 +28,11 @@ function makeParticle(index,x,y,size,direction)
 	};
 end;
 
-for i=1,particleAmount do
-	t[#t+1] = makeParticle(i,math.random(0,SCREEN_WIDTH),math.random(0,SCREEN_HEIGHT),particleSize,math.random()*360);
+if enabled then
+	for i=1,particleAmount do
+		t[#t+1] = makeParticle(i,math.random(0,SCREEN_WIDTH),math.random(0,SCREEN_HEIGHT),particleSize,math.random()*360);
+	end;
 end;
-
 
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
@@ -44,7 +47,9 @@ local function Update(self)
 		end;
 	end;
 end; 
-t.InitCommand=cmd(SetUpdateFunction,Update);
+if enabled then
+	t.InitCommand=cmd(SetUpdateFunction,Update);
+end;
 
 
 return t
