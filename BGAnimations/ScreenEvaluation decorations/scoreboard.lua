@@ -122,7 +122,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn));
 				self:diffuseramp()
-				self:effectoffset(0.03*(lines-index))
+				self:effectoffset(0.03*(lines-drawindex))
 				self:effectcolor2(color("1,1,1,0.6"))
 				self:effectcolor1(color("1,1,1,0"))
 				self:effecttiming(2,1,0,0)
