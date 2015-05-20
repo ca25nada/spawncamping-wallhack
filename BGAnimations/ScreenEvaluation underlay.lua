@@ -7,6 +7,7 @@ local moveBG = themeConfig:get_data().global.SongBGMouseEnabled and enabled
 local brightness = 0.3
 
 local t = Def.ActorFrame{}
+t[#t+1] = LoadActor("_particles");
 if enabled then
 	t[#t+1] = LoadSongBackground()..{
 		Name="MouseXY";

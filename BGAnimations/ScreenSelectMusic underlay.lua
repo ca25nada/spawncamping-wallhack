@@ -53,6 +53,8 @@ local function getPosY()
 end
 
 local t = Def.ActorFrame{}
+t[#t+1] = LoadActor("_particles");
+
 if enabled then
 	t[#t+1] = Def.Sprite {
 		Name="MouseXY";
