@@ -361,11 +361,7 @@ function getGradeST(pn)
 	local curMaxDPScore = getCurMaxScoreST(pn,1)
 	local curMaxPSScore = getCurMaxScoreST(pn,2)
 
-	local failing
-	local ts = SCREENMAN:GetTopScreen():GetLifeMeter(pn)
-	if ts ~= nil then
-		failing = ts:IsFailing()
-	end;
+	local failing = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetFailed()
 	if GAMESTATE:IsBattleMode() then
 		failing = false
 	end;

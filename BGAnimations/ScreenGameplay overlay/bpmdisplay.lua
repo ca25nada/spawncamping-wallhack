@@ -14,7 +14,11 @@ local t = Def.ActorFrame {
 function getPlayerBPM(pn)
 	local pn = GAMESTATE:GetMasterPlayerNumber()
 	local songPosition = GAMESTATE:GetPlayerState(pn):GetSongPosition()
-	local bpm = SCREENMAN:GetTopScreen():GetTrueBPS(pn) * 60
+	local ts = SCREENMAN:GetTopScreen()
+	local bpm = 0
+	if ts:GetScreenType() == 'ScreenType_Gameplay' then
+		bpm = ts:GetTrueBPS(pn) * 60
+	end;
 	return string.format("%03.2f",bpm)
 end;
 

@@ -20,16 +20,7 @@ local t = Def.ActorFrame {
 };
  
 function PLife(pn)
-	local temp = SCREENMAN:GetTopScreen():GetLifeMeter(pn)
-	if GAMESTATE:IsBattleMode() then
-		return 0
-	else
-		if temp ~= nil then
-			return temp:GetLife();
-		else
-			return 0
-		end;
-	end
+	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentLife() or 0
 end;
  
 local function Update(self)
