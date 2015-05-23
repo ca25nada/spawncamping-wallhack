@@ -13,8 +13,11 @@ local defaultConfig = {
 		JudgmentBarCellCount = 100, --Will be halved for 2p
 		ScoreBoardEnabled = true,
 		ScoreBoardMaxEntry = 10,
+	},
+	avatar = {
+		default = "_fallback.png",
 	}
 }
 
-themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig, -1)
+themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig,0)
 themeConfig:load()

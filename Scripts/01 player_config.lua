@@ -1,5 +1,6 @@
 
 local defaultConfig = {
+	--Avatar = "_fallback.png",
 	ScreenFilter = 0,
 	JudgeType = 0,
 	AvgScoreType = 0,
