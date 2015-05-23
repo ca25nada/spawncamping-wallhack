@@ -257,8 +257,9 @@ function LaneCover()
 	return t;
 end	
 
-local directory = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
+
 function Avatars()
+	local directory = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
 	local t = {
 		Name = "Avatars";
 		LayoutType = "ShowAllInRow";
