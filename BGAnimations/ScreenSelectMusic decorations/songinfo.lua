@@ -23,15 +23,17 @@ t[#t+1] = Def.Banner{
 	SetMessageCommand=function(self)
 		if update then
 			local top = SCREENMAN:GetTopScreen()
-			local song = GAMESTATE:GetCurrentSong()
-			local course = GAMESTATE:GetCurrentCourse()
-			local group = top:GetMusicWheel():GetSelectedSection()
-			if song then
-				self:LoadFromSong(song)
-			elseif course then
-				self:LoadFromCourse(song)
-			elseif group then
-				self:LoadFromSongGroup(group)
+			if top:GetName() == "ScreenSelectMusic" or top:GetName() == "ScreenNetSelectMusic" then
+				local song = GAMESTATE:GetCurrentSong()
+				local course = GAMESTATE:GetCurrentCourse()
+				local group = top:GetMusicWheel():GetSelectedSection()
+				if song then
+					self:LoadFromSong(song)
+				elseif course then
+					self:LoadFromCourse(song)
+				elseif group then
+					self:LoadFromSongGroup(group)
+				end;
 			end;
 		end;
 		self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))

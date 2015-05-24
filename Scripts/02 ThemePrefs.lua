@@ -257,7 +257,8 @@ function LaneCover()
 	return t;
 end	
 
-
+--unused
+--[[
 function Avatars()
 	local directory = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
 	local t = {
@@ -303,6 +304,7 @@ function Avatars()
 	setmetatable( t, t );
 	return t;
 end	
+--]]
 
 --===============================================
 --Globals

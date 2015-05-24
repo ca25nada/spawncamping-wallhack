@@ -1,6 +1,8 @@
 --avatars should work minus in the case when a 2nd player joins midway, because i have no idea how to re-load the image.
 
-local t = Def.ActorFrame{};
+local t = Def.ActorFrame{
+	Name="PlayerAvatar";
+};
 
 local profileP1
 local profileP2
@@ -85,6 +87,7 @@ t[#t+1] = Def.Actor{
 
 
 t[#t+1] = Def.ActorFrame{
+	Name="Avatar"..PLAYER_1;
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if profileP1 == nil then
@@ -97,10 +100,12 @@ t[#t+1] = Def.ActorFrame{
 	PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 
 	Def.Sprite {
+		Name="Image";
 		InitCommand=cmd(visible,true;halign,0;valign,0;xy,AvatarXP1,AvatarYP1);
 		BeginCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerJoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		ModifyAvatarCommand=function(self)
 			self:finishtweening();
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_1)));
@@ -156,6 +161,7 @@ t[#t+1] = Def.ActorFrame{
 
 -- P2 Avatar
 t[#t+1] = Def.ActorFrame{
+	Name="Avatar"..PLAYER_2;
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if profileP2 == nil then
@@ -168,10 +174,12 @@ t[#t+1] = Def.ActorFrame{
 	PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 
 	Def.Sprite {
+		Name="Image";
 		InitCommand=cmd(visible,true;halign,0;valign,0;xy,AvatarXP2,AvatarYP2);
 		BeginCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerJoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		ModifyAvatarCommand=function(self)
 			self:finishtweening();
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_2)));
