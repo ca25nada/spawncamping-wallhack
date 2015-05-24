@@ -82,11 +82,13 @@ local function avatarSwitch(pn)
 		BeginCommand=function(self)
 			if pn == PLAYER_1 then
 				self:x(-width);
+				self:sleep(0.3)
 				self:smooth(0.2)
 				self:x(0)
 			end;
 			if pn == PLAYER_2 then
 				self:x(SCREEN_WIDTH)
+				self:sleep(0.3)
 				self:smooth(0.2)
 				self:x(SCREEN_WIDTH-width)
 			end;
