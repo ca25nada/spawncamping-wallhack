@@ -9,14 +9,27 @@ local frameY = SCREEN_HEIGHT-55
 local height = itemHeight+(border*2)
 local width = maxItems*(itemWidth+border)+border
 
+local function getInitAvatarIndex(pn)
+	local profile = PROFILEMAN:GetProfile(pn)
+	local GUID = profile:GetGUID()
+	local avatar = themeConfig:get_data().avatar[GUID]
+	for i=1,#avatars do
+		if avatar == avatars[i] then
+			return i
+		end;
+	end;
+
+	return 1
+end;
+
 local data ={
 	PlayerNumber_P1 = {
 		cursorIndex = 1,
-		avatarIndex = 1,
+		avatarIndex = getInitAvatarIndex(PLAYER_1),
 	},
 	PlayerNumber_P2 = {
 		cursorIndex = 1,
-		avatarIndex = 1,
+		avatarIndex = getInitAvatarIndex(PLAYER_2),
 	},
 }
 
@@ -103,8 +116,15 @@ local function avatarSwitch(pn)
 			SCREENMAN:GetTopScreen():Cancel()
 		end;
 		if params.Name == "AvatarExit" then
-			saveAvatar(params.PlayerNumber)
-			setAvatarUpdateStatus(pn,true)
+			if GAMESTATE:GetNumPlayersEnabled() == 1 then
+				saveAvatar(params.PlayerNumber)
+				setAvatarUpdateStatus(pn,true)
+			else
+				saveAvatar(PLAYER_1)
+				setAvatarUpdateStatus(PLAYER_1,true)
+				saveAvatar(PLAYER_2)
+				setAvatarUpdateStatus(PLAYER_2,true)
+			end;
 			SCREENMAN:GetTopScreen():Cancel()
 		end;
 	end;
@@ -131,6 +151,9 @@ local function avatarSwitch(pn)
 
 	local avatarTable = Def.ActorFrame{
 		Name="AvatarTable";
+		BeginCommand=function(self)
+			shift(self,-(data[pn]["avatarIndex"]-1))
+		end;
 	}
 	t[#t+1] = avatarTable
 	for k,v in pairs(avatars) do
