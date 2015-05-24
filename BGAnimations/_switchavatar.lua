@@ -9,18 +9,19 @@ local frameY = SCREEN_HEIGHT-55
 local height = itemHeight+(border*2)
 local width = maxItems*(itemWidth+border)+border
 
-local cursorIndex = 1
-local avatarIndex = 1
+local data ={
+	PlayerNumber_P1 = {
+		cursorIndex = 1,
+		avatarIndex = 1,
+	},
+	PlayerNumber_P2 = {
+		cursorIndex = 1,
+		avatarIndex = 1,
+	},
+}
 
 local t = Def.ActorFrame{
 	Name="AvatarSwitch";
-	BeginCommand=cmd(x,-width;smooth,0.2;x,0);
-	CodeMessageCommand=function(self,params)
-		if params.Name == "AvatarCancel" or params.Name == "AvatarExit" then
-			self:smooth(0.2)
-			self:x(-width)
-		end;
-	end;
 }
 
 local function shift(self,amount)
@@ -29,41 +30,73 @@ local function shift(self,amount)
 	self:addx((itemWidth+border)*amount)
 end;
 
-local function getCurrentAvatar()
-	return avatars[avatarIndex]
+local function getCurrentAvatar(pn)
+	return avatars[data[pn]["avatarIndex"]]
 end;
 
 local function saveAvatar(pn)
-	local avatar = getCurrentAvatar()
+	local avatar = getCurrentAvatar(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	local GUID = profile:GetGUID()
 	themeConfig:get_data().avatar[GUID] = avatar
 	themeConfig:set_dirty()
 	themeConfig:save()
+	SCREENMAN:SystemMessage(string.format("%s Avatar set to: '%s'",pn,avatar))
 end;
 
-t[#t+1] = Def.ActorFrame{
-	CodeMessageCommand=function(self,params)
-		local table = SCREENMAN:GetTopScreen():GetChildren().Overlay:GetChildren().AvatarSwitch:GetChildren().AvatarTable
-		local cursor = SCREENMAN:GetTopScreen():GetChildren().Overlay:GetChildren().AvatarSwitch:GetChildren().AvatarCursor
-		if params.Name == "AvatarLeft" then
-			if avatarIndex > 1 and cursorIndex > 1 then
-				shift(cursor,-1)
-				avatarIndex = avatarIndex - 1
-				cursorIndex = cursorIndex - 1 
-			elseif avatarIndex > 1 and cursorIndex == 1 then
-				shift(table,1)
-				avatarIndex = avatarIndex - 1
+local function avatarSwitch(pn)
+	local t = Def.ActorFrame{
+		Name="AvatarSwitch"..pn;
+		BeginCommand=function(self)
+			if pn == PLAYER_1 then
+				self:x(-width);
+				self:smooth(0.2)
+				self:x(0)
+			end;
+			if pn == PLAYER_2 then
+				self:x(SCREEN_WIDTH)
+				self:smooth(0.2)
+				self:x(SCREEN_WIDTH-width)
 			end;
 		end;
-		if params.Name == "AvatarRight" then
-			if avatarIndex < #avatars and cursorIndex < maxItems then
-				shift(cursor,1)
-				avatarIndex = avatarIndex + 1
-				cursorIndex = cursorIndex + 1 
-			elseif avatarIndex < #avatars and cursorIndex == maxItems then
-				shift(table,-1)
-				avatarIndex = avatarIndex + 1
+		CodeMessageCommand=function(self,params)
+			if params.Name == "AvatarCancel" or params.Name == "AvatarExit" then
+				if pn == PLAYER_1 then
+					self:smooth(0.2)
+					self:x(-width)
+				end
+				if pn == PLAYER_2 then
+					self:smooth(0.2)
+					self:x(SCREEN_WIDTH)
+				end
+			end;
+		end;
+	}
+
+	t[#t+1] = Def.ActorFrame{
+	CodeMessageCommand=function(self,params)
+		local table = SCREENMAN:GetTopScreen():GetChildren().Overlay:GetChildren().AvatarSwitch:GetChildren()["AvatarSwitch"..pn]:GetChildren().AvatarTable
+		local cursor = SCREENMAN:GetTopScreen():GetChildren().Overlay:GetChildren().AvatarSwitch:GetChildren()["AvatarSwitch"..pn]:GetChildren().AvatarCursor
+		if params.PlayerNumber == pn then
+			if params.Name == "AvatarLeft" then
+				if data[pn]["avatarIndex"] > 1 and data[pn]["cursorIndex"] > 1 then
+					shift(cursor,-1)
+					data[pn]["avatarIndex"] = data[pn]["avatarIndex"] - 1
+					data[pn]["cursorIndex"] = data[pn]["cursorIndex"] - 1 
+				elseif data[pn]["avatarIndex"] > 1 and data[pn]["cursorIndex"] == 1 then
+					shift(table,1)
+					data[pn]["avatarIndex"] = data[pn]["avatarIndex"] - 1
+				end;
+			end;
+			if params.Name == "AvatarRight" then
+				if data[pn]["avatarIndex"] < #avatars and data[pn]["cursorIndex"] < maxItems then
+					shift(cursor,1)
+					data[pn]["avatarIndex"] = data[pn]["avatarIndex"] + 1
+					data[pn]["cursorIndex"] = data[pn]["cursorIndex"] + 1 
+				elseif data[pn]["avatarIndex"] < #avatars and data[pn]["cursorIndex"] == maxItems then
+					shift(table,-1)
+					data[pn]["avatarIndex"] = data[pn]["avatarIndex"] + 1
+				end;
 			end;
 		end;
 		if params.Name == "AvatarCancel" then
@@ -71,47 +104,68 @@ t[#t+1] = Def.ActorFrame{
 		end;
 		if params.Name == "AvatarExit" then
 			saveAvatar(params.PlayerNumber)
+			setAvatarUpdateStatus(pn,true)
 			SCREENMAN:GetTopScreen():Cancel()
 		end;
 	end;
-}
+	}
 
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,width,height;halign,0;valign,1;diffuse,color("#00000066"));
-}
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(xy,frameX,frameY;zoomto,width,height;halign,0;valign,1;diffuse,color("#00000066"));
+	}
 
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,width,0;zoomto,SCREEN_WIDTH-width,SCREEN_HEIGHT;halign,0;valign,0;diffuse,color("#00000066"));
-	BeginCommand=cmd(zwrite,true;clearzbuffer,true;blend,'BlendMode_NoEffect';);
-}
-
-t[#t+1] = Def.Quad{
-	Name="AvatarCursor";
-	InitCommand=cmd(xy,frameX-2+border,frameY+2-border;zoomto,itemHeight+4,itemWidth+4;halign,0;valign,1;diffuse,color("#FFFFFF"));
-}
-
-local avatarTable = Def.ActorFrame{
-	Name="AvatarTable";
-}
-t[#t+1] = avatarTable
-for k,v in pairs(avatars) do
-	avatarTable[#avatarTable+1] = Def.Sprite {
-		InitCommand=cmd(visible,true;halign,0;valign,1;xy,frameX+border+((border+itemWidth)*(k-1)),frameY-border;ztest,true;);
-		BeginCommand=cmd(queuecommand,"ModifyAvatar");
-		ModifyAvatarCommand=function(self)
-			self:finishtweening();
-			self:LoadBackground(THEME:GetPathG("","Player avatar/"..v));
-			self:zoomto(itemWidth,itemHeight)
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(xy,width,0;zoomto,SCREEN_WIDTH-width,SCREEN_HEIGHT;halign,0;valign,0;zwrite,true;clearzbuffer,true;blend,'BlendMode_NoEffect';);
+		BeginCommand=function(self)
+			if pn == PLAYER_2 then
+				self:x(0)
+				self:halign(1)
+			end;
 		end;
+	}
+
+	t[#t+1] = Def.Quad{
+		Name="AvatarCursor";
+		InitCommand=cmd(xy,frameX-2+border,frameY+2-border;zoomto,itemHeight+4,itemWidth+4;halign,0;valign,1;diffuse,color("#FFFFFF"));
+	}
+
+	local avatarTable = Def.ActorFrame{
+		Name="AvatarTable";
+	}
+	t[#t+1] = avatarTable
+	for k,v in pairs(avatars) do
+		avatarTable[#avatarTable+1] = Def.Sprite {
+			InitCommand=cmd(visible,true;halign,0;valign,1;xy,frameX+border+((border+itemWidth)*(k-1)),frameY-border;ztest,true;);
+			BeginCommand=cmd(queuecommand,"ModifyAvatar");
+			ModifyAvatarCommand=function(self)
+				self:finishtweening();
+				self:LoadBackground(THEME:GetPathG("","Player avatar/"..v));
+				self:zoomto(itemWidth,itemHeight)
+			end;
+		};
+	end;
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand=cmd(xy,frameX,frameY-height;halign,0;valign,1;zoom,0.35;);
+		SetCommand=function(self,params)
+			--self:settextf("Player 1 avatar: ci%d ai%d",cursorIndex,avatarIndex)
+			if pn == PLAYER_1 then
+				self:settextf("Player 1 avatar: %s",avatars[data[pn]["avatarIndex"]])
+			end;
+			if pn == PLAYER_2 then
+				self:settextf("Player 2 avatar: %s",avatars[data[pn]["avatarIndex"]])
+			end;
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set")
 	};
+	return t
 end;
 
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,frameX,frameY-height;halign,0;valign,1;zoom,0.35;settext,"Player 1 avatar:");
-	CodeMessageCommand=function(self,params)
-		--self:settextf("Player 1 avatar: ci%d ai%d",cursorIndex,avatarIndex)
-		self:settextf("Player 1 avatar: %s",avatars[avatarIndex])
-	end;
-};
+if GAMESTATE:IsHumanPlayer(PLAYER_1) then
+	t[#t+1] = avatarSwitch(PLAYER_1)
+end;
+if GAMESTATE:IsHumanPlayer(PLAYER_2) then
+	t[#t+1] = avatarSwitch(PLAYER_2)
+end;
 
 return t

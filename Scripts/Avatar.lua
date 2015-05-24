@@ -13,6 +13,19 @@ local function ReadAvatarFile(path)
 	return contents
 end
 
+local update = {
+	PLAYER_1 = false,
+	PLAYER_2 = false,
+}
+
+function setAvatarUpdateStatus(pn,status)
+	update[pn] = status
+end;
+
+function getAvatarUpdateStatus(pn)
+	return update[pn]
+end;
+
 -- Old functions, new functions are now tied to kyzentun's prefs system.
 -- Returns a path to the avatar image (relative to the theme folder) for the specified player.
 --[[

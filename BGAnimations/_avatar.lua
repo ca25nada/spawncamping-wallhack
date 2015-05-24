@@ -105,12 +105,11 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerJoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
-		CurrentSongChangedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		ModifyAvatarCommand=function(self)
 			self:finishtweening();
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_1)));
 			self:zoomto(50,50)
-		end;	
+		end;
 	};
 	--[[
 	LoadActor("../../"..getAvatarPath(PLAYER_1))..{
@@ -179,7 +178,6 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerJoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
-		CurrentSongChangedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		ModifyAvatarCommand=function(self)
 			self:finishtweening();
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_2)));
@@ -231,5 +229,17 @@ t[#t+1] = Def.ActorFrame{
 	};
 };
 
+local function Update(self)
+	t.InitCommand=cmd(SetUpdateFunction,Update);
+	if getAvatarUpdateStatus(PLAYER_1) then
+    	self:GetChild("Avatar"..PLAYER_1):GetChild("Image"):queuecommand("ModifyAvatar")
+    	setAvatarUpdateStatus(PLAYER_1,false)
+    end;
+    if getAvatarUpdateStatus(PLAYER_2) then
+    	self:GetChild("Avatar"..PLAYER_2):GetChild("Image"):queuecommand("ModifyAvatar")
+    	setAvatarUpdateStatus(PLAYER_2,false)
+    end;
+end; 
+t.InitCommand=cmd(SetUpdateFunction,Update);
 
 return t;
