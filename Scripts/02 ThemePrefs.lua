@@ -257,6 +257,55 @@ function LaneCover()
 	return t;
 end	
 
+--unused
+--[[
+function Avatars()
+	local directory = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
+	local t = {
+		Name = "Avatars";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = false;
+		ExportOnChange = true;
+		Choices = directory;
+		LoadSelections = function(self, list, pn)
+			local profile = PROFILEMAN:GetProfile(pn)
+			local GUID = profile:GetGUID()
+			local pref = themeConfig:get_data().avatar[GUID]
+			local found = false
+			for i=1,#list do
+				if pref == directory[i] then
+					list[i] = true
+					found = true
+				end;
+			end;
+			if not found then
+				list[1] = true
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local profile = PROFILEMAN:GetProfile(pn)
+			local GUID = profile:GetGUID()
+			local value
+			local found = false
+			for i=1,#list do
+				if not found then
+					if list[i] == true then
+						local value = directory[i];
+						themeConfig:get_data().avatar[GUID] = value
+						found = true
+					end
+				end
+			end
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end	
+--]]
+
 --===============================================
 --Globals
 

@@ -33,3 +33,7 @@ function isOver(element)
 
 	return (withinX and withinY)
 end;
+
+function tableContains(table,key)
+	return (table[key] ~= nil)
+end;

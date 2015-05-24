@@ -122,7 +122,7 @@ local Phrases = {
     --"fappables/duck.gif",
     --"16 hours of B.O. blocko power!",
     "\"how can there be 714 bpm if theres only 60 seconds in a minute?\"",
-    --"Far East Nightbird (Twitch remix)",
+    "Far East Nightbird (Twitch remix)",
     "Just hold on. You'll be fine, I promise. Everyday.",
     "2spooky",
     "i'm not a kaiden i'm a ninja gaiden",
@@ -246,7 +246,10 @@ local Phrases = {
     "\"Nanahira is love. I hope she makes collab with Prim sometime.\"", -- shortly followed by "Have mercy on our ears"
     "\"we should impersonize the scratch from lr2 into some annoying anime chick\"", -- sarachan >w
     "be-music salt",
-    "fry EOS" -- Hazelnut: try*
+    "fry EOS", -- Hazelnut: try*
+    "real overjoys use magic", --nekro
+    "\"I'M NOT A LOLICON HATER, SOME OF MY BEST FRIENDS ARE LOLICON\"", -- bemanisows QDB
+    "\"iidx song titles as nicknames for body parts. like. those are some huge valangas.\""
 }
 
 --tip

@@ -3,6 +3,9 @@ local moveDownP1 = false
 local moveUpP2 = false
 local moveDownP2 = false
 
+local lockSpeedP1 = false
+local lockSpeedP2 = false
+
 local laneColor = color("#333333")
 
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer()
@@ -26,6 +29,68 @@ local P2X = SCREEN_CENTER_X
 if not isCentered then
 	P1X = THEME:GetMetric("ScreenGameplay",string.format("PlayerP1%sX",styleType))
 	P2X = THEME:GetMetric("ScreenGameplay",string.format("PlayerP2%sX",styleType))
+end;
+
+local function getPlayerBPM(pn)
+	local pn = GAMESTATE:GetMasterPlayerNumber()
+	local songPosition = GAMESTATE:GetPlayerState(pn):GetSongPosition()
+	local ts = SCREENMAN:GetTopScreen()
+	local bpm = 0
+	if ts:GetScreenType() == 'ScreenType_Gameplay' then
+		bpm = ts:GetTrueBPS(pn) * 60
+	end;
+	return bpm
+end;
+
+local function getMaxDisplayBPM(pn)
+	local pn = GAMESTATE:GetMasterPlayerNumber()
+	local song = GAMESTATE:GetCurrentSong()
+	local steps = GAMESTATE:GetCurrentSteps(pn)
+	if steps:GetDisplayBPMType() ~= 'DisplayBPM_Random' then
+		return steps:GetDisplayBpms()[2]
+	else
+		return steps:GetTimingData():GetActualBPM()[2]
+	end;
+end;
+
+local function getSpeed(pn)
+	local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred");
+	if po:XMod() ~= nil then
+		return po:XMod()*getPlayerBPM(pn)
+	elseif po:CMod() ~= nil then
+		return po:CMod()
+	elseif po:MMod() ~= nil then
+		return po:MMod()*(getPlayerBPM(pn)/getMaxDisplayBPM(pn))
+	else
+		return getPlayerBPM(pn)
+	end;
+end;
+
+local function getNoteFieldHeight(pn)
+	local reverse = GAMESTATE:GetPlayerState(pn):GetCurrentPlayerOptions():UsingReverse()
+	if reverse then
+		return SCREEN_CENTER_Y + THEME:GetMetric("Player","ReceptorArrowsYReverse")
+	else
+		return SCREEN_CENTER_Y - THEME:GetMetric("Player","ReceptorArrowsYStandard")
+	end;
+end;
+
+local function getScrollSpeed(pn,LaneCoverHeight)
+	local height = getNoteFieldHeight(pn)
+	local speed = getSpeed(pn)
+
+	if LaneCoverHeight < height then
+		return speed*(height/(height-LaneCoverHeight))
+	else
+		return 0
+	end;
+end;
+
+--inaccurate since the highspeed x1 speed definition is different between the games.
+--iidx x1 is defined as the whole measure showing up on the notefield
+--SM x1 is defined as 4th notes being next to each other with no gaps or overlaps.
+local function getIIDXGreenNumber(pn,LaneCoverHeight)
+	return (174*((getNoteFieldHeight(pn)-LaneCoverHeight)*(1000/getNoteFieldHeight(pn))))/((getSpeed(pn)/getPlayerBPM(pn))*getPlayerBPM(pn))
 end;
 
 local t = Def.ActorFrame{
@@ -86,8 +151,26 @@ if enabledP1 then
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name="CoverTextP1";
-		InitCommand=cmd(x,P1X;settext,0;valign,1;zoom,0.5;);
+		Name="CoverTextP1White";
+		InitCommand=cmd(x,P1X-width/8;settext,0;valign,1;zoom,0.5;);
+		BeginCommand=function(self)
+			if isReverseP1 then
+				self:y(heightP1-5)
+				self:valign(1)
+			else
+				self:y(SCREEN_BOTTOM-heightP1+5)
+				self:valign(0)
+			end;
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:sleep(0.25)
+			self:smooth(0.75)
+			self:diffusealpha(0)
+		end;
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		Name="CoverTextP1Green";
+		InitCommand=cmd(x,P1X+width/8;settext,0;valign,1;zoom,0.5;diffuse,color("#4CBB17"));
 		BeginCommand=function(self)
 			if isReverseP1 then
 				self:y(heightP1-5)
@@ -121,8 +204,27 @@ if enabledP2 then
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name="CoverTextP2";
-		InitCommand=cmd(x,P2X;settext,0;valign,1;zoom,0.5;);
+		Name="CoverTextP2White";
+		InitCommand=cmd(x,P2X-width/8;settext,0;valign,1;zoom,0.5;);
+		BeginCommand=function(self)
+			if isReverseP2 then
+				self:y(heightP2-5)
+				self:valign(1)
+			else
+				self:y(SCREEN_BOTTOM-heightP2+5)
+				self:valign(0)
+			end;
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:sleep(0.25)
+			self:smooth(0.75)
+			self:diffusealpha(0)
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		Name="CoverTextP2Green";
+		InitCommand=cmd(x,P2X+width/8;settext,0;valign,1;zoom,0.5;diffuse,color("#4CBB17"));
 		BeginCommand=function(self)
 			if isReverseP2 then
 				self:y(heightP2-5)
@@ -159,19 +261,27 @@ local function Update(self)
 		end;
 
 		self:GetChild("CoverP1"):zoomy(heightP1)
-		self:GetChild("CoverTextP1"):settext(heightP1)
+		self:GetChild("CoverTextP1White"):settext(heightP1)
+		self:GetChild("CoverTextP1Green"):settext(math.floor(getScrollSpeed(PLAYER_1,heightP1)))
 		if isReverseP1 then
-			self:GetChild("CoverTextP1"):y(heightP1-5)
+			self:GetChild("CoverTextP1White"):y(heightP1-5)
+			self:GetChild("CoverTextP1Green"):y(heightP1-5)
 		else
-			self:GetChild("CoverTextP1"):y(SCREEN_BOTTOM-heightP1+5)
+			self:GetChild("CoverTextP1White"):y(SCREEN_BOTTOM-heightP1+5)
+			self:GetChild("CoverTextP1Green"):y(SCREEN_BOTTOM-heightP1+5)
 		end;
 
 		if moveDownP1 or moveUpP1 then
-			self:GetChild("CoverTextP1"):finishtweening()
-			self:GetChild("CoverTextP1"):diffusealpha(1)
-			self:GetChild("CoverTextP1"):sleep(0.25)
-			self:GetChild("CoverTextP1"):smooth(0.75)
-			self:GetChild("CoverTextP1"):diffusealpha(0)
+			self:GetChild("CoverTextP1White"):finishtweening()
+			self:GetChild("CoverTextP1White"):diffusealpha(1)
+			self:GetChild("CoverTextP1White"):sleep(0.25)
+			self:GetChild("CoverTextP1White"):smooth(0.75)
+			self:GetChild("CoverTextP1White"):diffusealpha(0)
+			self:GetChild("CoverTextP1Green"):finishtweening()
+			self:GetChild("CoverTextP1Green"):diffusealpha(1)
+			self:GetChild("CoverTextP1Green"):sleep(0.25)
+			self:GetChild("CoverTextP1Green"):smooth(0.75)
+			self:GetChild("CoverTextP1Green"):diffusealpha(0)
 		end;
 
 	end;
@@ -192,19 +302,28 @@ local function Update(self)
 			end;
 		end;
 		self:GetChild("CoverP2"):zoomy(heightP2)
-		self:GetChild("CoverTextP2"):settext(heightP2)
+		self:GetChild("CoverTextP2White"):settext(heightP2)
+		self:GetChild("CoverTextP2Green"):settext(math.floor(getScrollSpeed(PLAYER_2,heightP2)))
 		if isReverseP2 then
-			self:GetChild("CoverTextP2"):y(heightP2-5)
+			self:GetChild("CoverTextP2White"):y(heightP2-5)
+			self:GetChild("CoverTextP2Green"):y(heightP2-5)
 		else
-			self:GetChild("CoverTextP2"):y(SCREEN_BOTTOM-heightP2+5)
+			self:GetChild("CoverTextP2White"):y(SCREEN_BOTTOM-heightP2+5)
+			self:GetChild("CoverTextP2Green"):y(SCREEN_BOTTOM-heightP2+5)
 		end;
 
 		if moveDownP2 or moveUpP2 then
-			self:GetChild("CoverTextP2"):finishtweening()
-			self:GetChild("CoverTextP2"):diffusealpha(1)
-			self:GetChild("CoverTextP2"):sleep(0.25)
-			self:GetChild("CoverTextP2"):smooth(0.75)
-			self:GetChild("CoverTextP2"):diffusealpha(0)
+			self:GetChild("CoverTextP2White"):finishtweening()
+			self:GetChild("CoverTextP2White"):diffusealpha(1)
+			self:GetChild("CoverTextP2White"):sleep(0.25)
+			self:GetChild("CoverTextP2White"):smooth(0.75)
+			self:GetChild("CoverTextP2White"):diffusealpha(0)
+
+			self:GetChild("CoverTextP2Green"):finishtweening()
+			self:GetChild("CoverTextP2Green"):diffusealpha(1)
+			self:GetChild("CoverTextP2Green"):sleep(0.25)
+			self:GetChild("CoverTextP2Green"):smooth(0.75)
+			self:GetChild("CoverTextP2Green"):diffusealpha(0)
 		end;
 	end;
 end; 

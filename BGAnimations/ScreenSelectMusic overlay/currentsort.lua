@@ -61,8 +61,11 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=cmd(xy,frameX-5,frameY;halign,1;zoom,0.3;maxwidth,40/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
-		local wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
-		self:settextf("%d/%d",wheel:GetCurrentIndex()+1,wheel:GetNumItems())
+		local top = SCREENMAN:GetTopScreen()
+		if top:GetName() == "ScreenSelectMusic" or top:GetName() == "ScreenNetSelectMusic" then
+			local wheel = top:GetMusicWheel()
+			self:settextf("%d/%d",wheel:GetCurrentIndex()+1,wheel:GetNumItems())
+		end;
 	end;
 	SortOrderChangedMessageCommand=cmd(queuecommand,"Set");
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
