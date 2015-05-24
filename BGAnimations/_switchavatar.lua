@@ -1,6 +1,8 @@
-local show = true
+
+
+--Parameters.
 local avatars = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
-local maxItems = 5--math.min(7,#avatars)
+local maxItems = 7--math.min(7,#avatars)
 local itemHeight = 30
 local itemWidth = 30
 local border = 5
@@ -9,6 +11,7 @@ local frameY = SCREEN_HEIGHT-55
 local height = itemHeight+(border*2)
 local width = maxItems*(itemWidth+border)+border
 
+--search for avatar currently being used. if none are found, revert to _fallback.png which is assumed to be on index 1.
 local function getInitAvatarIndex(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	local GUID = profile:GetGUID()
@@ -22,13 +25,25 @@ local function getInitAvatarIndex(pn)
 	return 1
 end;
 
+--place cursor on center unless it's on the edge.
+local function getInitCursorIndex(pn)
+	local avatarIndex = getInitAvatarIndex(pn)
+
+	if avatarIndex < math.ceil(maxItems/2) then
+		return avatarIndex
+	elseif avatarIndex > #avatars-math.ceil(maxItems/2) then
+		return maxItems-(#avatars-avatarIndex)
+	end;
+	return math.ceil(maxItems/2)
+end;
+
 local data ={
 	PlayerNumber_P1 = {
-		cursorIndex = 1,
+		cursorIndex = getInitCursorIndex(PLAYER_1),
 		avatarIndex = getInitAvatarIndex(PLAYER_1),
 	},
 	PlayerNumber_P2 = {
-		cursorIndex = 1,
+		cursorIndex = getInitCursorIndex(PLAYER_2),
 		avatarIndex = getInitAvatarIndex(PLAYER_2),
 	},
 }
@@ -37,18 +52,21 @@ local t = Def.ActorFrame{
 	Name="AvatarSwitch";
 }
 
-local function shift(self,amount)
-	self:finishtweening()
-	self:smooth(0.1)
-	self:addx((itemWidth+border)*amount)
+--Shifts an actor by "1 index"
+local function shift(actor,amount)
+	actor:finishtweening()
+	actor:smooth(0.1)
+	actor:addx((itemWidth+border)*amount)
 end;
 
-local function getCurrentAvatar(pn)
+--Grabs the currently selected avatar.
+local function getSelectedAvatar(pn)
 	return avatars[data[pn]["avatarIndex"]]
 end;
 
+--Save preferences and sends a systemmessage at the end.
 local function saveAvatar(pn)
-	local avatar = getCurrentAvatar(pn)
+	local avatar = getSelectedAvatar(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	local GUID = profile:GetGUID()
 	themeConfig:get_data().avatar[GUID] = avatar
@@ -57,6 +75,7 @@ local function saveAvatar(pn)
 	SCREENMAN:SystemMessage(string.format("%s Avatar set to: '%s'",pn,avatar))
 end;
 
+-- The main function that contains errything
 local function avatarSwitch(pn)
 	local t = Def.ActorFrame{
 		Name="AvatarSwitch"..pn;
@@ -88,6 +107,7 @@ local function avatarSwitch(pn)
 
 	t[#t+1] = Def.ActorFrame{
 	CodeMessageCommand=function(self,params)
+		--grab table/cursor and shift them by 1 to left/right everytime someone presses code for avatarleft/right
 		local table = SCREENMAN:GetTopScreen():GetChildren().Overlay:GetChildren().AvatarSwitch:GetChildren()["AvatarSwitch"..pn]:GetChildren().AvatarTable
 		local cursor = SCREENMAN:GetTopScreen():GetChildren().Overlay:GetChildren().AvatarSwitch:GetChildren()["AvatarSwitch"..pn]:GetChildren().AvatarCursor
 		if params.PlayerNumber == pn then
@@ -112,9 +132,11 @@ local function avatarSwitch(pn)
 				end;
 			end;
 		end;
+		--rq out of the screen if just canceling.
 		if params.Name == "AvatarCancel" then
 			SCREENMAN:GetTopScreen():Cancel()
 		end;
+		--save and exit if exiting. forcefully save both players when 2p as only the changes for the person who pressed exit will be applied.
 		if params.Name == "AvatarExit" then
 			if GAMESTATE:GetNumPlayersEnabled() == 1 then
 				saveAvatar(params.PlayerNumber)
@@ -130,10 +152,12 @@ local function avatarSwitch(pn)
 	end;
 	}
 
+	--Background Quad
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,width,height;halign,0;valign,1;diffuse,color("#00000066"));
 	}
 
+	--MASKING SCKS
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,width,0;zoomto,SCREEN_WIDTH-width,SCREEN_HEIGHT;halign,0;valign,0;zwrite,true;clearzbuffer,true;blend,'BlendMode_NoEffect';);
 		BeginCommand=function(self)
@@ -144,15 +168,21 @@ local function avatarSwitch(pn)
 		end;
 	}
 
+	--Cursor
 	t[#t+1] = Def.Quad{
 		Name="AvatarCursor";
 		InitCommand=cmd(xy,frameX-2+border,frameY+2-border;zoomto,itemHeight+4,itemWidth+4;halign,0;valign,1;diffuse,color("#FFFFFF"));
+		BeginCommand=function(self)
+			shift(self,(data[pn]["cursorIndex"]-1))
+		end;
 	}
 
+	--List of avatars
 	local avatarTable = Def.ActorFrame{
 		Name="AvatarTable";
 		BeginCommand=function(self)
 			shift(self,-(data[pn]["avatarIndex"]-1))
+			shift(self,(data[pn]["cursorIndex"]-1))
 		end;
 	}
 	t[#t+1] = avatarTable
@@ -168,18 +198,20 @@ local function avatarSwitch(pn)
 		};
 	end;
 
+	--Text
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand=cmd(xy,frameX,frameY-height;halign,0;valign,1;zoom,0.35;);
+		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self,params)
 			--self:settextf("Player 1 avatar: ci%d ai%d",cursorIndex,avatarIndex)
 			if pn == PLAYER_1 then
-				self:settextf("Player 1 avatar: %s",avatars[data[pn]["avatarIndex"]])
+				self:settextf("Player 1 Avatar: %s",avatars[data[pn]["avatarIndex"]])
 			end;
 			if pn == PLAYER_2 then
-				self:settextf("Player 2 avatar: %s",avatars[data[pn]["avatarIndex"]])
+				self:settextf("Player 2 Avatar: %s",avatars[data[pn]["avatarIndex"]])
 			end;
 		end;
-		CodeMessageCommand=cmd(queuecommand,"Set")
+		CodeMessageCommand=cmd(queuecommand,"Set");
 	};
 	return t
 end;
