@@ -1,8 +1,8 @@
 --Random quotes,phrases and memes from various rhythm gaming communities /o/ 
---(that you may or may not be familar with)
+--(that you may or may not be familar with.... heck i don't even know the references for some of these)
 --mainly from ossu, stepman and bms
 
--- Also tips regarding the game that may or may not be useful 
+-- Also tips regarding the game/theme,etc.
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
 local function contains(table, value)
@@ -34,14 +34,16 @@ local Tips = {
     "Feel free to suggest feature requests on the github issue tracker or on the forum thread.",
     "You can change the default scoring type in \"Theme Options\"",
     "You can change the color scheme of the theme by editing the values in \"scripts/02 Colors.lua\"",
-    "See the README for instructions on adding avatars for the theme.",
-    "Press a button that is mapped to \"Select\" on your key bindings to select different tabs on ScreenSelectMusic",
+    "Press <EffectUp>+<EffectDown> Both at the same time in ScreenSelectMusic to bring up the avatar switch screen.",
+    "Press a button that is mapped to <Select> on your key bindings to select different tabs on ScreenSelectMusic",
     "You can set preferences for various theme functions in \"Options > Theme Options\"",
-    "The theme is only supported for the nightly release build of SM5, please download from the 5.0.7 branch instead if you're not on the nightly build.",
+    "The theme is only supported for SM 5.0.8 or newer.",
     "This theme updates rather often, so make sure to check the thread/github page once every while for bugfixes and updates.",
     "Check the \"Other\" tab for general information regarding StepMania and the theme",
     "Rave and Course modes are disabled in this theme because it's terribly broken right now.",
     "SMO should work without errors but do note that the theme can't display server-side scores at the moment.",
+    "You can change the speedmods ingame by pressing <EffectUp> or <EffectDown> during gameplay.",
+    "You can adjust the lanecover height by holding <Select> and then pressing <EffectUp> or <EffectDown>",
 
     --Other SM related Tips
     "Check http://www.flashflashrevolution.com/vbz/showthread.php?t=133223 for a huge list of simfile packs",
