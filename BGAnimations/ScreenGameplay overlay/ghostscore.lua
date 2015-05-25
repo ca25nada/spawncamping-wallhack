@@ -78,7 +78,7 @@ function ghostScore(pn)
 				self:diffusealpha(1)
 				local targetDiff = 0
 				if ghostType ~= 0 then
-					targetDiff = getCurScoreST(pn,1)-(math.ceil(getCurMaxScoreST(pn,ghostType)*target))
+					targetDiff = getCurScoreST(pn,ghostType)-(math.ceil(getCurMaxScoreST(pn,ghostType)*target))
 				end;
 
 				if targetDiff > 0 then
