@@ -251,7 +251,8 @@ local Phrases = {
     "fry EOS", -- Hazelnut: try*
     "real overjoys use magic", --nekro
     "\"I'M NOT A LOLICON HATER, SOME OF MY BEST FRIENDS ARE LOLICON\"", -- bemanisows QDB
-    "\"iidx song titles as nicknames for body parts. like. those are some huge valangas.\""
+    "\"iidx song titles as nicknames for body parts. like. those are some huge valangas.\"", -- bemanisows QDB
+    "\"I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.\"",
 }
 
 --tip
