@@ -8,7 +8,7 @@ local defaultConfig = {
 	GhostTarget = 1,
 	ErrorBar = false,
 	PaceMaker = false,
-	LaneCover = false,
+	LaneCover = 0, -- soon to be changed to: 0=off, 1=sudden, 2=hidden
 	LaneCoverHeight = 0,
 }
 

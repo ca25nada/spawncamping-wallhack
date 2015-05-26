@@ -15,11 +15,20 @@ local width = 64*cols
 local padding = 8
 local styleType = ToEnumShortString(GAMESTATE:GetCurrentStyle():GetStyleType())
 
-local enabledP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCover and GAMESTATE:IsPlayerEnabled(PLAYER_1)
+local prefsP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCover
+local enabledP1 = prefsP1 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_1)
 local isReverseP1 = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
+if prefsP1 == 2 then -- it's a Hidden LaneCover
+	isReverseP1 = not isReverseP1
+end;
 
-local enabledP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).LaneCover  and GAMESTATE:IsPlayerEnabled(PLAYER_2)
+local prefsP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).LaneCover
+local enabledP2 = prefsP2 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_2)
 local isReverseP2 = GAMESTATE:GetPlayerState(PLAYER_2):GetCurrentPlayerOptions():UsingReverse()
+if prefsP2 == 2 then -- it's a Hidden LaneCover
+	isReverseP2 = not isReverseP2
+end;
+
 
 local heightP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCoverHeight
 local heightP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).LaneCoverHeight
@@ -154,6 +163,7 @@ if enabledP1 then
 		Name="CoverTextP1White";
 		InitCommand=cmd(x,P1X-width/8;settext,0;valign,1;zoom,0.5;);
 		BeginCommand=function(self)
+			self:settext(0)
 			if isReverseP1 then
 				self:y(heightP1-5)
 				self:valign(1)
@@ -172,6 +182,7 @@ if enabledP1 then
 		Name="CoverTextP1Green";
 		InitCommand=cmd(x,P1X+width/8;settext,0;valign,1;zoom,0.5;diffuse,color("#4CBB17"));
 		BeginCommand=function(self)
+			self:settext(math.floor(getSpeed(PLAYER_1)))
 			if isReverseP1 then
 				self:y(heightP1-5)
 				self:valign(1)
@@ -207,6 +218,7 @@ if enabledP2 then
 		Name="CoverTextP2White";
 		InitCommand=cmd(x,P2X-width/8;settext,0;valign,1;zoom,0.5;);
 		BeginCommand=function(self)
+			self:settext(0)
 			if isReverseP2 then
 				self:y(heightP2-5)
 				self:valign(1)
@@ -226,6 +238,7 @@ if enabledP2 then
 		Name="CoverTextP2Green";
 		InitCommand=cmd(x,P2X+width/8;settext,0;valign,1;zoom,0.5;diffuse,color("#4CBB17"));
 		BeginCommand=function(self)
+			self:settext(math.floor(getSpeed(PLAYER_1)))
 			if isReverseP2 then
 				self:y(heightP2-5)
 				self:valign(1)
@@ -262,7 +275,9 @@ local function Update(self)
 
 		self:GetChild("CoverP1"):zoomy(heightP1)
 		self:GetChild("CoverTextP1White"):settext(heightP1)
-		self:GetChild("CoverTextP1Green"):settext(math.floor(getScrollSpeed(PLAYER_1,heightP1)))
+		if prefsP1 == 1 then -- don't update greennumber for hidden lanecovers
+			self:GetChild("CoverTextP1Green"):settext(math.floor(getScrollSpeed(PLAYER_1,heightP1)))
+		end;
 		if isReverseP1 then
 			self:GetChild("CoverTextP1White"):y(heightP1-5)
 			self:GetChild("CoverTextP1Green"):y(heightP1-5)
@@ -303,7 +318,9 @@ local function Update(self)
 		end;
 		self:GetChild("CoverP2"):zoomy(heightP2)
 		self:GetChild("CoverTextP2White"):settext(heightP2)
-		self:GetChild("CoverTextP2Green"):settext(math.floor(getScrollSpeed(PLAYER_2,heightP2)))
+		if prefsP2 == 1 then
+			self:GetChild("CoverTextP2Green"):settext(math.floor(getScrollSpeed(PLAYER_2,heightP2)))
+		end;
 		if isReverseP2 then
 			self:GetChild("CoverTextP2White"):y(heightP2-5)
 			self:GetChild("CoverTextP2Green"):y(heightP2-5)
