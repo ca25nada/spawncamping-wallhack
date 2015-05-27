@@ -14,11 +14,8 @@ local defaultConfig = {
 		ScoreBoardEnabled = true,
 		ScoreBoardMaxEntry = 10,
 	},
-	avatar = {
-		default = "_fallback.png",
-	},
 	mainColor = color("#00AEEF"),
 }
 
-themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig,1)
+themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig,-1)
 themeConfig:load()

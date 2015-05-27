@@ -32,24 +32,24 @@ end;
 
 --use global prefs instead of playerprefs as the playerprefs can't be grabbed when the profileslots aren't loaded.
 local function addProfileFromGUID(GUID)
-	if not tableContains(themeConfig:get_data().avatar,GUID) then
-		themeConfig:get_data().avatar[GUID] = themeConfig:get_data().avatar.default
-		themeConfig:set_dirty()
-		themeConfig:save()
+	if not tableContains(avatarConfig:get_data().avatar,GUID) then
+		avatarConfig:get_data().avatar[GUID] = avatarConfig:get_data().avatar.default
+		avatarConfig:set_dirty()
+		avatarConfig:save()
 	end;
 end;
 
 -- returns the image path relative to the theme folder.
 function getAvatarPath(pn)
 	
-	local fileName = themeConfig:get_data().avatar.default
+	local fileName = avatarConfig:get_data().avatar.default
 
 	local profile = PROFILEMAN:GetProfile(pn)
 	local GUID = profile:GetGUID()
 
-	fileName = themeConfig:get_data().avatar[GUID]
+	fileName = avatarConfig:get_data().avatar[GUID]
 	if fileName == nil then
-		fileName = themeConfig:get_data().avatar.default
+		fileName = avatarConfig:get_data().avatar.default
 		addProfileFromGUID(GUID)
 	end;
 
@@ -63,7 +63,7 @@ end;
 
 -- returns the image path relative to the theme folder from the profileID.
 function getAvatarPathFromProfileID(id)
-	local fileName = themeConfig:get_data().avatar.default
+	local fileName = avatarConfig:get_data().avatar.default
 	if id == nil then
 		return fileName
 	end
@@ -71,9 +71,9 @@ function getAvatarPathFromProfileID(id)
 	local profile = PROFILEMAN:GetLocalProfile(id)
 	local GUID = profile:GetGUID()
 
-	fileName = themeConfig:get_data().avatar[GUID]
+	fileName = avatarConfig:get_data().avatar[GUID]
 	if fileName == nil then
-		fileName = themeConfig:get_data().avatar.default
+		fileName = avatarConfig:get_data().avatar.default
 		addProfileFromGUID(GUID)
 	end;
 
@@ -87,14 +87,14 @@ end;
 -- Creates an actor with the avatar image.
 -- Unused, rather more for testing.
 function getAvatar(pn)
-	local fileName = themeConfig:get_data().avatar.default
+	local fileName = avatarConfig:get_data().avatar.default
 
 	local profile = PROFILEMAN:GetProfile(pn)
 	local GUID = profile:GetGUID()
 
-	fileName = themeConfig:get_data().avatar[GUID]
+	fileName = avatarConfig:get_data().avatar[GUID]
 	if fileName == nil then
-		fileName = themeConfig:get_data().avatar.default
+		fileName = avatarConfig:get_data().avatar.default
 		addProfileFromGUID(GUID)
 	end;
 

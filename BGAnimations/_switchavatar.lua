@@ -15,7 +15,7 @@ local width = maxItems*(itemWidth+border)+border
 local function getInitAvatarIndex(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	local GUID = profile:GetGUID()
-	local avatar = themeConfig:get_data().avatar[GUID]
+	local avatar = avatarConfig:get_data().avatar[GUID]
 	for i=1,#avatars do
 		if avatar == avatars[i] then
 			return i
@@ -69,9 +69,9 @@ local function saveAvatar(pn)
 	local avatar = getSelectedAvatar(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	local GUID = profile:GetGUID()
-	themeConfig:get_data().avatar[GUID] = avatar
-	themeConfig:set_dirty()
-	themeConfig:save()
+	avatarConfig:get_data().avatar[GUID] = avatar
+	avatarConfig:set_dirty()
+	avatarConfig:save()
 	SCREENMAN:SystemMessage(string.format("%s Avatar set to: '%s'",pn,avatar))
 end;
 
