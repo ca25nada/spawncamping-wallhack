@@ -16,8 +16,9 @@ local defaultConfig = {
 	},
 	avatar = {
 		default = "_fallback.png",
-	}
+	},
+	mainColor = color("#00AEEF"),
 }
 
-themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig,0)
+themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig,1)
 themeConfig:load()

@@ -200,7 +200,7 @@ t[#t+1] = Def.ActorFrame{
 
 	Def.Quad{
 		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0);
-		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.325");effectcolor2,color("1,1,1,0");queuecommand,"Set");
+		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.2");effectcolor2,color("1,1,1,0.5");queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
 			local judge = getJudgeStatsCount(PLAYER_1,"TapNoteScore_W1")
@@ -210,7 +210,7 @@ t[#t+1] = Def.ActorFrame{
 			self:zoomx(0)
 			self:sleep(animationDelay)
 			self:smooth(animationLength)
-			self:diffuse(getMainColor(3))
+			self:diffuse(getMainColor(1))
 			self:zoomx((judge/notes)*barWidth)
 		end;
 		CurrentSongChangedMessageCommand=function(self)
@@ -275,7 +275,7 @@ t[#t+1] = Def.ActorFrame{
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
-		CurrentStepsP1ChangedMessageCommand=function(self)
+		CurrentStepsP2ChangedMessageCommand=function(self)
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
@@ -304,7 +304,7 @@ t[#t+1] = Def.ActorFrame{
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
-		CurrentStepsP1ChangedMessageCommand=function(self)
+		CurrentStepsP2ChangedMessageCommand=function(self)
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
@@ -332,7 +332,7 @@ t[#t+1] = Def.ActorFrame{
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
-		CurrentStepsP1ChangedMessageCommand=function(self)
+		CurrentStepsP2ChangedMessageCommand=function(self)
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
@@ -358,7 +358,7 @@ t[#t+1] = Def.ActorFrame{
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
-		CurrentStepsP1ChangedMessageCommand=function(self)
+		CurrentStepsP2ChangedMessageCommand=function(self)
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
@@ -384,7 +384,7 @@ t[#t+1] = Def.ActorFrame{
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
-		CurrentStepsP1ChangedMessageCommand=function(self)
+		CurrentStepsP2ChangedMessageCommand=function(self)
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
@@ -392,7 +392,7 @@ t[#t+1] = Def.ActorFrame{
 
 	Def.Quad{
 		InitCommand=cmd(xy,barXP2,barYP2;zoomto,barWidth,barHeight;halign,0);
-		BeginCommand=cmd(queuecommand,"Set");
+		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.2");effectcolor2,color("1,1,1,0.5");queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
 			local judge = getJudgeStatsCount(PLAYER_2,"TapNoteScore_W1")
@@ -402,14 +402,14 @@ t[#t+1] = Def.ActorFrame{
 			self:zoomx(0)
 			self:sleep(animationDelay)
 			self:smooth(animationLength)
-			self:diffuse(getMainColor(3))
+			self:diffuse(getMainColor(1))
 			self:zoomx((judge/notes)*barWidth)
 		end;
 		CurrentSongChangedMessageCommand=function(self)
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;
-		CurrentStepsP1ChangedMessageCommand=function(self)
+		CurrentStepsP2ChangedMessageCommand=function(self)
 			self:stoptweening()
 			self:queuecommand("Set")
 		end;

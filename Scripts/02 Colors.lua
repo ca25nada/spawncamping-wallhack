@@ -1,5 +1,4 @@
-
-themeColors = {
+local themeColors = {
 
 	songlength = {
 		[1] = color("#FFFFFF"), -- normal
@@ -9,9 +8,9 @@ themeColors = {
 	},
 
 	main = {
-		[1] = color("#00AEEF"), --Primary light blue
-		[2] = color("#009AEF"),-- Slightly darker blue
-		[3] = color("#00C2EF") -- Slightly lighter blue
+		[1] = themeConfig:get_data().mainColor, --color("#00AEEF"), --Primary light blue
+		[2] = color("#ff00ff"),
+		[3] = color("#ff00ff"),
 	},
 
 	grade = {
