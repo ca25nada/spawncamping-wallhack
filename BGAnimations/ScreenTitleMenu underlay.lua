@@ -35,4 +35,28 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	end;
 }
 
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand=cmd(xy,5,SCREEN_HEIGHT-15;zoom,0.4;valign,1;halign,0;diffuse,color("#666666"));
+	OnCommand=function(self)
+		if IsNetSMOnline() then
+			self:settext("Online")
+			self:diffuse(color("#4CBB17"))
+		else
+			self:settext("Offline");
+		end;
+	end;
+}
+
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand=cmd(xy,5,SCREEN_HEIGHT-5;zoom,0.35;valign,1;halign,0;diffuse,color("#666666"));
+	OnCommand=function(self)
+		if IsNetSMOnline() then
+			self:settext(GetServerName())
+			self:diffuse(color("#FFFFFF"))
+		else
+			self:settext("Not Available");
+		end;
+	end;
+}
+
 return t
