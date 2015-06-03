@@ -1,7 +1,7 @@
 --Assortment of wrapped functions related to score/grade tracking
 
+--Load default scoretype
 local defaultScoreType = themeConfig:get_data().global.DefaultScoreType
---local defaultScoreType = tonumber(GetUserPref("DefaultScoreType"))
 
 local gradeString = {
 	Grade_Tier01 = 'AAAA',
@@ -118,6 +118,7 @@ local curMaxHoldsP1 = 0
 local curMaxHoldsP2 = 0
 local curMaxMinesP1 = 0
 local curMaxMinesP2 = 0
+
 --[[
 function PJudge(pn,judge)
 	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetTapNoteScores(judge)
@@ -153,8 +154,9 @@ function resetJudgeST()
 	return
 end
 
+-- Adds a tapnotescore or a holdnotescore to the scoretracker for the specified player.
 function addJudgeST(pn,judge,isHold)
-	if isHold then
+	if isHold then -- Holds and Rolls
 		if pn == PLAYER_1 then
 			if isFailingST(PLAYER_1) == false then
 				--judgeTableP1[#judgeTableP1+1] = judge
@@ -169,16 +171,16 @@ function addJudgeST(pn,judge,isHold)
 			end
 			curMaxHoldsP2 = curMaxHoldsP2+1
 		end
-	else
+	else -- Everyyyyyyyyyyything elseeeeeeee
 		if pn == PLAYER_1 then
-			if isFailingST(PLAYER_1) == false then
+			if isFailingST(PLAYER_1) == false then -- don't add if failing
 				if (judge =="TapNoteScore_W1") or
 					(judge =="TapNoteScore_W2") or
 					(judge =="TapNoteScore_W3") or
 					(judge =="TapNoteScore_W4") or
 					(judge =="TapNoteScore_W5") or
 					(judge =="TapNoteScore_Miss") then
-					judgeTableP1[#judgeTableP1+1] = judge
+					judgeTableP1[#judgeTableP1+1] = judge -- add to judgetable
 				end;
 				judgeStatsP1[judge] = judgeStatsP1[judge]+1 --STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetTapNoteScores(judge)
 			end
@@ -209,47 +211,62 @@ function addJudgeST(pn,judge,isHold)
 	end
 end
 
+--Adds the tapnotescore offset value (in seconds) for the specified player. 
+--This should be only be called if the tapnotescore is for actual tap notes, not mines or checkpoints.
 function addOffsetST(pn,offset)
+
 	if pn == PLAYER_1 and GAMESTATE:IsHumanPlayer(PLAYER_1) then
 		offsetTableP1[#offsetTableP1+1] = offset
 	end;
 	if pn == PLAYER_2 and GAMESTATE:IsHumanPlayer(PLAYER_2)then
 		offsetTableP2[#offsetTableP2+1] = offset
 	end;
+
 end
 
+--Returns a table containing all the offset values for every tapnote that results in a judgment (aka: not mines, not checkpoints, and so on)
 function getOffsetTableST(pn)
+
 	if pn == PLAYER_1 then
 		return offsetTableP1
 	end;
 	if pn == PLAYER_2 then
 		return offsetTableP2
 	end;
+
 	return
 end
 
+--Returns a table containing all the tapnote judgments made. (Again, this excludes mines, checkpoints, etc.)
 function getJudgeTableST(pn)
+
 	if pn == PLAYER_1 then
 		return judgeTableP1
 	end;
 	if pn == PLAYER_2 then
 		return judgeTableP2
 	end;
+
 	return
 end
 
+--Returns the #of times the specificed judge has been made. (This includes both tapnotes and holdnotes)
 function getJudgeST(pn,judge)
+
 	if pn == PLAYER_1 then
 		return judgeStatsP1[judge] or 0
 	end;
 	if pn == PLAYER_2 then
 		return judgeStatsP2[judge] or 0
 	end
+
 	return 0
 end
 
-
+--Returns the number of "taps" for the steps that the specified player has selected.
+--Note that this isn't the number of actual notes since jumps/hands count as 1 judgment or "taps".
 function getMaxNotesST(pn)
+
 	if GAMESTATE:IsCourseMode() then
 		return 0
 	else
@@ -257,7 +274,9 @@ function getMaxNotesST(pn)
 	end
 end
 
+--Returns the current number of "taps" that have been played so far for the specified player.
 function getCurMaxNotesST(pn)
+
 	if pn == PLAYER_1 then
 		return curMaxNotesP1 --or 0
 	end;
@@ -267,7 +286,10 @@ function getCurMaxNotesST(pn)
 	return 0
 end
 
+--Returns the number of holds for the steps that the specified player has selected.
+--This includes any notes that has a OK/NG judgment. (holds and rolls)
 function getMaxHoldsST(pn)
+
 	if GAMESTATE:IsCourseMode() then
 		return 0
 	else
@@ -275,25 +297,33 @@ function getMaxHoldsST(pn)
 	end
 end
 
+--Returns the current number of holds that have been played so far for the specified player.
 function getCurMaxHoldsST(pn)
+
 	if pn == PLAYER_1 then
 		return curMaxHoldsP1 --or 0
 	elseif pn == PLAYER_2 then
 		return curMaxHoldsP2 --or 0
 	end
+
 	return 0
 end
 
+--Returns the current number of mines that hae been played so far for the specified player.
 function getCurMaxMinesST(pn)
+
 	if pn == PLAYER_1 then
 		return curMaxMinesP1 --or 0
 	elseif pn == PLAYER_2 then
 		return curMaxMinesP2 --or 0
 	end
+
 	return 0
 end
 
+--Returns the absolute maximum score a player can get for the specified player.
 function getMaxScoreST(pn,scoreType) -- dp, ps, migs = 0,1,2 respectively
+
 	local maxNotes = getMaxNotesST(pn)
 	local maxHolds = getMaxHoldsST(pn)
 
@@ -311,7 +341,9 @@ function getMaxScoreST(pn,scoreType) -- dp, ps, migs = 0,1,2 respectively
 	return 0
 end
 
+--Returns the maximum score currently obtainable for the specified player.
 function getCurMaxScoreST(pn,scoreType)
+
 	local curMaxNotes = getCurMaxNotesST(pn)
 	local curMaxHolds = getCurMaxHoldsST(pn)
 
@@ -329,6 +361,7 @@ function getCurMaxScoreST(pn,scoreType)
 	return 0
 end
 
+--Returns the current score obtained by the player.
 function getCurScoreST(pn,scoreType)
 
 	if scoreType == 0 then
@@ -355,6 +388,8 @@ function getCurScoreST(pn,scoreType)
 	return 0
 end
 
+--Returns the current grade of the player.
+--This is based on the current "average" score a player has rather than the total score.
 function getGradeST(pn)
 	local curDPScore =getCurScoreST(pn,1)
 	local curPSScore = getCurScoreST(pn,2)
@@ -381,7 +416,7 @@ function getGradeST(pn)
 	return 
 end
 
---]]
-function scoreTrackTest()
-	return "hoooo-"
-end
+--Something to test whether I crashed the lua file somewhere because i'm too lazy to sift through the logs.
+--function scoreTrackTest()
+--	return "hoooo-"
+--end

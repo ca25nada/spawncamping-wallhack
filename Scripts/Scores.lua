@@ -1,5 +1,3 @@
-
-
 -- Change this to change the scoretype the theme returns 
 --(should be made into a preference eventually)
 local defaultScoreType = themeConfig:get_data().global.DefaultScoreType

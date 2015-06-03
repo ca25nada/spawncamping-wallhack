@@ -104,7 +104,6 @@ function getShortJudgeStrings(judge)
 	end
 end;
 
---This should be moved somewhere else
 function getScoreTypeText(scoreType)
 	if scoreType == 0 then
 		return scoreTypeText[themeConfig:get_data().global.DefaultScoreType]

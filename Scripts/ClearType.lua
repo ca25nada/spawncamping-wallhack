@@ -1,6 +1,6 @@
--------------------------------------------------------------------
---Methods for generating IIDX-ish ClearType texts given the score--
--------------------------------------------------------------------
+------------------------------------------------------
+--Methods for generating IIDX-esque ClearType texts --
+------------------------------------------------------
 --EDIT: scores no longer needed since it grabs it for you
 
 
@@ -58,7 +58,6 @@ local typecolors = {-- colors corresponding to cleartype
 
 
 -- Methods for other uses (manually setting colors/text, etc.)
-
 function getClearTypeText(index)
 	return typetable[index];
 end;
@@ -76,7 +75,7 @@ end;
 
 -- ClearTypes based on stage awards and grades.
 -- Stageaward based cleartypes do not work if anything causes the stageaward to not show up (disqualification, score saving is off, etc.)
--- and will just result in "Clear". I migggggggggght just drop the SA usage and use raw values instead.
+-- and will just result in "No Play" or "Clear". I migggggggggght just drop the SA usage and use raw values instead.
 -- returntype 	=0 -> ClearType, 
 --				=1 -> ShortClearType, 
 -- 				=2 -> ClearTypeColor, 

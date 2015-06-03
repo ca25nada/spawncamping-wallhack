@@ -2,7 +2,7 @@
 --(that you may or may not be familar with.... heck i don't even know the references for some of these)
 --mainly from ossu, stepman and bms
 
--- Also tips regarding the game/theme,etc.
+-- Also (hopefully helpful) tips regarding the game/theme,etc.
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
 local function contains(table, value)
@@ -132,7 +132,7 @@ local Phrases = {
     "\"mania is a pile of unmanageblae shit i'm not fixing it\" - peppy",
     "\"Korean Mmorpg\"", -- For a free 42 hour silence and a potential ban 
     "\"I had a SV change trauma this SV change requires my no response in flying ball towards me\"", -- ABCD
-    "Re:apparantly wearing a fedora improves sightreading???",
+    "Re:apparantly wearing a fedora improves sightreading???", -- a thread on oss
     "\"How does your osu have all notes go to one place?\"", -- Taiko 
     "Fuga Fuuuga Fuuuuuckga Fuuuuuuuuckga Darkstar PAZO light TRASH ACE WOOD HELL", -- Fuga Hall of Shame
     "JESUS WON'T COME TO SAVE YOU IN RHYTHM GAME HELL SON",
@@ -140,7 +140,7 @@ local Phrases = {
     "our park isn't very sunny in fact its raining", -- popn
     "big colorful buttons", -- popn
     --"\"did you seirously pay peppy $4 to upload a fucking dump chart for the thomas and friends theme\" - fullerene-",
-    "\"I'LL NEVER PLAY 'BEAT-BEAT REVELATION' AGAIN!\"",
+    "\"I'LL NEVER PLAY 'BEAT-BEAT REVELATION' AGAIN!\"", -- some movie
     "\"What is SOWS? I tried to Google it but all I get is pictures of female pigs\"",
     "To Abcdullah: your cheating is obvious, doing 100.00% on lv.26-28 maps from the first attempt is cheating, admit it.",
     "konmai", -- konami
@@ -234,7 +234,7 @@ local Phrases = {
     "\"And I'm not a noob I got 227 pp\"",
     "whats more dense, a black hole or an icyworld file", -- choof
     "fuk LN", -- Staiain's twitch chat
-    "Which edition of IIDX is |999999^999999 from?", --  ARC of #bemaniso
+    "\"Which edition of IIDX is |999999^999999 from?\"", --  ARC of #bemaniso
     "\"78%\"", -- rip iidx players
     "\"Mine Infested Files Killed The Game\"", -- http://www.flashflashrevolution.com/vbz/showthread.php?p=4300456#post4300456
     "STEPMANIA BROKEN", -- does anyone still remember the yt vid mfw-
@@ -253,6 +253,8 @@ local Phrases = {
     "\"I'M NOT A LOLICON HATER, SOME OF MY BEST FRIENDS ARE LOLICON\"", -- bemanisows QDB
     "\"iidx song titles as nicknames for body parts. like. those are some huge valangas.\"", -- bemanisows QDB
     "\"I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.\"",
+    "717x616 c987", -- someone's sm3.95 settings
+    "\"don't go into osu with some converted sims you might get busted at a checkpoint... friend was raided after a controlled delivery the other day... tryna fence some hot dumps...\"" -- arch0wl how to pp
 }
 
 --tip

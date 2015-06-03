@@ -1,24 +1,3 @@
---shamelessly copied from customspeedmod
---I don't think this is used anymore..?
-local function ReadAvatarFile(path)
-	local file = RageFileUtil.CreateRageFile()
-	if not file:Open(path, 1) then
-		file:destroy()
-		return nil
-	end
-
-	local contents = file:Read()
-	file:Close()
-	file:destroy()
-
-	return contents
-end
-
-local update = {
-	PLAYER_1 = false,
-	PLAYER_2 = false,
-}
-
 --Setting to true will set the avatar as dirty, 
 --in which the screen with the avatar that is checking every frame for updates will detect the change
 --and re-load the avatar if the value from getAvatarUpdateStatus() returned true
@@ -26,6 +5,7 @@ function setAvatarUpdateStatus(pn,status)
 	update[pn] = status
 end;
 
+--Returns the current avatar status
 function getAvatarUpdateStatus(pn)
 	return update[pn]
 end;
@@ -39,7 +19,7 @@ local function addProfileFromGUID(GUID)
 	end;
 end;
 
--- returns the image path relative to the theme folder.
+-- returns the image path relative to the theme folder for the specified player.
 function getAvatarPath(pn)
 	
 	local fileName = avatarConfig:get_data().avatar.default
@@ -62,6 +42,8 @@ function getAvatarPath(pn)
 end;
 
 -- returns the image path relative to the theme folder from the profileID.
+-- getAvatarPath should be used in the general case. this is really only needed for the profile select screen
+-- where the profile isn't loaded into a player slot yet.
 function getAvatarPathFromProfileID(id)
 	local fileName = avatarConfig:get_data().avatar.default
 	if id == nil then
@@ -85,7 +67,7 @@ function getAvatarPathFromProfileID(id)
 end;
 
 -- Creates an actor with the avatar image.
--- Unused, rather more for testing.
+-- Unused, it's more for testing.
 function getAvatar(pn)
 	local fileName = avatarConfig:get_data().avatar.default
 
@@ -113,10 +95,29 @@ function getAvatar(pn)
 	return t
 end;
 
-
--- Old functions, new functions are now tied to kyzentun's prefs system.
+-- Old functions, new functions are now tied to kyzentun's prefs system and is here just for reference.
 -- Returns a path to the avatar image (relative to the theme folder) for the specified player.
 --[[
+--shamelessly copied from customspeedmod
+local function ReadAvatarFile(path)
+	local file = RageFileUtil.CreateRageFile()
+	if not file:Open(path, 1) then
+		file:destroy()
+		return nil
+	end
+
+	local contents = file:Read()
+	file:Close()
+	file:destroy()
+
+	return contents
+end
+
+local update = {
+	PLAYER_1 = false,
+	PLAYER_2 = false,
+}
+
 function getAvatarPath(pn)
 	if pn == nil then
 		return "Graphics/Player avatar/_fallback.png"
