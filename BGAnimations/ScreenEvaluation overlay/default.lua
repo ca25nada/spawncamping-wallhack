@@ -34,5 +34,6 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	end;
 };
 
+t[#t+1] = LoadActor("../_cursor");
 
 return t

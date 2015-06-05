@@ -254,7 +254,8 @@ local Phrases = {
     "\"iidx song titles as nicknames for body parts. like. those are some huge valangas.\"", -- bemanisows QDB
     "\"I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.\"",
     "717x616 c987", -- someone's sm3.95 settings
-    "\"don't go into osu with some converted sims you might get busted at a checkpoint... friend was raided after a controlled delivery the other day... tryna fence some hot dumps...\"" -- arch0wl how to pp
+    "\"don't go into osu with some converted sims you might get busted at a checkpoint... friend was raided after a controlled delivery the other day... tryna fence some hot dumps...\"", -- arch0wl how to pp
+    "10th dan is too cynical", -- LG
 }
 
 --tip
