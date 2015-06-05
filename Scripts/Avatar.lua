@@ -1,3 +1,8 @@
+local update = {
+	PLAYER_1 = false,
+	PLAYER_2 = false,
+}
+
 --Setting to true will set the avatar as dirty, 
 --in which the screen with the avatar that is checking every frame for updates will detect the change
 --and re-load the avatar if the value from getAvatarUpdateStatus() returned true
@@ -112,11 +117,6 @@ local function ReadAvatarFile(path)
 
 	return contents
 end
-
-local update = {
-	PLAYER_1 = false,
-	PLAYER_2 = false,
-}
 
 function getAvatarPath(pn)
 	if pn == nil then
