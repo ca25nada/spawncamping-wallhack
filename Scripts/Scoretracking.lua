@@ -158,14 +158,14 @@ end
 function addJudgeST(pn,judge,isHold)
 	if isHold then -- Holds and Rolls
 		if pn == PLAYER_1 then
-			if isFailingST(PLAYER_1) == false then
+			if isFailingST(PLAYER_1) == false and getAutoplay() ~= 1 then
 				--judgeTableP1[#judgeTableP1+1] = judge
 				judgeStatsP1[judge] = judgeStatsP1[judge]+1 --breaks on autoplay atm STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetHoldNoteScores(judge) --revert to just incrmenting by 1 when autoplay conditions are available
 			end
 			curMaxHoldsP1 = curMaxHoldsP1+1
 		end
 		if pn == PLAYER_2 then
-			if isFailingST(PLAYER_2) == false then
+			if isFailingST(PLAYER_2) == false and getAutoplay() ~= 1 then
 				--judgeTableP2[#judgeTableP2+1] = judge
 				judgeStatsP2[judge] = judgeStatsP2[judge]+1 --STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetHoldNoteScores(judge)
 			end
@@ -173,7 +173,7 @@ function addJudgeST(pn,judge,isHold)
 		end
 	else -- Everyyyyyyyyyyything elseeeeeeee
 		if pn == PLAYER_1 then
-			if isFailingST(PLAYER_1) == false then -- don't add if failing
+			if isFailingST(PLAYER_1) == false and getAutoplay() ~= 1 then -- don't add if failing
 				if (judge =="TapNoteScore_W1") or
 					(judge =="TapNoteScore_W2") or
 					(judge =="TapNoteScore_W3") or
@@ -191,7 +191,7 @@ function addJudgeST(pn,judge,isHold)
 			end
 		end
 		if pn == PLAYER_2 then
-			if isFailingST(PLAYER_2) == false then
+			if isFailingST(PLAYER_2) == false and getAutoplay() ~= 1 then
 				if (judge =="TapNoteScore_W1") or
 					(judge =="TapNoteScore_W2") or
 					(judge =="TapNoteScore_W3") or

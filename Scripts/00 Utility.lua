@@ -1,3 +1,5 @@
+--Random helper functions that don't really belong anywhere else.
+
 function get43size(size4_3)
 	return 640*(size4_3/854)
 end;
@@ -9,6 +11,17 @@ function capWideScale(AR4_3,AR16_9)
 	else
 		return math.min(AR4_3,math.max(AR16_9,WideScale(AR4_3, AR16_9)))
 	end;
+end;
+
+--returns current autoplay type. returns a integer between 0~2 corresponding to
+--human, autoplay and autoplay cpu respectively.
+function getAutoplay()
+	return Enum.Reverse(PlayerController)[tostring(PREFSMAN:GetPreference("AutoPlay"))]
+end;
+
+--returns true if windowed.
+function isWindowed()
+	return PREFSMAN:GetPreference("Windowed")
 end;
 
 --Button Rollovers
@@ -34,6 +47,7 @@ function isOver(element)
 	return (withinX and withinY)
 end;
 
+--returns if the table contains the key.
 function tableContains(table,key)
 	return (table[key] ~= nil)
 end;

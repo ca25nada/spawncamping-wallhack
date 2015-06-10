@@ -1,23 +1,25 @@
 --for debug only
 
 local stringListP1 = {
-	ScreenFilter = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ScreenFilter,
-	JudgeType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType,
-	AvgScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).AvgScoreType,
-	GhostScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GhostScoreType,
-	GhostTarget = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GhostTarget,
-	ErrorBar = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar,
-	PaceMaker = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).PaceMaker,
+	--ScreenFilter = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ScreenFilter,
+	--JudgeType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType,
+	--AvgScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).AvgScoreType,
+	--GhostScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GhostScoreType,
+	--GhostTarget = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GhostTarget,
+	--ErrorBar = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar,
+	--PaceMaker = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).PaceMaker,
+	Autoplay = getAutoplay()
 }
 
 local stringListP2 = {
-	ScreenFilter = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).ScreenFilter,
-	JudgeType = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType,
-	AvgScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).AvgScoreType,
-	GhostScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).GhostScoreType,
-	GhostTarget = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).GhostTarget,
-	ErrorBar = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).ErrorBar,
-	PaceMaker = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).PaceMaker,
+	--ScreenFilter = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).ScreenFilter,
+	--JudgeType = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType,
+	--AvgScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).AvgScoreType,
+	--GhostScoreType = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).GhostScoreType,
+	--GhostTarget = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).GhostTarget,
+	--ErrorBar = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).ErrorBar,
+	--PaceMaker = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).PaceMaker,
+	Autoplay = getAutoplay()
 }
 
 local t = Def.ActorFrame{}
