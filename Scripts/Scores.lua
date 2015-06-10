@@ -1,8 +1,6 @@
--- Change this to change the scoretype the theme returns 
---(should be made into a preference eventually)
-local defaultScoreType = themeConfig:get_data().global.DefaultScoreType
---local defaultScoreType = tonumber(GetUserPref("DefaultScoreType")) --1DP 2PS 3MIGS
 
+
+local defaultScoreType = themeConfig:get_data().global.DefaultScoreType
 
 local gradeTiers = {
 	Grade_Tier01 = 0,
@@ -76,164 +74,50 @@ local migsWeight =  { -- Score Weights for MIGS score
 	TapNoteScore_CheckpointMiss 	= 0
 }
 
-local judgeStatsP1 = { -- Table containing the # of judgements made so far
-	TapNoteScore_W1 = 0,
-	TapNoteScore_W2 = 0,
-	TapNoteScore_W3 = 0,
-	TapNoteScore_W4 = 0,
-	TapNoteScore_W5 = 0,
-	TapNoteScore_Miss = 0,
-	HoldNoteScore_Held = 0,
-	TapNoteScore_HitMine = 0,
-	HoldNoteScore_LetGo = 0,
-	HoldNoteScore_MissedHold = 0,
-	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit		= 0,
-	TapNoteScore_CheckpointMiss 	= 0,
-}
-
-local judgeStatsP2 = { -- Table containing the # of judgements made so far
-	TapNoteScore_W1 = 0,
-	TapNoteScore_W2 = 0,
-	TapNoteScore_W3 = 0,
-	TapNoteScore_W4 = 0,
-	TapNoteScore_W5 = 0,
-	TapNoteScore_Miss = 0,
-	HoldNoteScore_Held = 0,
-	TapNoteScore_HitMine = 0,
-	HoldNoteScore_LetGo = 0,
-	HoldNoteScore_MissedHold = 0,
-	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit		= 0,
-	TapNoteScore_CheckpointMiss 	= 0,
-}
-
-local song
-local profileP1
-local stepsP1
-local profileP1
-local hsTableP1
-local indexScoreP1
-
-local profileP2
-local stepsP2
-local profileP2
-local hsTableP2
-local indexScoreP2
-
---============================================================
--- These should run without any dependencies
---============================================================
-
--- Resets the scoretable for P1
-local function resetScoreListP1()
-	defaultScoreType = themeConfig:get_data().global.DefaultScoreType
-	song = nil
-	profileP1 = nil
-	stepsP1 = nil
-	profileP1 = nil
-	hsTableP1 = {}
-	indexScoreP1 = nil
-	for k,_ in pairs(judgeStatsP1) do
-		judgeStatsP1[k] = 0
-	end
-end;
-
--- Resets the scoretable for P1
-local function resetScoreListP2()
-	defaultScoreType = themeConfig:get_data().global.DefaultScoreType
-	song = nil
-	profileP2 = nil
-	stepsP2 = nil
-	profileP2 = nil
-	hsTableP2 = {}
-	indexScoreP2 = nil
-	for k,_ in pairs(judgeStatsP2) do
-		judgeStatsP2[k] = 0
-	end
-end;
-
---Initializes highscoretable of the player, as well as songs, steps and profile of the player associated.
-function initScoreList(pn)
-	defaultScoreType = themeConfig:get_data().global.DefaultScoreType
-	--defaultScoreType = tonumber(GetUserPref("DefaultScoreType")) --1DP 2PS 3MIGS
-	if pn == PLAYER_1 then
-		resetScoreListP1()
-	end;
-	if pn == PLAYER_2 then
-		resetScoreListP2()
-	end;
-	song = GAMESTATE:GetCurrentSong()
+function getScoreList(pn)
+	local song = GAMESTATE:GetCurrentSong()
+	local profile
+	local steps
 	if GAMESTATE:IsPlayerEnabled(pn) then
-		if pn == PLAYER_1 then
-			profileP1 = GetPlayerOrMachineProfile(pn)
-			stepsP1 = GAMESTATE:GetCurrentSteps(pn)
-			if profileP1 ~= nil and stepsP1 ~= nil and song ~= nil then
-				hsTableP1 = profileP1:GetHighScoreList(song,stepsP1):GetHighScores()
-			end;
-		end;
-		if pn == PLAYER_2 then
-			profileP2 = GetPlayerOrMachineProfile(pn)
-			stepsP2 = GAMESTATE:GetCurrentSteps(pn)
-			if profileP2 ~= nil and stepsP2 ~= nil and song ~= nil then
-				hsTableP2 = profileP2:GetHighScoreList(song,stepsP2):GetHighScores()
-			end;
+		profile = GetPlayerOrMachineProfile(pn)
+		steps = GAMESTATE:GetCurrentSteps(pn)
+		if profile ~= nil and steps ~= nil and song ~= nil then
+			return profile:GetHighScoreList(song,steps):GetHighScores()
 		end;
 	end;
 end;
 
---============================================================
--- Call only after calling initScoreList
---============================================================
-
---Initializes the score with the score at index 
-function initScore(pn,index)
-	if pn == PLAYER_1 then
-		if hsTableP1 ~= nil and #hsTableP1 >= 1 and index <= #hsTableP1 then
-			indexScoreP1 = hsTableP1[index]
-		end;
-	end;
-	if pn == PLAYER_2 then
-		if hsTableP2 ~= nil and #hsTableP2 >= 1 and index <= #hsTableP2 then
-			indexScoreP2 = hsTableP2[index]
-		end;
-	end;
+function getScoreFromTable(hsTable,index)
+	return hsTable[index]
 end;
 
--- Returns the highest possible # of notes of the song (radarcategory)
+function getScoreFromPn(pn,index)
+	local hsTable = getScoreList(pn)
+	return getScore(hsTable,index)
+end;
+
 function getMaxNotes(pn)
-	if pn == PLAYER_1 then
-		if stepsP1 ~= nil then
-			return stepsP1:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds")-- Radarvalue, maximum number of notes
-	 	else
-	 		return 0
-	 	end;
-	 end;
-	 if pn == PLAYER_2 then
-		if stepsP2 ~= nil then
-			return stepsP2:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds")-- Radarvalue, maximum number of notes
-	 	else
-	 		return 0
-	 	end;
-	 end;
-end;
+	local song = GAMESTATE:GetCurrentSong()
+	local steps
+	if GAMESTATE:IsPlayerEnabled(pn) then
+		steps = GAMESTATE:GetCurrentSteps(pn)
+		if steps ~= nil then 
+			return steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0
+		end;
+	end;
+	return 0
+end
 
--- Returns the highest possible # of anything that has a ok/ng hold judgment. (Holds and Rolls)
 function getMaxHolds(pn)
-	if pn == PLAYER_1 then
-		if stepsP1 ~= nil then
-			return (stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Holds") + stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Rolls")) or 0 -- Radarvalue, maximum number of holds
-		else
-	 		return 0
-	 	end;
-	 end;
-	 if pn == PLAYER_2 then
-		if stepsP2 ~= nil then
-			return (stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Holds") + stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Rolls")) or 0 -- Radarvalue, maximum number of holds
-		else
-	 		return 0
-	 	end;
-	 end;
+	local song = GAMESTATE:GetCurrentSong()
+	local steps
+	if GAMESTATE:IsPlayerEnabled(pn) then
+		steps = GAMESTATE:GetCurrentSteps(pn)
+		if steps ~= nil then 
+			return  (steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")) or 0
+		end;
+	end;
+	return 0
 end;
 
 --Gets the highest score possible for the scoretype
@@ -288,95 +172,159 @@ function getNearbyGrade(pn,DPScore,grade)
 			return nextGrade,nextGradeDiff
 		end;
 	end;
-
 end;
 
 
---============================================================
--- Functions for Highest/Lowest values in a scoretable. 
---Call only after calling initScoreList
---============================================================
+function getScoreGrade(score)
+	if score ~= nil then
+		return score:GetGrade()
+	else
+		return "Grade_None"
+	end;
+end;
+
+function getScoreMaxCombo(score)
+	if score ~= nil then
+		return score:GetMaxCombo()
+	else
+		return 0
+	end;
+end;
+
+function getScoreDate(score)
+	if score ~= nil then
+		return score:GetDate()
+	else
+		return ""
+	end;
+end;
+
+function getScoreTapNoteScore(score,tns)
+	if score ~= nil then
+		return score:GetTapNoteScore(tns)
+	else
+		return 0
+	end
+end;
+
+function getScoreHoldNoteScore(score,tns)
+	if score ~= nil then
+		return score:GetHoldNoteScore(tns)
+	else
+		return 0
+	end
+end;
+
+function getScoreMissCount(score)
+	return getScoreTapNoteScore(score,"TapNoteScore_Miss") + getScoreTapNoteScore(score,"TapNoteScore_W5") + getScoreTapNoteScore(score,"TapNoteScore_W4")
+end;
+
+function getScore(score,scoreType)
+	if scoreType == 0 or scoreType == nil then
+		scoreType = defaultScoreType
+	end;
+
+	if scoreType == 1 then
+		return 
+		getScoreTapNoteScore(score,"TapNoteScore_W1")*scoreWeight["TapNoteScore_W1"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W2")*scoreWeight["TapNoteScore_W2"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W3")*scoreWeight["TapNoteScore_W3"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W4")*scoreWeight["TapNoteScore_W4"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W5")*scoreWeight["TapNoteScore_W5"]+
+		getScoreTapNoteScore(score,"TapNoteScore_Miss")*scoreWeight["TapNoteScore_Miss"]+
+		getScoreTapNoteScore(score,"TapNoteScore_CheckpointHit")*scoreWeight["TapNoteScore_CheckpointHit"]+
+		getScoreTapNoteScore(score,"TapNoteScore_CheckpointMiss")*scoreWeight["TapNoteScore_CheckpointMiss"]+
+		getScoreTapNoteScore(score,"TapNoteScore_HitMine")*scoreWeight["TapNoteScore_HitMine"]+
+		getScoreTapNoteScore(score,"TapNoteScore_AvoidMine")*scoreWeight["TapNoteScore_AvoidMine"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_LetGo")*scoreWeight["HoldNoteScore_LetGo"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_Held")*scoreWeight["HoldNoteScore_Held"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_MissedHold")*scoreWeight["HoldNoteScore_MissedHold"]
+
+	elseif scoreType == 2 then
+		return 
+		getScoreTapNoteScore(score,"TapNoteScore_W1")*psWeight["TapNoteScore_W1"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W2")*psWeight["TapNoteScore_W2"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W3")*psWeight["TapNoteScore_W3"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W4")*psWeight["TapNoteScore_W4"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W5")*psWeight["TapNoteScore_W5"]+
+		getScoreTapNoteScore(score,"TapNoteScore_Miss")*psWeight["TapNoteScore_Miss"]+
+		getScoreTapNoteScore(score,"TapNoteScore_CheckpointHit")*psWeight["TapNoteScore_CheckpointHit"]+
+		getScoreTapNoteScore(score,"TapNoteScore_CheckpointMiss")*psWeight["TapNoteScore_CheckpointMiss"]+
+		getScoreTapNoteScore(score,"TapNoteScore_HitMine")*psWeight["TapNoteScore_HitMine"]+
+		getScoreTapNoteScore(score,"TapNoteScore_AvoidMine")*psWeight["TapNoteScore_AvoidMine"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_LetGo")*psWeight["HoldNoteScore_LetGo"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_Held")*psWeight["HoldNoteScore_Held"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_MissedHold")*psWeight["HoldNoteScore_MissedHold"]
+	elseif scoreType == 3 then
+		return
+		getScoreTapNoteScore(score,"TapNoteScore_W1")*migsWeight["TapNoteScore_W1"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W2")*migsWeight["TapNoteScore_W2"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W3")*migsWeight["TapNoteScore_W3"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W4")*migsWeight["TapNoteScore_W4"]+
+		getScoreTapNoteScore(score,"TapNoteScore_W5")*migsWeight["TapNoteScore_W5"]+
+		getScoreTapNoteScore(score,"TapNoteScore_Miss")*migsWeight["TapNoteScore_Miss"]+
+		getScoreTapNoteScore(score,"TapNoteScore_CheckpointHit")*migsWeight["TapNoteScore_CheckpointHit"]+
+		getScoreTapNoteScore(score,"TapNoteScore_CheckpointMiss")*migsWeight["TapNoteScore_CheckpointMiss"]+
+		getScoreTapNoteScore(score,"TapNoteScore_HitMine")*migsWeight["TapNoteScore_HitMine"]+
+		getScoreTapNoteScore(score,"TapNoteScore_AvoidMine")*migsWeight["TapNoteScore_AvoidMine"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_LetGo")*migsWeight["HoldNoteScore_LetGo"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_Held")*migsWeight["HoldNoteScore_Held"]+
+		getScoreHoldNoteScore(score,"HoldNoteScore_MissedHold")*migsWeight["HoldNoteScore_MissedHold"]
+	else
+		return 0
+	end
+end;
+
+----------------------------------------------------
 
 -- Grabs the highest grade available from all currently saved scores.
 -- Ignore parameter will ignore the score at that index.
-function getHighestGrade(pn,ignore)
+function getBestGrade(pn,ignore)
 	local highest = 21
 	local indexScore
 	local grade = "Grade_None"
 	local temp = 0
 	local i = 0
-	if pn == PLAYER_1 then
-		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
-			while i <= #hsTableP1 do
-				if i ~= ignore then
-					indexScore = hsTableP1[i]
-					if indexScore ~= nil then
-						temp = gradeTiers[indexScore:GetGrade()] or 21
-						if temp <= highest then
-							grade = indexScore:GetGrade()
-							highest = temp
-						end;
+
+	local hsTable = getScoreList(pn)
+
+	if hsTable ~= nil and #hsTable >= 1 then
+		while i <= #hsTable do
+			if i ~= ignore then
+				indexScore = hsTable[i]
+				if indexScore ~= nil then
+					temp = gradeTiers[indexScore:GetGrade()] or 21
+					if temp <= highest then
+						grade = getScoreGrade(indexScore)
+						highest = temp
 					end;
 				end;
-				i = i+1
 			end;
+			i = i+1
 		end;
 	end;
-
-	if pn == PLAYER_2 then
-		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
-			while i <= #hsTableP2 do
-				if i ~= ignore then
-					indexScore = hsTableP2[i]
-					if indexScore ~= nil then
-						temp = gradeTiers[indexScore:GetGrade()] or 21
-						if temp <= highest then
-							grade = indexScore:GetGrade()
-							highest = temp
-						end;
-					end;
-				end;
-				i = i+1
-			end;
-		end;
-	end;
-
 	return grade
 end;
 
 -- Grabs the highest max combo from all currently saved scores.
 -- Ignore parameter will ignore the score at that index.
-function getHighestMaxCombo(pn,ignore)
+function getBestMaxCombo(pn,ignore)
 	local highest = 0
 	local indexScore
 	local i = 0
-	if pn == PLAYER_1 then
-		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
-			while i <= #hsTableP1 do
-				if i ~= ignore then
-					indexScore = hsTableP1[i]
-					if indexScore ~= nil then
-						temp = indexScore:GetMaxCombo()
-						highest = math.max(temp,highest)
-					end;
-				end;
-				i = i+1
-			end;
-		end;
-	end;
 
-	if pn == PLAYER_2 then
-		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
-			while i <= #hsTableP2 do
-				if i ~= ignore then
-					indexScore = hsTableP2[i]
-					if indexScore ~= nil then
-						temp = indexScore:GetMaxCombo()
-						highest = math.max(temp,highest)
-					end;
+	local hsTable = getScoreList(pn)
+
+	if hsTable ~= nil and #hsTable >= 1 then
+		while i <= #hsTable do
+			if i ~= ignore then
+				indexScore = hsTable[i]
+				if indexScore ~= nil then
+					temp = getScoreMaxCombo(indexScore)
+					highest = math.max(temp,highest)
 				end;
-				i = i+1
 			end;
+			i = i+1
 		end;
 	end;
 
@@ -385,286 +333,55 @@ end;
 
 -- Grabs the lowest misscount from all currently saved scores.
 -- Ignore parameter will ignore the score at that index.
-function getLowestMissCount(pn,ignore)
+function getBestMissCount(pn,ignore)
 	local lowest = math.huge
 	local temp
 	local indexScore
 	local i = 0
 
-	if pn == PLAYER_1 then
-		if hsTableP1 ~= nil and #hsTableP1 >= 1 then
-			while i <= #hsTableP1 do
-				if i ~= ignore then
-					indexScore = hsTableP1[i]
-					if indexScore ~= nil then
-						if indexScore:GetGrade() ~= "Grade_Failed" then
-							temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
-							lowest = math.min(lowest,temp)
-						end;
+	local hsTable = getScoreList(pn)
+
+	if hsTable ~= nil and #hsTable >= 1 then
+		while i <= #hsTable do
+			if i ~= ignore then
+				indexScore = hsTable[i]
+				if indexScore ~= nil then
+					if indexScore:GetGrade() ~= "Grade_Failed" then
+						temp = getScoreMissCount(indexScore)
+						lowest = math.min(lowest,temp)
 					end;
 				end;
-				i = i+1
 			end;
+			i = i+1
 		end;
 	end;
 
-	if pn == PLAYER_2 then
-		if hsTableP2 ~= nil and #hsTableP2 >= 1 then
-			while i <= #hsTableP2 do
-				if i ~= ignore then
-					indexScore = hsTableP2[i]
-					if indexScore ~= nil then
-						if indexScore:GetGrade() ~= "Grade_Failed" then
-							temp = indexScore:GetTapNoteScore("TapNoteScore_W4") + indexScore:GetTapNoteScore("TapNoteScore_W5") + indexScore:GetTapNoteScore("TapNoteScore_Miss")
-							lowest = math.min(lowest,temp)
-						end;
-					end;
-				end;
-				i = i+1
-			end;
-		end;
-	end;
+
 	if lowest == math.huge then
 		lowest = nil
 	end;
 	return lowest 
 end;
 
--- Grabs the highest score available from all currently saved scores for a certain scoretype.
--- Ignore parameter will ignore the score at that index.
-function getHighestScore(pn,ignore,scoreType)
-	local lowest = 0
+function getBestScore(pn,ignore,scoreType)
+	local highest = 0
 	if scoreType == 0 or scoreType == nil then
 		scoreType = defaultScoreType
 	end
-	local table
 	local indexScore
 
-	if pn == PLAYER_1 then
-		table = hsTableP1
-	elseif pn == PLAYER_2 then
-		table = hsTableP2
-	end
+	local hsTable = getScoreList(pn)
 
-	if table ~= nil then
-		for k,v in ipairs(table) do
+	if hsTable ~= nil and #hsTable >= 1 then
+		for k,v in ipairs(hsTable) do
 			if k ~= ignore then
-				indexScore = table[k]
+				indexScore = hsTable[k]
 				if indexScore ~= nil then
-					if scoreType == 1 then
-						lowest = math.max(lowest,
-						indexScore:GetTapNoteScore("TapNoteScore_W1")*scoreWeight["TapNoteScore_W1"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W2")*scoreWeight["TapNoteScore_W2"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W3")*scoreWeight["TapNoteScore_W3"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W4")*scoreWeight["TapNoteScore_W4"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W5")*scoreWeight["TapNoteScore_W5"]+
-						indexScore:GetTapNoteScore("TapNoteScore_Miss")*scoreWeight["TapNoteScore_Miss"]+
-						indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*scoreWeight["TapNoteScore_CheckpointHit"]+
-						indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*scoreWeight["TapNoteScore_CheckpointMiss"]+
-						indexScore:GetTapNoteScore("TapNoteScore_HitMine")*scoreWeight["TapNoteScore_HitMine"]+
-						indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*scoreWeight["TapNoteScore_AvoidMine"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*scoreWeight["HoldNoteScore_LetGo"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_Held")*scoreWeight["HoldNoteScore_Held"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*scoreWeight["HoldNoteScore_MissedHold"]
-						)
-					elseif scoreType == 2 then
-						lowest = math.max(lowest,
-						indexScore:GetTapNoteScore("TapNoteScore_W1")*psWeight["TapNoteScore_W1"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W2")*psWeight["TapNoteScore_W2"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W3")*psWeight["TapNoteScore_W3"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W4")*psWeight["TapNoteScore_W4"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W5")*psWeight["TapNoteScore_W5"]+
-						indexScore:GetTapNoteScore("TapNoteScore_Miss")*psWeight["TapNoteScore_Miss"]+
-						indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*psWeight["TapNoteScore_CheckpointHit"]+
-						indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*psWeight["TapNoteScore_CheckpointMiss"]+
-						indexScore:GetTapNoteScore("TapNoteScore_HitMine")*psWeight["TapNoteScore_HitMine"]+
-						indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*psWeight["TapNoteScore_AvoidMine"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*psWeight["HoldNoteScore_LetGo"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_Held")*psWeight["HoldNoteScore_Held"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*psWeight["HoldNoteScore_MissedHold"]
-						)
-					elseif scoreType == 3 then
-						lowest = math.max(lowest,
-						indexScore:GetTapNoteScore("TapNoteScore_W1")*migsWeight["TapNoteScore_W1"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W2")*migsWeight["TapNoteScore_W2"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W3")*migsWeight["TapNoteScore_W3"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W4")*migsWeight["TapNoteScore_W4"]+
-						indexScore:GetTapNoteScore("TapNoteScore_W5")*migsWeight["TapNoteScore_W5"]+
-						indexScore:GetTapNoteScore("TapNoteScore_Miss")*migsWeight["TapNoteScore_Miss"]+
-						indexScore:GetTapNoteScore("TapNoteScore_CheckpointHit")*migsWeight["TapNoteScore_CheckpointHit"]+
-						indexScore:GetTapNoteScore("TapNoteScore_CheckpointMiss")*migsWeight["TapNoteScore_CheckpointMiss"]+
-						indexScore:GetTapNoteScore("TapNoteScore_HitMine")*migsWeight["TapNoteScore_HitMine"]+
-						indexScore:GetTapNoteScore("TapNoteScore_AvoidMine")*migsWeight["TapNoteScore_AvoidMine"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_LetGo")*migsWeight["HoldNoteScore_LetGo"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_Held")*migsWeight["HoldNoteScore_Held"]+
-						indexScore:GetHoldNoteScore("HoldNoteScore_MissedHold")*migsWeight["HoldNoteScore_MissedHold"]
-						)
-					end;
+					highest = math.max(highest,getScore(indexScore,scoreType))
 				end;
 			end;
 		end
 	end
 
-	return lowest
-end;
-
---============================================================
--- Call only after calling initScoreListP1 and initScoreP1
---============================================================
-
--- Initialize judgments for the score that was initialized
-function initJudgeStats(pn)
-	if pn == PLAYER_1 then
-		if indexScoreP1 ~= nil then
-			for k,_ in pairs(judgeStatsP1) do
-				if k == "HoldNoteScore_LetGo" or k == "HoldNoteScore_Held" or k == "HoldNoteScore_MissedHold" then
-					judgeStatsP1[k] = indexScoreP1:GetHoldNoteScore(k)
-				else 
-					judgeStatsP1[k] = indexScoreP1:GetTapNoteScore(k)
-				end;
-			end
-		end
-	end
-	if pn == PLAYER_2 then
-		if indexScoreP2 ~= nil then
-			for k,_ in pairs(judgeStatsP2) do
-				if k == "HoldNoteScore_LetGo" or k == "HoldNoteScore_Held"or k == "HoldNoteScore_MissedHold" then
-					judgeStatsP2[k] = indexScoreP2:GetHoldNoteScore(k)
-				else 
-					judgeStatsP2[k] = indexScoreP2:GetTapNoteScore(k)
-				end;
-			end
-		end
-	end
-end;	
-
--- Returns grade of the initialized score
-function getScoreGrade(pn)
-	if pn == PLAYER_1 then
-		if indexScoreP1 ~= nil then
-			return indexScoreP1:GetGrade()
-		else
-			return "Grade_None"
-		end;
-	end;
-	if pn == PLAYER_2 then
-		if indexScoreP2 ~= nil then
-			return indexScoreP2:GetGrade()
-		else
-			return "Grade_None"
-		end;
-	end;
-end;
-
--- Returns max combo of the initialized score
-function getMaxCombo(pn)
-	if pn == PLAYER_1 then
-		if indexScoreP1 ~= nil then
-			return indexScoreP1:GetMaxCombo()
-		else
-			return 0
-		end;
-	end;
-	if pn == PLAYER_2 then
-		if indexScoreP2 ~= nil then
-			return indexScoreP2:GetMaxCombo()
-		else
-			return 0
-		end;
-	end;
-end;
-
--- Returns date of the initialized score
-function getScoreDate(pn)
-	if pn == PLAYER_1 then
-		if indexScoreP1 ~= nil then
-			return indexScoreP1:GetDate()
-		else
-			return ""
-		end;
-	end;
-	if pn == PLAYER_2 then
-		if indexScoreP2 ~= nil then
-			return indexScoreP2:GetDate()
-		else
-			return ""
-		end;
-	end;
-end;
-
---=========================================================================
--- Call only after calling initScoreListP1,initScoreP1 and initJudgeStatsP1
---=========================================================================
-
---return # of judgments made for a certain tns or hns for the initialized judgestats
-function getJudgeStatsCount(pn,tns)
-	if pn == PLAYER_1 then
-		return judgeStatsP1[tns]
-	end;
-	if pn == PLAYER_2 then
-		return judgeStatsP2[tns]
-	end;
-end;
-
-
---return # of misscounts for the initialized judgestats
-function getMissCount(pn)
-	return getJudgeStatsCount(pn,"TapNoteScore_Miss")+getJudgeStatsCount(pn,"TapNoteScore_W5")+getJudgeStatsCount(pn,"TapNoteScore_W4")
-end;
-
---return score for the initialized judgestats
-function getScore(pn,scoreType)
-	if scoreType == 0 or scoreType == nil then
-		scoreType = defaultScoreType
-	end;
-
-	if scoreType == 1 then
-		return 
-		getJudgeStatsCount(pn,"TapNoteScore_W1")*scoreWeight["TapNoteScore_W1"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W2")*scoreWeight["TapNoteScore_W2"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W3")*scoreWeight["TapNoteScore_W3"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W4")*scoreWeight["TapNoteScore_W4"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W5")*scoreWeight["TapNoteScore_W5"]+
-		getJudgeStatsCount(pn,"TapNoteScore_Miss")*scoreWeight["TapNoteScore_Miss"]+
-		getJudgeStatsCount(pn,"TapNoteScore_CheckpointHit")*scoreWeight["TapNoteScore_CheckpointHit"]+
-		getJudgeStatsCount(pn,"TapNoteScore_CheckpointMiss")*scoreWeight["TapNoteScore_CheckpointMiss"]+
-		getJudgeStatsCount(pn,"TapNoteScore_HitMine")*scoreWeight["TapNoteScore_HitMine"]+
-		getJudgeStatsCount(pn,"TapNoteScore_AvoidMine")*scoreWeight["TapNoteScore_AvoidMine"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_LetGo")*scoreWeight["HoldNoteScore_LetGo"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_Held")*scoreWeight["HoldNoteScore_Held"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_MissedHold")*scoreWeight["HoldNoteScore_MissedHold"]
-
-	elseif scoreType == 2 then
-		return 
-		getJudgeStatsCount(pn,"TapNoteScore_W1")*psWeight["TapNoteScore_W1"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W2")*psWeight["TapNoteScore_W2"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W3")*psWeight["TapNoteScore_W3"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W4")*psWeight["TapNoteScore_W4"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W5")*psWeight["TapNoteScore_W5"]+
-		getJudgeStatsCount(pn,"TapNoteScore_Miss")*psWeight["TapNoteScore_Miss"]+
-		getJudgeStatsCount(pn,"TapNoteScore_CheckpointHit")*psWeight["TapNoteScore_CheckpointHit"]+
-		getJudgeStatsCount(pn,"TapNoteScore_CheckpointMiss")*psWeight["TapNoteScore_CheckpointMiss"]+
-		getJudgeStatsCount(pn,"TapNoteScore_HitMine")*psWeight["TapNoteScore_HitMine"]+
-		getJudgeStatsCount(pn,"TapNoteScore_AvoidMine")*psWeight["TapNoteScore_AvoidMine"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_LetGo")*psWeight["HoldNoteScore_LetGo"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_Held")*psWeight["HoldNoteScore_Held"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_MissedHold")*psWeight["HoldNoteScore_MissedHold"]
-	elseif scoreType == 3 then
-		return
-		getJudgeStatsCount(pn,"TapNoteScore_W1")*migsWeight["TapNoteScore_W1"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W2")*migsWeight["TapNoteScore_W2"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W3")*migsWeight["TapNoteScore_W3"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W4")*migsWeight["TapNoteScore_W4"]+
-		getJudgeStatsCount(pn,"TapNoteScore_W5")*migsWeight["TapNoteScore_W5"]+
-		getJudgeStatsCount(pn,"TapNoteScore_Miss")*migsWeight["TapNoteScore_Miss"]+
-		getJudgeStatsCount(pn,"TapNoteScore_CheckpointHit")*migsWeight["TapNoteScore_CheckpointHit"]+
-		getJudgeStatsCount(pn,"TapNoteScore_CheckpointMiss")*migsWeight["TapNoteScore_CheckpointMiss"]+
-		getJudgeStatsCount(pn,"TapNoteScore_HitMine")*migsWeight["TapNoteScore_HitMine"]+
-		getJudgeStatsCount(pn,"TapNoteScore_AvoidMine")*migsWeight["TapNoteScore_AvoidMine"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_LetGo")*migsWeight["HoldNoteScore_LetGo"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_Held")*migsWeight["HoldNoteScore_Held"]+
-		getJudgeStatsCount(pn,"HoldNoteScore_MissedHold")*migsWeight["HoldNoteScore_MissedHold"]
-	else
-		return 0
-	end
+	return highest
 end;

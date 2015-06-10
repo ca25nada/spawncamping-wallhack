@@ -40,6 +40,9 @@ local profileP2
 local topScoreP1
 local topScoreP2
 
+local hsTableP1
+local hsTableP2
+
 function stars(ind,pn)
 	return LoadActor("ossstar")..{
 		InitCommand=cmd(xy,starsX+43+(ind*starDistX),starsY+2+(ind*starDistY););
@@ -130,16 +133,18 @@ t[#t+1] = Def.Actor{
 			if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 				profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
 				stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1)
-				initScoreList(PLAYER_1)
-				initScore(PLAYER_1,1)
-				initJudgeStats(PLAYER_1)
+				hsTableP1 = getScoreList(PLAYER_1)
+				if hsTableP1 ~= nil then
+					topScoreP1 = getScoreFromTable(hsTableP1,1)
+				end;
 			end;
 			if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 				profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
 				stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2)
-				initScoreList(PLAYER_2)
-				initScore(PLAYER_2,1)
-				initJudgeStats(PLAYER_2)
+				hsTableP2 = getScoreList(PLAYER_2)
+				if hsTableP2 ~= nil then
+					topScoreP2 = getScoreFromTable(hsTableP2,1)
+				end;
 			end;
 		end;
 	end;
@@ -270,8 +275,8 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_1,0))))
-				self:diffuse(getGradeColor(getHighestGrade(PLAYER_1,0)))
+				self:settext(THEME:GetString("Grade",ToEnumShortString(getBestGrade(PLAYER_1,0))))
+				self:diffuse(getGradeColor(getBestGrade(PLAYER_1,0)))
 			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
@@ -296,8 +301,8 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local score = getHighestScore(PLAYER_1,0,0)
-				local maxscore = getMaxScore(PLAYER_1,0,0)
+				local score = getBestScore(PLAYER_1,0,0)
+				local maxscore = getMaxScore(PLAYER_1,0)
 				if maxscore == 0 or maxscore == nil then
 					maxscore = 1
 				end;
@@ -315,7 +320,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local score = string.format("%04d",getHighestScore(PLAYER_1,0,0))
+				local score = string.format("%04d",getBestScore(PLAYER_1,0,0))
 				local maxscore = string.format("%04d",getMaxScore(PLAYER_1,0))
 				self:settext(score.."/"..maxscore)
 			end;
@@ -337,7 +342,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				maxCombo = getHighestMaxCombo(PLAYER_1,0)
+				maxCombo = getBestMaxCombo(PLAYER_1,0)
 				self:settextf("Max Combo: %d",maxCombo)
 			end;
 		end;
@@ -350,7 +355,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local missCount = getLowestMissCount(PLAYER_1)
+				local missCount = getBestMissCount(PLAYER_1,0)
 				if missCount ~= nil then
 					self:settext("Miss Count: "..missCount)
 				else
@@ -368,9 +373,9 @@ t[#t+1] = Def.ActorFrame{
 		SetCommand=function(self)
 			if update then
 				if IsUsingWideScreen() then
-					self:settext("Date Achieved: "..getScoreDate(PLAYER_1))
+					self:settext("Date Achieved: "..getScoreDate(topScoreP1))
 				else
-					self:settext(getScoreDate(PLAYER_1))
+					self:settext(getScoreDate(topScoreP1))
 				end;
 			end;
 		end;
@@ -506,8 +511,8 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				self:settext(THEME:GetString("Grade",ToEnumShortString(getHighestGrade(PLAYER_2,0))))
-				self:diffuse(getGradeColor(getHighestGrade(PLAYER_2,0)))
+				self:settext(THEME:GetString("Grade",ToEnumShortString(getBestGrade(PLAYER_2,0))))
+				self:diffuse(getGradeColor(getBestGrade(PLAYER_2,0)))
 			end;
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
@@ -532,7 +537,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local score = getHighestScore(PLAYER_2,0,0)
+				local score = getBestScore(PLAYER_2,0,0)
 				local maxscore = getMaxScore(PLAYER_2,0)
 				if maxscore == 0 or maxscore == nil then
 					maxscore = 1
@@ -551,7 +556,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local score = string.format("%04d",getHighestScore(PLAYER_2,0,0))
+				local score = string.format("%04d",getBestScore(PLAYER_2,0,0))
 				local maxscore = string.format("%04d",getMaxScore(PLAYER_2,0))
 				self:settext(score.."/"..maxscore)
 			end;
@@ -573,7 +578,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				maxCombo = getHighestMaxCombo(PLAYER_2,0)
+				maxCombo = getBestMaxCombo(PLAYER_2,0)
 				self:settextf("Max Combo: %d",maxCombo)
 			end;
 		end;
@@ -586,7 +591,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local missCount = getLowestMissCount(PLAYER_2)
+				local missCount = getBestMissCount(PLAYER_2,0)
 				if missCount ~= nil then
 					self:settext("Miss Count: "..missCount)
 				else
@@ -604,9 +609,9 @@ t[#t+1] = Def.ActorFrame{
 		SetCommand=function(self)
 			if update then
 				if IsUsingWideScreen() then
-					self:settext("Date Achieved: "..getScoreDate(PLAYER_2))
+					self:settext("Date Achieved: "..getScoreDate(topScoreP2))
 				else
-					self:settext(getScoreDate(PLAYER_2))
+					self:settext(getScoreDate(topScoreP2))
 				end;
 			end;
 		end;
@@ -638,7 +643,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local test1,test2 = getNearbyGrade(PLAYER_1,getHighestScore(PLAYER_1,0,1),getHighestGrade(PLAYER_1,0))
+				local test1,test2 = getNearbyGrade(PLAYER_1,getBestScore(PLAYER_1,0,1),getBestGrade(PLAYER_1,0))
 				if test2 >= 0 then
 					test2 = tostring("+"..test2)
 				else
@@ -656,7 +661,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local test1,test2 = getNearbyGrade(PLAYER_2,getHighestScore(PLAYER_2,0,1),getHighestGrade(PLAYER_2,0))
+				local test1,test2 = getNearbyGrade(PLAYER_2,getBestScore(PLAYER_2,0,1),getBestGrade(PLAYER_2,0))
 				if test2 >= 0 then
 					test2 = tostring("+"..test2)
 				else

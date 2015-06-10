@@ -93,7 +93,7 @@ function bestScoreGraph(index,scoreType,color)
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.2;);
 		BeginCommand=function(self)
-			local bestScore = getHighestScore(player,0,scoreType)
+			local bestScore = getBestScore(player,0,scoreType)
 			local maxScore = getMaxScoreST(player,scoreType)
 			self:smooth(1.5)
 			if maxScore <= 0 then
@@ -106,7 +106,7 @@ function bestScoreGraph(index,scoreType,color)
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY-12;zoom,0.35;maxwidth,((frameWidth/barCount)*barWidth)/0.35;diffusealpha,0);
 		BeginCommand=function(self)
-			local bestScore = getHighestScore(player,0,scoreType)
+			local bestScore = getBestScore(player,0,scoreType)
 			local maxScore = getMaxScoreST(player,scoreType)
 			self:smooth(1.5)
 			self:settext("Best\n"..bestScore)
