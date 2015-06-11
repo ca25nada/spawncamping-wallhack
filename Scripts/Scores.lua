@@ -385,3 +385,51 @@ function getBestScore(pn,ignore,scoreType)
 
 	return highest
 end;
+
+
+local function scoreComparator(scoreA,scoreB,scoreType)
+	return  getScore(scoreA,scoreType) > getScore(scoreB,scoreType)
+end;
+
+function sortScore(hsTable,scoreType)
+	table.sort(hsTable,scoreComparator)
+	return hsTable
+end;
+
+function getRate(score)
+
+	-- gets the rate mod used in highscore. doesn't work if ratemod has a different name
+	local mods = score:GetModifiers()
+	if string.find(mods,"Haste") ~= nil then
+		return 'Haste'
+	elseif string.find(mods,"xMusic") == nil then
+		return '1.0x'
+	else
+		return (string.match(mods,"%d+%.%d+xMusic")):sub(1,-6)
+	end;
+end;
+
+function getHighScoreIndex(hsTable,score)
+	for k,v in ipairs(hsTable) do
+		if v == score then
+			return k
+		end;
+	end;
+	return 0
+end;
+
+function getRateTable(hsTable)
+	local rtTable = {}
+	local rate
+	for k,v in ipairs(hsTable) do
+		rate = getRate(v)
+		if tableContains(rtTable,rate) then
+			rtTable[rate][#rtTable[rate]+1] = v
+		else
+			rtTable[rate] = {}
+			rtTable[rate][#rtTable[rate]+1] = v
+		end;
+	end;
+
+	return rtTable
+end;
