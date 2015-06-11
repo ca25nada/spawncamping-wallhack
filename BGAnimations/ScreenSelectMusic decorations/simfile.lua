@@ -14,7 +14,7 @@ local t = Def.ActorFrame{
 			update = false
 		end;
 	end;
-	CodeMessageCommand=cmd(queuecommand,"Set");
+	TabChangedMessageCommand=cmd(queuecommand,"Set");
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 };
 

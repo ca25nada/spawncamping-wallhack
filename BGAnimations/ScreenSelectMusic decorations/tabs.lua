@@ -1,19 +1,30 @@
-local t = Def.ActorFrame{}
+local function input(event)
+	if event.type ~= "InputEventType_Release" then
+		if event.DeviceInput.button == "DeviceButton_1" then
+			setTabIndex(0)
+			MESSAGEMAN:Broadcast("TabChanged")
+		elseif event.DeviceInput.button == "DeviceButton_2" then
+			setTabIndex(1)
+			MESSAGEMAN:Broadcast("TabChanged")
+		elseif event.DeviceInput.button == "DeviceButton_3" then
+			setTabIndex(2)
+			MESSAGEMAN:Broadcast("TabChanged")
+		elseif event.DeviceInput.button == "DeviceButton_4" then
+			setTabIndex(3)
+			MESSAGEMAN:Broadcast("TabChanged")
+		elseif event.DeviceInput.button == "DeviceButton_5" then
+			setTabIndex(4)
+			MESSAGEMAN:Broadcast("TabChanged")
+		end
+	end;
+return false;
+end
 
 
---DO NOT REMOVE
-t[#t+1] = Def.Actor{
-	BeginCommand=function(self)
-		resetTabIndex()
-	end;
-	CodeMessageCommand=function(self,params)
-		if params.Name == "SwitchTab" then
-			incrementTabIndex()
-		end;
-	end;
-	PlayerJoinedMessageCommand=function(self)
-		resetTabIndex()
-	end;
+local t = Def.ActorFrame{
+	OnCommand=function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end;
+	BeginCommand=function(self) resetTabIndex() end;
+	PlayerJoinedMessageCommand=function(self) resetTabIndex() end;
 }
 
 -- Just for debug
@@ -50,7 +61,7 @@ function tabs(index)
 				self:diffusealpha(0.9)
 			end;
 		end;
-		CodeMessageCommand=cmd(queuecommand,"Set");
+		TabChangedMessageCommand=cmd(queuecommand,"Set");
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 
 		Def.Quad{

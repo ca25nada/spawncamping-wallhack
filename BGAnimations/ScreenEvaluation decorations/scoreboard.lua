@@ -44,10 +44,10 @@ local player = GAMESTATE:GetEnabledPlayers()[1]
 if GAMESTATE:IsPlayerEnabled(player) then
 	profile = GetPlayerOrMachineProfile(player)
 	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
-	origTable = profile:GetHighScoreList(song,steps):GetHighScores()
+	origTable = getScoreList(player)
 	score = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetHighScore()--origTable[STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1]
 	rtTable = getRateTable(origTable)
-	hsTable = sortScore(rtTable[getRate(score)])
+	hsTable = sortScore(rtTable[getRate(score)] or {})
 	scoreIndex = getHighScoreIndex(hsTable,score)
 end;
 
@@ -253,7 +253,7 @@ t[#t+1] = LoadFont("Common normal")..{
 		if scoreIndex ~= 0 then
 			self:settextf("Rank %d/%d (%d/%s Score slots used)",scoreIndex,(#hsTable),(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
 		else
-			self:settextf("Out of rank (Max Scores: %d)",PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
+			self:settextf("Out of rank (%d/%s Score slots used)",(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
 		end;
 	end;
 };

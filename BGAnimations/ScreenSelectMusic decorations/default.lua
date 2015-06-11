@@ -18,7 +18,7 @@ t[#t+1] = Def.ActorFrame {
 	InitCommand=cmd(xy,capWideScale(get43size(384),384)+26,70,halign,0;valign,0;zoom,math.min(1,SCREEN_WIDTH/854));
 	OffCommand=cmd(bouncebegin,0.2;xy,capWideScale(get43size(384),384)+26-500,70;); -- visible(false) doesn't seem to work with sleep
 	OnCommand=cmd(bouncebegin,0.2;xy,capWideScale(get43size(384),384)+26,70;);
-	CodeMessageCommand=function(self)
+	TabChangedMessageCommand=function(self)
 		self:finishtweening()
 		if getTabIndex() == 0 then
 			self:playcommand("On");
