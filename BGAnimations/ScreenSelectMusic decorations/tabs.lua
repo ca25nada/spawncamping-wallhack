@@ -40,7 +40,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 --]]
 --======================================================================================
 
-tabNames = {"General","Simfile","Score","Profile","Other"}
+local tabNames = {"General","Simfile","Score","Profile","Other"} -- this probably should be in tabmanager.
 
 local frameWidth = (SCREEN_WIDTH*(403/854))/(#tabNames-1)
 local frameX = frameWidth/2

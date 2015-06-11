@@ -114,6 +114,7 @@ local function makeText(index)
 				self:diffuse(color("#FFFFFF"))
 			end;
 		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 end;
