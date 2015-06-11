@@ -382,22 +382,20 @@ function getBestScore(pn,ignore,scoreType)
 			end;
 		end
 	end
-
 	return highest
 end;
 
 
-local function scoreComparator(scoreA,scoreB,scoreType)
-	return  getScore(scoreA,scoreType) > getScore(scoreB,scoreType)
+local function scoreComparator(scoreA,scoreB)
+	return  getScore(scoreA,0) > getScore(scoreB,0)
 end;
 
-function sortScore(hsTable,scoreType)
+function sortScore(hsTable)
 	table.sort(hsTable,scoreComparator)
 	return hsTable
 end;
 
 function getRate(score)
-
 	-- gets the rate mod used in highscore. doesn't work if ratemod has a different name
 	local mods = score:GetModifiers()
 	if string.find(mods,"Haste") ~= nil then
@@ -411,7 +409,7 @@ end;
 
 function getHighScoreIndex(hsTable,score)
 	for k,v in ipairs(hsTable) do
-		if v == score then
+		if v:GetDate() == score:GetDate() then
 			return k
 		end;
 	end;

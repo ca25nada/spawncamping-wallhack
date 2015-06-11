@@ -37,6 +37,7 @@ local origTable
 local hsTable
 local rtTable
 local scoreIndex
+local score
 
 local player = GAMESTATE:GetEnabledPlayers()[1]
 
@@ -44,9 +45,10 @@ if GAMESTATE:IsPlayerEnabled(player) then
 	profile = GetPlayerOrMachineProfile(player)
 	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
 	origTable = profile:GetHighScoreList(song,steps):GetHighScores()
+	score = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetHighScore()--origTable[STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1]
 	rtTable = getRateTable(origTable)
-	hsTable = rtTable[getRate(origTable[STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1])]
-	scoreIndex = getHighScoreIndex(hsTable,origTable[STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1])
+	hsTable = sortScore(rtTable[getRate(score)])
+	scoreIndex = getHighScoreIndex(hsTable,score)
 end;
 
 --Input event for mouse clicks
@@ -157,8 +159,8 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			Name="grade";
 			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
-				--self:settextf("%s %.2f%% (x%d)",(gradestring(hsTable[index]:GetGrade())),hsTable[index]:GetPercentDP()*100,hsTable[index]:GetMaxCombo()); 
-				self:settextf("%s",getRate(hsTable[index]))
+				self:settextf("%s %.2f%% (x%d)",(gradestring(hsTable[index]:GetGrade())),hsTable[index]:GetPercentDP()*100,hsTable[index]:GetMaxCombo()); 
+				--self:settextf("%s",getRate(hsTable[index]))
 			end;
 		};
 
