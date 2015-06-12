@@ -3,7 +3,7 @@ local update = false
 local hsTable
 local rtTable
 local rates
-local rateIndex
+local rateIndex = 1
 local scoreIndex = 1
 local score
 
@@ -39,15 +39,28 @@ local t = Def.ActorFrame{
 			scoreIndex = ((scoreIndex-2)%(#rtTable[rates[rateIndex]]))+1
 		end;
 		score = rtTable[rates[rateIndex]][scoreIndex]
+		MESSAGEMAN:Broadcast("ScoreUpdate")
 	end;
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"InitScore");
 	InitScoreCommand=function(self)
-		hsTable = getScoreList(PLAYER_1)
-		if hsTable ~= nil then
-			rtTable = getRateTable(hsTable)
-			rates,rateIndex = getUsedRates(rtTable)
-			score = rtTable[rates[rateIndex]][scoreIndex]
+		if GAMESTATE:GetCurrentSong() ~= nil then
+			hsTable = getScoreList(PLAYER_1)
+			if hsTable ~= nil and hsTable[1] ~= nil then
+				rtTable = getRateTable(hsTable)
+				rates,rateIndex = getUsedRates(rtTable)
+				scoreIndex = 1
+				score = rtTable[rates[rateIndex]][scoreIndex]
+			else
+				rtTable = {}
+				rates,rateIndex = {"1.0x"},1
+				scoreIndex = 1
+			end;
+		else
+			hsTable = {}
+			rtTable = {}
+			rates,rateIndex = {"1.0x"},1
+			scoreIndex = 1
 		end;
 	end;
 };
@@ -57,9 +70,7 @@ local frameY = 45
 local frameWidth = capWideScale(320,400)
 local frameHeight = 350
 local fontScale = 0.4
-local distY = 15
-local offsetX1 = 100
-local offsetX2 = 10
+local offsetX = 10
 local offsetY = 20
 
 
@@ -77,49 +88,75 @@ t[#t+1] = LoadFont("Common Normal")..{
 	BeginCommand=cmd(settext,"Score Info")
 };
 
---[[
+
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,frameX+5,frameY+offsetY+9;zoom,0.6;halign,0;diffuse,getMainColor(1));
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
-		self:settext("is nil "..tostring(rates==nil))
+		self:settext("is nil "..tostring(hsTable==nil))
 		--self:settext(rates[1])
 		--self:settext(tostring(rateCompatator("1.1x","0.5x")))
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
---]]
+
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+frameWidth-offsetX2,frameY+offsetY+50;zoom,0.4;halign,1;);
+	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+50;zoom,0.4;halign,1;);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
-		self:settextf("Rate %s - Showing %d/%d",rates[rateIndex],scoreIndex,#rtTable[rates[rateIndex]])
+		if hsTable ~= nil and rates ~= nil and rtTable[rates[rateIndex]] ~= nil then
+			self:settextf("Rate %s - Showing %d/%d",rates[rateIndex],scoreIndex,#rtTable[rates[rateIndex]])
+		else
+			self:settext("No Scores Saved")
+		end;
 	end;
-	CodeMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
+t[#t+1] = Def.Quad{
+	Name="ScrollBar";
+	InitCommand=cmd(xy,frameX+frameWidth,frameY+frameHeight;zoomto,4,0;halign,1;valign,1;diffuse,getMainColor(1));
+	BeginCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self,params)
+		self:finishtweening()
+		self:smooth(0.2)
+		if hsTable ~= nil and rates ~= nil and rtTable[rates[rateIndex]] ~= nil then
+			self:zoomy(((frameHeight-offsetY)/#rtTable[rates[rateIndex]]))
+			self:y(frameY+offsetY+(((frameHeight-offsetY)/#rtTable[rates[rateIndex]])*scoreIndex))
+		else
+			self:zoomy(frameHeight-offsetY)
+			self:y(frameY+frameHeight)
+		end;
+	end;
+};
 
 
 local function makeText(index)
 	return LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,offsetX1/fontScale);
+		InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+(index*15);zoom,fontScale;halign,0;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(rates[index])
-			if index == rateIndex then
-				self:diffuse(getMainColor(1))
+			if index <= #rates then
+				self:settext(rates[index])
+				if index == rateIndex then
+					self:diffuse(getMainColor(1))
+				else
+					self:diffuse(color("#FFFFFF"))
+				end;
 			else
-				self:diffuse(color("#FFFFFF"))
+				self:settext("")
 			end;
 		end;
-		CodeMessageCommand=cmd(queuecommand,"Set");
+		ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 end;
 
-for i=1,3 do
+for i=1,10 do
 	t[#t+1] =makeText(i)
 end;
 

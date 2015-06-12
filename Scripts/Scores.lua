@@ -85,6 +85,7 @@ function getScoreList(pn)
 			return profile:GetHighScoreList(song,steps):GetHighScores()
 		end;
 	end;
+	return nil
 end;
 
 function getScoreFromTable(hsTable,index)
@@ -438,13 +439,15 @@ end;
 function getUsedRates(rtTable)
 	local rates = {}
 	local initIndex = 1 
-	for k,v in pairs(rtTable) do
-		rates[#rates+1] = k
-	end;
-	table.sort(rates,function(a,b) a=a:gsub("x","") b=b:gsub("x","") return a<b end)
-	for i=1,#rates do
-		if rates[i] == "1.0x" then
-			initIndex = i
+		if rtTable ~= nil then
+		for k,v in pairs(rtTable) do
+			rates[#rates+1] = k
+		end;
+		table.sort(rates,function(a,b) a=a:gsub("x","") b=b:gsub("x","") return a<b end)
+		for i=1,#rates do
+			if rates[i] == "1.0x" then
+				initIndex = i
+			end;
 		end;
 	end;
 	return rates,initIndex
