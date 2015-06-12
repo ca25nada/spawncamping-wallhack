@@ -342,7 +342,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				maxCombo = getBestMaxCombo(PLAYER_1,0)
+				local maxCombo = getBestMaxCombo(PLAYER_1,0)
 				self:settextf("Max Combo: %d",maxCombo)
 			end;
 		end;
@@ -578,7 +578,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				maxCombo = getBestMaxCombo(PLAYER_2,0)
+				local maxCombo = getBestMaxCombo(PLAYER_2,0)
 				self:settextf("Max Combo: %d",maxCombo)
 			end;
 		end;

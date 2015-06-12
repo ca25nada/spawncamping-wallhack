@@ -1,7 +1,4 @@
 
-
-local defaultScoreType = themeConfig:get_data().global.DefaultScoreType
-
 local gradeTiers = {
 	Grade_Tier01 = 0,
 	Grade_Tier02 = 1,
@@ -126,7 +123,7 @@ function getMaxScore(pn,scoreType) -- dp, ps, migs = 1,2,3 respectively, 0 rever
 	local maxNotes = getMaxNotes(pn)
 	local maxHolds = getMaxHolds(pn)
 	if scoreType == 0 or scoreType == nil then
-		scoreType = defaultScoreType
+		scoreType = themeConfig:get_data().global.DefaultScoreType
 	end;
 
 	if scoreType == 1 then
@@ -222,7 +219,7 @@ end;
 
 function getScore(score,scoreType)
 	if scoreType == 0 or scoreType == nil then
-		scoreType = defaultScoreType
+		scoreType = themeConfig:get_data().global.DefaultScoreType
 	end;
 
 	if scoreType == 1 then
@@ -367,7 +364,7 @@ end;
 function getBestScore(pn,ignore,scoreType)
 	local highest = 0
 	if scoreType == 0 or scoreType == nil then
-		scoreType = defaultScoreType
+		scoreType = themeConfig:get_data().global.DefaultScoreType
 	end
 	local indexScore
 
