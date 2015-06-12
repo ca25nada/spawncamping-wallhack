@@ -430,6 +430,9 @@ function getRateTable(hsTable)
 				rtTable[rate][#rtTable[rate]+1] = v
 			end;
 		end;
+		for k,v in pairs(rtTable) do
+			rtTable[k] = sortScore(rtTable[k])
+		end;
 		return rtTable
 	else
 		return nil 

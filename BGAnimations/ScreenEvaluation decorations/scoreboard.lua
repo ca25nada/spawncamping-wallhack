@@ -159,7 +159,13 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			Name="grade";
 			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
-				self:settextf("%s %.2f%% (x%d)",(gradestring(hsTable[index]:GetGrade())),hsTable[index]:GetPercentDP()*100,hsTable[index]:GetMaxCombo()); 
+				local curscore = getScore(hsTable[index])
+				local maxscore = getMaxScore(pn,0)
+				if maxscore == 0 or maxscore == nil then
+					maxscore = 1
+				end;
+				local pscore = (curscore/maxscore)
+				self:settextf("%s %.2f%% (x%d)",(gradestring(hsTable[index]:GetGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()); 
 				--self:settextf("%s",getRate(hsTable[index]))
 			end;
 		};
