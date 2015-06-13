@@ -5,7 +5,7 @@ local tabIndex = 0
 local tabSize = 5
 local availTabSize = 2
 
-local availableTabs1P = {true,true,false,false,true}
+local availableTabs1P = {true,true,true,false,true}
 local availableTabs2P = {true,false,false,false,true}
 
 --0 indexed tabs... yet 1 indexed lua tables mfw. Will probably go into infinite loop if everything is false.
@@ -27,6 +27,18 @@ end;
 -- Resets the index of the tabs to 0
 function resetTabIndex()
 	tabIndex = 0
+end;
+
+function setTabIndex(index)
+	if GAMESTATE:GetNumPlayersEnabled() == 1 then
+		if availableTabs1P[index+1] then
+			tabIndex = index
+		end;
+	else
+		if availableTabs2P[index+1] then
+			tabIndex = index
+		end;
+	end;
 end;
 
 -- Incements the tab index by 1 given the tab is available.

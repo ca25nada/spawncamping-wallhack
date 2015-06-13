@@ -15,18 +15,28 @@ local showLetters = false
 local animationDelay = 0.8
 local animationLength = 1
 
+local hsTableP1
+local hsTableP2
+local topScoreP1
+local topScoreP2
+
 
 t[#t+1] = Def.Actor{
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
 		song = GAMESTATE:GetCurrentSong()
 		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
-			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
-			stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			hsTableP1 = getScoreList(PLAYER_1)
+			if hsTableP1 ~= nil then
+				topScoreP1 = getScoreFromTable(hsTableP1,1)
+			end;
 		end;
-		initScoreList(PLAYER_1)
-		initScore(PLAYER_1,1)
-		initJudgeStats(PLAYER_1)
+		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+			hsTableP2 = getScoreList(PLAYER_2)
+			if hsTableP2 ~= nil then
+				topScoreP2 = getScoreFromTable(hsTableP2,1)
+			end;
+		end;
 	end;
 	CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
 	CurrentStepsP1ChangedMessageCommand=cmd(playcommand,"Set");
@@ -64,12 +74,12 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
-			local judge = getJudgeStatsCount(PLAYER_1,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W2") + 
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W3") +
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W4") +
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W5") +
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_Miss")
+			local judge = getScoreTapNoteScore(topScoreP1,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W2") + 
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W3") +
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W4") +
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W5") +
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_Miss")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -94,11 +104,11 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
-			local judge = getJudgeStatsCount(PLAYER_1,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W2") + 
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W3") +
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W4") +
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W5")
+			local judge = getScoreTapNoteScore(topScoreP1,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W2") + 
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W3") +
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W4") +
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W5")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -123,10 +133,10 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
-			local judge = getJudgeStatsCount(PLAYER_1,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W2") + 
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W3") +
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W4")
+			local judge = getScoreTapNoteScore(topScoreP1,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W2") + 
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W3") +
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W4")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -150,9 +160,9 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
-			local judge = getJudgeStatsCount(PLAYER_1,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W2") + 
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W3")
+			local judge = getScoreTapNoteScore(topScoreP1,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W2") + 
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W3")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -177,8 +187,8 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
-			local judge = getJudgeStatsCount(PLAYER_1,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_1,"TapNoteScore_W2")
+			local judge = getScoreTapNoteScore(topScoreP1,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP1,"TapNoteScore_W2")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -203,7 +213,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.2");effectcolor2,color("1,1,1,0.5");queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
-			local judge = getJudgeStatsCount(PLAYER_1,"TapNoteScore_W1")
+			local judge = getScoreTapNoteScore(topScoreP1,"TapNoteScore_W1")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -256,12 +266,12 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
-			local judge = getJudgeStatsCount(PLAYER_2,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W2") + 
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W3") +
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W4") +
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W5") +
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_Miss")
+			local judge = getScoreTapNoteScore(topScoreP2,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W2") + 
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W3") +
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W4") +
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W5") +
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_Miss")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -286,11 +296,11 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
-			local judge = getJudgeStatsCount(PLAYER_2,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W2") + 
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W3") +
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W4") +
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W5")
+			local judge = getScoreTapNoteScore(topScoreP2,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W2") + 
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W3") +
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W4") +
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W5")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -315,10 +325,10 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
-			local judge = getJudgeStatsCount(PLAYER_2,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W2") + 
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W3") +
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W4")
+			local judge = getScoreTapNoteScore(topScoreP2,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W2") + 
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W3") +
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W4")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -342,9 +352,9 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
-			local judge = getJudgeStatsCount(PLAYER_2,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W2") + 
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W3")
+			local judge = getScoreTapNoteScore(topScoreP2,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W2") + 
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W3")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -369,8 +379,8 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
-			local judge = getJudgeStatsCount(PLAYER_2,"TapNoteScore_W1")+
-				getJudgeStatsCount(PLAYER_2,"TapNoteScore_W2")
+			local judge = getScoreTapNoteScore(topScoreP2,"TapNoteScore_W1")+
+				getScoreTapNoteScore(topScoreP2,"TapNoteScore_W2")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;
@@ -395,7 +405,7 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.2");effectcolor2,color("1,1,1,0.5");queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
-			local judge = getJudgeStatsCount(PLAYER_2,"TapNoteScore_W1")
+			local judge = getScoreTapNoteScore(topScoreP2,"TapNoteScore_W1")
 			if maxscore == 0 or maxscore == nil then
 				maxscore = 1
 			end;

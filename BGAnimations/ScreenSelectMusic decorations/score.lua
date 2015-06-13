@@ -1,8 +1,20 @@
 local update = false
+
+local hsTable
+local rtTable
+local rates
+local rateIndex = 1
+local scoreIndex = 1
+local score
+local pn = PLAYER_1
+
 local t = Def.ActorFrame{
 	BeginCommand=cmd(queuecommand,"Set";visible,false);
 	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;); -- visible(false) doesn't seem to work with sleep
-	OnCommand=cmd(bouncebegin,0.2;xy,0,0;);
+	OnCommand=function(self)
+		self:bouncebegin(0.2);
+		self:xy(0,0);
+	end;
 	SetCommand=function(self)
 		self:finishtweening()
 		if getTabIndex() == 2 then
@@ -14,8 +26,55 @@ local t = Def.ActorFrame{
 			update = false
 		end;
 	end;
-	CodeMessageCommand=cmd(queuecommand,"Set");
+	TabChangedMessageCommand=cmd(queuecommand,"Set");
+	CodeMessageCommand=function(self,params)
+		if params.Name == "NextRate" then
+			rateIndex = ((rateIndex)%(#rates))+1
+			scoreIndex = 1
+		elseif params.Name == "PrevRate" then
+			rateIndex = ((rateIndex-2)%(#rates))+1
+			scoreIndex = 1
+		elseif params.Name == "NextScore" then
+			if rtTable[rates[rateIndex]] ~= nil then
+				scoreIndex = ((scoreIndex)%(#rtTable[rates[rateIndex]]))+1
+			end
+		elseif params.Name == "PrevScore" then
+			if rtTable[rates[rateIndex]] ~= nil then
+				scoreIndex = ((scoreIndex-2)%(#rtTable[rates[rateIndex]]))+1
+			end
+		end;
+		if rtTable[rates[rateIndex]] ~= nil then
+			score = rtTable[rates[rateIndex]][scoreIndex]
+			MESSAGEMAN:Broadcast("ScoreUpdate")
+		end;
+	end;
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"InitScore");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"InitScore");
+	CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"InitScore");
+	InitScoreCommand=function(self)
+		if GAMESTATE:GetCurrentSong() ~= nil then
+			hsTable = getScoreList(pn)
+			if hsTable ~= nil and hsTable[1] ~= nil then
+				rtTable = getRateTable(hsTable)
+				rates,rateIndex = getUsedRates(rtTable)
+				scoreIndex = 1
+				score = rtTable[rates[rateIndex]][scoreIndex]
+			else
+				rtTable = {}
+				rates,rateIndex = {"1.0x"},1
+				scoreIndex = 1
+				score = nil
+			end;
+		else
+			hsTable = {}
+			rtTable = {}
+			rates,rateIndex = {"1.0x"},1
+			scoreIndex = 1
+			score = nil
+		end;
+		MESSAGEMAN:Broadcast("ScoreUpdate")
+	end;
 };
 
 local frameX = 10
@@ -23,33 +82,18 @@ local frameY = 45
 local frameWidth = capWideScale(320,400)
 local frameHeight = 350
 local fontScale = 0.4
-local distY = 15
-local offsetX1 = 100
-local offsetX2 = 10
+local offsetX = 10
 local offsetY = 20
 
-local stringList1 = {
-	[1] = "Soon"
-}
-
-local stringList2 = {
-	[1] = "(tm)"
-}
+local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss','HoldNoteScore_Held','HoldNoteScore_LetGo'}
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333CC"));
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self)
-	end;
-	CodeMessageCommand=cmd(queuecommand,"Set");
+
 };
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,color("#FFFFFF"));
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self)
-	end;
-	CodeMessageCommand=cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
@@ -57,29 +101,277 @@ t[#t+1] = LoadFont("Common Normal")..{
 	BeginCommand=cmd(settext,"Score Info")
 };
 
-local function makeText1(index)
+t[#t+1] = LoadFont("Common Large")..{
+	Name="Grades";
+	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+20;zoom,0.6;halign,0;maxwidth,50/0.6);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if score ~= nil then
+			self:settext(THEME:GetString("Grade",ToEnumShortString(score:GetGrade())))
+			self:diffuse(getGradeColor(score:GetGrade()))
+		else
+			self:settext("")
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	Name="Score";
+	InitCommand=cmd(xy,frameX+offsetX+55,frameY+offsetY+14;zoom,0.5;halign,0;);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if score ~= nil then
+			local curscore = getScore(score,0)
+			local maxscore = getMaxScore(pn,0)	
+			if maxscore == 0 or maxscore == nil then
+				maxscore = 1
+			end;
+			local pscore = (curscore/maxscore)
+
+			self:settextf("%05.2f%% (%s)",math.floor((pscore)*10000)/100,getScoreTypeText(0))
+		else
+			self:settextf("00.00%% (%s)",getScoreTypeText(0))
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	Name="RawScore";
+	InitCommand=cmd(xy,frameX+offsetX+55,frameY+offsetY+26;zoom,0.4;halign,0;);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if score ~= nil then
+			local curscore = getScore(score,0)
+			local dpscore = getScore(score,1)
+			local grade = getScoreGrade(score)
+			local neargrade,diff = getNearbyGrade(pn,dpscore,grade)
+			local maxscore = getMaxScore(pn,0)
+			if diff >= 0 then
+				diff = tostring("+"..diff)
+			else
+				diff = tostring(diff)
+			end;	
+			if maxscore == 0 or maxscore == nil then
+				maxscore = 1
+			end;
+
+			self:settextf("%04d/%04d (%s %s)",curscore,maxscore,THEME:GetString("Grade",ToEnumShortString(neargrade)),diff)
+		else
+			self:settext("0000/0000 (D +0)")
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	Name="ClearType";
+	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+41;zoom,0.5;halign,0);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		self:settext(getClearTypeFromScore(pn,score,0))
+		self:diffuse(getClearTypeFromScore(pn,score,2))
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	Name="Combo";
+	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+58;zoom,0.4;halign,0);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if score ~= nil then
+			local maxCombo = getScoreMaxCombo(score)
+			self:settextf("Max Combo: %d",maxCombo)
+		else
+			self:settext("Max Combo: 0")
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	Name="MissCount";
+	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+73;zoom,0.4;halign,0);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if score ~= nil then
+			local missCount = getScoreMissCount(score)
+			if missCount ~= nil then
+				self:settext("Miss Count: "..missCount)
+			else
+				self:settext("Miss Count: -")
+			end
+		else
+			self:settext("Miss Count: -")
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	Name="Date";
+	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+88;zoom,0.4;halign,0);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if score ~= nil then
+			self:settext("Date Achieved: "..getScoreDate(score))
+		else
+			self:settext("Date Achieved: ")
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	Name="Mods";
+	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+103;zoom,0.4;halign,0);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if score ~= nil then
+			self:settext("Mods: " ..score:GetModifiers())
+		else
+			self:settext("Mods:")
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	Name="StepsAndMeter";
+	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+10;zoom,0.5;halign,1;);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		local steps = GAMESTATE:GetCurrentSteps(pn)
+		local diff = getDifficulty(steps:GetDifficulty())
+		local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
+		local meter = steps:GetMeter()
+		self:settext(stype.." "..diff.." "..meter)
+		self:diffuse(getDifficultyColor(diff))
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+frameHeight-10;zoom,0.4;halign,1;);
+	BeginCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self)
+		if hsTable ~= nil and rates ~= nil and rtTable[rates[rateIndex]] ~= nil then
+			self:settextf("Rate %s - Showing %d/%d",rates[rateIndex],scoreIndex,#rtTable[rates[rateIndex]])
+		else
+			self:settext("No Scores Saved")
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = Def.Quad{
+	Name="ScrollBar";
+	InitCommand=cmd(xy,frameX+frameWidth,frameY+frameHeight;zoomto,4,0;halign,1;valign,1;diffuse,getMainColor(1));
+	BeginCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	SetCommand=function(self,params)
+		self:finishtweening()
+		self:smooth(0.2)
+		if hsTable ~= nil and rates ~= nil and rtTable[rates[rateIndex]] ~= nil then
+			self:zoomy(((frameHeight-offsetY)/#rtTable[rates[rateIndex]]))
+			self:y(frameY+offsetY+(((frameHeight-offsetY)/#rtTable[rates[rateIndex]])*scoreIndex))
+		else
+			self:zoomy(frameHeight-offsetY)
+			self:y(frameY+frameHeight)
+		end;
+	end;
+};
+
+
+local function makeText(index)
 	return LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,offsetX1/fontScale);
+		InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+15+(index*15);zoom,fontScale;halign,1;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(stringList1[index])
+			local count = 0
+			if rtTable[rates[index]] ~= nil then
+				count = #rtTable[rates[index]]
+			end;
+			if index <= #rates then
+				self:settextf("%s (%d)",rates[index],count)
+				if index == rateIndex then
+					self:diffuse(getMainColor(1))
+				else
+					self:diffuse(color("#FFFFFF"))
+				end;
+			else
+				self:settext("")
+			end;
 		end;
-		CodeMessageCommand=cmd(queuecommand,"Set");
+		ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
 	};
 end;
 
-local function makeText2(index)
-	return LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			self:settext(stringList2[index])
-		end;
-		CodeMessageCommand=cmd(queuecommand,"Set");
-	};
+for i=1,10 do
+	t[#t+1] =makeText(i)
 end;
 
-t[#t+1] = makeText1(1)
-t[#t+1] = makeText2(1)
+local function makeJudge(index,judge)
+	local t = Def.ActorFrame{
+		InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+125+((index-1)*18););
+	}
+
+	--labels
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(zoom,0.5;halign,0;);
+		BeginCommand=function(self)
+			self:settext(getJudgeStrings(judge))
+			self:diffuse(TapNoteScoreToColor(judge))
+		end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(x,120;zoom,0.5;halign,1;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if score ~= nil then
+				if judge ~= 'HoldNoteScore_Held' and judge ~= 'HoldNoteScore_LetGo' then
+					self:settext(getScoreTapNoteScore(score,judge))
+				else
+					self:settext(getScoreHoldNoteScore(score,judge))
+				end;
+			else
+				self:settext("0")
+			end;
+		end;
+		ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(x,122;zoom,0.3;halign,0;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if score ~= nil then
+				if judge ~= 'HoldNoteScore_Held' and judge ~= 'HoldNoteScore_LetGo' then
+					local taps = math.max(1,getMaxNotes(pn))
+					local count = getScoreTapNoteScore(score,judge)
+					self:settextf("(%03.2f%%)",(count/taps)*100)
+				else
+					local holds = math.max(1,getMaxHolds(pn))
+					local count = getScoreHoldNoteScore(score,judge)
+
+					self:settextf("(%03.2f%%)",(count/holds)*100)
+				end;
+			else
+				self:settext("(0.00%)")
+			end;
+		end;
+		ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	return t
+
+end;
+
+for i=1,#judges do
+	t[#t+1] =makeJudge(i,judges[i])
+end;
 
 return t

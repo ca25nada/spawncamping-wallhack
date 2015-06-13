@@ -33,16 +33,22 @@ local song = STATSMAN:GetCurStageStats():GetPlayedSongs()[1]
 
 local profile
 local steps
-local hstable
-local scoreindex
+local origTable
+local hsTable
+local rtTable
+local scoreIndex
+local score
 
 local player = GAMESTATE:GetEnabledPlayers()[1]
 
 if GAMESTATE:IsPlayerEnabled(player) then
 	profile = GetPlayerOrMachineProfile(player)
 	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
-	hstable = profile:GetHighScoreList(song,steps):GetHighScores()
-	scoreindex = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1
+	origTable = getScoreList(player)
+	score = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetHighScore()--origTable[STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1]
+	rtTable = getRateTable(origTable)
+	hsTable = sortScore(rtTable[getRate(score)] or {})
+	scoreIndex = getHighScoreIndex(hsTable,score)
 end;
 
 --Input event for mouse clicks
@@ -50,7 +56,7 @@ local function input(event)
 	local scoreBoard = SCREENMAN:GetTopScreen():GetChildren().scoreBoard
 	if event.DeviceInput.button == 'DeviceButton_left mouse button' then
 		if event.type == "InputEventType_Release" then
-			for i=0,math.min(lines,#hstable)-1 do
+			for i=0,math.min(lines,#hsTable)-1 do
 				if isOver(scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver")) then
 					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("grade"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("grade"):GetVisible())
 					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("judge"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("judge"):GetVisible())
@@ -69,7 +75,7 @@ local t = Def.ActorFrame{
 	OnCommand=function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end
 };
 
-local function scoreitem(pn,index,scoreindex,drawindex)
+local function scoreitem(pn,index,scoreIndex,drawindex)
 
 	--First box always displays the 1st place score
 	if drawindex == 0 then
@@ -77,7 +83,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 	end;
 
 	--Whether the score at index is the score that was just played.
-	local equals = (index == scoreindex)
+	local equals = (index == scoreIndex)
 
 	--
 	local t = Def.ActorFrame {
@@ -110,7 +116,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 
 		--ClearType lamps
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffuse,getClearTypeFromScore(pn,hstable[index],2));
+			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffuse,getClearTypeFromScore(pn,hsTable[index],2));
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn));
 			end;
@@ -118,7 +124,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 
 		--Animation(?) for ClearType lamps
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffusealpha,0.3;diffuse,getClearTypeFromScore(pn,hstable[index],2));
+			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffusealpha,0.3;diffuse,getClearTypeFromScore(pn,hsTable[index],2));
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn));
 				self:diffuseramp()
@@ -134,7 +140,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 		LoadFont("Common normal")..{
 			InitCommand=cmd(xy,framex-8,framey+12+(drawindex*spacing);zoom,0.35;);
 			BeginCommand=function(self)
-				if #hstable >= 1 then
+				if #hsTable >= 1 then
 					self:settext(index)
 					if equals then
 						self:diffuseshift()
@@ -153,7 +159,14 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			Name="grade";
 			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
-				self:settextf("%s %.2f%% (x%d)",(gradestring(hstable[index]:GetGrade())),hstable[index]:GetPercentDP()*100,hstable[index]:GetMaxCombo()); 
+				local curscore = getScore(hsTable[index])
+				local maxscore = getMaxScore(pn,0)
+				if maxscore == 0 or maxscore == nil then
+					maxscore = 1
+				end;
+				local pscore = (curscore/maxscore)
+				self:settextf("%s %.2f%% (x%d)",(gradestring(hsTable[index]:GetGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()); 
+				--self:settextf("%s",getRate(hsTable[index]))
 			end;
 		};
 
@@ -162,7 +175,7 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			Name="option";
 			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
-				self:settext(hstable[index]:GetModifiers()); 
+				self:settext(hsTable[index]:GetModifiers()); 
 				self:visible(false)
 			end;
 		};
@@ -171,9 +184,9 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 		LoadFont("Common normal")..{
 			InitCommand=cmd(xy,framex+10,framey+2+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
-				if #hstable >= 1 and index>= 1 then
-					self:settext(getClearTypeFromScore(pn,hstable[index],0))
-					self:diffuse(getClearTypeFromScore(pn,hstable[index],2))
+				if #hsTable >= 1 and index>= 1 then
+					self:settext(getClearTypeFromScore(pn,hsTable[index],0))
+					self:diffuse(getClearTypeFromScore(pn,hsTable[index],2))
 				end;
 			end;
 		};
@@ -183,14 +196,14 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			Name="judge";
 			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
-				if #hstable >= 1 and index>= 1 then
+				if #hsTable >= 1 and index>= 1 then
 					self:settextf("%d / %d / %d / %d / %d / %d",
-						hstable[index]:GetTapNoteScore("TapNoteScore_W1"),
-						hstable[index]:GetTapNoteScore("TapNoteScore_W2"),
-						hstable[index]:GetTapNoteScore("TapNoteScore_W3"),
-						hstable[index]:GetTapNoteScore("TapNoteScore_W4"),
-						hstable[index]:GetTapNoteScore("TapNoteScore_W5"),
-						hstable[index]:GetTapNoteScore("TapNoteScore_Miss"))
+						hsTable[index]:GetTapNoteScore("TapNoteScore_W1"),
+						hsTable[index]:GetTapNoteScore("TapNoteScore_W2"),
+						hsTable[index]:GetTapNoteScore("TapNoteScore_W3"),
+						hsTable[index]:GetTapNoteScore("TapNoteScore_W4"),
+						hsTable[index]:GetTapNoteScore("TapNoteScore_W5"),
+						hsTable[index]:GetTapNoteScore("TapNoteScore_Miss"))
 				end;
 			end;
 		};
@@ -200,8 +213,8 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 			Name="date";
 			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0);
 			BeginCommand=function(self)
-				if #hstable >= 1 and index>= 1 then
-					self:settext(hstable[index]:GetDate())
+				if #hsTable >= 1 and index>= 1 then
+					self:settext(hsTable[index]:GetDate())
 				end;
 				self:visible(false)
 			end;
@@ -212,8 +225,8 @@ local function scoreitem(pn,index,scoreindex,drawindex)
 end
 
 --can't have more lines than the # of scores huehuehu
-if lines > #hstable then
-	lines = #hstable
+if lines > #hsTable then
+	lines = #hsTable
 end;
 
 local drawindex = 0
@@ -221,20 +234,20 @@ local startind = 1
 local finishind = lines+startind-1
 
 -- Sets the range of indexes to display depending on your rank
-if scoreindex>math.floor(#hstable-lines/2) then
-	startind = #hstable-lines+1
-	finishind = #hstable 
-elseif scoreindex>math.floor(lines/2) then
-	finishind = scoreindex + math.floor(lines/2)
+if scoreIndex>math.floor(#hsTable-lines/2) then
+	startind = #hsTable-lines+1
+	finishind = #hsTable 
+elseif scoreIndex>math.floor(lines/2) then
+	finishind = scoreIndex + math.floor(lines/2)
 	if lines%2 == 1 then
-		startind = scoreindex - math.floor(lines/2)
+		startind = scoreIndex - math.floor(lines/2)
 	else
-		startind = scoreindex - math.floor(lines/2)+1
+		startind = scoreIndex - math.floor(lines/2)+1
 	end;
 end;
 
-while drawindex<#hstable and startind<=finishind do
-	t[#t+1] = scoreitem(player,startind,scoreindex,drawindex)
+while drawindex<#hsTable and startind<=finishind do
+	t[#t+1] = scoreitem(player,startind,scoreIndex,drawindex)
 	startind = startind+1
 	drawindex  = drawindex+1
 end;
@@ -243,10 +256,10 @@ end;
 t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(xy,framex,framey-15;zoom,0.35;halign,0);
 	BeginCommand=function(self)
-		if scoreindex ~= 0 then
-			self:settextf("Rank %d/%d (Max Scores: %d)",scoreindex,(#hstable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
+		if scoreIndex ~= 0 then
+			self:settextf("Rank %d/%d (%d/%s Score slots used)",scoreIndex,(#hsTable),(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
 		else
-			self:settextf("Out of rank (Max Scores: %d)",PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
+			self:settextf("Out of rank (%d/%s Score slots used)",(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
 		end;
 	end;
 };
@@ -274,7 +287,7 @@ t.InitCommand=cmd(SetUpdateFunction,Update);
 t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(xy,framex,framey+10+(spacing);zoom,1;halign,0);
 	BeginCommand=function(self)
-		self:settext(scoreindex)
+		self:settext(scoreIndex)
 	end;
 };
 --]]

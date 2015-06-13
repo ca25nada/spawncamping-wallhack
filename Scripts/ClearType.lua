@@ -165,7 +165,15 @@ function getClearTypeFromScore(pn,score,ret)
 	local stageAward
 	local missCount = 0
 	if score == nil then
-		return typetable[12];
+		if ret == 0 then
+			return typetable[12];
+		elseif ret == 1 then
+			return stypetable[12];
+		elseif ret == 2 then
+			return typecolors[12]
+		else
+			return 12
+		end;
 	end;
 	song = GAMESTATE:GetCurrentSong()
 	steps = GAMESTATE:GetCurrentSteps(pn)

@@ -51,3 +51,12 @@ end;
 function tableContains(table,key)
 	return (table[key] ~= nil)
 end;
+
+--for non-array tables.
+function getTableSize(table)
+	local i = 0
+	for k,v in pairs(table) do
+		i = i+1
+	end;
+	return i
+end;

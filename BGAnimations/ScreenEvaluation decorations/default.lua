@@ -140,6 +140,7 @@ local frameY = 170
 local frameWidth = SCREEN_CENTER_X-60
 
 function scoreBoard(pn,position)
+	local hsTable = getScoreList(pn)
 	local t = Def.ActorFrame{
 		BeginCommand=function(self)
 			if position == 1 then
@@ -244,7 +245,7 @@ function scoreBoard(pn,position)
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
-			local score = getHighestScore(pn,index,0)
+			local score = getBestScore(pn,index,0)
 			local maxScore = getMaxScoreST(pn,0)
 			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
 			if IsUsingWideScreen() then
@@ -275,7 +276,7 @@ function scoreBoard(pn,position)
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
-			local recScore = getHighestScore(pn,index,0)
+			local recScore = getBestScore(pn,index,0)
 			local curScore = getCurScoreST(pn,0)
 			local diff = curScore - recScore
 			local extra = ""
@@ -302,7 +303,7 @@ function scoreBoard(pn,position)
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
-			local missCount = getLowestMissCount(pn,index)
+			local missCount = getBestMissCount(pn,index)
 			if missCount ~= nil then
 				self:settext(missCount)
 			else
@@ -315,7 +316,8 @@ function scoreBoard(pn,position)
 		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+43;zoom,0.4;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
-			local missCount = pss:GetTapNoteScores('TapNoteScore_W4')+pss:GetTapNoteScores('TapNoteScore_W5')+pss:GetTapNoteScores('TapNoteScore_Miss')
+			local score = pss:GetHighScore();
+			local missCount = getScoreMissCount(score)
 			self:settext(missCount)
 		end;
 	};
@@ -325,8 +327,8 @@ function scoreBoard(pn,position)
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
-			local recMissCount = (getLowestMissCount(pn,index)) or 0
-			local curMissCount = (pss:GetTapNoteScores('TapNoteScore_W4')+pss:GetTapNoteScores('TapNoteScore_W5')+pss:GetTapNoteScores('TapNoteScore_Miss')) or 0
+			local recMissCount = (getBestMissCount(pn,index)) or 0
+			local curMissCount = getScoreMissCount(score)
 			local diff = "-"
 			local extra = ""
 			if recMissCount ~= nil then
@@ -425,7 +427,7 @@ end;
 
 if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 	if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
-		initScoreList(PLAYER_1)
+		--initScoreList(PLAYER_1)
 		t[#t+1] = scoreBoard(PLAYER_1,0)
 		if ShowStandardDecoration("GraphDisplay") then
 			t[#t+1] = StandardDecorationFromTable( "GraphDisplay" .. ToEnumShortString(PLAYER_1), GraphDisplay(PLAYER_1) )
@@ -434,7 +436,7 @@ if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 			t[#t+1] = StandardDecorationFromTable( "ComboGraph" .. ToEnumShortString(PLAYER_1),ComboGraph(PLAYER_1) );
 		end;
 	elseif GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-		initScoreList(PLAYER_2)
+		--initScoreList(PLAYER_2)
 		t[#t+1] = scoreBoard(PLAYER_2,0)
 		if ShowStandardDecoration("GraphDisplay") then
 			t[#t+1] = StandardDecorationFromTable( "GraphDisplay" .. ToEnumShortString(PLAYER_2), GraphDisplay(PLAYER_2) )
@@ -445,7 +447,7 @@ if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 	end;
 end;
 if GAMESTATE:GetNumPlayersEnabled() == 2 then
-	initScoreList(PLAYER_2)
+	--initScoreList(PLAYER_2)
 	if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 		t[#t+1] = scoreBoard(PLAYER_2,1)
 		if ShowStandardDecoration("GraphDisplay") then
