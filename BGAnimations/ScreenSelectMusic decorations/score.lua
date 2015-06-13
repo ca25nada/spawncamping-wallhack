@@ -21,6 +21,7 @@ local t = Def.ActorFrame{
 			self:queuecommand("On");
 			self:visible(true)
 			update = true
+			self:playcommand("InitScore")
 		else 
 			self:queuecommand("Off");
 			update = false
@@ -28,52 +29,54 @@ local t = Def.ActorFrame{
 	end;
 	TabChangedMessageCommand=cmd(queuecommand,"Set");
 	CodeMessageCommand=function(self,params)
-		if params.Name == "NextRate" then
-			rateIndex = ((rateIndex)%(#rates))+1
-			scoreIndex = 1
-		elseif params.Name == "PrevRate" then
-			rateIndex = ((rateIndex-2)%(#rates))+1
-			scoreIndex = 1
-		elseif params.Name == "NextScore" then
+		if update then
+			if params.Name == "NextRate" then
+				rateIndex = ((rateIndex)%(#rates))+1
+				scoreIndex = 1
+			elseif params.Name == "PrevRate" then
+				rateIndex = ((rateIndex-2)%(#rates))+1
+				scoreIndex = 1
+			elseif params.Name == "NextScore" then
+				if rtTable[rates[rateIndex]] ~= nil then
+					scoreIndex = ((scoreIndex)%(#rtTable[rates[rateIndex]]))+1
+				end
+			elseif params.Name == "PrevScore" then
+				if rtTable[rates[rateIndex]] ~= nil then
+					scoreIndex = ((scoreIndex-2)%(#rtTable[rates[rateIndex]]))+1
+				end
+			end;
 			if rtTable[rates[rateIndex]] ~= nil then
-				scoreIndex = ((scoreIndex)%(#rtTable[rates[rateIndex]]))+1
-			end
-		elseif params.Name == "PrevScore" then
-			if rtTable[rates[rateIndex]] ~= nil then
-				scoreIndex = ((scoreIndex-2)%(#rtTable[rates[rateIndex]]))+1
-			end
-		end;
-		if rtTable[rates[rateIndex]] ~= nil then
-			score = rtTable[rates[rateIndex]][scoreIndex]
-			MESSAGEMAN:Broadcast("ScoreUpdate")
+				score = rtTable[rates[rateIndex]][scoreIndex]
+				MESSAGEMAN:Broadcast("ScoreUpdate")
+			end;
 		end;
 	end;
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"InitScore");
-	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"InitScore");
-	CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"InitScore");
+	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
 	InitScoreCommand=function(self)
-		if GAMESTATE:GetCurrentSong() ~= nil then
-			hsTable = getScoreList(pn)
-			if hsTable ~= nil and hsTable[1] ~= nil then
-				rtTable = getRateTable(hsTable)
-				rates,rateIndex = getUsedRates(rtTable)
-				scoreIndex = 1
-				score = rtTable[rates[rateIndex]][scoreIndex]
+			if GAMESTATE:GetCurrentSong() ~= nil then
+				hsTable = getScoreList(pn)
+				if hsTable ~= nil and hsTable[1] ~= nil then
+					rtTable = getRateTable(hsTable)
+					rates,rateIndex = getUsedRates(rtTable)
+					scoreIndex = 1
+					score = rtTable[rates[rateIndex]][scoreIndex]
+				else
+					rtTable = {}
+					rates,rateIndex = {"1.0x"},1
+					scoreIndex = 1
+					score = nil
+				end;
 			else
+				hsTable = {}
 				rtTable = {}
 				rates,rateIndex = {"1.0x"},1
 				scoreIndex = 1
 				score = nil
 			end;
-		else
-			hsTable = {}
-			rtTable = {}
-			rates,rateIndex = {"1.0x"},1
-			scoreIndex = 1
-			score = nil
-		end;
-		MESSAGEMAN:Broadcast("ScoreUpdate")
+			MESSAGEMAN:Broadcast("ScoreUpdate")
 	end;
 };
 
@@ -104,7 +107,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Large")..{
 	Name="Grades";
 	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+20;zoom,0.6;halign,0;maxwidth,50/0.6);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if score ~= nil then
 			self:settext(THEME:GetString("Grade",ToEnumShortString(score:GetGrade())))
@@ -119,7 +121,6 @@ t[#t+1] = LoadFont("Common Large")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Score";
 	InitCommand=cmd(xy,frameX+offsetX+55,frameY+offsetY+14;zoom,0.5;halign,0;);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if score ~= nil then
 			local curscore = getScore(score,0)
@@ -140,7 +141,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="RawScore";
 	InitCommand=cmd(xy,frameX+offsetX+55,frameY+offsetY+26;zoom,0.4;halign,0;);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if score ~= nil then
 			local curscore = getScore(score,0)
@@ -168,7 +168,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="ClearType";
 	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+41;zoom,0.5;halign,0);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		self:settext(getClearTypeFromScore(pn,score,0))
 		self:diffuse(getClearTypeFromScore(pn,score,2))
@@ -179,7 +178,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Combo";
 	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+58;zoom,0.4;halign,0);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if score ~= nil then
 			local maxCombo = getScoreMaxCombo(score)
@@ -194,7 +192,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="MissCount";
 	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+73;zoom,0.4;halign,0);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if score ~= nil then
 			local missCount = getScoreMissCount(score)
@@ -213,7 +210,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Date";
 	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+88;zoom,0.4;halign,0);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if score ~= nil then
 			self:settext("Date Achieved: "..getScoreDate(score))
@@ -227,7 +223,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Mods";
 	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+103;zoom,0.4;halign,0);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if score ~= nil then
 			self:settext("Mods: " ..score:GetModifiers())
@@ -241,21 +236,21 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="StepsAndMeter";
 	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+10;zoom,0.5;halign,1;);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		local steps = GAMESTATE:GetCurrentSteps(pn)
 		local diff = getDifficulty(steps:GetDifficulty())
 		local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 		local meter = steps:GetMeter()
-		self:settext(stype.." "..diff.." "..meter)
-		self:diffuse(getDifficultyColor(diff))
+		if update then
+			self:settext(stype.." "..diff.." "..meter)
+			self:diffuse(getDifficultyColor(diff))
+		end;
 	end;
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+frameHeight-10;zoom,0.4;halign,1;);
-	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if hsTable ~= nil and rates ~= nil and rtTable[rates[rateIndex]] ~= nil then
 			self:settextf("Rate %s - Showing %d/%d",rates[rateIndex],scoreIndex,#rtTable[rates[rateIndex]])
@@ -269,7 +264,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = Def.Quad{
 	Name="ScrollBar";
 	InitCommand=cmd(xy,frameX+frameWidth,frameY+frameHeight;zoomto,4,0;halign,1;valign,1;diffuse,getMainColor(1));
-	BeginCommand=cmd(queuecommand,"Set");
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self,params)
 		self:finishtweening()
@@ -288,21 +282,22 @@ t[#t+1] = Def.Quad{
 local function makeText(index)
 	return LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+15+(index*15);zoom,fontScale;halign,1;);
-		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local count = 0
-			if rtTable[rates[index]] ~= nil then
-				count = #rtTable[rates[index]]
-			end;
-			if index <= #rates then
-				self:settextf("%s (%d)",rates[index],count)
-				if index == rateIndex then
-					self:diffuse(getMainColor(1))
-				else
-					self:diffuse(color("#FFFFFF"))
+			if update then
+				if rtTable[rates[index]] ~= nil then
+					count = #rtTable[rates[index]]
 				end;
-			else
-				self:settext("")
+				if index <= #rates then
+					self:settextf("%s (%d)",rates[index],count)
+					if index == rateIndex then
+						self:diffuse(getMainColor(1))
+					else
+						self:diffuse(color("#FFFFFF"))
+					end;
+				else
+					self:settext("")
+				end;
 			end;
 		end;
 		ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
@@ -329,7 +324,6 @@ local function makeJudge(index,judge)
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(x,120;zoom,0.5;halign,1;);
-		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if score ~= nil then
 				if judge ~= 'HoldNoteScore_Held' and judge ~= 'HoldNoteScore_LetGo' then
@@ -346,7 +340,6 @@ local function makeJudge(index,judge)
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(x,122;zoom,0.3;halign,0;);
-		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if score ~= nil then
 				if judge ~= 'HoldNoteScore_Held' and judge ~= 'HoldNoteScore_LetGo' then
