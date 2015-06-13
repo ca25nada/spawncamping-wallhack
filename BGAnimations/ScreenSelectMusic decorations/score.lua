@@ -6,7 +6,7 @@ local rates
 local rateIndex = 1
 local scoreIndex = 1
 local score
-local pn = PLAYER_1
+local pn = GAMESTATE:GetEnabledPlayers()[1]
 
 local t = Def.ActorFrame{
 	BeginCommand=cmd(queuecommand,"Set";visible,false);
