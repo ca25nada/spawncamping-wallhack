@@ -43,6 +43,7 @@ t[#t+1] = Def.Actor{
 }
 
 t[#t+1] = Def.ActorFrame{
+	InitCommand=cmd(xy,barXP1,barYP1;);
 	BeginCommand=function(self)
 		if GAMESTATE:IsHumanPlayer(PLAYER_1) then
 			self:visible(true)
@@ -61,16 +62,16 @@ t[#t+1] = Def.ActorFrame{
 		end;
 	end;
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,barXP1-2,barYP1;zoom,0.30;halign,1);
+		InitCommand=cmd(x,-2;zoom,0.30;halign,1);
 		BeginCommand=cmd(settext,"Judge:");
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0;diffuse,color("#000000"););
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0;diffuse,color("#000000"););
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
@@ -100,7 +101,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
@@ -129,7 +130,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
@@ -156,7 +157,7 @@ t[#t+1] = Def.ActorFrame{
 		end;
 	};
 	Def.Quad{
-		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
@@ -183,7 +184,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
@@ -209,7 +210,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP1,barYP1;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.2");effectcolor2,color("1,1,1,0.5");queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_1)
@@ -235,6 +236,7 @@ t[#t+1] = Def.ActorFrame{
 };
 
 t[#t+1] = Def.ActorFrame{
+	InitCommand=cmd(xy,barXP2,barYP2;);
 	BeginCommand=function(self)
 		if GAMESTATE:IsHumanPlayer(PLAYER_2) then
 			self:visible(true)
@@ -253,16 +255,16 @@ t[#t+1] = Def.ActorFrame{
 		end;
 	end;
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,barXP2-2,barYP2;zoom,0.30;halign,1);
+		InitCommand=cmd(x,-2;zoom,0.30;halign,1);
 		BeginCommand=cmd(settext,"Judge:");
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP2,barYP2;zoomto,barWidth,barHeight;halign,0;diffuse,color("#000000"););
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0;diffuse,color("#000000"););
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP2,barYP2;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
@@ -292,7 +294,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP2,barYP2;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
@@ -321,7 +323,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP2,barYP2;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
@@ -348,7 +350,7 @@ t[#t+1] = Def.ActorFrame{
 		end;
 	};
 	Def.Quad{
-		InitCommand=cmd(xy,barXP2,barYP2;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
@@ -375,7 +377,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP2,barYP2;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
@@ -401,7 +403,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 	Def.Quad{
-		InitCommand=cmd(xy,barXP2,barYP2;zoomto,barWidth,barHeight;halign,0);
+		InitCommand=cmd(zoomto,barWidth,barHeight;halign,0);
 		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.2");effectcolor2,color("1,1,1,0.5");queuecommand,"Set");
 		SetCommand=function(self)
 			local notes = getMaxNotes(PLAYER_2)
