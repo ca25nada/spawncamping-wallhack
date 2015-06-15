@@ -238,12 +238,14 @@ t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+10;zoom,0.5;halign,1;);
 	SetCommand=function(self)
 		local steps = GAMESTATE:GetCurrentSteps(pn)
-		local diff = getDifficulty(steps:GetDifficulty())
-		local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-		local meter = steps:GetMeter()
-		if update then
-			self:settext(stype.." "..diff.." "..meter)
-			self:diffuse(getDifficultyColor(diff))
+		if steps ~= nil then
+			local diff = getDifficulty(steps:GetDifficulty())
+			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
+			local meter = steps:GetMeter()
+			if update then
+				self:settext(stype.." "..diff.." "..meter)
+				self:diffuse(getDifficultyColor(diff))
+			end;
 		end;
 	end;
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
