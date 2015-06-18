@@ -3,7 +3,7 @@
 themeInfo = {
 	Name = "spawncamping-wallhack",
 	Version = "0.01",
-	Date = "20150612",
+	Date = "20150618",
 };
 
 function getThemeName()
