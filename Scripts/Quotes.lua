@@ -258,6 +258,7 @@ local Phrases = {
     "717x616 c987", -- someone's sm3.95 settings
     "\"don't go into osu with some converted sims you might get busted at a checkpoint... friend was raided after a controlled delivery the other day... tryna fence some hot dumps...\"", -- arch0wl how to pp
     "10th dan is too cynical", -- LG
+    "you need to assert your kaiden aura" -- drace
 }
 
 --tip

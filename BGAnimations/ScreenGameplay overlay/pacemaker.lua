@@ -37,6 +37,12 @@ elseif player == PLAYER_2 then
 	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
 	frameX = 0
 end;
+
+--if ghost score is off, inherit from default scoring type.
+if ghostType == nil or ghostType == 0 then
+	ghostType = themeConfig:get_data().global.DefaultScoreType
+end;
+
 local profile = GetPlayerOrMachineProfile(player)
 
 --Strings and the percent value for the goal/grade
