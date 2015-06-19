@@ -8,6 +8,13 @@ local scoreIndex = 1
 local score
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 
+local defaultRateText = ""
+if themeConfig:get_data().global.RateSort then
+	defaultRateText = "1.0x"
+else
+	defaultRateText = "All"
+end;
+
 local t = Def.ActorFrame{
 	BeginCommand=cmd(queuecommand,"Set";visible,false);
 	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;); -- visible(false) doesn't seem to work with sleep
@@ -65,14 +72,14 @@ local t = Def.ActorFrame{
 					score = rtTable[rates[rateIndex]][scoreIndex]
 				else
 					rtTable = {}
-					rates,rateIndex = {"1.0x"},1
+					rates,rateIndex = {defaultRateText},1
 					scoreIndex = 1
 					score = nil
 				end;
 			else
 				hsTable = {}
 				rtTable = {}
-				rates,rateIndex = {"1.0x"},1
+				rates,rateIndex = {defaultRateText},1
 				scoreIndex = 1
 				score = nil
 			end;

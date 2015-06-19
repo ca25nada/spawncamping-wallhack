@@ -4,8 +4,9 @@ local defaultConfig = {
 		TipType = 2, -- 1 = Hide,2=tips 3= random quotes phrases,
 		SongBGEnabled = true,
 		SongBGMouseEnabled = true,
-		Particles = true
+		Particles = true,
 		--AvatarEnabled = true, -- Unused
+		RateSort = false,
 	},
 	eval = {
 		CurrentTimeEnabled = true,

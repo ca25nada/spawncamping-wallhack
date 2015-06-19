@@ -1,21 +1,11 @@
 local function input(event)
 	if event.type ~= "InputEventType_Release" then
-		if event.DeviceInput.button == "DeviceButton_1" then
-			setTabIndex(0)
-			MESSAGEMAN:Broadcast("TabChanged")
-		elseif event.DeviceInput.button == "DeviceButton_2" then
-			setTabIndex(1)
-			MESSAGEMAN:Broadcast("TabChanged")
-		elseif event.DeviceInput.button == "DeviceButton_3" then
-			setTabIndex(2)
-			MESSAGEMAN:Broadcast("TabChanged")
-		elseif event.DeviceInput.button == "DeviceButton_4" then
-			setTabIndex(3)
-			MESSAGEMAN:Broadcast("TabChanged")
-		elseif event.DeviceInput.button == "DeviceButton_5" then
-			setTabIndex(4)
-			MESSAGEMAN:Broadcast("TabChanged")
-		end
+		for i=1,5 do
+			if event.DeviceInput.button == "DeviceButton_"..i then
+				setTabIndex(i-1)
+				MESSAGEMAN:Broadcast("TabChanged")
+			end;
+		end;
 	end;
 return false;
 end
@@ -48,16 +38,18 @@ local frameY = SCREEN_HEIGHT-70
 
 function tabs(index)
 	return Def.ActorFrame{
+		Name="Tab"..index;
+		InitCommand=cmd(xy,frameX+((index-1)*frameWidth),frameY);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:finishtweening()
 			self:linear(0.1)
 			--show tab if it's the currently selected one
 			if getTabIndex() == index-1 then
-				self:y(0)
+				self:y(frameY)
 				self:diffusealpha(1)
 			else -- otherwise "Hide" them
-				self:y(5)
+				self:y(frameY+5)
 				self:diffusealpha(0.9)
 			end;
 		end;
@@ -65,11 +57,11 @@ function tabs(index)
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 
 		Def.Quad{
-			InitCommand=cmd(xy,frameX+((index-1)*frameWidth),frameY;valign,0;zoomto,frameWidth,20);
+			InitCommand=cmd(valign,0;zoomto,frameWidth,20);
 		};
 		
 		LoadFont("Common Normal") .. {
-			InitCommand=cmd(xy,frameX+((index-1)*frameWidth),frameY+4;valign,0;zoom,0.45;diffuse,getMainColor(1));
+			InitCommand=cmd(y,4;valign,0;zoom,0.45;diffuse,getMainColor(1));
 			BeginCommand=cmd(queuecommand,"Set");
 			SetCommand=function(self)
 				self:settext(tabNames[index])
