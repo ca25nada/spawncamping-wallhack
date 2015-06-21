@@ -6,7 +6,7 @@ local defaultConfig = {
 		SongBGMouseEnabled = true,
 		Particles = true,
 		--AvatarEnabled = true, -- Unused
-		RateSort = false,
+		RateSort = true,
 	},
 	eval = {
 		CurrentTimeEnabled = true,
