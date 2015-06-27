@@ -87,8 +87,8 @@ local stringList2 = {
 	[4] = "Open help overlay",
 	[5] = "While the Score tab is selected, Selects the previous saved score.",
 	[6] = "While the Score tab is selected, Selects the next saved score.",
-	[7] = "While the Score tab is selected, Selects the next available rate when possible.",
-	[8] = "While the Score tab is selected, Selects the previous available rate when possible.",
+	[7] = "While the Score tab is selected, Selects the previous available rate when possible.",
+	[8] = "While the Score tab is selected, Selects the next available rate when possible.",
 }
 local function makeText(index)
 	local t = Def.ActorFrame{}
