@@ -7,6 +7,7 @@ local defaultConfig = {
 		Particles = true,
 		--AvatarEnabled = true, -- Unused
 		RateSort = true,
+		HelpMenu = true,
 	},
 	eval = {
 		CurrentTimeEnabled = true,

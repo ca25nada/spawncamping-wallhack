@@ -16,18 +16,18 @@ end;
 
 local Tips = {
     --SM Tips
-    "Pressing <Scroll Lock> immediately allows you to go to options",
+    "Pressing Scroll Lock immediately allows you to go to options",
     "You can mute action scounds by pressing <Pause/Break>",
-    "Holding <F3> brings up the debug menu",
-    "Hold down <Tab> to make things go fast, <~> for making things slow, and both to make things stop.",
-    "Press <Ctrl>+<Backspace> on ScreenSelectMusic delete the song from the music wheel. Make sure \"Allow Song Deletion\" is On from \"Advanced Options\"",
-    "Press <Ctrl>+<Shift>+<R> on ScreenSelectMusic to reload the selected song",
-    "Pressing <PrintScr/SysRq> takes a screenshot of the game, pressing <Shift>+<PrintScr/SysRq> will do so in a .png format and in original size.",
+    "Holding F3 brings up the debug menu",
+    "Hold down Tab to make things go fast, ~ for making things slow, and both to make things stop.",
+    "Press Ctrl+Backspace on ScreenSelectMusic delete the song from the music wheel. Make sure \"Allow Song Deletion\" is On from \"Advanced Options\"",
+    "Press Ctrl+Shift+R on ScreenSelectMusic to reload the selected song",
+    "Pressing PrintScr/SysRq takes a screenshot of the game, pressing Shift+PrintScr/SysRq will do so in a .png format and in original size.",
     "You can make profiles by going into \"Options > Profiles > Create Profile\"",
     "You can map keys/inputs by going into \"Options > Config Key/Joy Mappings\"",
     "(Windows only) typing \"%appdata%\" into your explorer bar opens the AppData folder. You can find your stepmania settings folder from there.",
     "StepMania by default will only save the top 3 scores on your profile. This can be changed in \"Arcade Options\"",
-    "Pressing <F8> Enables the autoplay. <Alt>+<F8> will do so without displaying the autoplay text.",
+    "Pressing F8 Enables the autoplay. Alt+F8 will do so without displaying the autoplay text.",
 
     --Theme Specific
     "Please don't bug the StepMania devs regarding bugs on this theme. (bug whoever made this theme instead.!! who will likely bug the devs anyway-)",

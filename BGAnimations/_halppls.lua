@@ -4,7 +4,7 @@
 --"10. If you leave it alone for a few seconds it pops up a screen with stupid-high amounts of unhelpful gibberish"
 
 local enabled = false -- is the overlay currently enabled?
-local show = true -- whether to show after a certain amount of time as passed
+local show = themeConfig:get_data().global.HelpMenu -- whether to show after a certain amount of time as passed
 local showTime = 30 --the "certain amount of time" from above in seconds
 local curTime = GetTimeSinceStart() -- current time
 local lastTime = GetTimeSinceStart() -- last input time
@@ -30,13 +30,15 @@ local function input(event)
 end
 
 local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update);
-	curTime = GetTimeSinceStart()
-	if (not enabled) and (curTime-lastTime > showTime) then
-		MESSAGEMAN:Broadcast("ShowHelpOverlay")
-		enabled = true
+	if show then
+		t.InitCommand=cmd(SetUpdateFunction,Update);
+		curTime = GetTimeSinceStart()
+		if (not enabled) and (curTime-lastTime > showTime) then
+			MESSAGEMAN:Broadcast("ShowHelpOverlay")
+			enabled = true
+		end;
+		--self:GetChild("Timer"):playcommand("Set")
 	end;
-	--self:GetChild("Timer"):playcommand("Set")
 end; 
 
 local t = Def.ActorFrame{

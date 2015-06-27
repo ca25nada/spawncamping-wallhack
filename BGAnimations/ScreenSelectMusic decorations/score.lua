@@ -99,7 +99,6 @@ local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteSc
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333CC"));
-
 };
 
 t[#t+1] = Def.Quad{
