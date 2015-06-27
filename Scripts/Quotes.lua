@@ -197,12 +197,12 @@ local Phrases = {
 	"Korea team for 4k: Captain:abcd right hand, player 2: abcd left hand", -- longgone
 	"hory shiet", -- Zak
 	"(=^._.^)/☆", --0
-	"if i train a cat to play bms for 15 years it will pass overjoy", -- Leonid
+	"\"if i train a cat to play bms for 15 years it will pass overjoy\"", -- Leonid
     "\"You're in denial, your SVs suck and your map needs work\"", -- moar ossu drama
     "StepMania Detected", -- choof
     "\"listen to the music carefully. my jacks always have it own means\"", -- victorica_db
     "\"i dont think my sv is bad . i dont know how you use sv changes but my sv changes are actually comfortable.\"", -- victorica_db
-    "you will kill players", -- Spy killing players
+    "\"you will kill players\"", -- Spy killing players
     "\"standard is the only mod worth playing, the other mods require basically less than half the skill\"",
     "\"mania is the easiest I think.  I can clear a lot of ranked maps compare to standard.\"", -- entozer
     "\"you can't ask consistency in players because the next day they could be drunk while playing. or ate a lot of carbo and meat.\"",
@@ -217,7 +217,7 @@ local Phrases = {
     "\"I beat off to this background dancer in DDR Supernova once too\"",
     "\"Shut the fuck up Trance Core\"",
     "==Planet KARMA==",
-    "STOP FUCKING ARGUING OVER STEPMANIA -- IT'S STEPMANIA, FUCKING DDR ON KEYBOARD", -- Xoon Drama Pack
+    "\"STOP FUCKING ARGUING OVER STEPMANIA -- IT'S STEPMANIA, FUCKING DDR ON KEYBOARD\"", -- Xoon Drama Pack
     "WookE Seal of Approval",
     "invisible 16th streams", -- QED
     "Subjectivemanias",
@@ -234,7 +234,7 @@ local Phrases = {
     "\"are you a women xD your profile picture look like women\"", -- https://osu.ppy.sh/forum/p/3871389
     "Everlasting Message", -- AKA: For UltraPlayers hoooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
     "\"And I'm not a noob I got 227 pp\"",
-    "whats more dense, a black hole or an icyworld file", -- choof
+    "\"whats more dense, a black hole or an icyworld file\"", -- choof
     "fuk LN", -- Staiain's twitch chat
     "\"Which edition of IIDX is |999999^999999 from?\"", --  ARC of #bemaniso
     "\"78%\"", -- rip iidx players
@@ -244,21 +244,22 @@ local Phrases = {
     "\"i have a problem. spada keeps asking me for an eamusement pass and then says game over. this happens after i played 3 songs\"",
     "\"lying sack of shit i want to play pop'n but im gonna type moonrunes at you\"", -- foal
     "\"like if there's a L.E.D. song titled GIGANTIC ONION CANNON I won't be shocked\"", -- UBerserker
-    "2D IS GOOOOOOOOOOOOOOLD!", -- TWO DEEKS GOOOOOLD-
+    "\"2D IS GOOOOOOOOOOOOOOLD!\"", -- TWO DEEKS GOOOOOLD-
     "\"I seriously can't go to clubs and dance with random girls because they're so freaking off sync. -- change their global offset\"",
     "eyelid sudden+",
     "\"Nanahira is love. I hope she makes collab with Prim sometime.\"", -- shortly followed by "Have mercy on our ears"
     "\"we should impersonize the scratch from lr2 into some annoying anime chick\"", -- sarachan >w
     "be-music salt",
-    "fry EOS", -- Hazelnut: try*
+    "\"fry EOS\"", -- Hazelnut: try*
     "real overjoys use magic", --nekro
     "\"I'M NOT A LOLICON HATER, SOME OF MY BEST FRIENDS ARE LOLICON\"", -- bemanisows QDB
     "\"iidx song titles as nicknames for body parts. like. those are some huge valangas.\"", -- bemanisows QDB
     "\"I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.\"",
     "717x616 c987", -- someone's sm3.95 settings
     "\"don't go into osu with some converted sims you might get busted at a checkpoint... friend was raided after a controlled delivery the other day... tryna fence some hot dumps...\"", -- arch0wl how to pp
-    "10th dan is too cynical", -- LG
-    "you need to assert your kaiden aura" -- drace
+    "\"10th dan is too cynical\"", -- LG
+    "\"you need to assert your kaiden aura\"", -- drace
+    "\"I want to see cookiezi in mwc this year\"" -- attang
 }
 
 --tip
