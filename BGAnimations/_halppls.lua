@@ -70,9 +70,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 
 --have these strings in a separate file...?
 local stringList = {
-	{"Keys/Buttons/Actions","Functions"},
-	{"1~5","Switch to the corresponding tab. (e.g. 3=score, 4=profile, etc.)"},
-	{"Doubletap <Select> or Click on avatar","Open avatar switch overlay"},
+	{"Keys/Buttons","Functions"},
+	{"1~5 or clicking the tabs","Switch to the corresponding tab. (e.g. 3=score, 4=profile, etc.)"},
+	{"Doubletap <Select> or clicking the avatar","Open avatar switch overlay"},
 	{"F12","Open help overlay"},
 	{"<EffectUp>","While the Score tab is selected, Selects the previous saved score."},
 	{"<EffectDown>","While the Score tab is selected, Selects the next saved score."},
