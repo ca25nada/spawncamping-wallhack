@@ -17,11 +17,8 @@ end;
 
 local t = Def.ActorFrame{
 	BeginCommand=cmd(queuecommand,"Set";visible,false);
-	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;); -- visible(false) doesn't seem to work with sleep
-	OnCommand=function(self)
-		self:bouncebegin(0.2);
-		self:xy(0,0);
-	end;
+	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
+	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
 	SetCommand=function(self)
 		self:finishtweening()
 		if getTabIndex() == 2 then

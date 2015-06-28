@@ -1,8 +1,8 @@
 local update = false
 local t = Def.ActorFrame{
 	BeginCommand=cmd(queuecommand,"Set");
-	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;); -- visible(false) doesn't seem to work with sleep
-	OnCommand=cmd(bouncebegin,0.2;xy,0,0;);
+	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
+	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
 	SetCommand=function(self)
 		self:finishtweening()
 		if getTabIndex() == 0 then
