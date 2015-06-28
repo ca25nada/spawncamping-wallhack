@@ -6,6 +6,9 @@ local function input(event)
 				MESSAGEMAN:Broadcast("TabChanged")
 			end;
 		end;
+		if event.DeviceInput.button == "DeviceButton_left mouse button" then
+			MESSAGEMAN:Broadcast("MouseLeftClick")
+		end;
 	end;
 return false;
 end
@@ -37,7 +40,7 @@ local frameX = frameWidth/2
 local frameY = SCREEN_HEIGHT-70
 
 function tabs(index)
-	return Def.ActorFrame{
+	local t = Def.ActorFrame{
 		Name="Tab"..index;
 		InitCommand=cmd(xy,frameX+((index-1)*frameWidth),frameY);
 		BeginCommand=cmd(queuecommand,"Set");
@@ -55,25 +58,32 @@ function tabs(index)
 		end;
 		TabChangedMessageCommand=cmd(queuecommand,"Set");
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-
-		Def.Quad{
-			InitCommand=cmd(valign,0;zoomto,frameWidth,20);
-		};
-		
-		LoadFont("Common Normal") .. {
-			InitCommand=cmd(y,4;valign,0;zoom,0.45;diffuse,getMainColor(1));
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self)
-				self:settext(tabNames[index])
-				if isTabEnabled(index) then
-					self:diffuse(getMainColor(1))
-				else
-					self:diffuse(color("#666666"))
-				end;
-			end;
-			PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		};
 	};
+	t[#t+1] = Def.Quad{
+		Name="TabBG";
+		InitCommand=cmd(valign,0;zoomto,frameWidth,20);
+		MouseLeftClickMessageCommand=function(self)
+			if isOver(self) then
+				setTabIndex(index-1)
+				MESSAGEMAN:Broadcast("TabChanged")
+			end;
+		end;
+	};
+		
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand=cmd(y,4;valign,0;zoom,0.45;diffuse,getMainColor(1));
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext(tabNames[index])
+			if isTabEnabled(index) then
+				self:diffuse(getMainColor(1))
+			else
+				self:diffuse(color("#666666"))
+			end;
+		end;
+		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+	};
+	return t
 end;
 
 --Make tabs

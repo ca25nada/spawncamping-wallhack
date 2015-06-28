@@ -49,7 +49,7 @@ local t = Def.ActorFrame{
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,0,0;halign,0;valign,0;zoomto,SCREEN_WIDTH,SCREEN_HEIGHT;diffuse,color("#333333"););
+	InitCommand=cmd(xy,0,0;halign,0;valign,0;zoomto,SCREEN_WIDTH,SCREEN_HEIGHT;diffuse,color("#000000"););
 };
 
 t[#t+1] = Def.Quad{
@@ -65,38 +65,28 @@ t[#t+1] = LoadFont("Common Normal")..{
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,5,SCREEN_HEIGHT-5;halign,0;valign,1;zoom,0.35;settext,"You can disable this overlay showing up automatically in Theme Options, but it can still be accessed by pressing F12. (oop i lied.. ya can't.... for now)");
+	InitCommand=cmd(xy,5,SCREEN_HEIGHT-5;halign,0;valign,1;zoom,0.35;settext,"You can disable this overlay showing up automatically in Theme Options, but it can still be accessed by pressing F12.");
 };
 
 --have these strings in a separate file...?
-local stringList1 = {
-	[1] = "Keys/Buttons/Actions",
-	[2] = "1~5",
-	[3] = "Doubletap <Select> or Clicking on avatar",
-	[4] = "F12",
-	[5] = "<EffectUp>",
-	[6] = "<EffectDown>",
-	[7] = "<EffectUp> while Holding <Select>",
-	[8] = "<EffectDown> while Holding <Select>",
+local stringList = {
+	{"Keys/Buttons/Actions","Functions"},
+	{"1~5","Switch to the corresponding tab. (e.g. 3=score, 4=profile, etc.)"},
+	{"Doubletap <Select> or Click on avatar","Open avatar switch overlay"},
+	{"F12","Open help overlay"},
+	{"<EffectUp>","While the Score tab is selected, Selects the previous saved score."},
+	{"<EffectDown>","While the Score tab is selected, Selects the next saved score."},
+	{"<EffectUp> while Holding <Select>","While the Score tab is selected, Selects the previous available rate when possible."},
+	{"<EffectDown> while Holding <Select>","While the Score tab is selected, Selects the next available rate when possible."},
 }
 
-local stringList2 = {
-	[1] = "Functions",
-	[2] = "Switch to the corresponding tab. (e.g. 3=score, 4=profile, etc.)",
-	[3] = "Open avatar switch overlay",
-	[4] = "Open help overlay",
-	[5] = "While the Score tab is selected, Selects the previous saved score.",
-	[6] = "While the Score tab is selected, Selects the next saved score.",
-	[7] = "While the Score tab is selected, Selects the previous available rate when possible.",
-	[8] = "While the Score tab is selected, Selects the next available rate when possible.",
-}
 local function makeText(index)
 	local t = Def.ActorFrame{}
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,5,50+(15*(index-1));zoom,0.4;halign,0;maxwidth,170/0.4);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(stringList1[index])
+			self:settext(stringList[index][1])
 		end;
 		CodeMessageCommand=cmd(queuecommand,"Set");
 	};
@@ -104,7 +94,7 @@ local function makeText(index)
 		InitCommand=cmd(xy,180,50+(15*(index-1));zoom,0.4;halign,0;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(stringList2[index])
+			self:settext(stringList[index][2])
 		end;
 		CodeMessageCommand=cmd(queuecommand,"Set");
 	};
@@ -121,7 +111,8 @@ t[#t+1] = LoadFont("Common Large")..{
 };
 --]]
 
-for i=1,#stringList1 do
+for i=1,#stringList do
 	t[#t+1] = makeText(i)
 end;
+
 return t

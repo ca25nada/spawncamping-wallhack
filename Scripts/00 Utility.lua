@@ -24,6 +24,31 @@ function isWindowed()
 	return PREFSMAN:GetPreference("Windowed")
 end;
 
+
+--Recursively grabs the parents' position.
+--dunno if it actually returns the correct position, but it works with my needs for now.
+function getTrueX(element)
+	if element == nil then
+		return 0
+	end;
+	if element:GetParent() == nil then
+		return element:GetX() or 0
+	else
+		return element:GetX()+getTrueX(element:GetParent())
+	end;
+end;
+
+function getTrueY(element)
+	if element == nil then
+		return 0
+	end;
+	if element:GetParent() == nil then
+		return element:GetY() or 0
+	else
+		return element:GetY()+getTrueY(element:GetParent())
+	end;
+end;
+
 --Button Rollovers
 function isOver(element)
 	--[[
@@ -31,8 +56,8 @@ function isOver(element)
 		return false
 	end;
 	--]]
-	local x = element:GetX()
-	local y = element:GetY()
+	local x = getTrueX(element)
+	local y = getTrueY(element)
 	local hAlign = element:GetHAlign()
 	local vAlign = element:GetVAlign()
 	local w = element:GetZoomedWidth()
