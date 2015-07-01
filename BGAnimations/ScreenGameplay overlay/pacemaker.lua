@@ -36,23 +36,23 @@ elseif player == PLAYER_2 then
 	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
 	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
 	frameX = 0
-end;
+end
 
 --if ghost score is off, inherit from default scoring type.
 if ghostType == nil or ghostType == 0 then
 	ghostType = themeConfig:get_data().global.DefaultScoreType
-end;
+end
 
 local profile = GetPlayerOrMachineProfile(player)
 
 --Strings and the percent value for the goal/grade
 local markerPoints = { --DP/PS/MIGS in that order.
-	[1] = {["AAA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier02"), 
-			["AA"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier03") , 
-			["A"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier04") , 
-			["B"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier05") , 
-			["C"] = THEME:GetMetric("PlayerStageStats", "GradePercentTier06") , 
-			[""]=0 },
+	[1] = {Grade_Tier02 = THEME:GetMetric("PlayerStageStats", "GradePercentTier02"), 
+			Grade_Tier03 = THEME:GetMetric("PlayerStageStats", "GradePercentTier03") , 
+			Grade_Tier04 = THEME:GetMetric("PlayerStageStats", "GradePercentTier04") , 
+			Grade_Tier05 = THEME:GetMetric("PlayerStageStats", "GradePercentTier05") , 
+			Grade_Tier06 = THEME:GetMetric("PlayerStageStats", "GradePercentTier06") , 
+			Grade_Tier07=0 },
 
 	[2] = {["100%"]=1,["90%"]=0.9,["80%"]=0.8,["70%"]=0.7,["60%"]=0.6,["50%"]=0.5,[""]=0},
 	[3] = {["100%"]=1,["90%"]=0.9,["80%"]=0.8,["70%"]=0.7,["60%"]=0.6,["50%"]=0.5,[""]=0},
@@ -209,9 +209,25 @@ function markers(scoreType,showMessage)
 	for k,v in pairs(markerPoints[scoreType]) do
 		t[#t+1] = Def.Quad{
 			InitCommand=cmd(xy,frameX,frameY+barY-(barHeight*v);zoomto,frameWidth,2;halign,0);
+			JudgmentMessageCommand=function(self)
+				local percent = getCurScoreST(player,scoreType)/getMaxScoreST(player,scoreType)
+				if percent >= v then
+					self:diffuse(getMainColor(1))
+				end;
+			end;
 		};
 		t[#t+1] = LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,frameX,frameY+barY-(barHeight*v)-2;settext,k;zoom,0.3;halign,0;valign,1;)
+			InitCommand=cmd(xy,frameX,frameY+barY-(barHeight*v)-2;settext,getGradeStrings(k);zoom,0.3;halign,0;valign,1;);
+			JudgmentMessageCommand=function(self)
+				local percent = getCurScoreST(player,scoreType)/getMaxScoreST(player,scoreType)
+				if percent >= v then
+					if scoreType == 1 then 
+						self:diffuse(getGradeColor(k))
+					else
+						self:diffuse(getMainColor(1))
+					end;
+				end;
+			end;
 		};
 	end;
 	return t
