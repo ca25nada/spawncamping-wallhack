@@ -9,7 +9,6 @@ local showTime = 30 --the "certain amount of time" from above in seconds
 local curTime = GetTimeSinceStart() -- current time
 local lastTime = GetTimeSinceStart() -- last input time
 
-
 local function input(event)
 	if event.type ~= "InputEventType_Release" then
 		lastTime = GetTimeSinceStart()
