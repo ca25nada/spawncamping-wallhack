@@ -7,9 +7,9 @@ end;
 
 function capWideScale(AR4_3,AR16_9)
 	if AR4_3 < AR16_9 then
-		return math.max(AR4_3,math.min(AR16_9,WideScale(AR4_3, AR16_9)))
+		return clamp(WideScale(AR4_3, AR16_9),AR4_3,AR16_9)
 	else
-		return math.min(AR4_3,math.max(AR16_9,WideScale(AR4_3, AR16_9)))
+		return clamp(WideScale(AR4_3, AR16_9),AR16_9,AR4_3)
 	end;
 end;
 
