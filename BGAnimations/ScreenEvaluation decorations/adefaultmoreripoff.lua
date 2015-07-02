@@ -82,7 +82,6 @@ if GAMESTATE:GetNumPlayersEnabled() >= 1 and (not GAMESTATE:IsCourseMode()) then
 			BeginCommand=function(self)
 				if v == 1 then
 					self:diffuseshift()
-					self:effectoffset(0.07*(cells-k))
 					self:effectcolor1(color("#ffffff"))
 					self:effectcolor2(judgeColors[v])
 					self:effectperiod(0.3)
