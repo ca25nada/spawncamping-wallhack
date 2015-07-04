@@ -327,9 +327,11 @@ function scoreBoard(pn,position)
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local index = pss:GetPersonalHighScoreIndex()+1 or 0
-			local recMissCount = (getBestMissCount(pn,index)) or 0
+			local score = pss:GetHighScore();
+			
+			local recMissCount = (getBestMissCount(pn,index))
 			local curMissCount = getScoreMissCount(score)
-			local diff = "-"
+			local diff = 0
 			local extra = ""
 			if recMissCount ~= nil then
 				diff = curMissCount - recMissCount
@@ -337,7 +339,7 @@ function scoreBoard(pn,position)
 					extra = "+"
 				end;
 			end;
-			self:settextf(extra..diff)
+			self:settext(extra..diff)
 		end;
 	};
 
