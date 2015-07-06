@@ -7,9 +7,17 @@
 -- Constants and Data Structures -- 
 -----------------------------------
 
+local debug = true
 -- Generally, a smaller window will adapt faster, but a larger window will have a more stable value.
-local maxWindow = 10 -- this will be the maximum size of the "window" in seconds. 
-local minWindow = 1 -- this will be the minimum size of the "window" in seconds. 
+local maxWindow = themeConfig:get_data().NPSDisplay.MaxWindow -- this will be the maximum size of the "window" in seconds. 
+local minWindow = themeConfig:get_data().NPSDisplay.MinWindow -- this will be the minimum size of the "window" in seconds.
+local dynamicWindow = themeConfig:get_data().NPSDisplay.DynamicWindow
+
+local enabled = {
+	PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data().NPSDisplay,
+	PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data().NPSDisplay
+}
+
 local npsWindow = {
 	PlayerNumber_P1 = maxWindow,
 	PlayerNumber_P2 = maxWindow,
@@ -35,11 +43,6 @@ local noteSum = {
 local peakNPS = {
 	PlayerNumber_P1 = 0,
 	PlayerNumber_P2 = 0, 
-}
-
-local enabled = {
-	PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and true,
-	PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and true,
 }
 
 
@@ -98,19 +101,27 @@ local function Update(self)
 		curNPS = getCurNPS(pn)
 
 		-- Update peak nps
-		peakNPS[pn] = math.max(peakNPS[pn],curNPS)
-
+		if GAMESTATE:GetSongPosition():GetMusicSeconds() > npsWindow[pn] then
+			peakNPS[pn] = math.max(peakNPS[pn],curNPS)
+		end;
 		-- the actor which called this update function passes itself down as "self".
 		-- we then have "self" look for the child named "Text" which you can see down below.
 		-- Then the settext function is called (or settextf for formatted ones) to set the text of the child "Text"
 		-- every time this function is called. 
-		self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.1f NPS (Max %0.1f)",curNPS,peakNPS[pn])
-
+		if debug then
+			self:GetChild("npsDisplay"..pn):GetChild("Text"):
+			settextf("%0.1f NPS (Max %0.1f)\n%0.1fs Window\n%d notes in table\nDynamic Window:%s",
+				curNPS,peakNPS[pn],npsWindow[pn],noteSum[pn],tostring(dynamicWindow))
+		else
+			self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.1f NPS (Max %0.1f)",curNPS,peakNPS[pn])
+		end;
 		-- update the window size. 
 		-- This isn't needed at all but it helps the counter
 		-- adapt quickly to high-nps bursts.
 		-- Ideally, I should be using derivatives or a tangent line to get the rate it changes but I'm lazy.
-		npsWindow[pn] = clamp(15/math.sqrt(getCurNPS(pn)),1,maxWindow )
+		if dynamicWindow then
+			npsWindow[pn] = clamp(15/math.sqrt(getCurNPS(pn)),1,maxWindow )
+		end;
 	end;
 end
 
@@ -125,7 +136,8 @@ local function npsDisplay(pn)
 		local chordsize = 0
 
 		if params.Player == pn then
-			if params.TapNoteScore and params.TapNoteScore ~= 'TapNoteScore_HitMine' or params.TapNoteScore ~= 'TapNoteScore_AvoidMine' then
+			if params.TapNoteScore and params.TapNoteScore ~= 'TapNoteScore_HitMine' or 
+				params.TapNoteScore ~= 'TapNoteScore_AvoidMine' then
 				-- The notes parameter contains a table where the table indices 
 				-- correspond to the columns in game. 
 				-- The items in the table either contains a TapNote object (if there is a note)

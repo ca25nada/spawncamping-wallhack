@@ -9,6 +9,12 @@ local defaultConfig = {
 		RateSort = true,
 		HelpMenu = true,
 	},
+	NPSDisplay = {
+		--Enabled = true, -- Player Controlled
+		DynamicWindow = false,
+		MaxWindow = 2,
+		MinWindow = 1,
+	},
 	eval = {
 		CurrentTimeEnabled = true,
 		JudgmentBarEnabled = true,
