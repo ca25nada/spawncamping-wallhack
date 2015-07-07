@@ -1,5 +1,7 @@
 local t = Def.ActorFrame{}
 
+t[#t+1] = LoadActor("_chatbox")
+
 t[#t+1] = Def.Banner{
 	InitCommand=cmd(x,10;y,60;halign,0;valign,0);
 	SetMessageCommand=function(self)
