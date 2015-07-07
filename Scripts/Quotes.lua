@@ -8,11 +8,11 @@
 local function contains(table, value)
   for _, v in pairs(table) do
     if v == value then
-      return true;
-    end;
-  end;
-  return false;
-end;
+      return true
+    end
+  end
+  return false
+end
 
 local Tips = {
     --SM Tips
@@ -266,10 +266,10 @@ local Phrases = {
 
 function getRandomQuotes(tipType)
     if tipType == 2 then
-        return "TIP: "..Tips[math.random(#Tips)];
+        return "TIP: "..Tips[math.random(#Tips)]
     elseif tipType == 3 then
-        return Phrases[math.random(#Phrases)];
+        return Phrases[math.random(#Phrases)]
     else
-        return "";
-    end;
-end;
+        return ""
+    end
+end

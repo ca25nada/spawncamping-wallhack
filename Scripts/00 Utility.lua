@@ -1,5 +1,6 @@
 --Random helper functions that don't really belong anywhere else.
 
+
 function get43size(size4_3)
 	return 640*(size4_3/854)
 end;
@@ -24,6 +25,10 @@ function isWindowed()
 	return PREFSMAN:GetPreference("Windowed")
 end;
 
+-- smo doesn't like autoset style
+function smopls()
+	return not IsNetSMOnline()
+end
 
 --Recursively grabs the parents' position.
 --dunno if it actually returns the correct position, but it works with my needs for now.

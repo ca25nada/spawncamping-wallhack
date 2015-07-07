@@ -114,12 +114,12 @@ Branch = {
 		--return CHARMAN:GetAllCharacters() ~= nil and "ScreenSelectCharacter" or "ScreenGameInformation"
 	end,
 	AfterSelectProfile = function()
-		if ( THEME:GetMetric("Common","AutoSetStyle") == true ) then
+		--if ( THEME:GetMetric("Common","AutoSetStyle") == true ) then
 			-- use SelectStyle in online...
 			return IsNetConnected() and "ScreenSelectStyle" or "ScreenSelectMusic"--"ScreenSelectPlayMode"
-		else
-			return "ScreenSelectMusic"--"ScreenSelectStyle"
-		end
+		--else
+		--	return "ScreenSelectMusic"--"ScreenSelectStyle"
+		--end
 	end,
 	AfterProfileLoad = function()
 		return "ScreenSelectMusic"--"ScreenSelectPlayMode"
