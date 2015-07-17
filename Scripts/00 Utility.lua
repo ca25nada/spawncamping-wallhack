@@ -85,3 +85,59 @@ function getTableSize(table)
 	end;
 	return i
 end;
+
+-- returns the hexadecimal representaion of the MD5 hash.
+function MD5FileHex(sPath)
+	local text = {}
+	local MD5 = CRYPTMAN:MD5File(sPath)
+	for i=1,#MD5 do
+		text[i] = string.format("%02X",string.byte(MD5,i) or 0)
+	end
+	if #text == 16 then
+		return table.concat(text)
+	else
+		return 0 --invalid
+	end
+end
+
+-- returns the hexadecimal representation of the SHA-1 hash.
+function SHA1FileHex(sPath)
+	local text = {}
+	local SHA1 = CRYPTMAN:SHA1File(sPath)
+	for i=1,#SHA1 do
+		text[i] = string.format("%02X",string.byte(SHA1,i) or 0)
+	end
+	if #text == 20 then
+		return table.concat(text)
+	else
+		return 0 --invalid
+	end
+end
+
+-- returns the hexadecimal representaion of the MD5 hash.
+function MD5StringHex(sPath)
+	local text = {}
+	local MD5 = CRYPTMAN:MD5String(sPath)
+	for i=1,#MD5 do
+		text[i] = string.format("%02X",string.byte(MD5,i) or 0)
+	end
+	if #text == 16 then
+		return table.concat(text)
+	else
+		return 0 --invalid
+	end
+end
+
+-- returns the hexadecimal representation of the SHA-1 hash.
+function SHA1StringHex(sPath)
+	local text = {}
+	local SHA1 = CRYPTMAN:SHA1String(sPath)
+	for i=1,#SHA1 do
+		text[i] = string.format("%02X",string.byte(SHA1,i) or 0)
+	end
+	if #text == 20 then
+		return table.concat(text)
+	else
+		return 0 --invalid
+	end
+end

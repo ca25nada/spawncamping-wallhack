@@ -28,7 +28,7 @@ local offsetX1 = 100
 local offsetX2 = 10
 local offsetY = 20
 
-local stringList = {"Title:","SubTitle:","Artist:","Group:","Song Length:","BPM:","Play Count:"}
+local stringList = {"Title:","SubTitle:","Artist:","Group:","Song Length:","BPM:","Play Count:","Simfile SHA-1","Simfile MD5"}
 
 local function makeText(index)
 	return LoadFont("Common Normal")..{
@@ -257,7 +257,55 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(9*distY);zoom,fontScale;halign,0;)	;
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(8*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local pn = GAMESTATE:GetEnabledPlayers()[1]
+				local song = GAMESTATE:GetCurrentSong()
+				if song ~= nil then
+					local path = song:GetSongDir()
+					local files = FILEMAN:GetDirListing(path)
+					self:diffuse(color("#FFFFFF"))
+					for k,v in pairs(files) do
+						if string.sub(v,-3,-1) == ".sm" then
+							self:settext(SHA1FileHex(path.."/"..v))
+						end;
+					end;
+					--local SHA1 = CRYPTMAN:SHA1String("uwaa") -- should be bdf6925c3cdfe16148ae952ba19a36604b9e40b6
+					
+				else
+					self:settext("0")
+					self:diffuse(color("#666666"))
+				end
+			end
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(9*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			if update then
+				local pn = GAMESTATE:GetEnabledPlayers()[1]
+				local step = GAMESTATE:GetCurrentSteps(pn)
+				if song ~= nil then
+					self:diffuse(color("#FFFFFF"))
+					self:settext(MD5FileHex(step:GetFilename()))
+				else
+					self:settext("0")
+					self:diffuse(color("#666666"))
+				end
+			end
+		end;
+		CodeMessageCommand=cmd(queuecommand,"Set");
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(11*distY);zoom,fontScale;halign,0;)	;
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext("More to be added later o/~")
