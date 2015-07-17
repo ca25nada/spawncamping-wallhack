@@ -7,7 +7,7 @@
 -- Constants and Data Structures -- 
 -----------------------------------
 
-local debug = true
+local debug = false
 -- Generally, a smaller window will adapt faster, but a larger window will have a more stable value.
 local maxWindow = themeConfig:get_data().NPSDisplay.MaxWindow -- this will be the maximum size of the "window" in seconds. 
 local minWindow = themeConfig:get_data().NPSDisplay.MinWindow -- this will be the minimum size of the "window" in seconds.
@@ -110,10 +110,10 @@ local function Update(self)
 		-- every time this function is called. 
 		if debug then
 			self:GetChild("npsDisplay"..pn):GetChild("Text"):
-			settextf("%0.1f NPS (Max %0.1f)\n%0.1fs Window\n%d notes in table\nDynamic Window:%s",
+			settextf("%0.1f NPS (Peak %0.1f)\n%0.1fs Window\n%d notes in table\nDynamic Window:%s",
 				curNPS,peakNPS[pn],npsWindow[pn],noteSum[pn],tostring(dynamicWindow))
 		else
-			self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.1f NPS (Max %0.1f)",curNPS,peakNPS[pn])
+			self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.0f NPS (Peak %0.0f)",curNPS,peakNPS[pn])
 		end;
 		-- update the window size. 
 		-- This isn't needed at all but it helps the counter

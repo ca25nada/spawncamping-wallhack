@@ -221,11 +221,13 @@ function markers(scoreType,showMessage)
 			JudgmentMessageCommand=function(self)
 				local percent = getCurScoreST(player,scoreType)/getMaxScoreST(player,scoreType)
 				if percent >= v then
+					self:diffuseshift()
 					if scoreType == 1 then 
-						self:diffuse(getGradeColor(k))
+						self:effectcolor1(getGradeColor(k))
 					else
-						self:diffuse(getMainColor(1))
+						self:effectcolor1(getMainColor(1))
 					end;
+					self:effectcolor2(color("FFFFFF"))
 				end;
 			end;
 		};
