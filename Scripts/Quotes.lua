@@ -259,7 +259,8 @@ local Phrases = {
     "\"don't go into osu with some converted sims you might get busted at a checkpoint... friend was raided after a controlled delivery the other day... tryna fence some hot dumps...\"", -- arch0wl how to pp
     "\"10th dan is too cynical\"", -- LG
     "\"you need to assert your kaiden aura\"", -- drace
-    "\"I want to see cookiezi in mwc this year\"" -- attang
+    "\"I want to see cookiezi in mwc this year\"", -- attang
+    "ROARD TOOTHBRUSH"
 }
 
 --tip
