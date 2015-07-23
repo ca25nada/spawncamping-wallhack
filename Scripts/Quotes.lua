@@ -260,7 +260,11 @@ local Phrases = {
     "\"10th dan is too cynical\"", -- LG
     "\"you need to assert your kaiden aura\"", -- drace
     "\"I want to see cookiezi in mwc this year\"", -- attang
-    "ROARD TOOTHBRUSH"
+    "ROARD TOOTHBRUSH", -- Stai birthday stream 
+    "\"The dance pad. Does it count as a toy?\"", -- http://zenius-i-vanisher.com/v5.2/thread?threadid=7696
+    "Thou shalt not look down at lifebar whilst vigorously mashing keys to survive", -- LG
+    "is it possible to make the lifebar hidden -- Post it note on screen",
+    "YOURE STILL ON GIRLISH CAFE? ;;" -- YES -- AND IM GETTING GOOD SCORES ON IT -- SO QUIET YOU HEATHEN
 }
 
 --tip
