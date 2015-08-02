@@ -264,7 +264,8 @@ local Phrases = {
     "\"The dance pad. Does it count as a toy?\"", -- http://zenius-i-vanisher.com/v5.2/thread?threadid=7696
     "Thou shalt not look down at lifebar whilst vigorously mashing keys to survive", -- LG
     "is it possible to make the lifebar hidden -- Post it note on screen",
-    "YOURE STILL ON GIRLISH CAFE? ;;" -- YES -- AND IM GETTING GOOD SCORES ON IT -- SO QUIET YOU HEATHEN
+    "YOURE STILL ON GIRLISH CAFE? ;;", -- YES -- AND IM GETTING GOOD SCORES ON IT -- SO QUIET YOU HEATHEN
+    "\"with all of the anime girls in stepmania backgrounds why don't we have 10 million weaboos playing our shit\"" -- lovelive choof
 }
 
 --tip
