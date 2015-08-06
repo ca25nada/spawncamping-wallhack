@@ -12,7 +12,7 @@ local defaultConfig = {
 	NPSDisplay = {
 		--Enabled = true, -- Player Controlled
 		DynamicWindow = false,
-		MaxWindow = 2,
+		MaxWindow = 5,
 		MinWindow = 1,
 	},
 	eval = {

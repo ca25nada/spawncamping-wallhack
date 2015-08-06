@@ -1,21 +1,14 @@
 -- A moving average NPS calculator
 
--- Do note that this is hardcoded for PLAYER_1 only for simplicity.
--- However, both players are supported for all data structures and functions.
-
------------------------------------
--- Constants and Data Structures -- 
------------------------------------
-
 local debug = false
 -- Generally, a smaller window will adapt faster, but a larger window will have a more stable value.
 local maxWindow = themeConfig:get_data().NPSDisplay.MaxWindow -- this will be the maximum size of the "window" in seconds. 
-local minWindow = themeConfig:get_data().NPSDisplay.MinWindow -- this will be the minimum size of the "window" in seconds.
-local dynamicWindow = themeConfig:get_data().NPSDisplay.DynamicWindow
+local minWindow = themeConfig:get_data().NPSDisplay.MinWindow -- this will be the minimum size of the "window" in seconds. Unused for now.
+local dynamicWindow = themeConfig:get_data().NPSDisplay.DynamicWindow -- set to false for now.
 
 local enabled = {
-	PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data().NPSDisplay,
-	PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data().NPSDisplay
+	PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSDisplay,
+	PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSDisplay
 }
 
 local npsWindow = {
@@ -95,34 +88,36 @@ local function Update(self)
 	self.InitCommand=cmd(SetUpdateFunction,Update)
 
 	for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-		-- We want to constantly check for old notes to remove and update the NPS counter text. 
-		removeNote(pn)
+		if enabled[pn] then
+			-- We want to constantly check for old notes to remove and update the NPS counter text. 
+			removeNote(pn)
 
-		curNPS = getCurNPS(pn)
+			curNPS = getCurNPS(pn)
 
-		-- Update peak nps
-		if GAMESTATE:GetSongPosition():GetMusicSeconds() > npsWindow[pn] then
-			peakNPS[pn] = math.max(peakNPS[pn],curNPS)
-		end;
-		-- the actor which called this update function passes itself down as "self".
-		-- we then have "self" look for the child named "Text" which you can see down below.
-		-- Then the settext function is called (or settextf for formatted ones) to set the text of the child "Text"
-		-- every time this function is called. 
-		if debug then
-			self:GetChild("npsDisplay"..pn):GetChild("Text"):
-			settextf("%0.1f NPS (Peak %0.1f)\n%0.1fs Window\n%d notes in table\nDynamic Window:%s",
-				curNPS,peakNPS[pn],npsWindow[pn],noteSum[pn],tostring(dynamicWindow))
-		else
-			self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.0f NPS (Peak %0.0f)",curNPS,peakNPS[pn])
-		end;
-		-- update the window size. 
-		-- This isn't needed at all but it helps the counter
-		-- adapt quickly to high-nps bursts.
-		-- Ideally, I should be using derivatives or a tangent line to get the rate it changes but I'm lazy.
-		if dynamicWindow then
-			npsWindow[pn] = clamp(15/math.sqrt(getCurNPS(pn)),1,maxWindow )
-		end;
-	end;
+			-- Update peak nps
+			if GAMESTATE:GetSongPosition():GetMusicSeconds() > npsWindow[pn] then
+				peakNPS[pn] = math.max(peakNPS[pn],curNPS)
+			end
+			-- the actor which called this update function passes itself down as "self".
+			-- we then have "self" look for the child named "Text" which you can see down below.
+			-- Then the settext function is called (or settextf for formatted ones) to set the text of the child "Text"
+			-- every time this function is called. 
+			if debug then
+				self:GetChild("npsDisplay"..pn):GetChild("Text"):
+				settextf("%0.1f NPS (Peak %0.1f)\n%0.1fs Window\n%d notes in table\nDynamic Window:%s",
+					curNPS,peakNPS[pn],npsWindow[pn],noteSum[pn],tostring(dynamicWindow))
+			else
+				self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.0f NPS (Peak %0.0f)",curNPS,peakNPS[pn])
+			end
+			-- update the window size. 
+			-- This isn't needed at all but it helps the counter
+			-- adapt quickly to high-nps bursts.
+			-- Ideally, I should be using derivatives or a tangent line to get the rate it changes but I'm lazy.
+			if dynamicWindow then
+				npsWindow[pn] = clamp(15/math.sqrt(getCurNPS(pn)),1,maxWindow )
+			end
+		end
+	end
 end
 
 local function npsDisplay(pn)
@@ -160,7 +155,7 @@ local function npsDisplay(pn)
 	-- the text that will be updated by the update function.
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="Text"; -- sets the name of this actor as "Text". this is a child of the actor "t".
-		InitCommand=cmd(x,5;y,38;halign,0;zoom,0.40;halign,0;valign,0;shadowlength,1;settext,"0.0 NPS");
+		InitCommand=cmd(x,5;y,34;halign,0;zoom,0.40;halign,0;valign,0;shadowlength,1;settext,"0.0 NPS");
 		BeginCommand=function(self)
 			if pn == PLAYER_2 then
 				self:x(SCREEN_WIDTH-5)
@@ -172,7 +167,11 @@ local function npsDisplay(pn)
 end;
 
 local t = Def.ActorFrame{
-	InitCommand=cmd(SetUpdateFunction,Update)
+	OnCommand=function(self)
+		if enabled[PLAYER_1] or enabled[PLAYER_2] then
+			self:SetUpdateFunction(Update)
+		end
+	end;
 }
 
 for k,v in pairs({PLAYER_1,PLAYER_2}) do

@@ -259,6 +259,34 @@ function LaneCover()
 	return t;
 end	
 
+function NPSDisplay()
+	local t = {
+		Name = "NPSDisplay";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = false;
+		ExportOnChange = true;
+		Choices = { THEME:GetString('OptionNames','Off'),'On'};
+		LoadSelections = function(self, list, pn)
+			local pref = playerConfig:get_data(pn_to_profile_slot(pn)).NPSDisplay
+			if pref then
+				list[2] = true;
+			else
+				list[1] = true;
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local value
+			value = list[2]
+			playerConfig:get_data(pn_to_profile_slot(pn)).NPSDisplay = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end
+
 --unused
 --[[
 function Avatars()
@@ -543,3 +571,33 @@ function HelpMenu()
 	setmetatable( t, t );
 	return t;
 end	
+
+function NPSWindow()
+	local t = {
+		Name = "NPSWindow";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = true;
+		Choices = {"1","2","3","4","5"};
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().NPSDisplay.MaxWindow
+			if pref then
+				list[pref] = true
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local value
+			for k,v in ipairs(list) do
+				if v then
+					value = k
+				end;
+			end;
+			themeConfig:get_data().NPSDisplay.MaxWindow = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end
