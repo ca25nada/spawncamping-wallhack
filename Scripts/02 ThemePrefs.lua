@@ -17,27 +17,25 @@ function OptionRowScreenFilter()
 		Choices = { THEME:GetString('OptionNames','Off'), '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0', },
 		LoadSelections = function(self, list, pn)
 			local pName = ToEnumShortString(pn)
-			local filterValue = getenv("ScreenFilter"..pName)
-			if filterValue ~= nil then
-				local val = scale(tonumber(filterValue),0,1,1,#list )
-				list[val] = true
-			else
-				setenv("ScreenFilter"..pName,0)
-				list[1] = true
-			end
+			local filterValue = playerConfig:get_data(pn_to_profile_slot(pn)).ScreenFilter
+			local value = scale(filterValue,0,1,1,#list )
+			list[value] = true
 		end,
 		SaveSelections = function(self, list, pn)
 			local pName = ToEnumShortString(pn)
 			local found = false
+			local value = 0
 			for i=1,#list do
 				if not found then
 					if list[i] == true then
-						local val = scale(i,1,#list,0,1)
-						setenv("ScreenFilter"..pName,val)
+						value = scale(i,1,#list,0,1)
 						found = true
 					end
 				end
 			end
+			playerConfig:get_data(pn_to_profile_slot(pn)).ScreenFilter = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
 		end,
 	}
 end

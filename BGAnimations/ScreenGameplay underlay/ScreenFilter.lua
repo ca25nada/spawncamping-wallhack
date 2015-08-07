@@ -26,7 +26,7 @@ if numPlayers == 1 then
 	local player = GAMESTATE:GetMasterPlayerNumber()
 	local pNum = (player == PLAYER_1) and 1 or 2
 
-	filterAlphas[player] = getenv("ScreenFilterP"..pNum) or 0;
+	filterAlphas[player] = playerConfig:get_data(pn_to_profile_slot(player)).ScreenFilter;
 	if filterAlphas[player] == nil then
 		filterAlphas[player] = 0
 	else
