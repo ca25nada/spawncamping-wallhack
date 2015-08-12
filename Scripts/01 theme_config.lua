@@ -22,7 +22,9 @@ local defaultConfig = {
 		ScoreBoardEnabled = true,
 		ScoreBoardMaxEntry = 10,
 	},
-	mainColor = color("#00AEEF"),
+	color ={
+		main = "#00AEEF"
+	}
 }
 
 themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig,-1)

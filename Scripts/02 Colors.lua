@@ -7,11 +7,11 @@ local themeColors = {
 
 	},
 
-	main = {
-		[1] = themeConfig:get_data().mainColor, --color("#00AEEF"), --Primary light blue
-		[2] = color("#ff00ff"),
-		[3] = color("#ff00ff"),
-	},
+	--main = {
+	--	[1] = color(themeConfig:get_data().color.main), --color("#00AEEF"), --Primary light blue
+	--	[2] = color("#ff00ff"),
+	--	[3] = color("#ff00ff"),
+	--},
 
 	grade = {
 		Grade_Tier01	= color("#66ccff"), -- AAAA
@@ -90,7 +90,7 @@ local themeColors = {
 
 
 function getMainColor(i)
-	return themeColors.main[i] or color("#FFFFFF")
+	return color(themeConfig:get_data().color.main)
 end;
 
 function getGradeColor (grade)
