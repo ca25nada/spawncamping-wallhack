@@ -3,8 +3,6 @@
 ------------------------------------------------------
 --EDIT: scores no longer needed since it grabs it for you
 
-
-
 local stypetable = { -- Shorthand Versions of ClearType. Not Really used anywhere yet but who knows
 	[1]="Marv F-Combo",
 	[2]="Whiteflag",
@@ -17,9 +15,10 @@ local stypetable = { -- Shorthand Versions of ClearType. Not Really used anywher
 	[9]="SDCB",
 	[10]="Clear",
 	[11]="Failed",
-	[12]="No Play",
-	[13]="-",
-	[14]="Ragequit" -- can't implement unless there's a way to track playcounts by difficulty
+	[12]="Invalid",
+	[13]="No Play",
+	[14]="-", -- song is nil
+	--[15]="Ragequit", -- can't implement unless there's a way to track playcounts by difficulty
 };
 
 local typetable = { -- ClearType texts
@@ -34,9 +33,10 @@ local typetable = { -- ClearType texts
 	[9]="Single Digit CBs", -- unused
 	[10]="Clear",
 	[11]="Failed",
-	[12]="No Play",
-	[13]="-",
-	[14]="Ragequit" -- can't implement unless there's a way to track playcounts by difficulty
+	[12]="Invalid",
+	[13]="No Play",
+	[14]="-",
+	--[15]="Ragequit", -- can't implement unless there's a way to track playcounts by difficulty
 };
 
 local typecolors = {-- colors corresponding to cleartype
@@ -51,27 +51,66 @@ local typecolors = {-- colors corresponding to cleartype
 	[9]		= color("#666666"),
 	[10]	= color("#33aaff"),
 	[11]	= color("#e61e25"),
-	[12]	= color("#666666"),
+	[12]	= color("#e61e25"),
 	[13]	= color("#666666"),
-	[14]	= color("#e61e25")
+	[14]	= color("#666666"),
+	--[15]	= color("#e61e25"),
 };
 
 
 -- Methods for other uses (manually setting colors/text, etc.)
-function getClearTypeText(index)
+local function getClearTypeText(index)
 	return typetable[index];
 end;
 
-function getShortClearTypeText(index)
+local function getShortClearTypeText(index)
 	return stypetable[index];
 end;
 
-function getClearTypeColor(index)
+local function getClearTypeColor(index)
 	return typecolors[index];
 end;
 
---]]
+local function getClearTypeItem(clearlevel,ret)
+	if ret == 0 then
+		return typetable[clearlevel];
+	elseif ret == 1 then
+		return stypetable[clearlevel];
+	elseif ret == 2 then
+		return typecolors[clearlevel];
+	else
+		return clearlevel
+	end;
+end;
 
+-- Ideally, i should just be checking simfile hashes and 
+-- the simfile hashes when the highscore was made, but that's not an option rip-
+-- Instead, check for player leaving prematurely, 
+-- and the total notecount in score being different than the simfile notecount.
+local function isScoreValid(pn,steps,score)
+	if score:GetGrade() == "Grade_Failed" then
+		return true
+	end
+	if not (steps:GetRadarValues(pn):GetValue('RadarCategory_TapsAndHolds') == 
+		(score:GetTapNoteScore('TapNoteScore_W1')+
+		score:GetTapNoteScore('TapNoteScore_W2')+
+		score:GetTapNoteScore('TapNoteScore_W3')+
+		score:GetTapNoteScore('TapNoteScore_W4')+
+		score:GetTapNoteScore('TapNoteScore_W5')+
+		score:GetTapNoteScore('TapNoteScore_Miss'))) then
+		return false
+	end
+	if ((steps:GetRadarValues(pn):GetValue('RadarCategory_Holds') ~= 
+		(score:GetHoldNoteScore('HoldNoteScore_LetGo')+
+		score:GetHoldNoteScore('HoldNoteScore_Held')+
+		score:GetHoldNoteScore('HoldNoteScore_MissedHold'))) and
+		(score:GetTapNoteScore('TapNoteScore_Miss') == 0)) then 
+		-- miss == 0 as HNS_MissedHold was added rather recently and NG+OK will not add up correctly for older scores.
+		--where the player missed a note with a hold.
+		return false
+	end
+	return true
+end;
 
 -- ClearTypes based on stage awards and grades.
 -- Stageaward based cleartypes do not work if anything causes the stageaward to not show up (disqualification, score saving is off, etc.)
@@ -86,11 +125,11 @@ local function clearTypes(stageaward,grade,playcount,misscount,returntype)
 	playcount = playcount or 0;
 	misscount = misscount or 0;
 
-	clearlevel = 12; -- no play
+	clearlevel = 13; -- no play
 
 	if grade == 0 then
 		if playcount == 0 then
-			clearlevel = 12;
+			clearlevel = 13;
 		end;
 	else
 		if grade == 'Grade_Failed' then -- failed
@@ -117,15 +156,7 @@ local function clearTypes(stageaward,grade,playcount,misscount,returntype)
 			end;
 		end;
 	end;
-	if returntype == 0 then
-		return typetable[clearlevel];
-	elseif returntype == 1 then
-		return stypetable[clearlevel];
-	elseif returntype == 2 then
-		return typecolors[clearlevel];
-	else
-		return clearlevel
-	end;
+	return getClearTypeItem(clearlevel,returntype)
 end;
 
 
@@ -148,12 +179,15 @@ function getClearType(pn,ret)
 		hScore = hScoreList[1]
 	end;
 	if hScore ~= nil then
+		if not isScoreValid(pn,steps,hScore) then
+			return getClearTypeItem(12,ret)
+		end
 		playCount = profile:GetSongNumTimesPlayed(song)
 		missCount = hScore:GetTapNoteScore('TapNoteScore_Miss')+hScore:GetTapNoteScore('TapNoteScore_W5')+hScore:GetTapNoteScore('TapNoteScore_W4');
 		grade = hScore:GetGrade()
 		stageAward = hScore:GetStageAward()
 	end;
-	return clearTypes(stageAward,grade,playCount,missCount,ret) or typetable[12]; 
+	return clearTypes(stageAward,grade,playCount,missCount,ret); 
 end;
 
 -- Returns the cleartype given the score
@@ -165,20 +199,14 @@ function getClearTypeFromScore(pn,score,ret)
 	local stageAward
 	local missCount = 0
 	if score == nil then
-		if ret == 0 then
-			return typetable[12];
-		elseif ret == 1 then
-			return stypetable[12];
-		elseif ret == 2 then
-			return typecolors[12]
-		else
-			return 12
-		end;
+		return getClearTypeItem(13,ret)
 	end;
 	song = GAMESTATE:GetCurrentSong()
 	steps = GAMESTATE:GetCurrentSteps(pn)
 	profile = GetPlayerOrMachineProfile(pn)
-
+	if not isScoreValid(pn,steps,score) then
+		return getClearTypeItem(12,ret)
+	end
 	if score ~= nil and song ~= nil and steps ~= nil then
 		playCount = profile:GetSongNumTimesPlayed(song)
 		stageAward = score:GetStageAward();
@@ -197,7 +225,7 @@ function getHighestClearType(pn,ignore,ret)
 	local hScoreList
 	local hScore
 	local i = 1
-	local highest = 12
+	local highest = 13
 
 	song = GAMESTATE:GetCurrentSong()
 	steps = GAMESTATE:GetCurrentSteps(pn)
