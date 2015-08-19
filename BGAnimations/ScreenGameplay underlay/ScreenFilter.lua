@@ -60,7 +60,7 @@ else
 		-- otherwise we need two separate ones. to the pairsmobile!
 		for i, player in ipairs(PlayerNumber) do
 			local pNum = (player == PLAYER_1) and 1 or 2
-			filterAlphas[player] = tonumber(getenv("ScreenFilterP"..pNum)) or 0;
+			filterAlphas[player] = playerConfig:get_data(pn_to_profile_slot(player)).ScreenFilter
 			local metricName = string.format("PlayerP%i%sX",pNum,styleType)
 			local pos = THEME:GetMetric("ScreenGameplay",metricName)
 			t[#t+1] = Def.Quad{
