@@ -338,8 +338,10 @@ function scoreBoard(pn,position)
 				if diff >= 0 then
 					extra = "+"
 				end;
+				self:settext(extra..diff)
+			else
+				self:settext("+"..curMissCount)
 			end;
-			self:settext(extra..diff)
 		end;
 	};
 
