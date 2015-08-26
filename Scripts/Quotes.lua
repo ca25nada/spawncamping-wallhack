@@ -198,6 +198,7 @@ local Phrases = {
 	"hory shiet", -- Zak
 	"(=^._.^)/☆", --0
 	"\"if i train a cat to play bms for 15 years it will pass overjoy\"", -- Leonid
+    "\"i could train a cat to pass overjoy in 15 years -- whether or not i could keep it alive for that long is another question\"", -- Mina
     "\"You're in denial, your SVs suck and your map needs work\"", -- moar ossu drama
     "StepMania Detected", -- choof
     "\"listen to the music carefully. my jacks always have it own means\"", -- victorica_db
@@ -266,7 +267,8 @@ local Phrases = {
     "is it possible to make the lifebar hidden -- Post it note on screen",
     "YOURE STILL ON GIRLISH CAFE? ;;", -- YES -- AND IM GETTING GOOD SCORES ON IT -- SO QUIET YOU HEATHEN
     "\"with all of the anime girls in stepmania backgrounds why don't we have 10 million weaboos playing our shit\"", -- lovelive choof
-    "\"its easier to read chinese than to read osu Kappa\""
+    "\"its easier to read chinese than to read osu Kappa\"", -- n(e)kro
+    "\"i play pad with my fists -- and by this i mean i go to arcades and punch the ddr nerds in the facepad\"" -- Mina
 }
 
 --tip
