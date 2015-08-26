@@ -454,6 +454,14 @@ function scoreBoard(pn,position)
 		end;
 	};
 
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX,frameY+230;zoom,0.35;halign,0);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			self:settextf("Unstable Rate: %0.1f",getUnstableRateST(pn))
+		end;
+	};
+
 
 	return t
 end;

@@ -217,10 +217,10 @@ function addOffsetST(pn,offset)
 
 	if pn == PLAYER_1 and GAMESTATE:IsHumanPlayer(PLAYER_1) then
 		offsetTableP1[#offsetTableP1+1] = offset
-	end;
+	end
 	if pn == PLAYER_2 and GAMESTATE:IsHumanPlayer(PLAYER_2)then
 		offsetTableP2[#offsetTableP2+1] = offset
-	end;
+	end
 
 end
 
@@ -229,10 +229,10 @@ function getOffsetTableST(pn)
 
 	if pn == PLAYER_1 then
 		return offsetTableP1
-	end;
+	end
 	if pn == PLAYER_2 then
 		return offsetTableP2
-	end;
+	end
 
 	return
 end
@@ -242,10 +242,10 @@ function getJudgeTableST(pn)
 
 	if pn == PLAYER_1 then
 		return judgeTableP1
-	end;
+	end
 	if pn == PLAYER_2 then
 		return judgeTableP2
-	end;
+	end
 
 	return
 end
@@ -255,7 +255,7 @@ function getJudgeST(pn,judge)
 
 	if pn == PLAYER_1 then
 		return judgeStatsP1[judge] or 0
-	end;
+	end
 	if pn == PLAYER_2 then
 		return judgeStatsP2[judge] or 0
 	end
@@ -279,10 +279,10 @@ function getCurMaxNotesST(pn)
 
 	if pn == PLAYER_1 then
 		return curMaxNotesP1 --or 0
-	end;
+	end
 	if pn == PLAYER_2 then
 		return curMaxNotesP2-- or 0
-	end;
+	end
 	return 0
 end
 
@@ -329,7 +329,7 @@ function getMaxScoreST(pn,scoreType) -- dp, ps, migs = 0,1,2 respectively
 
 	if scoreType == 0 then
 		scoreType = defaultScoreType
-	end;
+	end
 
 	if scoreType == 1 then
 		return (maxNotes*scoreWeight["TapNoteScore_W1"]+maxHolds*scoreWeight["HoldNoteScore_Held"]) or 0-- maximum DP
@@ -349,7 +349,7 @@ function getCurMaxScoreST(pn,scoreType)
 
 	if scoreType == 0 then
 		scoreType = defaultScoreType
-	end;
+	end
 
 	if scoreType == 1 then
 		return (curMaxNotes*scoreWeight["TapNoteScore_W1"]+curMaxHolds*scoreWeight["HoldNoteScore_Held"]) or 0-- maximum DP
@@ -366,7 +366,7 @@ function getCurScoreST(pn,scoreType)
 
 	if scoreType == 0 then
 		scoreType = defaultScoreType
-	end;
+	end
 
 	if pn == PLAYER_1 then
 		if scoreType == 1 then
@@ -399,7 +399,7 @@ function getGradeST(pn)
 	local failing = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetFailed()
 	if GAMESTATE:IsBattleMode() then
 		failing = false
-	end;
+	end
 
 	if failing then
 		return 'Grade_Failed'
@@ -411,12 +411,29 @@ function getGradeST(pn)
 		return 'Grade_Tier02'
 	else
 		return GetGradeFromPercent(curDPScore/curMaxDPScore)
-	end;
+	end
 
 	return 
 end
 
---Something to test whether I crashed the lua file somewhere because i'm too lazy to sift through the logs.
---function scoreTrackTest()
---	return "hoooo-"
---end
+
+-- Literally what ossu has.
+-- At least according to what the wiki says heh.
+-- x10 of Std.Dev from all of the judgment offsets.
+function getUnstableRateST(pn)
+	local sum1 = 0
+	local mean = 0
+	local offset = getOffsetTableST(pn)
+	for i=1,#offset do
+		sum1 = sum1+(offset[i]*1000)
+	end
+	mean = sum1/#offset
+
+	local sum2 = 0
+	local sum3 = 0
+	for i=1,#offset do
+		sum2 = sum2 + math.pow(((offset[i]*1000)-mean),2)
+		sum3 = sum3 + ((offset[i]*1000)-mean)
+	end
+	return math.sqrt((sum2 - math.pow(sum3,2)/#offset)/(#offset-1))*10
+end
