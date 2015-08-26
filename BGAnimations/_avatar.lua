@@ -29,21 +29,22 @@ t[#t+1] = Def.Actor{
 		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
 			if profileP1 ~= nil then
-				profileNameP1 = profileP1:GetDisplayName()
+				if profileP1 == PROFILEMAN:GetMachineProfile() then
+					profileNameP1 = "Machine Profile"
+				else
+					profileNameP1 = profileP1:GetDisplayName()
+				end
 				playCountP1 = profileP1:GetTotalNumSongsPlayed()
 				playTimeP1 = profileP1:GetTotalSessionSeconds()
 				noteCountP1 = profileP1:GetTotalTapsAndHolds()
 			else 
-				profileNameP1 = "Machine Profile"
+				profileNameP1 = "No Profile"
 				playCountP1 = 0
 				playTimeP1 = 0
 				noteCountP1 = 0
 			end; 
-			if profileNameP1 == "" then 
-				profileNameP1 = "Machine Profile"
-			end;
 		else
-			profileNameP1 = "No Player"
+			profileNameP1 = "No Profile"
 			playCountP1 = 0
 			playTimeP1 = 0
 			noteCountP1 = 0
@@ -60,21 +61,22 @@ t[#t+1] = Def.Actor{
 		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 			profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
 			if profileP2 ~= nil then
-				profileNameP2 = profileP2:GetDisplayName()
+				if profileP2 == PROFILEMAN:GetMachineProfile() then
+					profileNameP2 = "Machine Profile"
+				else
+					profileNameP2 = profileP2:GetDisplayName()
+				end
 				playCountP2 = profileP2:GetTotalNumSongsPlayed()
 				playTimeP2 = profileP2:GetTotalSessionSeconds()
 				noteCountP2 = profileP2:GetTotalTapsAndHolds()
 			else 
-				profileNameP2 = "Machine Profile"
+				profileNameP2 = "No Profile"
 				playCountP2 = 0
 				playTimeP2 = 0
 				noteCountP2 = 0
 			end;
-			if profileNameP2 == "" then 
-				profileNameP2 = "Machine Profile"
-			end;
 		else
-			profileNameP2 = "No Player"
+			profileNameP2 = "No Profile"
 			playCountP2 = 0
 			playTimeP2 = 0
 			noteCountP2 = 0
