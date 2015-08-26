@@ -74,8 +74,10 @@ local t = Def.ActorFrame{
 			if cursor < 6 then
 				cursor = ((cursor)%(count))+1
 			else
-				SCREENMAN:GetTopScreen():Cancel()
 				themeConfig:get_data().color.main = "#"..table.concat(colorTable)
+				themeConfig:set_dirty()
+				themeConfig:save()
+				SCREENMAN:GetTopScreen():Cancel()
 			end
 		end
 		if params.Name == "ColorRight" then
