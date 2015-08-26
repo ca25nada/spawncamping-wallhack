@@ -190,7 +190,12 @@ function scoreBoard(pn,position)
 		SetCommand=function(self) 
 			local score = pss:GetHighScore();
 			if score ~= nil then
-				local index = pss:GetPersonalHighScoreIndex()+1
+				local index
+				if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+					index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
+				else
+					index = pss:GetPersonalHighScoreIndex()+1
+				end
 				self:settext(getHighestClearType(pn,index,1)); 
 				self:diffuse(getHighestClearType(pn,index,2))
 			end;
@@ -214,7 +219,12 @@ function scoreBoard(pn,position)
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			local score = pss:GetHighScore();
-			local index = pss:GetPersonalHighScoreIndex()+1
+			local index
+			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+				index = pss:GetMachineHighScoreIndex()+2
+			else
+				index = pss:GetPersonalHighScoreIndex()+1
+			end
 			local recCT = getHighestClearType(pn,index,3)
 			local curCT = getClearTypeFromScore(pn,score,3)
 			if curCT < recCT then
@@ -244,7 +254,12 @@ function scoreBoard(pn,position)
 		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+28;zoom,0.4;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
-			local index = pss:GetPersonalHighScoreIndex()+1 or 0
+			local index
+			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+				index = pss:GetMachineHighScoreIndex()+2
+			else
+				index = pss:GetPersonalHighScoreIndex()+1
+			end
 			local score = getBestScore(pn,index,0)
 			local maxScore = getMaxScoreST(pn,0)
 			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
@@ -275,7 +290,12 @@ function scoreBoard(pn,position)
 		InitCommand=cmd(xy,frameX+50+(frameWidth-80)+10,frameY+28;zoom,0.30;maxwidth,30/0.3);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
-			local index = pss:GetPersonalHighScoreIndex()+1 or 0
+			local index
+			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
+			else
+				index = pss:GetPersonalHighScoreIndex()+1
+			end
 			local recScore = getBestScore(pn,index,0)
 			local curScore = getCurScoreST(pn,0)
 			local diff = curScore - recScore
@@ -302,7 +322,12 @@ function scoreBoard(pn,position)
 		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+43;zoom,0.4;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
-			local index = pss:GetPersonalHighScoreIndex()+1 or 0
+			local index
+			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
+			else
+				index = pss:GetPersonalHighScoreIndex()+1
+			end
 			local missCount = getBestMissCount(pn,index)
 			if missCount ~= nil then
 				self:settext(missCount)
@@ -326,7 +351,12 @@ function scoreBoard(pn,position)
 		InitCommand=cmd(xy,frameX+50+(frameWidth-80)+10,frameY+43;zoom,0.30;maxwidth,30/0.3);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
-			local index = pss:GetPersonalHighScoreIndex()+1 or 0
+			local index
+			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
+			else
+				index = pss:GetPersonalHighScoreIndex()+1
+			end
 			local score = pss:GetHighScore();
 			
 			local recMissCount = (getBestMissCount(pn,index))
