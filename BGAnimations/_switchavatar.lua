@@ -1,7 +1,10 @@
 
 
 --Parameters.
-local avatars = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
+local imgTypes = {".jpg",".png",".gif",".jpeg"}
+local rawList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
+local avatars = filterFileList(rawList,imgTypes)
+
 local maxItems = 7--math.min(7,#avatars)
 local itemHeight = 30
 local itemWidth = 30
@@ -23,7 +26,7 @@ local function getInitAvatarIndex(pn)
 	end;
 
 	return 1
-end;
+end
 
 --place cursor on center unless it's on the edge.
 local function getInitCursorIndex(pn)
@@ -33,9 +36,9 @@ local function getInitCursorIndex(pn)
 		return avatarIndex
 	elseif avatarIndex > #avatars-math.ceil(maxItems/2) then
 		return maxItems-(#avatars-avatarIndex)
-	end;
+	end
 	return math.ceil(maxItems/2)
-end;
+end
 
 local data ={
 	PlayerNumber_P1 = {
@@ -57,12 +60,12 @@ local function shift(actor,amount)
 	actor:finishtweening()
 	actor:smooth(0.1)
 	actor:addx((itemWidth+border)*amount)
-end;
+end
 
 --Grabs the currently selected avatar.
 local function getSelectedAvatar(pn)
 	return avatars[data[pn]["avatarIndex"]]
-end;
+end
 
 --Save preferences and sends a systemmessage at the end.
 local function saveAvatar(pn)
@@ -73,7 +76,7 @@ local function saveAvatar(pn)
 	avatarConfig:set_dirty()
 	avatarConfig:save()
 	SCREENMAN:SystemMessage(string.format("%s Avatar set to: '%s'",pn,avatar))
-end;
+end
 
 -- The main function that contains errything
 local function avatarSwitch(pn)
@@ -216,13 +219,13 @@ local function avatarSwitch(pn)
 		CodeMessageCommand=cmd(queuecommand,"Set");
 	};
 	return t
-end;
+end
 
 if GAMESTATE:IsHumanPlayer(PLAYER_1) then
 	t[#t+1] = avatarSwitch(PLAYER_1)
-end;
+end
 if GAMESTATE:IsHumanPlayer(PLAYER_2) then
 	t[#t+1] = avatarSwitch(PLAYER_2)
-end;
+end
 
 return t

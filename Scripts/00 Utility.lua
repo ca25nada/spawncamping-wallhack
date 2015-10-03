@@ -141,3 +141,24 @@ function SHA1StringHex(sPath)
 		return 0 --invalid
 	end
 end
+
+--filters out files from fileList that isn't in the type in fileTypes
+--both are passed on as tables
+function filterFileList(fileList,fileTypes)
+	local t = {}
+	for i=1,#fileList do
+		local add = false
+		local s
+		for _,v in pairs(fileTypes) do
+			s = fileList[i]
+			s = s:sub(-v:len())
+			if s == v then
+				add = true
+			end
+		end
+		if add then
+			table.insert(t,fileList[i])
+		end	
+	end
+	return t
+end

@@ -268,7 +268,11 @@ local Phrases = {
     "YOURE STILL ON GIRLISH CAFE? ;;", -- YES -- AND IM GETTING GOOD SCORES ON IT -- SO QUIET YOU HEATHEN
     "\"with all of the anime girls in stepmania backgrounds why don't we have 10 million weaboos playing our shit\"", -- lovelive choof
     "\"its easier to read chinese than to read osu Kappa\"", -- n(e)kro
-    "\"i play pad with my fists -- and by this i mean i go to arcades and punch the ddr nerds in the facepad\"" -- Mina
+    "\"i play pad with my fists -- and by this i mean i go to arcades and punch the ddr nerds in the facepad\"", -- Mina
+    "Amazon Prim Savings", -- foal
+    "50 Shades of Prim 12s", -- also foal
+    "\"wow aj i will pee in your cereal when i visit\"", -- mwc2015 finals
+    "theres a bms cabinet at my arcade"
 }
 
 --tip
