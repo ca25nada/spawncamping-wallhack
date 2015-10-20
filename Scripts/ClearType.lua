@@ -100,11 +100,10 @@ local function isScoreValid(pn,steps,score)
 		score:GetTapNoteScore('TapNoteScore_Miss'))) then
 		return false
 	end
-	if ((steps:GetRadarValues(pn):GetValue('RadarCategory_Holds') ~= 
-		(score:GetHoldNoteScore('HoldNoteScore_LetGo')+
-		score:GetHoldNoteScore('HoldNoteScore_Held')+
-		score:GetHoldNoteScore('HoldNoteScore_MissedHold'))) and
-		(score:GetTapNoteScore('TapNoteScore_Miss') == 0)) then 
+	if ((score:GetTapNoteScore('TapNoteScore_Miss') == 0) and 
+		((steps:GetRadarValues(pn):GetValue('RadarCategory_Holds')+(steps:GetRadarValues(pn):GetValue('RadarCategory_Rolls')) ~= 
+		(score:GetHoldNoteScore('HoldNoteScore_LetGo')+score:GetHoldNoteScore('HoldNoteScore_Held')+score:GetHoldNoteScore('HoldNoteScore_MissedHold'))
+		))) then 
 		-- miss == 0 as HNS_MissedHold was added rather recently and NG+OK will not add up correctly for older scores.
 		--where the player missed a note with a hold.
 		return false
