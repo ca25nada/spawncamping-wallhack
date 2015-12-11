@@ -1,21 +1,7 @@
 # spawncamping-wallhack
 A WIP Stepmania 5 theme aimed primarily for KB players. 
 
-Requirements: StepMania 5.0.8 or later. (5.0.7 and older will have issues.)
-
-It's being made on StepMania 5.0.9 for a 16:9 display. (Anything between 4:3 and 16:9 will work now but some elements will rather watered-down for non-widescreen displays)
-
----
-##### Current Issues
-* Everything blows up for rave and various course modes. (I disabled it from the menus for now)
-* SMO works but it's somewhat messy, also you can't grab any server-side scores.
-
----
-##### To be added soon 
-* Info for various tabs on ScreenSelectMusic (Song tab is incomplete, profile tab is still disabled.)
-* Theme color config screen.
-* More mouse interactions.
-* Ghost data?
+Requirements: StepMania 5.0.8 or later.
 
 ---
 ##### Acknowledgements
