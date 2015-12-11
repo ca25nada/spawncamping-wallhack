@@ -83,34 +83,6 @@ local function getClearTypeItem(clearlevel,ret)
 	end;
 end;
 
--- Ideally, i should just be checking simfile hashes and 
--- the simfile hashes when the highscore was made, but that's not an option rip-
--- Instead, check for player leaving prematurely, 
--- and the total notecount in score being different than the simfile notecount.
-local function isScoreValid(pn,steps,score)
-	if score:GetGrade() == "Grade_Failed" then
-		return true
-	end
-	if not (steps:GetRadarValues(pn):GetValue('RadarCategory_TapsAndHolds') == 
-		(score:GetTapNoteScore('TapNoteScore_W1')+
-		score:GetTapNoteScore('TapNoteScore_W2')+
-		score:GetTapNoteScore('TapNoteScore_W3')+
-		score:GetTapNoteScore('TapNoteScore_W4')+
-		score:GetTapNoteScore('TapNoteScore_W5')+
-		score:GetTapNoteScore('TapNoteScore_Miss'))) then
-		return false
-	end
-	if ((score:GetTapNoteScore('TapNoteScore_Miss') == 0) and 
-		((steps:GetRadarValues(pn):GetValue('RadarCategory_Holds')+(steps:GetRadarValues(pn):GetValue('RadarCategory_Rolls')) ~= 
-		(score:GetHoldNoteScore('HoldNoteScore_LetGo')+score:GetHoldNoteScore('HoldNoteScore_Held')+score:GetHoldNoteScore('HoldNoteScore_MissedHold'))
-		))) then 
-		-- miss == 0 as HNS_MissedHold was added rather recently and NG+OK will not add up correctly for older scores.
-		--where the player missed a note with a hold.
-		return false
-	end
-	return true
-end;
-
 -- ClearTypes based on stage awards and grades.
 -- Stageaward based cleartypes do not work if anything causes the stageaward to not show up (disqualification, score saving is off, etc.)
 -- and will just result in "No Play" or "Clear". I migggggggggght just drop the SA usage and use raw values instead.
@@ -178,6 +150,7 @@ function getClearType(pn,ret)
 		hScore = hScoreList[1]
 	end;
 	if hScore ~= nil then
+		-- 00 Utility.lua
 		if not isScoreValid(pn,steps,hScore) then
 			return getClearTypeItem(12,ret)
 		end
