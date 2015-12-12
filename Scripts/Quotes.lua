@@ -272,7 +272,8 @@ local Phrases = {
     "Amazon Prim Savings", -- foal
     "50 Shades of Prim 12s", -- also foal
     "\"wow aj i will pee in your cereal when i visit\"", -- mwc2015 finals
-    "theres a bms cabinet at my arcade"
+    "theres a bms cabinet at my arcade",
+    "all stepmania players are suck^^" --0133
 }
 
 --tip
