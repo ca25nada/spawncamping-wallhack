@@ -15,8 +15,8 @@ local frameX = SCREEN_WIDTH-frameWidth
 local frameY = 0
 
 local barY = 420-- Starting point/bottom of graph
-local barCount = 2 -- Number of graphs
-local barWidth = 0.6
+local barCount = 3 -- Number of graphs
+local barWidth = 0.65
 local barTrim = 0 -- Final width of each graph = ((frameWidth/barCount)*barWidth) - barTrim
 local barHeight = 350 -- Max Height of graphs
 
@@ -57,6 +57,28 @@ local markerPoints = { --DP/PS/MIGS in that order.
 	[2] = {["100%"]=1,["90%"]=0.9,["80%"]=0.8,["70%"]=0.7,["60%"]=0.6,["50%"]=0.5,[""]=0},
 	[3] = {["100%"]=1,["90%"]=0.9,["80%"]=0.8,["70%"]=0.7,["60%"]=0.6,["50%"]=0.5,[""]=0},
 }
+
+--Placeholder for ghostdata graph thing
+function ghostScoreGraph(index,scoreType,color)
+	local t = Def.ActorFrame{}
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Best Score";)
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;);
+		BeginCommand=function(self)
+			self:settextf("%s Best",getScoreTypeText(ghostType))
+		end;
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
+		BeginCommand=function(self)
+			local bestScore = getBestScore(player,0,scoreType)
+			self:settext(bestScore)
+		end;
+	};
+	return t
+end
 
 -- Dynamic Graph
 -- Represents the current score/possible score for the specified scoreType
@@ -209,6 +231,7 @@ function targetMaxGraph(index,scoreType,color)
 	return t
 end;
 
+
 --The Background markers with the lines corresponding to the minimum required for the grade,etc.
 function markers(scoreType,showMessage)
 	local t = Def.ActorFrame{
@@ -250,10 +273,15 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)
 	};
-	t[#t+1] = targetMaxGraph(2,ghostType,getPaceMakerColor("Target"))
-	t[#t+1] = bestScoreGraph(1,ghostType,getPaceMakerColor("Current"))
+	t[#t+1] = targetMaxGraph(3,ghostType,getPaceMakerColor("Target"))
+	t[#t+1] = targetScoreGraph(3,ghostType,getPaceMakerColor("Target"))
+
+	--t[#t+1] = bestScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("Current"))
-	t[#t+1] = targetScoreGraph(2,ghostType,getPaceMakerColor("Target"))
+
+	t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("Best"))
+	t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("Best"))
+
 	t[#t+1] = markers(ghostType,true)
 end;
 

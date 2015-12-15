@@ -83,7 +83,7 @@ local themeColors = {
 	paceMaker = {
 		Current = color("#0099ff"),
 		Target = color("#ff9999"),
-		Ghost = color("#FFFFFF") -- unused,
+		Best = color("#00ff00") -- unused,
 	}
 }
 
