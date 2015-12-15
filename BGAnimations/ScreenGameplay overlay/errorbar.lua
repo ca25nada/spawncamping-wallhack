@@ -46,24 +46,25 @@ function proTimingTicks(pn,index)
 					self:x(frameX+(((offset)/maxOffsetRange)*(frameWidth/2)))
 					self:linear(tickDuration)
 					self:diffusealpha(0)
-				end;
-			end;
+				end
+			end
 		end;
-	};
-end;
+	}
+end
 
 if enabled then
 	t[#t+1] = Def.Actor{
 		JudgmentMessageCommand=function(self,params)
 			offset = 0
 			if params.Player == pn then
+				currentbar = ((currentbar+1)%barcount)+1
 				if params.HoldNoteScore then
 					--dosomething
 				elseif params.TapNoteScore == 'TapNoteScore_HitMine' or params.TapNoteScore == 'TapNoteScore_AvoidMine' then
 					--dosomething
 				else
 					if params.TapNoteScore ~= 'TapNoteScore_Miss' then
-						currentbar = ((currentbar+1)%barcount)+1
+						--currentbar = ((currentbar+1)%barcount)+1
 						if params.Early then
 							offset = params.TapNoteOffset
 							protimingsum = protimingsum + params.TapNoteOffset
@@ -86,15 +87,18 @@ if enabled then
 		t[#t+1] = proTimingTicks(pn,i)
 	end;
 
+
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
+		InitCommand=cmd(xy,frameX,frameY;zoomto,2,frameHeight;diffuse,color("#FFFFFF");diffusealpha,0.5);
 	};
+	--[[
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+1-frameWidth/2,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
 	};
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX-1+frameWidth/2,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
 	};
+	--]]
 	t[#t+1] = LoadFont("Common Normal") .. {
         InitCommand=cmd(xy,frameX+frameWidth/4,frameY;zoom,0.35;);
         BeginCommand=cmd(settext,"Late";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
