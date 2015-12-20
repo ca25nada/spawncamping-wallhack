@@ -143,7 +143,7 @@ function SHA1StringHex(sPath)
 end
 
 --filters out files from fileList that isn't in the type in fileTypes
---both are passed on as tables
+--both function parameters are passed on as tables
 function filterFileList(fileList,fileTypes)
 	local t = {}
 	for i=1,#fileList do
@@ -189,4 +189,16 @@ function isScoreValid(pn,steps,score)
 		return false
 	end
 	return true
-end;
+end
+
+-- No way of turn score saving off for just one player, so it will disqulify both players once called.
+-- Doesn't work for some reason rip-
+function disqualifyScore()
+	so = GAMESTATE:GetSongOptionsObject('ModsLevel_Song')
+	if so:SaveScore() then
+		so:SaveScore(false)
+		SCREENMAN:SystemMessage("SaveScore set to false")
+	else
+		SCREENMAN:SystemMessage("SaveScore already set to false")
+	end
+end

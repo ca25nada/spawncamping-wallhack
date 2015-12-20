@@ -12,8 +12,8 @@ local highlightColor = { -- Colors of Judgment highlights
 }
 
 local enabled = {
-	PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and false,
-	PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and false
+	PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CBHighlight,
+	PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).CBHighlight
 }
 
 local arrowWidth = 64 -- until noteskin metrics are implemented...

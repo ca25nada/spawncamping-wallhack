@@ -125,7 +125,7 @@ local Phrases = {
     "You're gonna carry that weight.",
     --"fappables/duck.gif",
     --"16 hours of B.O. blocko power!",
-    "\"how can there be 714 bpm if theres only 60 seconds in a minute?\"",
+    "\"how can there be 714 bpm if theres only 60 seconds in a minute?\"", -- osu
     "Far East Nightbird (Twitch remix)",
     "Just hold on. You'll be fine, I promise. Everyday.",
     "2spooky",
@@ -144,7 +144,7 @@ local Phrases = {
     --"\"did you seirously pay peppy $4 to upload a fucking dump chart for the thomas and friends theme\" - fullerene-",
     "\"I'LL NEVER PLAY 'BEAT-BEAT REVELATION' AGAIN!\"", -- some movie
     "\"What is SOWS? I tried to Google it but all I get is pictures of female pigs\"",
-    "To Abcdullah: your cheating is obvious, doing 100.00% on lv.26-28 maps from the first attempt is cheating, admit it.",
+    "To Abcdullah: your cheating is obvious, doing 100.00% on lv.26-28 maps from the first attempt is cheating, admit it.", -- osu pm
     "konmai", -- konami
     "haha facerolling",
 	"gonz:pork",
@@ -159,13 +159,13 @@ local Phrases = {
 	"(o:",
 	"TSUMOOOOOO", -- Chiitoitsu dora2 4000/2000 and y'all owe me a simfile
 	"maniera fuck", -- ideu
-	"Solord State Squad", 
+	"Solord State Squad", -- solid state squad
 	"fripSide noodle factory", -- EVERY 17VA MAP
 	"StepMania changed my life!",
-	"Lincle Prim is best Prim", 
-	"Bubububub~", 
-	"Lovery Radio", 
-	"えいニャ！　えいニャ！", 
+	"Lincle Prim is best Prim", -- best prim 
+	"Bubububub~", -- best prim
+	"Lovery Radio",  -- prim
+	"えいニャ！　えいニャ！",  -- prim
 	"Dat MA",
 	"IT HAS MEI IN IT", -- Toy's march 
 	"J1L1", -- Pr0 settings 
@@ -192,7 +192,7 @@ local Phrases = {
 	">~<",
 	";w;",
 	"uwaaaa",
-	"tatataatatatatattatatattatatataii hihhihihihihhihhihihihihiihihhihihihihhihhi",
+	"tatataatatatatattatatattatatataii hihhihihihihhihhihihihihiihihhihihihihhihhi", -- francium 
 	"\"Is dis a game? If it is can I ask for da link and I need to play dis so badly and I wanna know if dere is any vocaloid songs on it\"",
 	"Korea team for 4k: Captain:abcd right hand, player 2: abcd left hand", -- longgone
 	"hory shiet", -- Zak
@@ -234,7 +234,7 @@ local Phrases = {
     "\"just because you collect loli girls doesn't make it weeaboo\"", -- aqo
     "\"are you a women xD your profile picture look like women\"", -- https://osu.ppy.sh/forum/p/3871389
     "Everlasting Message", -- AKA: For UltraPlayers hoooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-    "\"And I'm not a noob I got 227 pp\"",
+    "\"And I'm not a noob I got 227 pp\"", -- osu chat
     "\"whats more dense, a black hole or an icyworld file\"", -- choof
     "fuk LN", -- Staiain's twitch chat
     "\"Which edition of IIDX is |999999^999999 from?\"", --  ARC of #bemaniso
@@ -242,15 +242,15 @@ local Phrases = {
     "\"Mine Infested Files Killed The Game\"", -- http://www.flashflashrevolution.com/vbz/showthread.php?p=4300456#post4300456
     "STEPMANIA BROKEN", -- does anyone still remember the yt vid mfw-
     "HOLY SAMBALAND", -- the land of (^^)
-    "\"i have a problem. spada keeps asking me for an eamusement pass and then says game over. this happens after i played 3 songs\"",
+    "\"i have a problem. spada keeps asking me for an eamusement pass and then says game over. this happens after i played 3 songs\"", -- bemanisows qdb..?
     "\"lying sack of shit i want to play pop'n but im gonna type moonrunes at you\"", -- foal
     "\"like if there's a L.E.D. song titled GIGANTIC ONION CANNON I won't be shocked\"", -- UBerserker
     "\"2D IS GOOOOOOOOOOOOOOLD!\"", -- TWO DEEKS GOOOOOLD-
-    "\"I seriously can't go to clubs and dance with random girls because they're so freaking off sync. -- change their global offset\"",
-    "eyelid sudden+",
+    "\"I seriously can't go to clubs and dance with random girls because they're so freaking off sync. -- change their global offset\"", -- jordan
+    "eyelid sudden+", -- Asian perks 
     "\"Nanahira is love. I hope she makes collab with Prim sometime.\"", -- shortly followed by "Have mercy on our ears"
     "\"we should impersonize the scratch from lr2 into some annoying anime chick\"", -- sarachan >w
-    "be-music salt",
+    "be-music salt", -- BMS
     "\"fry EOS\"", -- Hazelnut: try*
     "real overjoys use magic", --nekro
     "\"I'M NOT A LOLICON HATER, SOME OF MY BEST FRIENDS ARE LOLICON\"", -- bemanisows QDB
@@ -273,7 +273,14 @@ local Phrases = {
     "50 Shades of Prim 12s", -- also foal
     "\"wow aj i will pee in your cereal when i visit\"", -- mwc2015 finals
     "theres a bms cabinet at my arcade",
-    "all stepmania players are suck^^" --0133
+    "\"all stepmania players are suck^^\"", --0133
+    "\"leonid: wtf ggsnipes end time 5, who do you think I am\"", -- (^^)
+    "Where mina???",
+    "\"i play o2jam upscroll\"",
+    "\"you dont start playing o2jam until you clear lvl 70's\"",
+    "guys please NO DRAMA",
+    "8k>4k ..... *runs*",
+    "I can pass overjoy on osu so I should be able to do that in lr2 easily" -- logic 
 }
 
 --tip
