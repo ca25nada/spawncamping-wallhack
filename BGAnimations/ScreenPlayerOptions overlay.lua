@@ -1,3 +1,8 @@
+local t = Def.ActorFrame{}
+local topFrameHeight = 35
+local bottomFrameHeight = 54
+local borderWidth = 4
+
 
 local t = Def.ActorFrame{
 	Name="PlayerAvatar";
@@ -17,10 +22,17 @@ local playTimeP2 = 0
 local noteCountP2 = 0
 
 
-local AvatarXP1 = 0
-local AvatarYP1 = SCREEN_HEIGHT-50
-local AvatarXP2 = SCREEN_WIDTH-50
-local AvatarYP2 = SCREEN_HEIGHT-50
+local AvatarXP1 = 10
+local AvatarYP1 = 50
+local AvatarXP2 = SCREEN_WIDTH-40
+local AvatarYP2 = 50
+
+local bpms = {}
+if GAMESTATE:GetCurrentSong() then
+	bpms= GAMESTATE:GetCurrentSong():GetDisplayBpms()
+	bpms[1] = math.round(bpms[1])
+	bpms[2] = math.round(bpms[2])
+end
 
 -- P1 Avatar
 t[#t+1] = Def.Actor{
@@ -30,7 +42,7 @@ t[#t+1] = Def.Actor{
 			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
 			if profileP1 ~= nil then
 				if profileP1 == PROFILEMAN:GetMachineProfile() then
-					profileNameP1 = "Player 1"
+					profileNameP1 = "Machine Profile"
 				else
 					profileNameP1 = profileP1:GetDisplayName()
 				end
@@ -62,7 +74,7 @@ t[#t+1] = Def.Actor{
 			profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
 			if profileP2 ~= nil then
 				if profileP2 == PROFILEMAN:GetMachineProfile() then
-					profileNameP2 = "Player 2"
+					profileNameP2 = "Machine Profile"
 				else
 					profileNameP2 = profileP2:GetDisplayName()
 				end
@@ -109,55 +121,54 @@ t[#t+1] = Def.ActorFrame{
 		ModifyAvatarCommand=function(self)
 			self:finishtweening();
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_1)));
-			self:zoomto(50,50)
+			self:zoomto(30,30)
 		end;
 	};
-	--[[
-	LoadActor("../../"..getAvatarPath(PLAYER_1))..{
-		Name="Avatar";
-		InitCommand=cmd(visible,true;zoomto,50,50;halign,0;valign,0;xy,AvatarXP1,AvatarYP1);
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
-	--]]
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+7;halign,0;zoom,0.6;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP1+33,AvatarYP1+6;halign,0;zoom,0.45;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(profileNameP1)
+			self:settext(profileNameP1.."'s Scroll Speed:")
 		end;
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+20;halign,0;zoom,0.35;diffuse,getMainColor(1));
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			self:settext(playCountP1.." Plays");
+		InitCommand=cmd(xy,AvatarXP1+33,AvatarYP1+19;halign,0;zoom,0.40;);
+		BeginCommand=function(self)
+			local speed, mode= GetSpeedModeAndValueFromPoptions(PLAYER_1)
+			self:playcommand("SpeedChoiceChanged", {pn= PLAYER_1, mode= mode, speed= speed})
 		end;
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
-	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+30;halign,0;zoom,0.35;diffuse,getMainColor(1));
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			self:settext(noteCountP1.." Arrows Smashed")
+		SpeedChoiceChangedMessageCommand=function(self,param)
+			if param.pn == PLAYER_1 then
+				local text = ""
+				if param.mode == "x" then
+					if not bpms[1] then
+						text = "??? - ???"
+					elseif bpms[1] == bpms[2] then
+						text = math.round(bpms[1]*param.speed/100)
+					else
+						text = string.format("%d - %d",math.round(bpms[1]*param.speed/100),math.round(bpms[2]*param.speed/100))
+					end
+				elseif param.mode == "C" then
+					text = param.speed
+				else
+					if not bpms[1] then
+						text = "??? - "..param.speed
+					elseif bpms[1] == bpms[2] then
+						text = param.speed
+					else
+						local factor = param.speed/bpms[2]
+						text = string.format("%d - %d",math.round(bpms[1]*factor),param.speed)
+					end
+				end
+				self:settext(text)
+			end
 		end;
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
-	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+40;halign,0;zoom,0.35;diffuse,getMainColor(1));
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			local time = SecondsToHHMMSS(playTimeP1)
-			self:settextf(time.." PlayTime")
-		end;
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
-};
+	}
+}
 
 -- P2 Avatar
 t[#t+1] = Def.ActorFrame{
@@ -182,65 +193,67 @@ t[#t+1] = Def.ActorFrame{
 		ModifyAvatarCommand=function(self)
 			self:finishtweening();
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_2)));
-			self:zoomto(50,50)
+			self:zoomto(30,30)
 		end;	
 	};
+	LoadFont("Common Normal") .. {
+		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+7;halign,1;zoom,0.45;);
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			self:settext(profileNameP2.."'s Scroll Speed:")
+		end;
+		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
+	};
+	LoadFont("Common Normal") .. {
+		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+19;halign,1;zoom,0.45;);
+		BeginCommand=function(self)
+			local speed, mode= GetSpeedModeAndValueFromPoptions(PLAYER_2)
+			self:playcommand("SpeedChoiceChanged", {pn= PLAYER_2, mode= mode, speed= speed})
+		end;
+		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
+		SpeedChoiceChangedMessageCommand=function(self,param)
+			if param.pn == PLAYER_2 then
+				local text = ""
+				if param.mode == "x" then
+					if not bpms[1] then
+						text = "??? - ???"
+					elseif bpms[1] == bpms[2] then
+						text = math.round(bpms[1]*param.speed/100)
+					else
+						text = string.format("%d - %d",math.round(bpms[1]*param.speed/100),math.round(bpms[2]*param.speed/100))
+					end
+				elseif param.mode == "C" then
+					text = param.speed
+				else
+					if not bpms[1] then
+						text = "??? - "..param.speed
+					elseif bpms[1] == bpms[2] then
+						text = param.speed
+					else
+						local factor = param.speed/bpms[2]
+						text = string.format("%d - %d",math.round(bpms[1]*factor),param.speed)
+					end
+				end
+				self:settext(text)
+			end
+		end;
+	}
+}
 
-	--[[
-	LoadActor("../../"..getAvatarPath(PLAYER_2))..{
-		Name="Avatar";
-		InitCommand=cmd(visible,true;zoomto,50,50;halign,0;valign,0;xy,AvatarXP2,AvatarYP2);
-	};--]]
-	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+7;halign,1;zoom,0.6;diffuse,getMainColor(1));
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			self:settext(profileNameP2)
-		end;
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
-	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+20;halign,1;zoom,0.35;diffuse,getMainColor(1));
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			self:settext(playCountP2.." Plays");
-		end;
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
-	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+30;halign,1;zoom,0.35;diffuse,getMainColor(1));
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			self:settext(noteCountP2.." Arrows Smashed")
-		end;
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
-	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+40;halign,1;zoom,0.35;diffuse,getMainColor(1));
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			local time = SecondsToHHMMSS(playTimeP2)
-			self:settextf(time.." PlayTime")
-		end;
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
+
+--Frames
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,0,0;halign,0;valign,0;zoomto,SCREEN_WIDTH,topFrameHeight;diffuse,color("#FFFFFF"););
+};
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(xy,0,topFrameHeight;halign,0;valign,1;zoomto,SCREEN_WIDTH,borderWidth;diffuse,getMainColor(1));
 };
 
-local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update);
-	if getAvatarUpdateStatus(PLAYER_1) then
-    	self:GetChild("Avatar"..PLAYER_1):GetChild("Image"):queuecommand("ModifyAvatar")
-    	setAvatarUpdateStatus(PLAYER_1,false)
-    end;
-    if getAvatarUpdateStatus(PLAYER_2) then
-    	self:GetChild("Avatar"..PLAYER_2):GetChild("Image"):queuecommand("ModifyAvatar")
-    	setAvatarUpdateStatus(PLAYER_2,false)
-    end;
-end; 
-t.InitCommand=cmd(SetUpdateFunction,Update);
+--t[#t+1] = LoadActor("_frame");
+t[#t+1] = LoadFont("Common Large")..{
+	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor(1);settext,"Player Options:";);
+}
 
-return t;
+return t
