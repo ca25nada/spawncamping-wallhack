@@ -2,7 +2,7 @@ local defaultConfig = {
 	global = {
 		DefaultScoreType = 2, -- 1 = MAX2 DP, 2 = Oni Percent Score, 3 = MIGS
 		TipType = 2, -- 1 = Hide,2=tips 3= random quotes phrases,
-		SongBGEnabled = true,
+		SongBGEnabled = true, 
 		SongBGMouseEnabled = true,
 		Particles = true,
 		--AvatarEnabled = true, -- Unused
@@ -21,6 +21,7 @@ local defaultConfig = {
 		JudgmentBarCellCount = 100, --Will be halved for 2p
 		ScoreBoardEnabled = true,
 		ScoreBoardMaxEntry = 10,
+		SongBGType = 1, -- 1 = song bg, 2 = grade+common, 3 = grade only
 	},
 	color ={
 		main = "#00AEEF"
