@@ -15,7 +15,7 @@ Requirements: StepMania 5.0.8 or later.
 ### Usage Guide (WIP)
 ---
 #### Global
-* Theme Color  
+* **Theme Color**  
 The main theme color can be set by entering "Color Config" from the title menu.  
 From there, you can then set the hexadecimal value to a color of your liking.   
 (For reference in case you want to revert, the default color is ```#00AEEF```)
@@ -71,6 +71,7 @@ Some Tabs will be disabled for 2 player modes.
 
 * **Score Tab** <sup>Disabled for 2p</sup>   
   This tab will list all the scores and their stats that are currently saved. (Separated by rate mods if Rate Filter is enabled.)   
+  The number of scores saved is capped to 3 by default in StepMania. This can be changed from ```Options → Arcade Options → Max Machine Scores``` and ```Options → Arcade Options → Max Player Scores```.   
   Pressing ```<EffectDown>``` and ```<EffectUp>``` will scroll through the scores.   
   Pressing ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>``` will scroll through available rates.   
 
@@ -110,7 +111,7 @@ Some Tabs will be disabled for 2 player modes.
   Available from ```Player Options  → Error Bar```.
 
 * **Screen Filter**   
-  Displays an overlay below the notefield.
+  Displays an overlay below the notefield.   
   Available from ```Player Options  → Screen Filter```. The Values correspond to the alpha value of the filter.   
 
 * **CB Lane Highlights**
