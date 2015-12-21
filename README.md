@@ -132,6 +132,10 @@ Some Tabs will be disabled for 2 player modes.
   Allows the player to change the scroll speed ingame by pressing ```<EffectDown>``` and ```<EffectUp>```.   
   The speed change increment is dependent on the settings available from ```Options → Advanced Options → Speed Increment```.
 
+* **Mid-game Pause**   
+  Pause the game during gameplay by quickly pressing ```<Select>``` Twice. Doing the same while paused or pressing ```<Start>``` will unpause the game.   
+  The number of times the game has been paused will show up on the evaluation screen.   
+
 ---
 #### ScreenEvaluation
 * The Eval Screen Itself 
