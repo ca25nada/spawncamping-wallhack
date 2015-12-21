@@ -119,6 +119,7 @@ local curMaxHoldsP2 = 0
 local curMaxMinesP1 = 0
 local curMaxMinesP2 = 0
 
+local pauseCount = 0
 --[[
 function PJudge(pn,judge)
 	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetTapNoteScores(judge)
@@ -151,6 +152,7 @@ function resetJudgeST()
 	curMaxMinesP2 = 0
 	curMaxHoldsP1 = 0
 	curMaxHoldsP2 = 0
+	pauseCount = 0
 	return
 end
 
@@ -436,4 +438,23 @@ function getUnstableRateST(pn)
 		sum3 = sum3 + ((offset[i]*1000)-mean)
 	end
 	return math.sqrt((sum2 - math.pow(sum3,2)/#offset)/(#offset-1))*10
+end
+
+function pauseGame()
+	local screen = SCREENMAN:GetTopScreen()
+	if screen:GetScreenType() == 'ScreenType_Gameplay' then
+		local paused = screen:IsPaused()
+		if paused then
+			SCREENMAN:GetTopScreen():PauseGame(not paused)
+			SCREENMAN:SystemMessage("Game Unpaused")
+		else
+			SCREENMAN:GetTopScreen():PauseGame(not paused)
+			pauseCount = pauseCount+1
+			SCREENMAN:SystemMessage("Game Paused")
+		end
+	end
+end
+
+function getPauseCount()
+	return pauseCount
 end

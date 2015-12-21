@@ -76,11 +76,16 @@ local function GraphDisplay( pn )
 		};
 		LoadFont("Common Normal")..{
 			InitCommand=cmd(xy,WideScale(get43size(140),140)-5,-35;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
-			BeginCommand=function(self) 
-				self:settextf("Life: %.0f%%",pss:GetCurrentLife()*100)
+			BeginCommand=function(self)
+				local text = ""
+				text = string.format("Life: %.0f%%",pss:GetCurrentLife()*100)
 				if pss:GetCurrentLife() == 0 then
-					self:settextf("Life: %.0f%%\n%.2fs Survived",pss:GetCurrentLife()*100,pss:GetAliveSeconds())
-				end;
+					text = string.format("%s\n%.2fs Survived",text,pss:GetAliveSeconds())
+				end
+				if getPauseCount() > 0 then
+					text = string.format("%s\nPaused %d Time(s)",text,getPauseCount())
+				end
+				self:settext(text)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
 					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
 				end;
