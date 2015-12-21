@@ -81,7 +81,7 @@ if enabled and bgType > 1 then
 		BeginCommand=function(self)
 			if #bgList > 0 then
 				local bg = bgList[math.random(#bgList)]
-				SCREENMAN:SystemMessage(string.format("Loading %s",bg))
+				--SCREENMAN:SystemMessage(string.format("Loading %s",bg))
 				self:LoadBackground(bg);
 			end
 			if moveBG then
