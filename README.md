@@ -58,12 +58,27 @@ You can set an avatar to a profile that is then displayed throughout the theme.
 
 ---
 #### ScreenSelectMusic
-* General Tab
-* Simfile Tab (incomplete)
-* Score Tab
-* Profile Tab (unimplemented)
-* Other Tab
-* Help Menu
+All available tabs in this screen can be accessed either by clicking on the tabs themselves, or pressing ```1 - 5``` on the keyboard for each tab respectively.   
+Some Tabs will be disabled for 2 player modes.   
+* **General Tab**   
+  This tab contains general information about the simfile. Not much else that is worth mentioning here.   
+  Hovering the mouse over the letter grade shows the amount of points away from the nearest letter grade.   
+* **Simfile Tab** <sup>Incomplete, Disabled for 2p</sup>   
+  This tab is supposed to contain more detailed information about the simfile buuuuuut it's incomplete.   
+  Aside from the hash values for the .sm files, there's more info in the general tab as of right now mfw.   
+* **Score Tab** <sup>Disabled for 2p</sup>   
+  This tab will list all the scores and their stats that are currently saved. (Separated by rate mods if Rate Filter is enabled.)   
+  Pressing ```<EffectDown>``` and ```<EffectUp>``` will scroll through the scores.   
+  Pressing ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>``` will scroll through available rates.   
+* **Profile Tab** <sup>Unimplemented, Disabled</sup>   
+  Probably a summary of the profile once I get around adding stuff to this.   
+* **Other Tab**   
+  This tab contains miscellaneous info about stepmania and the theme that... might... be helpful...?   
+* **Help Overlay**   
+  By default the help overlay will automatically show after 30 seconds of inactivity on the screen.
+  It currently contains information on how to use the features in screenselectmusic.
+  You can turn off the overlay from showing up automatically by going to : ```Options → Theme Options → Help Menu``` and setting it to ```Off```.   
+  It is also available by pressing ```F12``` on the keyboard. 
 
 ---
 #### ScreenGameplay
