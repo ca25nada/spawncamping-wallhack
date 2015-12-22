@@ -245,9 +245,15 @@ t[#t+1] = Def.ActorFrame{
 
 	LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,starsX+frameWidth-5,starsY-12;zoom,0.3;halign,1);
-		BeginCommand=function(self)
-			self:settext("Player 1")
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			local text = "Player 1"
+			if profileP1 ~= nil then
+				text = profileP1:GetDisplayName()
+			end
+			self:settext(text)
 		end;
+		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 
 	LoadFont("Common Normal")..{
@@ -479,9 +485,15 @@ t[#t+1] = Def.ActorFrame{
 
 	LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,starsX+frameWidth-5,starsY-12+playerDistY;zoom,0.3;halign,1);
-		BeginCommand=function(self)
-			self:settext("Player 2")
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self)
+			local text = "Player 2"
+			if profileP2 ~= nil then
+				text = profileP2:GetDisplayName()
+			end
+			self:settext(text)
 		end;
+		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 
 	LoadFont("Common Normal")..{
