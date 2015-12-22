@@ -171,14 +171,14 @@ end
 function addJudgeST(pn,judge,isHold)
 	if isHold then -- Holds and Rolls
 
-		if isFailingST(pn) == false and getAutoplay ~= 1 then
+		if isFailingST(pn) == false and getAutoplay() ~= 1 then
 			judgeStats[pn][judge] = judgeStats[pn][judge]+1
 		end
 		curMaxHolds[pn] = curMaxHolds[pn]+1
 
 	else -- Everyyyyyyyyyyything elseeeeeeee
 
-		if isFailingST(pn) == false and getAutoplay ~= 1 then
+		if isFailingST(pn) == false and getAutoplay() ~= 1 then
 			if (judge =="TapNoteScore_W1") or
 				(judge =="TapNoteScore_W2") or
 				(judge =="TapNoteScore_W3") or
@@ -353,7 +353,9 @@ function getGradeST(pn)
 end
 
 function isFullCombo(pn)
-	return false
+	local misscount = 0
+	misscount = getJudgeST(pn,"TapNoteScore_Miss") + getJudgeST(pn,"TapNoteScore_W5") + getJudgeST(pn,"TapNoteScore_W4")
+	return misscount == 0
 end
 
 function isPerfFullCombo(pn)
