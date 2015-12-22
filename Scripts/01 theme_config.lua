@@ -12,8 +12,8 @@ local defaultConfig = {
 	NPSDisplay = {
 		--Enabled = true, -- Player Controlled
 		DynamicWindow = false,
-		MaxWindow = 5,
-		MinWindow = 1,
+		MaxWindow = 2,
+		MinWindow = 1, -- unused.
 	},
 	eval = {
 		CurrentTimeEnabled = true,
