@@ -72,52 +72,66 @@ local migsWeight =  { -- Score Weights for MIGS score
 	TapNoteScore_CheckpointMiss 	= 0,
 }
 
-local judgeStatsP1 = { -- Table containing the # of judgements made so far
-	TapNoteScore_W1 = 0,
-	TapNoteScore_W2 = 0,
-	TapNoteScore_W3 = 0,
-	TapNoteScore_W4 = 0,
-	TapNoteScore_W5 = 0,
-	TapNoteScore_Miss = 0,
-	HoldNoteScore_Held = 0,
-	TapNoteScore_HitMine = 0,
-	HoldNoteScore_LetGo = 0,
-	HoldNoteScore_MissedHold = 0,
-	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit		= 0,
-	TapNoteScore_CheckpointMiss 	= 0,
-}
-
-local judgeStatsP2 = { -- Table containing the # of judgements made so far
-	TapNoteScore_W1 = 0,
-	TapNoteScore_W2 = 0,
-	TapNoteScore_W3 = 0,
-	TapNoteScore_W4 = 0,
-	TapNoteScore_W5 = 0,
-	TapNoteScore_Miss = 0,
-	HoldNoteScore_Held = 0,
-	TapNoteScore_HitMine = 0,
-	HoldNoteScore_LetGo = 0,
-	HoldNoteScore_MissedHold = 0,
-	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit		= 0,
-	TapNoteScore_CheckpointMiss 	= 0,
+local judgeStats = { -- Table containing the # of judgements made so far
+	PlayerNumber_P1 = {
+		TapNoteScore_W1 = 0,
+		TapNoteScore_W2 = 0,
+		TapNoteScore_W3 = 0,
+		TapNoteScore_W4 = 0,
+		TapNoteScore_W5 = 0,
+		TapNoteScore_Miss = 0,
+		HoldNoteScore_Held = 0,
+		TapNoteScore_HitMine = 0,
+		HoldNoteScore_LetGo = 0,
+		HoldNoteScore_MissedHold = 0,
+		TapNoteScore_AvoidMine		= 0,
+		TapNoteScore_CheckpointHit		= 0,
+		TapNoteScore_CheckpointMiss 	= 0
+	},
+	PlayerNumber_P2 = {
+		TapNoteScore_W1 = 0,
+		TapNoteScore_W2 = 0,
+		TapNoteScore_W3 = 0,
+		TapNoteScore_W4 = 0,
+		TapNoteScore_W5 = 0,
+		TapNoteScore_Miss = 0,
+		HoldNoteScore_Held = 0,
+		TapNoteScore_HitMine = 0,
+		HoldNoteScore_LetGo = 0,
+		HoldNoteScore_MissedHold = 0,
+		TapNoteScore_AvoidMine		= 0,
+		TapNoteScore_CheckpointHit		= 0,
+		TapNoteScore_CheckpointMiss 	= 0
+	}
 }
 
 --table containing all the tap note judgments in order they occured
-local judgeTableP1 = {}
-local judgeTableP2 = {}
+local judgeTable = {
+	PlayerNumber_P1 = {},
+	PlayerNumber_P2 = {}
+}
+
 
 --table containing all the timing offsets from non-miss judges 
-local offsetTableP1 = {}
-local offsetTableP2 = {}
+local offsetTable = {
+	PlayerNumber_P1 = {},
+	PlayerNumber_P2 = {}
+}
 
-local curMaxNotesP1 = 0
-local curMaxNotesP2 = 0
-local curMaxHoldsP1 = 0
-local curMaxHoldsP2 = 0
-local curMaxMinesP1 = 0
-local curMaxMinesP2 = 0
+local curMaxNotes = {
+	PlayerNumber_P1 = 0,
+	PlayerNumber_P2 = 0
+}
+
+local curMaxHolds = {
+	PlayerNumber_P1 = 0,
+	PlayerNumber_P2 = 0
+}
+
+local curMaxMines = {
+	PlayerNumber_P1 = 0,
+	PlayerNumber_P2 = 0
+}
 
 local pauseCount = 0
 --[[
@@ -138,20 +152,17 @@ end
 function resetJudgeST()
 	defaultScoreType = themeConfig:get_data().global.DefaultScoreType
 	-- defaultScoreType = tonumber(GetUserPref("DefaultScoreType"))
-	for k,_ in pairs(judgeStatsP1) do
-		judgeStatsP1[k] = 0
-		judgeStatsP2[k] = 0
+	for _,pn in pairs({PLAYER_1,PLAYER_2}) do
+		for k,__ in pairs(judgeStats[pn]) do
+			judgeStats[pn][k] = 0
+			judgeStats[pn][k] = 0
+		end	
+		judgeTable[pn] = {}
+		offsetTable[pn] = {}
+		curMaxNotes[pn] = 0
+		curMaxHolds[pn] = 0
+		curMaxMines[pn] = 0
 	end
-	judgeTableP1 = {}
-	judgeTableP2 = {}
-	offsetTableP1 = {}
-	offsetTableP2 = {}
-	curMaxNotesP1 = 0
-	curMaxNotesP2 = 0
-	curMaxMinesP1 = 0
-	curMaxMinesP2 = 0
-	curMaxHoldsP1 = 0
-	curMaxHoldsP2 = 0
 	pauseCount = 0
 	return
 end
@@ -159,56 +170,30 @@ end
 -- Adds a tapnotescore or a holdnotescore to the scoretracker for the specified player.
 function addJudgeST(pn,judge,isHold)
 	if isHold then -- Holds and Rolls
-		if pn == PLAYER_1 then
-			if isFailingST(PLAYER_1) == false and getAutoplay() ~= 1 then
-				--judgeTableP1[#judgeTableP1+1] = judge
-				judgeStatsP1[judge] = judgeStatsP1[judge]+1 --breaks on autoplay atm STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetHoldNoteScores(judge) --revert to just incrmenting by 1 when autoplay conditions are available
-			end
-			curMaxHoldsP1 = curMaxHoldsP1+1
+
+		if isFailingST(pn) == false and getAutoplay ~= 1 then
+			judgeStats[pn][judge] = judgeStats[pn][judge]+1
 		end
-		if pn == PLAYER_2 then
-			if isFailingST(PLAYER_2) == false and getAutoplay() ~= 1 then
-				--judgeTableP2[#judgeTableP2+1] = judge
-				judgeStatsP2[judge] = judgeStatsP2[judge]+1 --STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetHoldNoteScores(judge)
-			end
-			curMaxHoldsP2 = curMaxHoldsP2+1
-		end
+		curMaxHolds[pn] = curMaxHolds[pn]+1
+
 	else -- Everyyyyyyyyyyything elseeeeeeee
-		if pn == PLAYER_1 then
-			if isFailingST(PLAYER_1) == false and getAutoplay() ~= 1 then -- don't add if failing
-				if (judge =="TapNoteScore_W1") or
-					(judge =="TapNoteScore_W2") or
-					(judge =="TapNoteScore_W3") or
-					(judge =="TapNoteScore_W4") or
-					(judge =="TapNoteScore_W5") or
-					(judge =="TapNoteScore_Miss") then
-					judgeTableP1[#judgeTableP1+1] = judge -- add to judgetable
-				end;
-				judgeStatsP1[judge] = judgeStatsP1[judge]+1 --STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetTapNoteScores(judge)
+
+		if isFailingST(pn) == false and getAutoplay ~= 1 then
+			if (judge =="TapNoteScore_W1") or
+				(judge =="TapNoteScore_W2") or
+				(judge =="TapNoteScore_W3") or
+				(judge =="TapNoteScore_W4") or
+				(judge =="TapNoteScore_W5") or
+				(judge =="TapNoteScore_Miss") then
+				judgeTable[pn][#(judgeTable[pn])+1] = judge -- add to judgetable
 			end
-			if (judge ~= 'TapNoteScore_HitMine') and (judge ~= 'TapNoteScore_AvoidMine') then
-				curMaxNotesP1 = curMaxNotesP1+1
-			else
-				curMaxMinesP1 = curMaxMinesP1+1
-			end
+			judgeStats[pn][judge] = judgeStats[pn][judge]+1
 		end
-		if pn == PLAYER_2 then
-			if isFailingST(PLAYER_2) == false and getAutoplay() ~= 1 then
-				if (judge =="TapNoteScore_W1") or
-					(judge =="TapNoteScore_W2") or
-					(judge =="TapNoteScore_W3") or
-					(judge =="TapNoteScore_W4") or
-					(judge =="TapNoteScore_W5") or
-					(judge =="TapNoteScore_Miss") then
-					judgeTableP2[#judgeTableP2+1] = judge
-				end;
-				judgeStatsP2[judge] = judgeStatsP2[judge]+1--STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetTapNoteScores(judge)
-			end
-			if (judge ~= 'TapNoteScore_HitMine') and (judge ~= 'TapNoteScore_AvoidMine') then
-				curMaxNotesP2 = curMaxNotesP2+1
-			else
-				curMaxMinesP2 = curMaxMinesP2+1
-			end
+
+		if (judge ~= 'TapNoteScore_HitMine') and (judge ~= 'TapNoteScore_AvoidMine') then
+			curMaxNotes[pn] = curMaxNotes[pn]+1
+		else
+			curMaxMines[pn] = curMaxMines[pn]+1
 		end
 	end
 end
@@ -216,53 +201,32 @@ end
 --Adds the tapnotescore offset value (in seconds) for the specified player. 
 --This should be only be called if the tapnotescore is for actual tap notes, not mines or checkpoints.
 function addOffsetST(pn,offset)
-
+	if GAMESTATE:IsHumanPlayer(pn) then
+		offsetTable[pn][#(offsetTable[pn])+1] = offset 
+	end
+	--[[
 	if pn == PLAYER_1 and GAMESTATE:IsHumanPlayer(PLAYER_1) then
 		offsetTableP1[#offsetTableP1+1] = offset
 	end
 	if pn == PLAYER_2 and GAMESTATE:IsHumanPlayer(PLAYER_2)then
 		offsetTableP2[#offsetTableP2+1] = offset
 	end
-
+	--]]
 end
 
 --Returns a table containing all the offset values for every tapnote that results in a judgment (aka: not mines, not checkpoints, and so on)
 function getOffsetTableST(pn)
-
-	if pn == PLAYER_1 then
-		return offsetTableP1
-	end
-	if pn == PLAYER_2 then
-		return offsetTableP2
-	end
-
-	return
+	return offsetTable[pn]
 end
 
 --Returns a table containing all the tapnote judgments made. (Again, this excludes mines, checkpoints, etc.)
 function getJudgeTableST(pn)
-
-	if pn == PLAYER_1 then
-		return judgeTableP1
-	end
-	if pn == PLAYER_2 then
-		return judgeTableP2
-	end
-
-	return
+	return judgeTable[pn]
 end
 
 --Returns the #of times the specificed judge has been made. (This includes both tapnotes and holdnotes)
 function getJudgeST(pn,judge)
-
-	if pn == PLAYER_1 then
-		return judgeStatsP1[judge] or 0
-	end
-	if pn == PLAYER_2 then
-		return judgeStatsP2[judge] or 0
-	end
-
-	return 0
+	return judgeStats[pn][judge]
 end
 
 --Returns the number of "taps" for the steps that the specified player has selected.
@@ -278,14 +242,7 @@ end
 
 --Returns the current number of "taps" that have been played so far for the specified player.
 function getCurMaxNotesST(pn)
-
-	if pn == PLAYER_1 then
-		return curMaxNotesP1 --or 0
-	end
-	if pn == PLAYER_2 then
-		return curMaxNotesP2-- or 0
-	end
-	return 0
+	return curMaxNotes[pn]
 end
 
 --Returns the number of holds for the steps that the specified player has selected.
@@ -301,26 +258,12 @@ end
 
 --Returns the current number of holds that have been played so far for the specified player.
 function getCurMaxHoldsST(pn)
-
-	if pn == PLAYER_1 then
-		return curMaxHoldsP1 --or 0
-	elseif pn == PLAYER_2 then
-		return curMaxHoldsP2 --or 0
-	end
-
-	return 0
+	return curMaxHolds[pn]
 end
 
 --Returns the current number of mines that hae been played so far for the specified player.
 function getCurMaxMinesST(pn)
-
-	if pn == PLAYER_1 then
-		return curMaxMinesP1 --or 0
-	elseif pn == PLAYER_2 then
-		return curMaxMinesP2 --or 0
-	end
-
-	return 0
+	return curMaxMines[pn]
 end
 
 --Returns the absolute maximum score a player can get for the specified player.
@@ -370,23 +313,14 @@ function getCurScoreST(pn,scoreType)
 		scoreType = defaultScoreType
 	end
 
-	if pn == PLAYER_1 then
-		if scoreType == 1 then
-			return (judgeStatsP1["TapNoteScore_W1"]*scoreWeight["TapNoteScore_W1"]+judgeStatsP1["TapNoteScore_W2"]*scoreWeight["TapNoteScore_W2"]+judgeStatsP1["TapNoteScore_W3"]*scoreWeight["TapNoteScore_W3"]+judgeStatsP1["TapNoteScore_W4"]*scoreWeight["TapNoteScore_W4"]+judgeStatsP1["TapNoteScore_W5"]*scoreWeight["TapNoteScore_W5"]+judgeStatsP1["TapNoteScore_Miss"]*scoreWeight["TapNoteScore_Miss"]+judgeStatsP1["TapNoteScore_HitMine"]*scoreWeight["TapNoteScore_HitMine"]+judgeStatsP1["HoldNoteScore_Held"]*scoreWeight["HoldNoteScore_Held"]+judgeStatsP1["HoldNoteScore_LetGo"]*scoreWeight["HoldNoteScore_LetGo"]) or 0-- maximum DP
-		elseif scoreType == 2 then
-			return (judgeStatsP1["TapNoteScore_W1"]*psWeight["TapNoteScore_W1"]+judgeStatsP1["TapNoteScore_W2"]*psWeight["TapNoteScore_W2"]+judgeStatsP1["TapNoteScore_W3"]*psWeight["TapNoteScore_W3"]+judgeStatsP1["TapNoteScore_W4"]*psWeight["TapNoteScore_W4"]+judgeStatsP1["TapNoteScore_W5"]*psWeight["TapNoteScore_W5"]+judgeStatsP1["TapNoteScore_Miss"]*psWeight["TapNoteScore_Miss"]+judgeStatsP1["TapNoteScore_HitMine"]*psWeight["TapNoteScore_HitMine"]+judgeStatsP1["HoldNoteScore_Held"]*psWeight["HoldNoteScore_Held"]+judgeStatsP1["HoldNoteScore_LetGo"]*psWeight["HoldNoteScore_LetGo"]) or 0  -- maximum %score DP
-		elseif scoreType == 3 then
-			return (judgeStatsP1["TapNoteScore_W1"]*migsWeight["TapNoteScore_W1"]+judgeStatsP1["TapNoteScore_W2"]*migsWeight["TapNoteScore_W2"]+judgeStatsP1["TapNoteScore_W3"]*migsWeight["TapNoteScore_W3"]+judgeStatsP1["TapNoteScore_W4"]*migsWeight["TapNoteScore_W4"]+judgeStatsP1["TapNoteScore_W5"]*migsWeight["TapNoteScore_W5"]+judgeStatsP1["TapNoteScore_Miss"]*migsWeight["TapNoteScore_Miss"]+judgeStatsP1["TapNoteScore_HitMine"]*migsWeight["TapNoteScore_HitMine"]+judgeStatsP1["HoldNoteScore_Held"]*migsWeight["HoldNoteScore_Held"]+judgeStatsP1["HoldNoteScore_LetGo"]*migsWeight["HoldNoteScore_LetGo"]) or 0
-		end
-	elseif pn == PLAYER_2 then
-		if scoreType == 1 then
-			return (judgeStatsP2["TapNoteScore_W1"]*scoreWeight["TapNoteScore_W1"]+judgeStatsP2["TapNoteScore_W2"]*scoreWeight["TapNoteScore_W2"]+judgeStatsP2["TapNoteScore_W3"]*scoreWeight["TapNoteScore_W3"]+judgeStatsP2["TapNoteScore_W4"]*scoreWeight["TapNoteScore_W4"]+judgeStatsP2["TapNoteScore_W5"]*scoreWeight["TapNoteScore_W5"]+judgeStatsP2["TapNoteScore_Miss"]*scoreWeight["TapNoteScore_Miss"]+judgeStatsP2["TapNoteScore_HitMine"]*scoreWeight["TapNoteScore_HitMine"]+judgeStatsP2["HoldNoteScore_Held"]*scoreWeight["HoldNoteScore_Held"]+judgeStatsP2["HoldNoteScore_LetGo"]*scoreWeight["HoldNoteScore_LetGo"]) or 0-- maximum DP
-		elseif scoreType == 2 then
-			return (judgeStatsP2["TapNoteScore_W1"]*psWeight["TapNoteScore_W1"]+judgeStatsP2["TapNoteScore_W2"]*psWeight["TapNoteScore_W2"]+judgeStatsP2["TapNoteScore_W3"]*psWeight["TapNoteScore_W3"]+judgeStatsP2["TapNoteScore_W4"]*psWeight["TapNoteScore_W4"]+judgeStatsP2["TapNoteScore_W5"]*psWeight["TapNoteScore_W5"]+judgeStatsP2["TapNoteScore_Miss"]*psWeight["TapNoteScore_Miss"]+judgeStatsP2["TapNoteScore_HitMine"]*psWeight["TapNoteScore_HitMine"]+judgeStatsP2["HoldNoteScore_Held"]*psWeight["HoldNoteScore_Held"]+judgeStatsP2["HoldNoteScore_LetGo"]*psWeight["HoldNoteScore_LetGo"]) or 0  -- maximum %score DP
-		elseif scoreType == 3 then
-			return (judgeStatsP2["TapNoteScore_W1"]*migsWeight["TapNoteScore_W1"]+judgeStatsP2["TapNoteScore_W2"]*migsWeight["TapNoteScore_W2"]+judgeStatsP2["TapNoteScore_W3"]*migsWeight["TapNoteScore_W3"]+judgeStatsP2["TapNoteScore_W4"]*migsWeight["TapNoteScore_W4"]+judgeStatsP2["TapNoteScore_W5"]*migsWeight["TapNoteScore_W5"]+judgeStatsP2["TapNoteScore_Miss"]*migsWeight["TapNoteScore_Miss"]+judgeStatsP2["TapNoteScore_HitMine"]*migsWeight["TapNoteScore_HitMine"]+judgeStatsP2["HoldNoteScore_Held"]*migsWeight["HoldNoteScore_Held"]+judgeStatsP2["HoldNoteScore_LetGo"]*migsWeight["HoldNoteScore_LetGo"]) or 0
-		end
+	if scoreType == 1 then
+		return (judgeStats[pn]["TapNoteScore_W1"]*scoreWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*scoreWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*scoreWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*scoreWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*scoreWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*scoreWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_HitMine"]*scoreWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*scoreWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*scoreWeight["HoldNoteScore_LetGo"]) or 0-- maximum DP
+	elseif scoreType == 2 then
+		return (judgeStats[pn]["TapNoteScore_W1"]*psWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*psWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*psWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*psWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*psWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*psWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_HitMine"]*psWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*psWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*psWeight["HoldNoteScore_LetGo"]) or 0  -- maximum %score DP
+	elseif scoreType == 3 then
+		return (judgeStats[pn]["TapNoteScore_W1"]*migsWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*migsWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*migsWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*migsWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*migsWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*migsWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_HitMine"]*migsWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*migsWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*migsWeight["HoldNoteScore_LetGo"]) or 0
 	end
+
 	return 0
 end
 
@@ -418,6 +352,17 @@ function getGradeST(pn)
 	return 
 end
 
+function isFullCombo(pn)
+	return false
+end
+
+function isPerfFullCombo(pn)
+	return false
+end
+
+function isMarvFullCombo(pn)
+	return false
+end
 
 -- Literally what ossu has.
 -- At least according to what the wiki says heh.
@@ -440,6 +385,7 @@ function getUnstableRateST(pn)
 	return math.sqrt((sum2 - math.pow(sum3,2)/#offset)/(#offset-1))*10
 end
 
+-- Pauses the game. Unpauses if already paused. 
 function pauseGame()
 	local screen = SCREENMAN:GetTopScreen()
 	if screen:GetScreenType() == 'ScreenType_Gameplay' then
