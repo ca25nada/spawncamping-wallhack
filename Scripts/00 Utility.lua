@@ -115,9 +115,9 @@ function SHA1FileHex(sPath)
 end
 
 -- returns the hexadecimal representaion of the MD5 hash.
-function MD5StringHex(sPath)
+function MD5StringHex(str)
 	local text = {}
-	local MD5 = CRYPTMAN:MD5String(sPath)
+	local MD5 = CRYPTMAN:MD5String(str)
 	for i=1,#MD5 do
 		text[i] = string.format("%02X",string.byte(MD5,i) or 0)
 	end
@@ -129,9 +129,9 @@ function MD5StringHex(sPath)
 end
 
 -- returns the hexadecimal representation of the SHA-1 hash.
-function SHA1StringHex(sPath)
+function SHA1StringHex(str)
 	local text = {}
-	local SHA1 = CRYPTMAN:SHA1String(sPath)
+	local SHA1 = CRYPTMAN:SHA1String(str)
 	for i=1,#SHA1 do
 		text[i] = string.format("%02X",string.byte(SHA1,i) or 0)
 	end
@@ -191,14 +191,38 @@ function isScoreValid(pn,steps,score)
 	return true
 end
 
--- No way of turn score saving off for just one player, so it will disqulify both players once called.
+-- No way of turn score saving off for just one player, so it will disqualify both players once called.
 -- Doesn't work for some reason rip-
 function disqualifyScore()
-	so = GAMESTATE:GetSongOptionsObject('ModsLevel_Song')
+	local so = GAMESTATE:GetSongOptionsObject('ModsLevel_Song')
 	if so:SaveScore() then
 		so:SaveScore(false)
 		SCREENMAN:SystemMessage("SaveScore set to false")
 	else
 		SCREENMAN:SystemMessage("SaveScore already set to false")
 	end
+end
+
+
+function getNoteFieldWidth()
+	local baseWidth = 64
+	local style = GAMESTATE:GetCurrentStyle()
+	local cols = style:ColumnsPerPlayer()
+
+	return cols*64
+end
+
+function getNoteFieldPos(pn)
+	local pNum = (pn == PLAYER_1) and 1 or 2
+	local style = GAMESTATE:GetCurrentStyle()
+	local cols = style:ColumnsPerPlayer()
+	local styleType = ToEnumShortString(style:GetStyleType())
+	local centered = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player"))
+
+	if centered then 
+		return SCREEN_CENTER_X
+	else
+		return THEME:GetMetric("ScreenGameplay",string.format("PlayerP%i%sX",pNum,styleType))
+	end
+
 end

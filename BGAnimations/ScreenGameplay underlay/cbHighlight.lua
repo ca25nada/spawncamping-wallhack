@@ -31,13 +31,7 @@ local cbThreshold = Enum.Reverse(TapNoteScore)[ComboContinue()]
 
 local function laneHighlight(pn)
 	local t = Def.ActorFrame{}
-	local pNum = (pn == PLAYER_1) and 1 or 2
-	local xpos = 0
-	if center1P then
-		xpos = SCREEN_CENTER_X
-	else
-		xpos = THEME:GetMetric("ScreenGameplay",string.format("PlayerP%i%sX",pNum,styleType))
-	end
+	local xpos = getNoteFieldPos(pn)
 
 	for i=1,cols do
 		t[#t+1] = Def.Quad{
@@ -60,7 +54,6 @@ local function laneHighlight(pn)
 						self:stoptweening();
 						self:visible(true);
 						self:diffusealpha(0);
-						--self:y(framey+0);
 						self:linear(0.1);
 						self:diffuse(highlightColor[params.TapNoteScore]);
 						self:diffusealpha(alpha)
@@ -77,9 +70,9 @@ end
 
 local t = Def.ActorFrame{}
 
-for k,v in pairs({PLAYER_1,PLAYER_2}) do
-	if enabled[v] then
-		t[#t+1] = laneHighlight(v)
+for _,pn in pairs({PLAYER_1,PLAYER_2}) do
+	if enabled[pn] then
+		t[#t+1] = laneHighlight(pn)
 	end
 end
 
