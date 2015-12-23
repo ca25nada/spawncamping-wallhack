@@ -1,5 +1,6 @@
 local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("scoretracking")
+t[#t+1] = LoadActor("fullcombo")
 t[#t+1] = LoadActor("ghostscore")
 t[#t+1] = LoadActor("lanecover")
 t[#t+1] = LoadActor("judgecount")
