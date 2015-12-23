@@ -1,4 +1,5 @@
 -- Stuff that shows effects upon fullcombo ,etc.
+
 local flag = false
 local song = GAMESTATE:GetCurrentSong()
 local curBeat = 0 
@@ -13,9 +14,9 @@ local barCount = cols*5
 local barHeight = 150
 local barWidth = 5
 
-local text = {'F','u','l','l',' ','C','o','m','b','o'}
-local leamtokem = {28,20,14,14,16,32,36,36,30,30} -- RIP
-local totalSpacing = 226
+local text = {'F','u','l','l',' ','C','o','m','b','o'} -- RIP
+local leamtokem = {28,20,14,14,16,32,36,36,30,30} -- THIS IS DUMB BUT WHATEVER
+local totalSpacing = 226 -- sun of above minus the last element. 
 
 local enabled = {
 	PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1),
@@ -136,8 +137,8 @@ local function Update(self)
     	flag = true
     	if isFullCombo(PLAYER_1) then
     		MESSAGEMAN:Broadcast("FullCombo")
-    	else
-    		SCREENMAN:SystemMessage("NOT FC")
+    	--else
+    		--SCREENMAN:SystemMessage("NOT FC")
     	end
     end
 end; 
