@@ -1,7 +1,7 @@
 # spawncamping-wallhack
 A WIP Stepmania 5 theme aimed primarily for KB players. 
 
-Requirements: StepMania 5.0.8 or later.
+Requirements: StepMania 5.0.8 or later. Mouse related functions only work on Windows.
 
 ---
 ### Acknowledgements
@@ -45,7 +45,7 @@ You can set an avatar to a profile that is then displayed throughout the theme.
   |DP/Dance Points (MAX2)|2|2|1|0|-4|-8|6|0|-8|   
   |MIGS|3|2|1|0|-4|-8|6|0|-8|   
   ScoreTypes can be set from ```Options → Theme Options → Default ScoreType```.   
-  Scores are calculated dynamically separate from the game engine's scoring. So any preferences set regarding score weights will have no effect.   
+  Scores are calculated dynamically separate from the game engine's scoring. (aka: everything is done in lua) So any preferences set regarding score weights will have no effect.   
   DP Score will always be used for letter grade calculations regardless of the scoretype set.
   
 * **Rate Filter**   
@@ -53,7 +53,7 @@ You can set an avatar to a profile that is then displayed throughout the theme.
   ![](http://i.imgur.com/wd3T8wc.png)
 
 * **Clear Types**   
-  The theme uses iidx-esque cleartypes because... huur durrr lr2 wannabe theme.
+  The theme uses iidx-esque cleartypes because... huur durrr lr2 wannabe theme.   
   They should be self-explanatory. (e.g. PFC = ya got all perfect or higher / AAA)
 
 ---
@@ -127,13 +127,14 @@ Some Tabs will be disabled for 2 player modes.
   Displays the current NPS and the peak nps value.   
   It takes the average NPS taken from the past ```X``` seconds.   
   Available from ```Player Options  → NPS Display```. The time window for the ```X``` seconds above can be set from ```Options → Theme Options → NPS Window``` where the values correspond to seconds.   
+  A smaller window updates more quickly but with more unstable values, larger windows does the opposite. 
 
 * **Mid-game Speed Change**   
   Allows the player to change the scroll speed ingame by pressing ```<EffectDown>``` and ```<EffectUp>```.   
   The speed change increment is dependent on the settings available from ```Options → Advanced Options → Speed Increment```.
 
 * **Mid-game Pause**   
-  Pause the game during gameplay by quickly pressing ```<Select>``` Twice. Doing the same while paused or pressing ```<Start>``` will unpause the game.   
+  Pause the game during gameplay by quickly pressing ```<Select>``` twice. Doing the same while paused or pressing ```<Start>``` will unpause the game.   
   The number of times the game has been paused will show up on the evaluation screen.   
 
 ---
