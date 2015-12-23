@@ -31,12 +31,26 @@ if player == PLAYER_1 then
 	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
 	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
+
+
+
+
 elseif player == PLAYER_2 then
 	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
 	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
 	frameX = 0
 end
+
+local origTable
+local rtTable
+local hsTable
+if themeConfig:get_data().global.RateSort then
+	origTable = getScoreList(player)
+	rtTable = getRateTable(origTable)
+	hsTable = sortScore(rtTable[getCurRate()] or {},ghostType)
+end
+
 
 --if ghost score is off, inherit from default scoring type.
 if ghostType == nil or ghostType == 0 then
@@ -59,7 +73,7 @@ local markerPoints = { --DP/PS/MIGS in that order.
 }
 
 --Placeholder for ghostdata graph thing
-function ghostScoreGraph(index,scoreType,color)
+local function ghostScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Best Score";)
@@ -67,7 +81,11 @@ function ghostScoreGraph(index,scoreType,color)
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;);
 		BeginCommand=function(self)
-			self:settextf("%s Best",getScoreTypeText(ghostType))
+			if getCurRate() == "1.0x" or not themeConfig:get_data().global.RateSort then
+				self:settextf("%s Best",getScoreTypeText(ghostType))
+			else
+				self:settextf("%s Best (%s)",getScoreTypeText(ghostType),getCurRate())
+			end
 		end;
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -82,7 +100,7 @@ end
 
 -- Dynamic Graph
 -- Represents the current score/possible score for the specified scoreType
-function currentScoreGraph(index,scoreType,color)
+local function currentScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.7;);
@@ -122,14 +140,37 @@ function currentScoreGraph(index,scoreType,color)
 	return t
 end;
 
+local function avgScoreGraph(index,scoreType,color)
+	local t = Def.ActorFrame{}
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.2;);
+		SetCommand=function(self)
+			local curScore = getCurScoreST(player,scoreType)
+			local curMaxScore = getCurMaxScoreST(player,scoreType)
+			if curMaxScore <= 0 then
+				self:zoomy(1)
+			else
+				self:zoomy(math.max(1,barHeight*(curScore/curMaxScore)))
+			end;
+		end;
+		JudgmentMessageCommand=cmd(queuecommand,"Set");
+	};
+	return t
+end;
+
 -- Static Graph
 -- Represents the best score achieved for the specified scoreType
-function bestScoreGraph(index,scoreType,color)
+local function bestScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.2;);
 		BeginCommand=function(self)
-			local bestScore = getBestScore(player,0,scoreType)
+			local bestScore = 0
+			if themeConfig:get_data().global.RateSort then
+				bestScore = getScore(hsTable[1],scoreType)
+			else
+				bestScore = getBestScore(player,0,scoreType)
+			end
 			local maxScore = getMaxScoreST(player,scoreType)
 			self:smooth(1.5)
 			if maxScore <= 0 then
@@ -142,7 +183,12 @@ function bestScoreGraph(index,scoreType,color)
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY-12;zoom,0.35;maxwidth,((frameWidth/barCount)*barWidth)/0.35;diffusealpha,0);
 		BeginCommand=function(self)
-			local bestScore = getBestScore(player,0,scoreType)
+			local bestScore = 0
+			if themeConfig:get_data().global.RateSort then
+				bestScore = getScore(hsTable[1],scoreType)
+			else
+				bestScore = getBestScore(player,0,scoreType)
+			end
 			local maxScore = getMaxScoreST(player,scoreType)
 			self:smooth(1.5)
 			self:settext("Best\n"..bestScore)
@@ -162,7 +208,7 @@ end;
 
 -- Dynamic Graph
 -- Represents the current target score for the specified scoreType
-function targetScoreGraph(index,scoreType,color)
+local function targetScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.7;);
@@ -197,7 +243,7 @@ end;
 
 -- Static Graph
 -- Represents the total target score for the specified scoreType
-function targetMaxGraph(index,scoreType,color)
+local function targetMaxGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.2;);
@@ -233,7 +279,7 @@ end;
 
 
 --The Background markers with the lines corresponding to the minimum required for the grade,etc.
-function markers(scoreType,showMessage)
+local function markers(scoreType,showMessage)
 	local t = Def.ActorFrame{
 		InitCommand=cmd(diffusealpha,0.3);
 	}
@@ -277,6 +323,7 @@ if enabled then
 	t[#t+1] = targetScoreGraph(3,ghostType,getPaceMakerColor("Target"))
 
 	--t[#t+1] = bestScoreGraph(1,ghostType,getPaceMakerColor("Current"))
+	t[#t+1] = avgScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 
 	t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("Best"))

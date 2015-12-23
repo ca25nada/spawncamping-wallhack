@@ -273,6 +273,102 @@ function getScore(score,scoreType)
 	end
 end
 
+------------------------------------------------
+-- Rate filter stuff -- 
+
+local sortScoreType = 0
+local function scoreComparator(scoreA,scoreB)
+	return  getScore(scoreA,sortScoreType) > getScore(scoreB,sortScoreType)
+end
+
+-- returns a sorted table based on the criteria given by the
+-- scoreComparator() function.
+function sortScore(hsTable,scoreType)
+	sortScoreType = scoreType
+	table.sort(hsTable,scoreComparator)
+	return hsTable
+end
+
+-- returns a string corresponding to the rate mod used in the highscore.
+function getRate(score)
+	-- gets the rate mod used in highscore. doesn't work if ratemod has a different name
+	local mods = score:GetModifiers()
+	if string.find(mods,"Haste") ~= nil then
+		return 'Haste'
+	elseif string.find(mods,"xMusic") == nil then
+		return '1.0x'
+	else
+		return (string.match(mods,"%d+%.%d+xMusic")):sub(1,-6)
+	end
+end
+
+function getCurRate()
+	local mods = GAMESTATE:GetSongOptionsString()
+	if string.find(mods,"Haste") ~= nil then
+		return 'Haste'
+	elseif string.find(mods,"xMusic") == nil then
+		return '1.0x'
+	else
+		return (string.match(mods,"%d+%.%d+xMusic")):sub(1,-6)
+	end
+end
+
+-- returns the index of the highscore in a given highscore table. 
+function getHighScoreIndex(hsTable,score)
+	for k,v in ipairs(hsTable) do
+		if v:GetDate() == score:GetDate() then
+			return k
+		end
+	end
+	return 0
+end
+
+-- Returns a table containing tables containing scores for each ratemod used. 
+function getRateTable(hsTable)
+	local rtTable = {}
+	local rate
+	if hsTable ~= nil then
+		for k,v in ipairs(hsTable) do
+
+			if themeConfig:get_data().global.RateSort then
+				rate = getRate(v)
+			else
+				rate = "All"
+			end
+
+			if tableContains(rtTable,rate) then
+				rtTable[rate][#rtTable[rate]+1] = v
+			else
+				rtTable[rate] = {}
+				rtTable[rate][#rtTable[rate]+1] = v
+			end
+		end
+		for k,v in pairs(rtTable) do
+			rtTable[k] = sortScore(rtTable[k],0)
+		end
+		return rtTable
+	else
+		return nil 
+	end
+end
+
+function getUsedRates(rtTable)
+	local rates = {}
+	local initIndex = 1 
+	if rtTable ~= nil then
+		for k,v in pairs(rtTable) do
+			rates[#rates+1] = k
+		end;
+		table.sort(rates,function(a,b) a=a:gsub("x","") b=b:gsub("x","") return a<b end)
+		for i=1,#rates do
+			if rates[i] == "1.0x" or rates[i] == "All" then
+				initIndex = i
+			end
+		end
+	end
+	return rates,initIndex
+end
+
 ----------------------------------------------------
 
 -- Grabs the highest grade available from all currently saved scores.
@@ -390,78 +486,3 @@ function getBestScore(pn,ignore,scoreType)
 	return highest
 end
 
-
-local function scoreComparator(scoreA,scoreB)
-	return  getScore(scoreA,0) > getScore(scoreB,0)
-end
-
-function sortScore(hsTable)
-	table.sort(hsTable,scoreComparator)
-	return hsTable
-end
-
-function getRate(score)
-	-- gets the rate mod used in highscore. doesn't work if ratemod has a different name
-	local mods = score:GetModifiers()
-	if string.find(mods,"Haste") ~= nil then
-		return 'Haste'
-	elseif string.find(mods,"xMusic") == nil then
-		return '1.0x'
-	else
-		return (string.match(mods,"%d+%.%d+xMusic")):sub(1,-6)
-	end
-end
-
-function getHighScoreIndex(hsTable,score)
-	for k,v in ipairs(hsTable) do
-		if v:GetDate() == score:GetDate() then
-			return k
-		end
-	end
-	return 0
-end
-
-function getRateTable(hsTable)
-	local rtTable = {}
-	local rate
-	if hsTable ~= nil then
-		for k,v in ipairs(hsTable) do
-
-			if themeConfig:get_data().global.RateSort then
-				rate = getRate(v)
-			else
-				rate = "All"
-			end
-
-			if tableContains(rtTable,rate) then
-				rtTable[rate][#rtTable[rate]+1] = v
-			else
-				rtTable[rate] = {}
-				rtTable[rate][#rtTable[rate]+1] = v
-			end
-		end
-		for k,v in pairs(rtTable) do
-			rtTable[k] = sortScore(rtTable[k])
-		end
-		return rtTable
-	else
-		return nil 
-	end
-end
-
-function getUsedRates(rtTable)
-	local rates = {}
-	local initIndex = 1 
-	if rtTable ~= nil then
-		for k,v in pairs(rtTable) do
-			rates[#rates+1] = k
-		end;
-		table.sort(rates,function(a,b) a=a:gsub("x","") b=b:gsub("x","") return a<b end)
-		for i=1,#rates do
-			if rates[i] == "1.0x" or rates[i] == "All" then
-				initIndex = i
-			end
-		end
-	end
-	return rates,initIndex
-end

@@ -48,9 +48,9 @@ if GAMESTATE:IsPlayerEnabled(player) then
 	score = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetHighScore()--origTable[STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1]
 	rtTable = getRateTable(origTable)
 	if themeConfig:get_data().global.RateSort then
-		hsTable = sortScore(rtTable[getRate(score)] or {})
+		hsTable = sortScore(rtTable[getRate(score)] or {},0)
 	else
-		hsTable = sortScore(rtTable["All"] or {})
+		hsTable = sortScore(rtTable["All"] or {},0)
 	end;
 	scoreIndex = getHighScoreIndex(hsTable,score)
 end;
