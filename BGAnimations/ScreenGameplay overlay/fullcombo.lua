@@ -39,7 +39,7 @@ local function FCEffect(pn)
 			self:visible(false)
 			self:y(SCREEN_BOTTOM)
 			self:valign(1)
-			self:zoomto(getNoteFieldWidth()+8,0)
+			self:zoomto(getNoteFieldWidth(pn)+8,0)
 			self:fadetop(1)
 			self:diffusealpha(0):diffuse(getMainColor())
 		end;
@@ -57,7 +57,7 @@ local function FCEffect(pn)
 		t[#t+1] = Def.Quad{
 		InitCommand=function(self)
 			self:visible(false)
-			self:x(-(getNoteFieldWidth()/2)+math.random(getNoteFieldWidth())):y(SCREEN_BOTTOM+barHeight+400*math.random())
+			self:x(-(getNoteFieldWidth(pn)/2)+math.random(getNoteFieldWidth(pn))):y(SCREEN_BOTTOM+barHeight+400*math.random())
 			self:valign(1)
 			self:zoomto(barWidth,barHeight-math.random()*100)
 			self:fadetop(0.5)
@@ -81,7 +81,7 @@ local function FCEffect(pn)
 		t[#t+1] = LoadFont("Common Large") .. {
 			InitCommand=function(self)
 				local spacing = 0
-				local zoom = 0.6
+				local zoom = 0.6*getNoteFieldScale(pn)
 				if i>1 then
 					for j=1,i-1 do
 						spacing = leamtokem[j]+spacing

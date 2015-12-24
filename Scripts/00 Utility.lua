@@ -203,13 +203,23 @@ function disqualifyScore()
 	end
 end
 
+-- Values based on ArrowEffects.cpp
+function getNoteFieldScale(pn)
+	local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions('ModsLevel_Preferred')
+	local val,as = po:Mini()
+	local zoom = 1
+	zoom = 1-(val*0.5)
+	if math.abs(zoom) < 0.01 then
+		zoom = 0.01
+	end
+	return zoom
+end
 
-function getNoteFieldWidth()
+function getNoteFieldWidth(pn)
 	local baseWidth = 64
 	local style = GAMESTATE:GetCurrentStyle()
 	local cols = style:ColumnsPerPlayer()
-
-	return cols*64
+	return cols*64*getNoteFieldScale(pn)
 end
 
 function getNoteFieldPos(pn)
