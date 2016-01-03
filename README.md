@@ -1,7 +1,9 @@
 # spawncamping-wallhack
 A WIP Stepmania 5 theme aimed primarily for KB players. 
 
-Requirements: StepMania 5.0.8 or later. Mouse related functions only work on Windows.
+Requirements: StepMania 5.0.10 or later. Mouse related functions only work on Windows.
+* Midgame pauses do not work properly for versions earlier than 5.0.10.
+* RadarCategory_Notes wasn't added until 5.0.8 so earlier versions will output an error.
 
 ---
 ### Acknowledgements
