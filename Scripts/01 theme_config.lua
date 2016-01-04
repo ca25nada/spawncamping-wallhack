@@ -8,6 +8,7 @@ local defaultConfig = {
 		--AvatarEnabled = true, -- Unused
 		RateSort = true,
 		HelpMenu = true,
+		ScoreBoardNag = true,
 	},
 	NPSDisplay = {
 		--Enabled = true, -- Player Controlled

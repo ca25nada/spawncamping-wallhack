@@ -264,7 +264,7 @@ local Phrases = {
     "ROARD TOOTHBRUSH", -- Stai birthday stream 
     "\"The dance pad. Does it count as a toy?\"", -- http://zenius-i-vanisher.com/v5.2/thread?threadid=7696
     "Thou shalt not look down at lifebar whilst vigorously mashing keys to survive", -- LG
-    "is it possible to make the lifebar hidden -- Post it note on screen",
+    "\"is it possible to make the lifebar hidden?\" -- Post it note on screen",
     "YOURE STILL ON GIRLISH CAFE? ;;", -- YES -- AND IM GETTING GOOD SCORES ON IT -- SO QUIET YOU HEATHEN
     "\"with all of the anime girls in stepmania backgrounds why don't we have 10 million weaboos playing our shit\"", -- lovelive choof
     "\"its easier to read chinese than to read osu Kappa\"", -- n(e)kro
@@ -280,7 +280,12 @@ local Phrases = {
     "\"you dont start playing o2jam until you clear lvl 70's\"",
     "guys please NO DRAMA",
     "8k>4k ..... *runs*",
-    "I can pass overjoy on osu so I should be able to do that in lr2 easily" -- logic 
+    "\"I can pass overjoy on osu so I should be able to do that in lr2 easily\"", -- logic 
+    "\"why can't everything be image replacements like osu smh\"",
+    "\"metrics.ini is a giant shitshow\"",
+    "\"O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA﻿\"", -- sdvx brain power
+    "\"when you have a GF you will creat here an osu account by th name of staiaina\"" -- oss firstofall
+
 }
 
 --tip
