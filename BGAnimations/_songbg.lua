@@ -56,38 +56,42 @@ local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("_particles");
 
 if enabled then
-	t[#t+1] = Def.Sprite {
+
+	t[#t+1] = Def.ActorFrame{
 		Name="MouseXY";
-		CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"ModifySongBackground");
-		--BeginCommand=cmd(scaletocover,0,0,SCREEN_WIDTH+maxDistX/4,SCREEN_BOTTOM+maxDistY/4;diffusealpha,0.3;);
-		ModifySongBackgroundCommand=function(self)
-			if GAMESTATE:GetCurrentSong() then
-				if GAMESTATE:GetCurrentSong():GetBackgroundPath() then
-					self:visible(true);
-					self:LoadBackground(GAMESTATE:GetCurrentSong():GetBackgroundPath());
-					if moveBG then
-						self:scaletocover(0-maxDistY/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8);
+		Def.Sprite {
+			CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"ModifySongBackground");
+			--BeginCommand=cmd(scaletocover,0,0,SCREEN_WIDTH+maxDistX/4,SCREEN_BOTTOM+maxDistY/4;diffusealpha,0.3;);
+			ModifySongBackgroundCommand=function(self)
+				self:finishtweening()
+				if GAMESTATE:GetCurrentSong() then
+					if GAMESTATE:GetCurrentSong():GetBackgroundPath() then
+						self:visible(true);
+						self:LoadBackground(GAMESTATE:GetCurrentSong():GetBackgroundPath());
+						if moveBG then
+							self:scaletocover(0-maxDistY/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8);
+						else
+							self:scaletocover(0,0,SCREEN_WIDTH,SCREEN_BOTTOM);
+						end;
+						self:sleep(0.25)
+						self:smooth(0.5)
+						self:diffusealpha(brightness)
 					else
-						self:scaletocover(0,0,SCREEN_WIDTH,SCREEN_BOTTOM);
+						self:visible(false);
 					end;
-					self:sleep(0.25)
-					self:smooth(0.5)
-					self:diffusealpha(brightness)
 				else
 					self:visible(false);
 				end;
-			else
-				self:visible(false);
 			end;
-		end;
-		OffCommand=cmd(smooth,0.5;diffusealpha,0)	
-	};
+			OffCommand=cmd(smooth,0.5;diffusealpha,0)	
+		};
+	}
 end;
 
 
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
-    self:GetChild("MouseXY"):xy(getPosX(),getPosY())
+    self:GetChild("MouseXY"):xy(getPosX()-SCREEN_CENTER_X,getPosY()-SCREEN_CENTER_Y)
 end; 
 if moveBG then
 	t.InitCommand=cmd(SetUpdateFunction,Update);
