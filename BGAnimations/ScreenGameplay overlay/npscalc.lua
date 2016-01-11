@@ -6,9 +6,60 @@ local maxWindow = themeConfig:get_data().NPSDisplay.MaxWindow -- this will be th
 local minWindow = themeConfig:get_data().NPSDisplay.MinWindow -- this will be the minimum size of the "window" in seconds. Unused for now.
 local dynamicWindow = themeConfig:get_data().NPSDisplay.DynamicWindow -- set to false for now.
 
+--Graph related stuff
+local initialPeak = 10 -- Initial height of the NPS graph.
+local graphWidth = 90
+local graphHeight = 50
+local graphPos = {  -- Position of the NPS graph
+	PlayerNumber_P1 = {
+		X = 0,
+		Y = 50
+	},
+	PlayerNumber_P2 = {
+		X = SCREEN_WIDTH-graphWidth,
+		Y = 50
+	}
+}
+
+local textPos = { -- Position of the NPS text
+	PlayerNumber_P1 = {
+		X = 5,
+		Y = 34
+	},
+	PlayerNumber_P2 = {
+		X = SCREEN_WIDTH-graphWidth,
+		Y = 34
+	}
+}
+
+local maxVerts = 500 -- Higher numbers allows for more detailed graph that spans for a longer duration. But may lead to performance issues
+local graphFreq = 0.1 -- The frequency in which the graph updates in seconds.
+local lifeGraph = true -- SHow lifegraph 
+--------------------
+
+--These should be moved to 02 colors.lua
+local judgeColor = { -- Colors of each Judgment types
+	TapNoteScore_W1 = color("#99ccff"),
+	TapNoteScore_W2	= HSV(48,0.8,0.95),
+	TapNoteScore_W3	 = HSV(160,0.9,0.8),
+	TapNoteScore_W4	= HSV(200,0.9,1),
+	TapNoteScore_W5	= HSV(320,0.9,1),
+	TapNoteScore_Miss = HSV(0,0.8,0.8),			
+	HoldNoteScore_Held = HSV(48,0.8,0.95),	
+	HoldNoteScore_LetGo = HSV(0,0.8,0.8),
+	TapNoteScore_None = Color.White
+}
+
+
 local enabled = {
-	PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSDisplay,
-	PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSDisplay
+	NPSDisplay = {
+		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSDisplay,
+		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSDisplay
+	},
+	NPSGraph = {
+		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSGraph,
+		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSGraph
+	}
 }
 
 local npsWindow = {
@@ -22,6 +73,11 @@ local npsWindow = {
 local noteTable = {
 	PlayerNumber_P1 = {},
 	PlayerNumber_P2 = {},
+}
+
+local lastJudgment = {
+	PlayerNumber_P1 = 'TapNoteScore_None',
+	PlayerNumber_P2 = 'TapNoteScore_None'
 }
 
 -- Total sum of notes inside the moving average window for each player.
@@ -44,7 +100,7 @@ local peakNPS = {
 ---------------
 
 -- This function will take the player, the timestamp,
--- and the size of the chord and appends it to noteTable.
+-- and the size of the chord and append it to noteTable.
 -- The function will also add the size of the chord to noteSum 
 -- This function is called whenever a JudgmentMessageCommand for regular tap note occurs.
 -- (simply put, whenever you hit/miss a note)
@@ -88,31 +144,33 @@ local function Update(self)
 	self.InitCommand=cmd(SetUpdateFunction,Update)
 
 	for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-		if enabled[pn] then
+		if enabled.NPSDisplay[pn] or enabled.NPSGraph[pn] then
 			-- We want to constantly check for old notes to remove and update the NPS counter text. 
 			removeNote(pn)
 
 			curNPS = getCurNPS(pn)
 
-			-- Update peak nps
+			-- Update peak nps. Only start updating after enough time has passed.
 			if GAMESTATE:GetSongPosition():GetMusicSeconds() > npsWindow[pn] then
 				peakNPS[pn] = math.max(peakNPS[pn],curNPS)
 			end
 			-- the actor which called this update function passes itself down as "self".
 			-- we then have "self" look for the child named "Text" which you can see down below.
 			-- Then the settext function is called (or settextf for formatted ones) to set the text of the child "Text"
-			-- every time this function is called. 
-			if debug then
-				self:GetChild("npsDisplay"..pn):GetChild("Text"):
-				settextf("%0.1f NPS (Peak %0.1f)\n%0.1fs Window\n%d notes in table\nDynamic Window:%s",
-					curNPS,peakNPS[pn],npsWindow[pn],noteSum[pn],tostring(dynamicWindow))
-			else
-				self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.0f NPS (Peak %0.0f)",curNPS,peakNPS[pn])
+			-- every time this function is called.
+			-- We don't display the decimal values due to lack of precision from having a relatively small time window.
+			if enabled.NPSDisplay[pn] then
+				if debug then
+					self:GetChild("npsDisplay"..pn):GetChild("Text"):
+					settextf("%0.1f NPS (Peak %0.1f)\n%0.1fs Window\n%d notes in table\nDynamic Window:%s",
+						curNPS,peakNPS[pn],npsWindow[pn],noteSum[pn],tostring(dynamicWindow))
+				else
+					self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.0f NPS (Peak %0.0f)",curNPS,peakNPS[pn])
+				end
 			end
 			-- update the window size. 
 			-- This isn't needed at all but it helps the counter
 			-- adapt quickly to high-nps bursts.
-			-- Ideally, I should be using derivatives or a tangent line to get the rate it changes but I'm lazy.
 			if dynamicWindow then
 				npsWindow[pn] = clamp(15/math.sqrt(getCurNPS(pn)),1,maxWindow )
 			end
@@ -148,36 +206,132 @@ local function npsDisplay(pn)
 
 				-- add the note to noteTable
 				addNote(pn,GetTimeSinceStart(),chordsize)
+				lastJudgment[pn] = params.TapNoteScore
 			end
 		end
 	end;
 	}
 	-- the text that will be updated by the update function.
-	t[#t+1] = LoadFont("Common Normal")..{
-		Name="Text"; -- sets the name of this actor as "Text". this is a child of the actor "t".
-		InitCommand=cmd(x,5;y,34;halign,0;zoom,0.40;halign,0;valign,0;shadowlength,1;settext,"0.0 NPS");
-		BeginCommand=function(self)
-			if pn == PLAYER_2 then
-				self:x(SCREEN_WIDTH-5)
-				self:halign(1)
-			end
-		end;
-	}
+	if enabled.NPSDisplay[pn] then
+		t[#t+1] = LoadFont("Common Normal")..{
+			Name="Text"; -- sets the name of this actor as "Text". this is a child of the actor "t".
+			InitCommand=cmd(x,textPos[pn].X;y,textPos[pn].Y;halign,0;zoom,0.40;halign,0;valign,0;shadowlength,1;settext,"0.0 NPS");
+			BeginCommand=function(self)
+				if pn == PLAYER_2 then
+					self:x(SCREEN_WIDTH-5)
+					self:halign(1)
+				end
+			end;
+		}
+	end
+
 	return t
 end;
 
+local function PLife(pn)
+	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentLife() or 0
+end;
+
+local function npsGraph(pn)
+	local t = Def.ActorFrame{
+		InitCommand=function(self)
+			self:xy(graphPos[pn].X,graphPos[pn].Y)
+		end
+	}
+	local verts= {
+		{{0,0,0},Color.White}
+	}
+	local lifeverts= {
+		{{0,0,0},color("#00000000")}
+	}
+	local total = 1
+	local peakNPS = initialPeak
+	local curNPS = 0
+	t[#t+1] = Def.Quad{
+		InitCommand=function(self)
+			self:zoomto(graphWidth,graphHeight)
+			self:xy(0,graphHeight)
+			self:diffuse(color("#333333")):diffusealpha(0.8)
+			self:horizalign(0):vertalign(2)
+			self:fadetop(1)
+		end
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand=function(self)
+			self:zoomto(graphWidth,1)
+			self:xy(0,graphHeight)
+			self:diffusealpha(0.5)
+			self:horizalign(0)
+		end
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand=function(self)
+			self:zoomto(graphWidth,1)
+			self:xy(0,0)
+			self:diffusealpha(0.2)
+			self:horizalign(0)
+		end
+	}
+
+	t[#t+1] = Def.ActorMultiVertex{
+		Name= "AMV_QuadStrip",
+		InitCommand=function(self)
+			self:visible(true)
+			self:xy(graphWidth,graphHeight)
+			self:SetDrawState{Mode="DrawMode_LineStrip"}
+		end,
+		BeginCommand=function(self)
+			self:SetDrawState{First= 1, Num= -1}
+			self:SetVertices(verts)
+			self:queuecommand("GraphUpdate")
+		end,
+		GraphUpdateCommand=function(self)
+			total = total+1
+			curNPS = getCurNPS(pn)
+			curJudgment = lastJudgment[pn]
+
+			if curNPS > peakNPS then -- update height if there's a new peak NPS value
+				for i=1,#verts do
+					verts[i][1][2] = verts[i][1][2]*(peakNPS/curNPS)
+				end
+				peakNPS = curNPS
+			end
+
+			verts[#verts+1] = {{total*(graphWidth/maxVerts),-curNPS/peakNPS*graphHeight,0},Color.White}
+			if #verts>maxVerts+2 then -- Start removing unused verts. Otherwise RIP lag
+				table.remove(verts,1)
+			end
+			self:SetVertices(verts)
+			self:addx(-graphWidth/maxVerts)
+			self:SetDrawState{First = math.max(1,#verts-maxVerts), Num=math.min(maxVerts,#verts)}
+			self:sleep(graphFreq)
+			self:queuecommand("GraphUpdate")
+		end,
+	}
+	return t
+end
+
 local t = Def.ActorFrame{
 	OnCommand=function(self)
-		if enabled[PLAYER_1] or enabled[PLAYER_2] then
+		if enabled.NPSDisplay[PLAYER_1] or enabled.NPSDisplay[PLAYER_2] or
+		 	enabled.NPSGraph[PLAYER_1] or enabled.NPSGraph[PLAYER_2] then
 			self:SetUpdateFunction(Update)
 		end
-	end;
+	end
 }
 
-for k,v in pairs({PLAYER_1,PLAYER_2}) do
-	if enabled[v] then
-		t[#t+1] = npsDisplay(v)
-	end;
-end;
+for _,pn in pairs({PLAYER_1,PLAYER_2}) do
+	if enabled.NPSDisplay[pn] then
+		t[#t+1] = npsDisplay(pn)
+	end
+	if enabled.NPSGraph[pn] then
+		if not enabled.NPSDisplay[pn] then
+			t[#t+1] = npsDisplay(pn)
+		end
+		t[#t+1] = npsGraph(pn)
+	end
+end
 
 return t
