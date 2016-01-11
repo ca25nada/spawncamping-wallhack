@@ -19,7 +19,7 @@ local t = Def.ActorFrame {
         };
 };
  
-function PLife(pn)
+local function PLife(pn)
 	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentLife() or 0
 end;
  

@@ -237,6 +237,21 @@ t[#t+1] = LoadFont("Common Normal")..{
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
+	Name="Mods";
+	InitCommand=cmd(xy,frameX+offsetX,frameY+frameHeight-10;zoom,0.4;halign,0);
+	SetCommand=function(self)
+		if ghostDataExists(pn,score) then
+			self:settext("Ghost Data Available")
+			self:diffuse(color("#4CBB17"))
+		else
+			self:settext("Ghost Data Unavailable")
+			self:diffuse(color("#666666"))
+		end;
+	end;
+	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
 	Name="StepsAndMeter";
 	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+10;zoom,0.5;halign,1;);
 	SetCommand=function(self)

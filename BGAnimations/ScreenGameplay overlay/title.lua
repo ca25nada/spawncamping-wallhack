@@ -23,4 +23,5 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	OnCommand=cmd(smooth,0.5;diffusealpha,1;sleep,1;smooth,0.3;y,SCREEN_CENTER_Y-5;smooth,0.4;diffusealpha,0;y,SCREEN_TOP-500;);
 };
 
+
 return t

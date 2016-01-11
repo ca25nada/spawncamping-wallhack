@@ -25,8 +25,8 @@ function isWindowed()
 	return PREFSMAN:GetPreference("Windowed")
 end;
 
---Recursively grabs the parents' position.
---dunno if it actually returns the correct position, but it works with my needs for now.
+--Gets the true X/Y Position by recursively grabbing the parents' position.
+--Does not take zoom into account.
 function getTrueX(element)
 	if element == nil then
 		return 0
@@ -142,6 +142,7 @@ function SHA1StringHex(str)
 	end
 end
 
+--Given a table of file paths/names in a fileList
 --filters out files from fileList that isn't in the type in fileTypes
 --both function parameters are passed on as tables
 function filterFileList(fileList,fileTypes)
@@ -163,10 +164,7 @@ function filterFileList(fileList,fileTypes)
 	return t
 end
 
--- Ideally, i should just be checking simfile hashes and 
--- the simfile hashes when the highscore was made, but that's not an option rip-
--- Instead, check for player leaving prematurely, 
--- and the total notecount in score being different than the simfile notecount.
+-- Just something to get rid of scores where the player quit out early.
 function isScoreValid(pn,steps,score)
 	if score:GetGrade() == "Grade_Failed" then
 		return true
@@ -204,6 +202,7 @@ function disqualifyScore()
 end
 
 -- Values based on ArrowEffects.cpp
+-- Gets the note scale from the mini mod being used.
 function getNoteFieldScale(pn)
 	local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions('ModsLevel_Preferred')
 	local val,as = po:Mini()
@@ -215,13 +214,15 @@ function getNoteFieldScale(pn)
 	return zoom
 end
 
+-- Gets the width of the note assuming the base width is 64.
 function getNoteFieldWidth(pn)
-	local baseWidth = 64
+	local baseWidth = 64 -- is there a way to grab a noteskin width..?
 	local style = GAMESTATE:GetCurrentStyle()
 	local cols = style:ColumnsPerPlayer()
-	return cols*64*getNoteFieldScale(pn)
+	return cols*baseWidth*getNoteFieldScale(pn)
 end
 
+-- Gets the center X position of the notefield.
 function getNoteFieldPos(pn)
 	local pNum = (pn == PLAYER_1) and 1 or 2
 	local style = GAMESTATE:GetCurrentStyle()
