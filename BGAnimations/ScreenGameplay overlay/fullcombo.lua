@@ -29,8 +29,10 @@ local function FCEffect(pn)
 			self:x(getNoteFieldPos(pn))
 			self:visible(false)
 		end;
-		FullComboMessageCommand=function(self)
-			self:visible(true)
+		FullComboMessageCommand=function(self,params)
+			if params.pn == pn then
+				self:visible(true)
+			end
 		end;
 	}
 
@@ -43,13 +45,15 @@ local function FCEffect(pn)
 			self:fadetop(1)
 			self:diffusealpha(0):diffuse(getMainColor())
 		end;
-		FullComboMessageCommand=function(self)
-			self:sleep(0.2)
-			self:visible(true)
-			self:diffusealpha(1)
-			self:linear(1)
-			self:diffusealpha(0)
-			self:zoomy(SCREEN_HEIGHT*4)
+		FullComboMessageCommand=function(self,params)
+			if params.pn == pn then
+				self:sleep(0.2)
+				self:visible(true)
+				self:diffusealpha(1)
+				self:linear(1)
+				self:diffusealpha(0)
+				self:zoomy(SCREEN_HEIGHT*4)
+			end
 		end;
 	}
 
@@ -66,13 +70,16 @@ local function FCEffect(pn)
 			self:faderight(0.2)
 			self:diffusealpha(0)
 		end;
-		FullComboMessageCommand=function(self)
-			self:sleep(0.1)
-			self:visible(true)
-			self:diffusealpha(0.4)
-			self:accelerate(2)
-			self:diffusealpha(0)
-			self:y((-SCREEN_HEIGHT)-(SCREEN_HEIGHT*math.random()*10))
+		FullComboMessageCommand=function(self,params)
+			
+			if params.pn == pn then
+				self:sleep(0.1)
+				self:visible(true)
+				self:diffusealpha(0.4)
+				self:accelerate(2)
+				self:diffusealpha(0)
+				self:y((-SCREEN_HEIGHT)-(SCREEN_HEIGHT*math.random()*10))
+			end
 		end;
 	}	
 	end
@@ -98,21 +105,23 @@ local function FCEffect(pn)
 				self:diffusealpha(0)
 				self:zoom(zoom)
 			end;
-			FullComboMessageCommand=function(self)
-				--SCREENMAN:SystemMessage("FC")
-				local random = math.random()*randMagnitude
-				self:sleep(0.20+random)
-				self:visible(true)
-				self:y(SCREEN_BOTTOM-(400*math.random()))
-				self:diffusealpha(0.0)
-				self:decelerate(0.5-random)
-				random = math.random()*randMagnitude
-				self:y(SCREEN_CENTER_Y)
-				self:diffusealpha(1)
-				self:sleep(0.3)
-				self:accelerate(0.6-random)
-				--self:y(SCREEN_TOP+(400*math.random()))
-				self:diffusealpha(0.0)
+			FullComboMessageCommand=function(self,params)
+				if params.pn == pn then
+					--SCREENMAN:SystemMessage("FC")
+					local random = math.random()*randMagnitude
+					self:sleep(0.20+random)
+					self:visible(true)
+					self:y(SCREEN_BOTTOM-(400*math.random()))
+					self:diffusealpha(0.0)
+					self:decelerate(0.5-random)
+					random = math.random()*randMagnitude
+					self:y(SCREEN_CENTER_Y)
+					self:diffusealpha(1)
+					self:sleep(0.3)
+					self:accelerate(0.6-random)
+					--self:y(SCREEN_TOP+(400*math.random()))
+					self:diffusealpha(0.0)
+				end
 			end;
 		}
 	end
@@ -135,11 +144,12 @@ local function Update(self)
     curBeat = GAMESTATE:GetSongBeat()
     if curBeat > lastBeat and flag == false then
     	flag = true
-    	if isFullCombo(PLAYER_1) then
-    		MESSAGEMAN:Broadcast("FullCombo")
-    	--else
-    		--SCREENMAN:SystemMessage("NOT FC")
-    	end
+
+    	for _,v in pairs({PLAYER_1,PLAYER_2}) do
+	    	if isFullCombo(v) then
+	    		MESSAGEMAN:Broadcast("FullCombo",{pn = v})
+	    	end
+	    end
     end
 end; 
 t.InitCommand=cmd(SetUpdateFunction,Update);
