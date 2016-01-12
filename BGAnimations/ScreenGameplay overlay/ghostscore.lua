@@ -1,6 +1,7 @@
 -- Dependencies: Scoretracking.lua
 -- Displays average score and the score difference between the player score and the ghost/target score.
-
+-- Moved to player combo. Deprecated. 
+--[[
 local ghostTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GhostScoreType -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 local avgScoreTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).AvgScoreType-- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 local targetP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GhostTarget/100; -- target score from 0% to 100%.
@@ -155,14 +156,6 @@ function avgScore(pn)
 	return t
 end;
 
---[[
-t[#t+1] = LoadFont("Common Normal") .. {
- 	InitCommand=cmd(xy,300,300;settext,cols);
-}
-t[#t+1] = LoadFont("Common Normal") .. {
- 	InitCommand=cmd(xy,400,300;settext,tostring(center1P));
-}
---]]
 if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 	t[#t+1] = ghostScore(PLAYER_1)
 	t[#t+1] = avgScore(PLAYER_1)
@@ -173,3 +166,4 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 end;
 
 return t
+--]]
