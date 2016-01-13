@@ -9,6 +9,7 @@ local defaultConfig = {
 		RateSort = true,
 		HelpMenu = true,
 		ScoreBoardNag = true,
+		MeasureLines = true,
 	},
 	NPSDisplay = {
 		--Enabled = true, -- Player Controlled
