@@ -7,9 +7,9 @@ local stepsP2 = 0
 
 if not GAMESTATE:IsCourseMode() then
 	judgeTableP1 = getJudgeTableST(PLAYER_1)
-	stepsP1 = GAMESTATE:GetCurrentSteps(PLAYER_1):GetRadarValues(PLAYER_1):GetValue('RadarCategory_TapsAndHolds')
+	stepsP1 = getMaxNotesST(PLAYER_1)
 	judgeTableP2 = getJudgeTableST(PLAYER_2)
-	stepsP2 = GAMESTATE:GetCurrentSteps(PLAYER_2):GetRadarValues(PLAYER_2):GetValue('RadarCategory_TapsAndHolds')
+	stepsP2 = getMaxNotesST(PLAYER_2)
 end;
 
 local cells = themeConfig:get_data().eval.JudgmentBarCellCount / GAMESTATE:GetNumPlayersEnabled()

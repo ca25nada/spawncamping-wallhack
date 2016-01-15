@@ -198,12 +198,17 @@ local function npsDisplay(pn)
 				
 				-- Since we only want to count the number of notes in a chord,
 				-- we just iterate over the table and count the ones that aren't nil. 
-				for i=1,GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() do
-					if notes ~= nil and notes[i] ~= nil then
-						chordsize = chordsize+1
+				-- Set chordsize to 1 if notes are counted separately.
+				if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
+					chordsize = 1
+				else
+					for i=1,GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() do
+						if notes ~= nil and notes[i] ~= nil then
+							chordsize = chordsize+1
+						end
 					end
-				end
-
+				end 
+				
 				-- add the note to noteTable
 				addNote(pn,GetTimeSinceStart(),chordsize)
 				lastJudgment[pn] = params.TapNoteScore

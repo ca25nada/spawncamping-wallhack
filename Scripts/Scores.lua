@@ -100,7 +100,11 @@ function getMaxNotes(pn)
 	if GAMESTATE:IsPlayerEnabled(pn) then
 		steps = GAMESTATE:GetCurrentSteps(pn)
 		if steps ~= nil then 
-			return steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0
+			if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
+				return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes") or 0
+			else
+				return steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0
+			end
 		end
 	end
 	return 0

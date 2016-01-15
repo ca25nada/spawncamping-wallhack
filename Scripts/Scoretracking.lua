@@ -236,7 +236,11 @@ function getMaxNotesST(pn)
 	if GAMESTATE:IsCourseMode() then
 		return 0
 	else
-		return GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0 -- Radarvalue, maximum number of notes
+		if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
+			return GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_Notes") or 0
+		else
+			return GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0 -- Radarvalue, maximum number of notes
+		end
 	end
 end
 
