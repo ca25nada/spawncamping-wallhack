@@ -674,21 +674,21 @@ function ProgressBar()
 		SelectType = "SelectOne";
 		OneChoiceForAllPlayers = true;
 		ExportOnChange = true;
-		Choices = { "Bottom", "Top", "Off"};
+		Choices = { "Off","Bottom", "Top",};
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.ProgressBar
 			if pref then
-				list[pref] = true
+				list[pref+1] = true
 			end;
 		end;
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] == true then
-				value = 1
+				value = 0
 			elseif list[2] == true then
-				value = 2
+				value = 1
 			else
-				value = 3;
+				value = 2;
 			end;
 			themeConfig:get_data().global.ProgressBar = value;
 			themeConfig:set_dirty();

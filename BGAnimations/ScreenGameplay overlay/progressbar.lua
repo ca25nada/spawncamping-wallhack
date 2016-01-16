@@ -9,17 +9,15 @@ local width = capWideScale(get43size(300),300)
 local height = 7
 local frameX = SCREEN_CENTER_X
 local bottomModifier = -20;  -- Negative value, how far up
-local topModifier = 5;       -- Positive value, how far down
+local topModifier = 15;       -- Positive value, how far down
+local frameY = 0
 --=======================================
 
 if barPosition == 1 then  -- BOTTOM
     frameY = SCREEN_BOTTOM + bottomModifier
 elseif barPosition == 2 then -- TOP
     frameY = SCREEN_TOP + topModifier 
-else
-    frameY = SCREEN_TOP - 10 -- OFF (For now just hiding it off screen...)
 end;
-
 
 local t = Def.ActorFrame {
     Def.Quad{
@@ -45,6 +43,8 @@ local t = Def.ActorFrame {
         BeginCommand=cmd(settext,SecondsToMMSS(GAMESTATE:GetCurrentSong():GetStepsSeconds()));
     };  
 };
+
+
 local function getMusicProgress()
 	local songLength = GAMESTATE:GetCurrentSong():GetStepsSeconds()
 	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
@@ -57,11 +57,17 @@ local function getCurrentTime()
 end;
 
 local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update);
-	self:GetChild("ProgressFG"):zoomx(width*getMusicProgress())
-    self:GetChild("CurrentTime"):settext(getCurrentTime())
+    	t.InitCommand=cmd(SetUpdateFunction,Update);
+    	self:GetChild("ProgressFG"):zoomx(width*getMusicProgress())
+        self:GetChild("CurrentTime"):settext(getCurrentTime())
 end; 
-t.InitCommand=cmd(SetUpdateFunction,Update);
+t.InitCommand=function(self)
+    if barPosition ~= 0 then
+        self:SetUpdateFunction(Update)
+    else
+        self:visible(false)
+    end
+end
 
 
 return t;
