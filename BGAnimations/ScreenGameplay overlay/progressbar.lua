@@ -26,7 +26,7 @@ local t = Def.ActorFrame {
     };
     Def.Quad{
     	Name="ProgressFG";
-    	InitCommand=cmd(xy,SCREEN_CENTER_X-(width/2),frameY;zoomto,0,height;halign,0;diffuse,getMainColor(1));
+    	InitCommand=cmd(xy,SCREEN_CENTER_X-(width/2),frameY;zoomto,0,height;halign,0;diffuse,getMainColor('highlight'));
     };
     LoadFont("Common Normal") .. {
         Name="Song Name";

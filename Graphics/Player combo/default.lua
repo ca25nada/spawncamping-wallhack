@@ -78,13 +78,13 @@ local t = Def.ActorFrame {
 			targetDiff = getCurScoreST(player,ghostType)-(math.ceil(getCurMaxScoreST(player,ghostType)*target))
 			if targetDiff > 0 then
 				c.GhostScore:settext('+'..targetDiff)
-				c.GhostScore:diffuse(color("#66ccff"))
+				c.GhostScore:diffuse(getMainColor('positive'))
 			elseif targetDiff == 0 then
 				c.GhostScore:settext('+'..targetDiff)
 				c.GhostScore:diffuse(color("#FFFFFF"))
 			else
 				c.GhostScore:settext('-'..(math.abs(targetDiff)))
-				c.GhostScore:diffuse(color("#FF9999"))
+				c.GhostScore:diffuse(getMainColor('negative'))
 			end;
 		end;
 

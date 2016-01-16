@@ -121,7 +121,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 	--]]
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+7;halign,0;zoom,0.6;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+7;halign,0;zoom,0.6;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(profileNameP1)
@@ -130,7 +130,7 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+20;halign,0;zoom,0.35;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+20;halign,0;zoom,0.35;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(playCountP1.." Plays");
@@ -139,7 +139,7 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+30;halign,0;zoom,0.35;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+30;halign,0;zoom,0.35;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(noteCountP1.." Arrows Smashed")
@@ -148,7 +148,7 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+40;halign,0;zoom,0.35;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+40;halign,0;zoom,0.35;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local time = SecondsToHHMMSS(playTimeP1)
@@ -192,7 +192,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(visible,true;zoomto,50,50;halign,0;valign,0;xy,AvatarXP2,AvatarYP2);
 	};--]]
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+7;halign,1;zoom,0.6;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+7;halign,1;zoom,0.6;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(profileNameP2)
@@ -201,7 +201,7 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+20;halign,1;zoom,0.35;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+20;halign,1;zoom,0.35;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(playCountP2.." Plays");
@@ -210,7 +210,7 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+30;halign,1;zoom,0.35;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+30;halign,1;zoom,0.35;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(noteCountP2.." Arrows Smashed")
@@ -219,7 +219,7 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 	LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+40;halign,1;zoom,0.35;diffuse,getMainColor(1));
+		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+40;halign,1;zoom,0.35;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			local time = SecondsToHHMMSS(playTimeP2)

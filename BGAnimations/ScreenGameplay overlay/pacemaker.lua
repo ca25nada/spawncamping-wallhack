@@ -289,7 +289,7 @@ local function markers(scoreType,showMessage)
 			JudgmentMessageCommand=function(self)
 				local percent = getCurScoreST(player,scoreType)/getMaxScoreST(player,scoreType)
 				if percent >= v then
-					self:diffuse(getMainColor(1))
+					self:diffuse(getMainColor('highlight'))
 				end;
 			end;
 		};
@@ -302,7 +302,7 @@ local function markers(scoreType,showMessage)
 					if scoreType == 1 then 
 						self:effectcolor1(getGradeColor(k))
 					else
-						self:effectcolor1(getMainColor(1))
+						self:effectcolor1(getMainColor('highlight'))
 					end;
 					self:effectcolor2(color("FFFFFF"))
 				end;
@@ -319,15 +319,15 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)
 	};
-	t[#t+1] = targetMaxGraph(3,ghostType,getPaceMakerColor("Target"))
-	t[#t+1] = targetScoreGraph(3,ghostType,getPaceMakerColor("Target"))
+	t[#t+1] = targetMaxGraph(3,ghostType,getPaceMakerColor("target"))
+	t[#t+1] = targetScoreGraph(3,ghostType,getPaceMakerColor("target"))
 
 	--t[#t+1] = bestScoreGraph(1,ghostType,getPaceMakerColor("Current"))
-	t[#t+1] = avgScoreGraph(1,ghostType,getPaceMakerColor("Current"))
-	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("Current"))
+	t[#t+1] = avgScoreGraph(1,ghostType,getPaceMakerColor("current"))
+	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("current"))
 
-	t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("Best"))
-	t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("Best"))
+	t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("best"))
+	t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("best"))
 
 	t[#t+1] = markers(ghostType,true)
 end;

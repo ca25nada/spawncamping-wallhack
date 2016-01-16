@@ -61,7 +61,7 @@ function tabs(index)
 	};
 	t[#t+1] = Def.Quad{
 		Name="TabBG";
-		InitCommand=cmd(valign,0;zoomto,frameWidth,20);
+		InitCommand=cmd(valign,0;zoomto,frameWidth,20;diffuse,getMainColor('frames'));
 		MouseLeftClickMessageCommand=function(self)
 			if isOver(self) then
 				setTabIndex(index-1)
@@ -71,12 +71,12 @@ function tabs(index)
 	};
 		
 	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand=cmd(y,4;valign,0;zoom,0.45;diffuse,getMainColor(1));
+		InitCommand=cmd(y,4;valign,0;zoom,0.45;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(tabNames[index])
 			if isTabEnabled(index) then
-				self:diffuse(getMainColor(1))
+				self:diffuse(getMainColor('highlight'))
 			else
 				self:diffuse(color("#666666"))
 			end;

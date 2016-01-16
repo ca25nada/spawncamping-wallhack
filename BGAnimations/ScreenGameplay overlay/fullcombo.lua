@@ -43,7 +43,7 @@ local function FCEffect(pn)
 			self:valign(1)
 			self:zoomto(getNoteFieldWidth(pn)+8,0)
 			self:fadetop(1)
-			self:diffusealpha(0):diffuse(getMainColor())
+			self:diffusealpha(0):diffuse(getMainColor('highlight'))
 		end;
 		FullComboMessageCommand=function(self,params)
 			if params.pn == pn then

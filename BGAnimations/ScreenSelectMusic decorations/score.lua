@@ -99,11 +99,11 @@ t[#t+1] = Def.Quad{
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,color("#FFFFFF"));
+	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,getMainColor('frames'));
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.6;halign,0;diffuse,getMainColor(1));
+	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.6;halign,0;diffuse,getMainColor('highlight'));
 	BeginCommand=cmd(settext,"Score Info")
 };
 
@@ -242,10 +242,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 	SetCommand=function(self)
 		if ghostDataExists(pn,score) then
 			self:settext("Ghost Data Available")
-			self:diffuse(color("#4CBB17"))
+			self:diffuse(getMainColor('enabled'))
 		else
 			self:settext("Ghost Data Unavailable")
-			self:diffuse(color("#666666"))
+			self:diffuse(getMainColor('disabled'))
 		end;
 	end;
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
@@ -262,7 +262,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 			local meter = steps:GetMeter()
 			if update then
 				self:settext(stype.." "..diff.." "..meter)
-				self:diffuse(getDifficultyColor(diff))
+				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
 			end;
 		end;
 	end;
@@ -283,7 +283,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 
 t[#t+1] = Def.Quad{
 	Name="ScrollBar";
-	InitCommand=cmd(xy,frameX+frameWidth,frameY+frameHeight;zoomto,4,0;halign,1;valign,1;diffuse,getMainColor(1));
+	InitCommand=cmd(xy,frameX+frameWidth,frameY+frameHeight;zoomto,4,0;halign,1;valign,1;diffuse,getMainColor('highlight'));
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self,params)
 		self:finishtweening()
@@ -311,7 +311,7 @@ local function makeText(index)
 				if index <= #rates then
 					self:settextf("%s (%d)",rates[index],count)
 					if index == rateIndex then
-						self:diffuse(getMainColor(1))
+						self:diffuse(getMainColor('highlight'))
 					else
 						self:diffuse(color("#FFFFFF"))
 					end;

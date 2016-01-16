@@ -1,11 +1,18 @@
-
+local level = 0 
 local cursor = 0
 local count = 0
-local themeColor = themeConfig:get_data().color.main
+
+local configData = colorConfig:get_data()
+
+local themeColor = colorConfig:get_data().main.highlight
 local colorTable = {}
 for i=2,#themeColor do --First string is a "#", ignore.
 	colorTable[i-1] = themeColor:sub(i,i)
 end;
+
+
+
+
 
 local function scroller(index)
 	count = count+1
@@ -74,9 +81,9 @@ local t = Def.ActorFrame{
 			if cursor < 6 then
 				cursor = ((cursor)%(count))+1
 			else
-				themeConfig:get_data().color.main = "#"..table.concat(colorTable)
-				themeConfig:set_dirty()
-				themeConfig:save()
+				colorConfig:get_data().main.highlight = "#"..table.concat(colorTable)
+				colorConfig:set_dirty()
+				colorConfig:save()
 				SCREENMAN:GetTopScreen():Cancel()
 			end
 		end
@@ -91,7 +98,7 @@ local t = Def.ActorFrame{
 
 t[#t+1] = LoadActor("_frame");
 t[#t+1] = LoadFont("Common Large")..{
-	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor(1);settext,"Color Config:";);
+	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor('highlight');settext,"Color Config:";);
 }
 
 

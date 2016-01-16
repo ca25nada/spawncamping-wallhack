@@ -4,7 +4,7 @@ local frameX = THEME:GetMetric("ScreenTitleMenu","ScrollerX")-10
 local frameY = THEME:GetMetric("ScreenTitleMenu","ScrollerY")
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(draworder,-300;xy,frameX,frameY;zoomto,SCREEN_WIDTH,120;halign,0;diffuse,getMainColor(1);diffusealpha,1)
+	InitCommand=cmd(draworder,-300;xy,frameX,frameY;zoomto,SCREEN_WIDTH,120;halign,0;diffuse,getMainColor('highlight');diffusealpha,1)
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
@@ -36,13 +36,14 @@ t[#t+1] = LoadFont("Common Normal") .. {
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,5,SCREEN_HEIGHT-15;zoom,0.4;valign,1;halign,0;diffuse,color("#666666"));
+	InitCommand=cmd(xy,5,SCREEN_HEIGHT-15;zoom,0.4;valign,1;halign,0;);
 	OnCommand=function(self)
 		if IsNetSMOnline() then
 			self:settext("Online")
-			self:diffuse(color("#4CBB17"))
+			self:diffuse(getMainColor('enabled'))
 		else
 			self:settext("Offline");
+			self:diffuse(getMainColor('disabled'))
 		end;
 	end;
 }

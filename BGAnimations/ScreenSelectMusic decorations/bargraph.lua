@@ -221,7 +221,7 @@ t[#t+1] = Def.ActorFrame{
 			--self:zoomx(0)
 			self:sleep(animationDelay)
 			self:smooth(animationLength)
-			self:diffuse(getMainColor(1))
+			self:diffuse(getMainColor('highlight'))
 			self:zoomx((judge/notes)*barWidth)
 		end;
 		CurrentSongChangedMessageCommand=function(self)
@@ -414,7 +414,7 @@ t[#t+1] = Def.ActorFrame{
 			--self:zoomx(0)
 			self:sleep(animationDelay)
 			self:smooth(animationLength)
-			self:diffuse(getMainColor(1))
+			self:diffuse(getMainColor('highlight'))
 			self:zoomx((judge/notes)*barWidth)
 		end;
 		CurrentSongChangedMessageCommand=function(self)

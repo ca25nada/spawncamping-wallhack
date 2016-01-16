@@ -175,7 +175,7 @@ function scoreBoard(pn,position)
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			local meter = steps:GetMeter()
 			self:settext(stype.." "..diff.." "..meter)
-			self:diffuse(getDifficultyColor(diff))
+			self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
 		end;
 	};
 
