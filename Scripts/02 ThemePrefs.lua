@@ -665,7 +665,40 @@ function MeasureLines()
 	};
 	setmetatable( t, t );
 	return t;
-end	
+end
+
+function ProgressBar()
+	local t = {
+		Name = "ProgressBar";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = true;
+		Choices = { "Bottom", "Top", "Off"};
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.ProgressBar
+			if pref then
+				list[pref] = true
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] == true then
+				value = 1
+			elseif list[2] == true then
+				value = 2
+			else
+				value = 3;
+			end;
+			themeConfig:get_data().global.ProgressBar = value;
+			themeConfig:set_dirty();
+			themeConfig:save();
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end
+
 
 
 function NPSWindow()
