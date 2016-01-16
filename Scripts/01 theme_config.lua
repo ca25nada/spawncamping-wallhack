@@ -10,6 +10,7 @@ local defaultConfig = {
 		HelpMenu = true,
 		ScoreBoardNag = true,
 		MeasureLines = true,
+		ProgressBar = 1, -- 1 = Bottom, 2 = Top, 3 = Off
 	},
 	NPSDisplay = {
 		--Enabled = true, -- Player Controlled

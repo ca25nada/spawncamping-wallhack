@@ -1,13 +1,25 @@
 -- Song Progress bar with current/end time and the song title+artist.
 
+local barPosition = themeConfig:get_data().global.ProgressBar -- 0 = bottom, 1 = top, 2 = off. 
+
 --=======================================
 --ONLY EDIT THESE VALUES
 --=======================================
 local width = capWideScale(get43size(300),300)
 local height = 7
 local frameX = SCREEN_CENTER_X
-local frameY = SCREEN_BOTTOM-20
+local bottomModifier = -20;  -- Negative value, how far up
+local topModifier = 5;       -- Positive value, how far down
 --=======================================
+
+if barPosition == 1 then  -- BOTTOM
+    frameY = SCREEN_BOTTOM + bottomModifier
+elseif barPosition == 2 then -- TOP
+    frameY = SCREEN_TOP + topModifier 
+else
+    frameY = SCREEN_TOP - 10 -- OFF (For now just hiding it off screen...)
+end;
+
 
 local t = Def.ActorFrame {
     Def.Quad{
