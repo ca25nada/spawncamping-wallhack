@@ -84,6 +84,7 @@ local t = Def.ActorFrame{
 				colorConfig:set_dirty()
 				colorConfig:save()
 				MESSAGEMAN:Broadcast("RowChanged",{level = 1})
+				THEME:ReloadMetrics()
 				SCREENMAN:GetTopScreen():Cancel()
 			end
 		end

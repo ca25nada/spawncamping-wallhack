@@ -661,6 +661,7 @@ function MeasureLines()
 			themeConfig:get_data().global.MeasureLines = value
 			themeConfig:set_dirty()
 			themeConfig:save()
+			THEME:ReloadMetrics()
 		end;
 	};
 	setmetatable( t, t );
