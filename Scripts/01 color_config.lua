@@ -3,7 +3,6 @@ local defaultConfig = {
 	main = {
 		highlight = "#00AEEF",
 		frames = "#FFFFFF",
-		--background = "#666666",
 		enabled = "#4CBB17",
 		disabled = "#666666",
 		negative = "#FF9999",
@@ -73,7 +72,17 @@ local defaultConfig = {
 		Grade_Tier05	= "#5b78bb", -- B
 		Grade_Tier06	= "#c97bff", -- C
 		Grade_Tier07	= "#8c6239", -- D
-		Grade_Failed	= "0.8,0.8,0.8,1", -- F
+		Grade_Tier08	= "#000000", -- ITG PLS
+		Grade_Tier09	= "#000000", -- ITG PLS
+		Grade_Tier10	= "#000000", -- ITG PLS
+		Grade_Tier11	= "#000000", -- ITG PLS
+		Grade_Tier12	= "#000000", -- ITG PLS
+		Grade_Tier13	= "#000000", -- ITG PLS
+		Grade_Tier14	= "#000000", -- ITG PLS
+		Grade_Tier15	= "#000000", -- ITG PLS
+		Grade_Tier16	= "#000000", -- ITG PLS
+		Grade_Tier17	= "#000000", -- ITG PLS
+		Grade_Failed	= "#cdcdcd", -- F
 		Grade_None		= "#666666", -- no play
 	},
 
@@ -105,6 +114,17 @@ local defaultConfig = {
 
 colorConfig = create_setting("colorConfig", "colorConfig.lua", defaultConfig,-1)
 colorConfig:load()
+
+--keys to current table. Assumes a depth of 2.
+local curColor = {"",""}
+
+function getTableKeys()
+	return curColor
+end
+
+function setTableKeys(table)
+	curColor = table 
+end
 
 function getMainColor(type)
 	return color(colorConfig:get_data().main[type])

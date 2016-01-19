@@ -1,4 +1,6 @@
---[[
+
+
+--[[ This Part is deprecated. See 01 color_config.lua
 
 local themeColors = {
 

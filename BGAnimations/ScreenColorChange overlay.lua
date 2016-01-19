@@ -1,97 +1,271 @@
-local level = 0 
-local cursor = 0
-local count = 0
+local curLevel = 1
+local cursorIndex = {1,1}
+local selected = {"",""}
+local currentItems = {{},{}}
 
+local maxItems = 17-- odd only
 local configData = colorConfig:get_data()
 
-local themeColor = colorConfig:get_data().main.highlight
-local colorTable = {}
-for i=2,#themeColor do --First string is a "#", ignore.
-	colorTable[i-1] = themeColor:sub(i,i)
-end;
+local frameX = {30,180,450}
+local frameY = 60
+local spacing = 20
+local scale = 0.7
 
+local function onEdge(size,center,radius)
+	if center - radius < 1 then
+		return true
+	elseif center + radius > size then
+		return true
+	else
+		return false
+	end
+end
 
+-- Make groups
+local function generateCategory()
+	local visibleItems = {}
+	for k,v in pairs(configData) do
+		currentItems[1][#currentItems[1]+1] = k
+	end
+	table.sort(currentItems[1])
+	for i=1,math.min(#currentItems[1],maxItems) do
+		visibleItems[i] = currentItems[1][i]
+	end
+	selected[1] = currentItems[1][1]
 
-
-
-local function scroller(index)
-	count = count+1
-	local number = tonumber(colorTable[index],16)
-	local t = Def.ActorFrame{}
-
-	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,SCREEN_CENTER_X-60+index*20,SCREEN_CENTER_Y;zoom,0.8;);
-		OnCommand=function(self)
-			self:settext(string.format("%01X",number or 0))
-			if index == cursor then
-				self:diffuse(color("#FFFFFF"))
-			else
-				self:diffuse(color("#666666"))
-			end;
-		end;
-		CodeMessageCommand=function(self,params)
-			if params.Name == "ColorUp" then
-				if index == cursor then
-					number = (number + 1)%16
-					self:settext(string.format("%01X",number or 0))
-					colorTable[index] = string.format("%01X",number or 0)
+	local t = Def.ActorFrame{
+		RowChangedMessageCommand = function(self,params)
+			if params.level == 1 then
+				local radius = math.floor((maxItems-1)/2)
+				if not onEdge(#currentItems[1],cursorIndex[1],radius) then 
+					for i=1,math.min(maxItems) do
+						visibleItems[i] = currentItems[1][cursorIndex[1]-radius-1+i]
+					end
 				end
 			end
-			if params.Name == "ColorDown" then
-				if index == cursor then
-					number = (number - 1)%16
-					self:settext(string.format("%01X",number or 0))
-					colorTable[index] = string.format("%01X",number or 0)
-				end
-			end
-			if params.Name == "ColorLeft" then
-				if index == cursor then
-					self:diffuse(color("#FFFFFF"))
-				else
-					self:diffuse(color("#666666"))
-				end
-			end
-			if params.Name == "ColorRight" then
-				if index == cursor then
-					self:diffuse(color("#FFFFFF"))
-				else
-					self:diffuse(color("#666666"))
-				end
-			end
-			if params.Name == "ColorStart" then
-				if index == cursor then
-					self:diffuse(color("#FFFFFF"))
-				else
-					self:diffuse(color("#666666"))
-				end
-			end
-		end;
+			selected[1] = currentItems[1][cursorIndex[1]]
+			MESSAGEMAN:Broadcast("RowChanged2",{level = params.level})
+		end
 	}
 
-	return t
+	for k,v in pairs(visibleItems) do
+		t[#t+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(frameX[1],frameY+k*spacing)
+				self:settext(visibleItems[k])
+				self:zoom(scale)
+				self:halign(0)
+				self:queuecommand('UpdateColor')
+			end;
+			RowChangedMessageCommand = function(self,params)
+				if params.level == 1 then
+					self:queuecommand('UpdateColor')
+					self:settext(visibleItems[k])
+				end
+			end;
+			ColChangedMessageCommand = function(self,params)
+				if params.level == 1 then
+					self:diffusealpha(1)
+				else
+					self:diffusealpha(0.5)
+				end
+			end;
+			UpdateColorCommand=function(self)
+				if visibleItems[k] == currentItems[1][cursorIndex[1]] then
+					self:diffuse(getMainColor('highlight'))
+				else
+					self:diffuse(color("#FFFFFF"))
+				end
+			end
+		}
+	end
 
+	return t
+end
+
+local function generateCategoryColors()
+	local visibleItems = {}
+	for k,v in pairs(configData[selected[1]]) do
+		currentItems[2][#currentItems[2]+1] = k
+	end
+	table.sort(currentItems[2])
+	for i=1,math.min(#currentItems[2],maxItems) do
+		visibleItems[i] = currentItems[2][i]
+	end
+
+	selected[2] = currentItems[2][cursorIndex[2]]
+
+	local t = Def.ActorFrame{
+		RowChanged2MessageCommand = function(self,params)
+			if params.level == 1 then
+				currentItems[2] = {}
+				visibleItems = {}
+				for k,v in pairs(configData[selected[1]]) do
+					currentItems[2][#currentItems[2]+1] = k
+				end
+				table.sort(currentItems[2])
+				for i=1,math.min(#currentItems[2],maxItems) do
+					visibleItems[i] = currentItems[2][i]
+				end
+			end
+
+			local radius = math.floor((maxItems-1)/2)
+			if not onEdge(#currentItems[2],cursorIndex[2],radius) then 
+				for i=1,math.min(maxItems) do
+					visibleItems[i] = currentItems[2][cursorIndex[2]-radius-1+i]
+				end
+			end
+			selected[2] = currentItems[2][cursorIndex[2]]
+		end
+	}
+
+	for i=0, maxItems do
+
+		-- Make names 
+		t[#t+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(frameX[2],frameY+i*spacing)
+				if visibleItems[i] ~= nil then
+					self:settext(visibleItems[i])
+				else
+					self:visible(false)
+				end
+				self:zoom(scale)
+				self:halign(0)
+				self:queuecommand('UpdateColor')
+			end;
+			RowChanged2MessageCommand = function(self,params)
+				if params.level <= 2 then
+					self:queuecommand('UpdateColor')
+				end
+			end;
+			ColChangedMessageCommand = function(self,params)
+				if params.level == 2 then
+					self:diffusealpha(1)
+				else
+					self:diffusealpha(0.5)
+				end
+			end;
+			UpdateColorCommand=function(self)
+				if visibleItems[i] ~= nil then
+					self:visible(true)
+					self:settext(visibleItems[i])
+					
+					if visibleItems[i] == currentItems[2][cursorIndex[2]] then
+						self:diffuse(getMainColor('highlight'))
+					else
+						self:diffuse(color("#FFFFFF"))
+					end
+					if curLevel == 2 then
+						self:diffusealpha(1)
+					else
+						self:diffusealpha(0.5)
+					end
+				else
+					self:visible(false)
+				end
+			end
+		}
+
+		-- Make Color hex value text
+		t[#t+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(frameX[3],frameY+i*spacing)
+				if visibleItems[i] ~= nil then
+					self:settext(configData[selected[1]][visibleItems[i]])
+				else
+					self:visible(false)
+				end
+				self:zoom(scale)
+				self:halign(0)
+				self:queuecommand('UpdateColor')
+			end;
+			RowChanged2MessageCommand = function(self,params)
+				if params.level <= 2 then
+					self:queuecommand('UpdateColor')
+				end
+			end;
+			ColChangedMessageCommand = function(self,params)
+				if params.level == 2 then
+					self:diffusealpha(1)
+				else
+					self:diffusealpha(0.5)
+				end
+			end;
+			UpdateColorCommand=function(self)
+				if visibleItems[i] ~= nil then
+					self:visible(true)
+					if configData[selected[1]][visibleItems[i]] ~= nil then
+						self:settext(string.upper(configData[selected[1]][visibleItems[i]]))
+					else
+						self:settext("dis is nil")
+					end
+					
+					if visibleItems[i] == currentItems[2][cursorIndex[2]] then
+						
+						self:diffuse(color(configData[selected[1]][visibleItems[i]]))
+					else
+						self:diffuse(color("#FFFFFF"))
+					end
+
+					if curLevel == 2 then
+						self:diffusealpha(1)
+					else
+						self:diffusealpha(0.5)
+					end
+				else
+					self:visible(false)
+				end
+			end
+		}
+	end
+
+	return t
 end
 
 local t = Def.ActorFrame{
-	CodeMessageCommand=function(self,params)
-		if params.Name == "ColorCancel" then
-			SCREENMAN:GetTopScreen():Cancel()
-		end
-		if params.Name == "ColorStart" then
-			if cursor < 6 then
-				cursor = ((cursor)%(count))+1
-			else
-				colorConfig:get_data().main.highlight = "#"..table.concat(colorTable)
-				colorConfig:set_dirty()
-				colorConfig:save()
-				SCREENMAN:GetTopScreen():Cancel()
+	CodeMessageCommand = function(self,params)
+		if params.Name == "ColorUp" then
+			if curLevel == 1 then
+				cursorIndex[curLevel] = math.max(1,cursorIndex[curLevel]-1)
+				cursorIndex[2] = 1
+				cursorIndex[3] = 1
+			elseif curLevel == 2 then
+				cursorIndex[curLevel] = math.max(1,cursorIndex[curLevel]-1)
 			end
-		end
-		if params.Name == "ColorRight" then
-			cursor = ((cursor)%(count))+1
-		end
-		if params.Name == "ColorLeft" then
-			cursor = ((cursor-2)%(count))+1
+
+			MESSAGEMAN:Broadcast("RowChanged",{level = curLevel})
+
+		elseif  params.Name == "ColorDown" then
+			if curLevel == 1 then
+				cursorIndex[curLevel] = math.min(getTableSize(configData),cursorIndex[curLevel]+1)
+				cursorIndex[2] = 1
+				cursorIndex[3] = 1
+			elseif curLevel == 2 then
+				cursorIndex[curLevel] = math.min(getTableSize(configData[selected[1]]),cursorIndex[curLevel]+1)
+			end
+
+			MESSAGEMAN:Broadcast("RowChanged",{level = curLevel})
+
+		elseif params.Name == "ColorLeft" then
+			curLevel = math.max(1,curLevel-1)
+			MESSAGEMAN:Broadcast("ColChanged",{level = curLevel})
+
+		elseif params.Name == "ColorRight" then
+			curLevel = math.min(2,curLevel+1)
+			MESSAGEMAN:Broadcast("ColChanged",{level = curLevel})
+
+		elseif params.Name == "ColorStart" then
+			if curLevel == 1 then
+				curLevel = math.min(2,curLevel+1)
+				MESSAGEMAN:Broadcast("ColChanged",{level = curLevel})
+			elseif curLevel == 2 then
+				setTableKeys(selected)
+				SCREENMAN:AddNewScreenToTop("ScreenColorEdit");
+			end
+
+		elseif params.Name == "ColorCancel" then
+			SCREENMAN:GetTopScreen():Cancel()
 		end
 	end;
 }
@@ -101,43 +275,20 @@ t[#t+1] = LoadFont("Common Large")..{
 	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor('highlight');settext,"Color Config:";);
 }
 
-
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y+40;zoomto,200,30;);
-	OnCommand=function(self)
-		self:diffuse(color(themeColor))
-	end;
-	CodeMessageCommand=function(self,params)
-		if params.Name == "ColorUp" then
-			self:queuecommand("SetColor")
-		end
-		if params.Name == "ColorDown" then
-			self:queuecommand("SetColor")
-		end
-	end;
-	SetColorCommand=function(self)
-		self:diffuse(color("#"..table.concat(colorTable)))
-	end;
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,frameX[1],frameY;halign,0;valign,1;zoom,0.6;settext,"Category:";);
 }
 
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,SCREEN_CENTER_X-60,SCREEN_CENTER_Y;zoom,0.8;);
-	OnCommand=function(self)
-		self:settext("#")
-		self:diffuse(color("#666666"))
-	end;
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,frameX[2],frameY;halign,0;valign,1;zoom,0.6;settext,"Name:";);
 }
 
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y+100;zoom,0.4;);
-	OnCommand=function(self)
-		self:settext("This will change the main color of the theme.\n\nPress <Left>/<Right> to move cursor, <Up>/<Down> to change value.\nPress <Start> to confirm and <Back> to exit.\nPlease reload metrics after changing colors as some colors will not update unless you do so.")
-		self:diffuse(color("#FFFFFF"))
-	end;
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,frameX[3],frameY;halign,0;valign,1;zoom,0.6;settext,"Color:";);
 }
 
-for i=1,6 do
-	t[#t+1] = scroller(i)
+if configData ~= nil then
+	t[#t+1] = generateCategory()
+	t[#t+1] = generateCategoryColors()
 end
-
 return t
