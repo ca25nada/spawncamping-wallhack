@@ -13,7 +13,7 @@ local pn = GAMESTATE:GetEnabledPlayers()[1]
 --=======================================
 local timingScale = PREFSMAN:GetPreference("TimingWindowScale")
 local maxOffsetRange = 0.18*timingScale --timing range to show in seconds. 0.18 for upto bads, 0.135 for goods, 0.09 for greats, etc.
-local barcount = 100 -- Number of bars to initialize. Older bars will just move to the newest offset before they fade out if it's not high enough.
+local barcount = 5 -- Number of bars to initialize. Older bars will just move to the newest offset before they fade out if it's not high enough.
 local frameX = SCREEN_CENTER_X -- X Positon (Center of the bar)
 local frameY = SCREEN_BOTTOM-35 -- Y Positon (Center of the bar)
 local frameHeight = 10 -- Height of the bar
@@ -31,7 +31,7 @@ function proTimingTicks(pn,index)
 	return Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,tickWidth,frameHeight;diffusealpha,0;);
 		JudgmentMessageCommand=function(self,params)
-			if params.Player == pn and params.TapNoteScore then
+			if params.Player == pn and not params.HoldNoteScore then
 				if currentbar == index and 
 					params.TapNoteScore ~= 'TapNoteScore_HitMine' and 
 					params.TapNoteScore ~= 'TapNoteScore_AvoidMine' and 
@@ -53,16 +53,15 @@ end
 if enabled then
 	t[#t+1] = Def.Actor{
 		JudgmentMessageCommand=function(self,params)
-			offset = 0
 			if params.Player == pn then
-				currentbar = ((currentbar+1)%barcount)+1
+				
 				if params.HoldNoteScore then
 					--dosomething
 				elseif params.TapNoteScore == 'TapNoteScore_HitMine' or params.TapNoteScore == 'TapNoteScore_AvoidMine' then
 					--dosomething
 				else
 					if params.TapNoteScore ~= 'TapNoteScore_Miss' then
-						--currentbar = ((currentbar+1)%barcount)+1
+						currentbar = ((currentbar)%barcount)+1
 						if params.Early then
 							offset = params.TapNoteOffset
 							protimingsum = protimingsum + params.TapNoteOffset
@@ -85,10 +84,12 @@ if enabled then
 		t[#t+1] = proTimingTicks(pn,i)
 	end;
 
-
+	--[[
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,2,frameHeight;diffuse,color("#FFFFFF");diffusealpha,0.5);
 	};
+	--]]
+
 	--[[
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX+1-frameWidth/2,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
@@ -107,16 +108,16 @@ if enabled then
     };
 
 
-	--[[ Debug
+	
 	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,300,300;halign,0;zoom,2;diffuse,getMainColor(2));
+		InitCommand=cmd(xy,300,300;halign,0;zoom,2;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(offset)
+			self:settext(currentbar)
 		end;
 		JudgmentMessageCommand=cmd(playcommand,"Set");
 	};
-	--]]
+	
 end;
 
 -- 
