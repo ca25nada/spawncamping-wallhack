@@ -2,7 +2,7 @@ local t = Def.ActorFrame{}
 
 -- A somewhat naive implementation of the osu's error bar.
 -- Single Player only until I figure out where to put everything
--- Hopefully I can change it so I don't have to initialize 300 quads beforehand.
+-- Hopefully I can change it so I don't have to initialize like 300 quads beforehand.
 local enabled = (((playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar == true) and GAMESTATE:IsHumanPlayer(PLAYER_1)) or 
 				((playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).ErrorBar == true) and GAMESTATE:IsHumanPlayer(PLAYER_2))) and 
 				GAMESTATE:GetNumPlayersEnabled() == 1
@@ -13,21 +13,18 @@ local pn = GAMESTATE:GetEnabledPlayers()[1]
 --=======================================
 local timingScale = PREFSMAN:GetPreference("TimingWindowScale")
 local maxOffsetRange = 0.18*timingScale --timing range to show in seconds. 0.18 for upto bads, 0.135 for goods, 0.09 for greats, etc.
-local barcount = 300 -- Number of bars to initialize.
+local barcount = 100 -- Number of bars to initialize. Older bars will just move to the newest offset before they fade out if it's not high enough.
 local frameX = SCREEN_CENTER_X -- X Positon (Center of the bar)
 local frameY = SCREEN_BOTTOM-35 -- Y Positon (Center of the bar)
 local frameHeight = 10 -- Height of the bar
 local frameWidth = capWideScale(get43size(300),300) -- Width of the bar
 local tickWidth = 2 -- Width of the ticks
-local tickDuration = 5 -- Time duration in seconds before the ticks fade out
+local tickDuration = 1 -- Time duration in seconds before the ticks fade out
 --=======================================
 
 
 local currentbar = 1
 local protimingsum = 0
-local offset = 0
-local protimingsum = 0
-local currentbar = 1
 local offset = 0
 
 function proTimingTicks(pn,index)
