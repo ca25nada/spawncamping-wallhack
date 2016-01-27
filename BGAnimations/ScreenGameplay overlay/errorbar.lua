@@ -11,7 +11,8 @@ local pn = GAMESTATE:GetEnabledPlayers()[1]
 --=======================================
 --ONLY EDIT THESE VALUES
 --=======================================
-local maxOffsetRange = 0.18 --timing range to show in seconds. 0.18 for upto bads, 0.135 for goods, 0.09 for greats, etc.
+local timingScale = PREFSMAN:GetPreference("TimingWindowScale")
+local maxOffsetRange = 0.18*timingScale --timing range to show in seconds. 0.18 for upto bads, 0.135 for goods, 0.09 for greats, etc.
 local barcount = 300 -- Number of bars to initialize.
 local frameX = SCREEN_CENTER_X -- X Positon (Center of the bar)
 local frameY = SCREEN_BOTTOM-35 -- Y Positon (Center of the bar)

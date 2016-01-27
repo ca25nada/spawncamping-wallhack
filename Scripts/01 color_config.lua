@@ -157,16 +157,17 @@ function getSongLengthColor(s)
 end
 
 function offsetToJudgeColor(offset)
-	offset = math.abs(offset)
-	if offset <= PREFSMAN:GetPreference("TimingWindowSecondsW1") then
+	local offset = math.abs(offset)
+	local scale = PREFSMAN:GetPreference("TimingWindowScale")
+	if offset <= scale*PREFSMAN:GetPreference("TimingWindowSecondsW1") then
 		return color(colorConfig:get_data().judgment["TapNoteScore_W1"])
-	elseif offset <= PREFSMAN:GetPreference("TimingWindowSecondsW2") then
+	elseif offset <= scale*PREFSMAN:GetPreference("TimingWindowSecondsW2") then
 		return color(colorConfig:get_data().judgment["TapNoteScore_W2"])
-	elseif offset <= PREFSMAN:GetPreference("TimingWindowSecondsW3") then
+	elseif offset <= scale*PREFSMAN:GetPreference("TimingWindowSecondsW3") then
 		return color(colorConfig:get_data().judgment["TapNoteScore_W3"])
-	elseif offset <= PREFSMAN:GetPreference("TimingWindowSecondsW4") then
+	elseif offset <= scale*PREFSMAN:GetPreference("TimingWindowSecondsW4") then
 		return color(colorConfig:get_data().judgment["TapNoteScore_W4"])
-	elseif offset <= PREFSMAN:GetPreference("TimingWindowSecondsW5") then
+	elseif offset <= scale*PREFSMAN:GetPreference("TimingWindowSecondsW5") then
 		return color(colorConfig:get_data().judgment["TapNoteScore_W5"])
 	else
 		return color(colorConfig:get_data().judgment["TapNoteScore_Miss"])
