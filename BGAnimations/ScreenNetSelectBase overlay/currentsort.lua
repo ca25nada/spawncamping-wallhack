@@ -74,4 +74,8 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
 
+
+t[#t+1] = StandardDecorationFromFileOptional("BPMDisplay","BPMDisplay");
+t[#t+1] = StandardDecorationFromFileOptional("BPMLabel","BPMLabel");
+
 return t
