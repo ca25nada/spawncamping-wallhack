@@ -103,13 +103,16 @@ local defaultConfig = {
 		best = "#00ff00" -- unused,
 	},
 
-
 	songLength = {
 		normal = "#FFFFFF", -- normal
 		long = "#ff9a00", --orange
 		marathon = "#da5757" -- red
 	},
 
+	gameplay = {
+		ScreenFilter = "#222222",
+		LaneCover = "#333333"
+	},
 }
 
 colorConfig = create_setting("colorConfig", "colorConfig.lua", defaultConfig,-1)

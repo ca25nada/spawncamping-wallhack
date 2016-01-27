@@ -4,7 +4,7 @@
 local padding = 8 -- 4px on each side
 local arrowWidth = 64 -- until noteskin metrics are implemented...
 
-local filterColor = color("0.135,0.135,0.135,0.99")
+local filterColor = color(colorConfig:get_data().gameplay.ScreenFilter)
 local filterAlphas = {
 	PlayerNumber_P1 = 1,
 	PlayerNumber_P2 = 1,
