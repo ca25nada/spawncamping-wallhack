@@ -85,6 +85,7 @@ local t = Def.ActorFrame{
 				colorConfig:save()
 				MESSAGEMAN:Broadcast("RowChanged",{level = 1})
 				THEME:ReloadMetrics()
+				SCREENMAN:SystemMessage(string.format("Color %s %s set to #%s",selected[1],selected[2],table.concat(colorTable)))
 				SCREENMAN:GetTopScreen():Cancel()
 			end
 		end
