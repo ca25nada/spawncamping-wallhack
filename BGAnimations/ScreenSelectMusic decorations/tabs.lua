@@ -1,5 +1,5 @@
 local function input(event)
-	if event.type ~= "InputEventType_Release" then
+	if event.type == "InputEventType_FirstPress" then
 		for i=1,5 do
 			if event.DeviceInput.button == "DeviceButton_"..i then
 				setTabIndex(i-1)
