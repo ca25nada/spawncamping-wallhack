@@ -137,8 +137,8 @@ end;
 
 
 local tChoices = {};
-for i=1,100  do
-tChoices[i] = tostring(i)..'%';
+for i=0,100  do
+	tChoices[#tChoices+1] = tostring(i)..'%';
 end;
 function GhostTarget()
 	local t = {
@@ -149,7 +149,7 @@ function GhostTarget()
 		ExportOnChange = true;
 		Choices = tChoices;
 		LoadSelections = function(self, list, pn)
-			local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget
+			local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget+1
 			list[prefs] = true;
 		end;
 		SaveSelections = function(self, list, pn)
@@ -157,7 +157,7 @@ function GhostTarget()
 			for i=1,#list do
 				if not found then
 					if list[i] == true then
-						local value = i;
+						local value = i-1;
 						playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget = value
 						found = true
 					end
