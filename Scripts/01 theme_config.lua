@@ -11,6 +11,7 @@ local defaultConfig = {
 		ScoreBoardNag = true,
 		MeasureLines = true,
 		ProgressBar = 1, -- 0 = off, 1 bottom , 2 top
+		SongPreview = 1, -- 1 = SM style, 2 = osu! Style (new), 3 = osu! style (old)
 	},
 	NPSDisplay = {
 		--Enabled = true, -- Player Controlled
@@ -33,3 +34,11 @@ local defaultConfig = {
 
 themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig,-1)
 themeConfig:load()
+
+function getSongPreviewMode()
+	if themeConfig:get_data().global.SongPreview == 1 then
+		return 'SampleMusicPreviewMode_Normal'
+	else
+		return 'SampleMusicPreviewMode_ScreenMusic'
+	end
+end

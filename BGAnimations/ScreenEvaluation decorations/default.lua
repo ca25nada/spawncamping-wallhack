@@ -1,5 +1,7 @@
 local t = Def.ActorFrame{}
 
+setLastSecond(0)
+
 if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
 	t[#t+1] = LoadActor("scoreboard")
 end;

@@ -731,3 +731,34 @@ function NPSWindow()
 	setmetatable( t, t );
 	return t;
 end
+
+function SongPreview()
+	local t = {
+		Name = "SongPreview";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = true;
+		Choices = {"SM Style","osu! Style (Current)","osu! Style (Old)"};
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.SongPreview
+			if pref then
+				list[pref] = true
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			local value
+			for k,v in ipairs(list) do
+				if v then
+					value = k
+				end;
+			end;
+			themeConfig:get_data().global.SongPreview = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+			THEME:ReloadMetrics()
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end

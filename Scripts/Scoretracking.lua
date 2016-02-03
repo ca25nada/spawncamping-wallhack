@@ -133,6 +133,7 @@ local curMaxMines = {
 	PlayerNumber_P2 = 0
 }
 
+local lastSecond = 0
 local pauseCount = 0
 --[[
 function PJudge(pn,judge)
@@ -164,6 +165,7 @@ function resetJudgeST()
 		curMaxMines[pn] = 0
 	end
 	pauseCount = 0
+	lastSecond = 0
 	return
 end
 
@@ -409,4 +411,12 @@ end
 
 function getPauseCount()
 	return pauseCount
+end
+
+function setLastSecond(t)
+	lastSecond = t
+end
+
+function getLastSecond()
+	return lastSecond
 end

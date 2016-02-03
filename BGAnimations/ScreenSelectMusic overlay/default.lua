@@ -38,5 +38,6 @@ t[#t+1] = LoadFont("Common Large")..{
 
 t[#t+1] = LoadActor("../_cursor");
 t[#t+1] = LoadActor("../_halppls");
+t[#t+1] = LoadActor("bgm");
 
 return t

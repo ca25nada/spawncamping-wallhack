@@ -48,6 +48,7 @@ local t = Def.ActorFrame {
 local function getMusicProgress()
 	local songLength = GAMESTATE:GetCurrentSong():GetStepsSeconds()
 	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
+    setLastSecond(songPosition)
 	songLength = math.max(1,songLength)
 	return math.min(1,math.max(0,songPosition/songLength))
 end;
