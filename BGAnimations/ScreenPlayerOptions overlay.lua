@@ -143,14 +143,15 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 		SpeedChoiceChangedMessageCommand=function(self,param)
 			if param.pn == PLAYER_1 then
+				local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Current'):MusicRate() or 1
 				local text = ""
 				if param.mode == "x" then
 					if not bpms[1] then
 						text = "??? - ???"
 					elseif bpms[1] == bpms[2] then
-						text = math.round(bpms[1]*param.speed/100)
+						text = math.round(bpms[1]*rate*param.speed/100)
 					else
-						text = string.format("%d - %d",math.round(bpms[1]*param.speed/100),math.round(bpms[2]*param.speed/100))
+						text = string.format("%d - %d",math.round(bpms[1]*rate*param.speed/100),math.round(bpms[2]*rate*param.speed/100))
 					end
 				elseif param.mode == "C" then
 					text = param.speed
@@ -216,13 +217,14 @@ t[#t+1] = Def.ActorFrame{
 		SpeedChoiceChangedMessageCommand=function(self,param)
 			if param.pn == PLAYER_2 then
 				local text = ""
+				local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Current'):MusicRate() or 1
 				if param.mode == "x" then
 					if not bpms[1] then
 						text = "??? - ???"
 					elseif bpms[1] == bpms[2] then
-						text = math.round(bpms[1]*param.speed/100)
+						text = math.round(bpms[1]*rate*param.speed/100)
 					else
-						text = string.format("%d - %d",math.round(bpms[1]*param.speed/100),math.round(bpms[2]*param.speed/100))
+						text = string.format("%d - %d",math.round(bpms[1]*rate*param.speed/100),math.round(bpms[2]*rate*param.speed/100))
 					end
 				elseif param.mode == "C" then
 					text = param.speed
