@@ -2,8 +2,10 @@ local t = Def.ActorFrame{}
 
 local enabled = themeConfig:get_data().global.Particles
 
-local particleAmount = 30
+local particleAmount = 100
 local particleSize = 3
+local dx = {}
+local dy = {}
 
 function isInScreen(particle)
 	local half = particleSize/2
@@ -14,8 +16,8 @@ end;
 
 function resetPosition(particle)
 	particle:x(math.random(0,SCREEN_WIDTH))
-	--particle:y(0)
-	particle:y(math.random(0,SCREEN_HEIGHT))
+	particle:y(0)
+	--particle:y(math.random(0,SCREEN_HEIGHT))
 	particle:rotationz(math.random()*360)
 	return
 end;
@@ -24,31 +26,43 @@ function makeParticle(index,x,y,size,direction)
 	return Def.Quad{
 		Name="Particle"..index;
 		InitCommand=cmd(xy,x,y;zoomto,size,size;rotationz,direction);
-		BeginCommand=cmd(diffusealpha,0;smooth,1;diffusealpha,0.5;diffuseshift;effectoffset,(0.1*index);effectcolor1,color("#FFFFFF");effectcolor2,Alpha(getMainColor(1),0.8);effectperiod,1);
+		BeginCommand=function (self)
+			self:y(0)
+			self:x(math.random(0,SCREEN_WIDTH))
+			self:diffusealpha((math.random()/2)+0.2)
+			dx[index] = 0
+			dy[index] = math.random()*5+1
+			self:sleep(math.random()*10)
+			self:queuecommand('Move')
+		end;
+		MoveCommand = function(self,params)
+			self:finishtweening()
+			self:addy(dy[index])
+			self:addx(dx[index])
+			if not isInScreen(self) then
+				self:sleep(1)
+				self:queuecommand('ResetPosition')
+			end;
+			self:sleep(1/60)
+			self:queuecommand('Move')
+		end;
+		ResetPositionCommand = function(self)
+			self:diffusealpha((math.random()/2)+0.2)
+			self:x(math.random(0,SCREEN_WIDTH))
+			self:y(0)
+			dx[index] = (INPUTFILTER:GetMouseX()-SCREEN_CENTER_X)/200
+			dy[index] = math.random()*4+1
+			self:queuecommand('Move')
+		end;
 	};
 end;
 
 if enabled then
 	for i=1,particleAmount do
 		t[#t+1] = makeParticle(i,math.random(0,SCREEN_WIDTH),math.random(0,SCREEN_HEIGHT),particleSize,math.random()*360);
+		dx[#dx+1] = 0
+		dy[#dy+1] = 0
 	end;
-end;
-
-local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update);
-	for i=1,particleAmount do
-		local particle = self:GetChild("Particle"..i)
-		particle:addrotationz((math.random()*0.2)-0.1);
-		particle:addx(math.cos(particle:GetRotationZ())*(3))
-		--particle:addy(math.random()*2+1)
-		particle:addy(math.sin(particle:GetRotationZ())*(3))
-		if not isInScreen(particle) then
-			resetPosition(particle)
-		end;
-	end;
-end; 
-if enabled then
-	t.InitCommand=cmd(SetUpdateFunction,Update);
 end;
 
 
