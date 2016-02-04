@@ -1,21 +1,22 @@
 local curSong = nil
-local start = getLastSecond()
+local start = math.max(0,getLastSecond())
 local delay = 0.5
 local curTime = 0
 local startFromPreview = false
 local loop = themeConfig:get_data().global.SongPreview == 2
+local 
 
 setLastSecond(0)
 
 -- SongPreview == 1 (SM STYLE)
--- 		Disable this stuff, loops from PreviewStart to PreviewStart+PreviewLength
+-- 		Disable this stuff, loops from SampleStart to SampleStart+SampleLength
 
 -- SongPreview == 2 (current osu!)
--- 		Loops from PreviewStart to end of the song.
---		If a player exits midway in a song, play from last point to end of song, then loop from PreviewStart.
+-- 		Loops from SampleStart to end of the song.
+--		If a player exits midway in a song, play from last point to end of song, then loop from SampleStart.
 
 -- SongPreview == 3 (old osu!)
--- 		Play from PreviewStart to end of the song. then Loop from the start of the song to the end.
+-- 		Play from SampleStart to end of the song. then Loop from the start of the song to the end.
 --		If a player exits midway in a song, play from last point to end of song, then loop from start.
 
 local t = Def.ActorFrame{}
