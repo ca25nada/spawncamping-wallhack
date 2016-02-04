@@ -5,7 +5,7 @@ local t = Def.ActorFrame{
 	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
 	SetCommand=function(self)
 		self:finishtweening()
-		if getTabIndex() == 3 then
+		if getTabIndex() == 4 then
 			self:queuecommand("On");
 			self:visible(true)
 			update = true

@@ -20,7 +20,7 @@ t[#t+1] = Def.ActorFrame {
 	OnCommand=cmd(bouncebegin,0.2;xy,capWideScale(get43size(384),384)+26,70;);
 	TabChangedMessageCommand=function(self)
 		self:finishtweening()
-		if getTabIndex() == 0 then
+		if getTabIndex() == 1 then
 			self:playcommand("On");
 		else 
 			self:playcommand("Off");

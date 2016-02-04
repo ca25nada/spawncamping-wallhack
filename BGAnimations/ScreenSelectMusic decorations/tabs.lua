@@ -1,9 +1,8 @@
 local function input(event)
 	if event.type == "InputEventType_FirstPress" then
-		for i=1,5 do
+		for i=1,getTabSize() do
 			if event.DeviceInput.button == "DeviceButton_"..i then
-				setTabIndex(i-1)
-				MESSAGEMAN:Broadcast("TabChanged")
+				setTabIndex(i)
 			end;
 		end;
 		if event.DeviceInput.button == "DeviceButton_left mouse button" then
@@ -33,9 +32,9 @@ t[#t+1] = LoadFont("Common Normal") .. {
 --]]
 --======================================================================================
 
-local tabNames = {"General","Simfile","Score","Profile","Other"} -- this probably should be in tabmanager.
+--local tabNames = {"General","Simfile","Score","Profile","Other","bruh"} -- this probably should be in tabmanager.
 
-local frameWidth = (SCREEN_WIDTH*(403/854))/(#tabNames-1)
+local frameWidth = (SCREEN_WIDTH*(403/854))/(getTabSize()-1)
 local frameX = frameWidth/2
 local frameY = SCREEN_HEIGHT-70
 
@@ -48,7 +47,7 @@ function tabs(index)
 			self:finishtweening()
 			self:linear(0.1)
 			--show tab if it's the currently selected one
-			if getTabIndex() == index-1 then
+			if getTabIndex() == index then
 				self:y(frameY)
 				self:diffusealpha(1)
 			else -- otherwise "Hide" them
@@ -64,8 +63,7 @@ function tabs(index)
 		InitCommand=cmd(valign,0;zoomto,frameWidth,20;diffuse,getMainColor('frames'));
 		MouseLeftClickMessageCommand=function(self)
 			if isOver(self) then
-				setTabIndex(index-1)
-				MESSAGEMAN:Broadcast("TabChanged")
+				setTabIndex(index)
 			end;
 		end;
 	};
@@ -74,7 +72,7 @@ function tabs(index)
 		InitCommand=cmd(y,4;valign,0;zoom,0.45;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			self:settext(tabNames[index])
+			self:settext(getTabName(index))
 			if isTabEnabled(index) then
 				self:diffuse(getMainColor('highlight'))
 			else
@@ -87,7 +85,7 @@ function tabs(index)
 end;
 
 --Make tabs
-for i=1,#tabNames do
+for i=1,getTabSize() do
 	t[#t+1] =tabs(i)
 end;
 
