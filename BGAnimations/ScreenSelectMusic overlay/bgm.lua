@@ -4,7 +4,6 @@ local delay = 0.5
 local curTime = 0
 local startFromPreview = false
 local loop = themeConfig:get_data().global.SongPreview == 2
-local 
 
 setLastSecond(0)
 

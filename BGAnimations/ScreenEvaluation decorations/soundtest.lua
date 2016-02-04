@@ -15,7 +15,7 @@ t[#t+1]=Def.ActorFrame{
   PlayCommand=function(self)
    local fn=song:GetMusicPath();
    if fn then
-    SOUND:PlayMusicPart(fn,song:GetSampleStart(),song:GetSampleLength(),0,1,false,false);
+    SOUND:PlayMusicPart(fn,song:GetSampleStart(),song:GetSampleLength(),0,1,true,true);
    else
     SOUND:PlayMusicPart("_silent.ogg",0,1,0,0,false,false);
    end;
