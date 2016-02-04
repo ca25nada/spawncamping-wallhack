@@ -21,7 +21,7 @@ Requirements: StepMania 5.0.10 or later. Mouse related functions only work on Wi
 * **Theme Color**  
 The main theme color can be set by entering "Color Config" from the title menu.  
 From there, you can then set the hexadecimal value to a color of your liking.   
-(For reference in case you want to revert, the default color is ```#00AEEF```)
+(For reference in case you want to revert, the default color for Main/Highlight is ```#00AEEF```)
 
 * **Avatars**   
 You can set an avatar to a profile that is then displayed throughout the theme.
@@ -89,6 +89,15 @@ Some Tabs will be disabled for 2 player modes.
   It currently contains information on how to use the features in screenselectmusic.
   You can turn off the overlay from showing up automatically by going to : ```Options → Theme Options → Help Menu``` and setting it to ```Off```.   
   It is also available by pressing ```F12``` on the keyboard. 
+
+* **Song Preview**   
+  Select how the song's sample preview is played. It is available in ```Options → Theme Options → Song Preview```.   
+  * **SM Style** <sup>Default</sup> - Default. Preview loops from SAMPLESTART to SAMPLESTART+SAMPLELENGTH.
+  * **osu! Style (Current)** - Preview loops from SAMPLESTART to the end of the song.   
+    If a person exits midway during gameplay (without going to eval) the preview will start from that point. (and then loop from SAMPLESTART afterwards)
+  * **osu! Style (Old)** - Preview plays from SAMPLESTART to the end of the song. Then the preview loops from the start to the end of the song.   
+  If a person exits midway during gameplay (without going to eval) the preview will start from that point. (and then loop from the beginning afterwards)
+
 
 ---
 #### ScreenGameplay
