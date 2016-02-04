@@ -30,17 +30,17 @@ local t = Def.ActorFrame {
     };
     LoadFont("Common Normal") .. {
         Name="Song Name";
-        InitCommand=cmd(xy,SCREEN_CENTER_X,frameY;zoom,0.35;maxwidth,(width-50)/0.35;);
+        InitCommand=cmd(xy,SCREEN_CENTER_X,frameY-1;zoom,0.35;maxwidth,(width-50)/0.35;);
         BeginCommand=cmd(settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist(););
     };
     LoadFont("Common Normal") .. {
         Name="CurrentTime";
-        InitCommand=cmd(xy,SCREEN_CENTER_X-(width/2),frameY;halign,0;zoom,0.35;settext,"0:00";)
+        InitCommand=cmd(xy,SCREEN_CENTER_X-(width/2),frameY-1;halign,0;zoom,0.35;settext,"0:00";)
     };
     LoadFont("Common Normal") .. {
         Name="TotalTime";
-        InitCommand=cmd(xy,SCREEN_CENTER_X+(width/2),frameY;halign,1;zoom,0.35;);
-        BeginCommand=cmd(settext,SecondsToMMSS(GAMESTATE:GetCurrentSong():GetStepsSeconds()));
+        InitCommand=cmd(xy,SCREEN_CENTER_X+(width/2),frameY-1;halign,1;zoom,0.35;);
+        BeginCommand=cmd(settext,SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()));
     };  
 };
 
@@ -54,7 +54,7 @@ local function getMusicProgress()
 end;
 
 local function getCurrentTime()
-    return SecondsToMMSS(math.max(0,GAMESTATE:GetSongPosition():GetMusicSeconds() or 0))
+    return SecondsToMSSMsMs(math.max(0,GAMESTATE:GetSongPosition():GetMusicSeconds() or 0))
 end;
 
 local function Update(self)
