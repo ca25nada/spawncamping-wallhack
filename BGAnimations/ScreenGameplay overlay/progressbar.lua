@@ -50,7 +50,7 @@ local function getMusicProgress()
 	local songLength = GAMESTATE:GetCurrentSong():GetStepsSeconds()
 	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
     setLastSecond(songPosition)
-    if GAMESTATE:GetCurrentSong():GetFirstSecond()-songPosition < 2 and not started then
+    if (GAMESTATE:GetCurrentSong():GetFirstSecond()-songPosition < 2 or songPosition > 5) and not started then
         MESSAGEMAN:Broadcast("SongStarting")
         --SCREENMAN:SystemMessage("SONGSTARTING")
         started = true
