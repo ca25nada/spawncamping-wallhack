@@ -11,6 +11,7 @@ local frameX = SCREEN_CENTER_X
 local bottomModifier = -20;  -- Negative value, how far up
 local topModifier = 15;       -- Positive value, how far down
 local frameY = 0
+local started = false
 --=======================================
 
 if barPosition == 1 then  -- BOTTOM
@@ -49,6 +50,11 @@ local function getMusicProgress()
 	local songLength = GAMESTATE:GetCurrentSong():GetStepsSeconds()
 	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
     setLastSecond(songPosition)
+    if GAMESTATE:GetCurrentSong():GetFirstSecond()-songPosition < 2 and not started then
+        MESSAGEMAN:Broadcast("SongStarting")
+        --SCREENMAN:SystemMessage("SONGSTARTING")
+        started = true
+    end
 	songLength = math.max(1,songLength)
 	return math.min(1,math.max(0,songPosition/songLength))
 end;

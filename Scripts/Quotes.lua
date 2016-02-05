@@ -293,9 +293,7 @@ local Phrases = {
     "*KEYBOARDING INTENSIFIES*", -- https://twitter.com/MOOMANiBE/status/685218392299552768
     "VAC",
     "Play along at home:\n djskdjksdjskdjksdjskdksjdksdjksjdksdjkjsdjkskkksksksdjjsdjksdjksdjkssdjksjdkjksdjksdjksdjksdjkskdjjskdjksdjkjksjdksjdksjkdjksdjkjsdkjsjdskdjksjdksjdskdjksjjdjsddssjssdjkkkkkkkkkkkkkkkkkkkdjksjkdsjksdkjskdjksksdjjsdsksjdkkjksjjksjksd",
-
-
-
+    "Is this how you beat RSI? You commission staiain to tap for you?" -- Sivarro
 
 }
 

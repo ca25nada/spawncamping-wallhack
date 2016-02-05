@@ -7,14 +7,14 @@ local particleSize = 3
 local dx = {}
 local dy = {}
 
-function isInScreen(particle)
+local function isInScreen(particle)
 	local half = particleSize/2
 	local x = particle:GetX()
 	local y = particle:GetY()
-	return (x > 0-half and x < SCREEN_WIDTH+half) and (y > 0-half and y < SCREEN_HEIGHT+half)
+	return (x > -100-half and x < SCREEN_WIDTH+100+half) and (y > 0-half and y < SCREEN_HEIGHT+half)
 end;
 
-function resetPosition(particle)
+local function resetPosition(particle)
 	particle:x(math.random(0,SCREEN_WIDTH))
 	particle:y(0)
 	--particle:y(math.random(0,SCREEN_HEIGHT))
@@ -22,7 +22,7 @@ function resetPosition(particle)
 	return
 end;
 
-function makeParticle(index,x,y,size,direction)
+local function makeParticle(index,x,y,size,direction)
 	return Def.Quad{
 		Name="Particle"..index;
 		InitCommand=cmd(xy,x,y;zoomto,size,size;rotationz,direction);
