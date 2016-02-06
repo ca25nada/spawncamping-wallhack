@@ -237,3 +237,49 @@ function getNoteFieldPos(pn)
 	end
 
 end
+
+-- I probably should check for correctness later.
+function getCommonBPM(bpms,lastBeat)
+	local BPMtable = {}
+	local curBPM = math.round(bpms[1][2])
+	local curBeat = bpms[1][1]
+	for _,v in ipairs(bpms) do
+		if BPMtable[tostring(curBPM)] == nil then
+			BPMtable[tostring(curBPM)] = (v[1] - curBeat)/curBPM
+		else
+			BPMtable[tostring(curBPM)] = BPMtable[tostring(curBPM)] + (v[1] - curBeat)/curBPM
+		end
+		curBPM = math.round(v[2])
+		curBeat = v[1]
+	end
+
+	if BPMtable[tostring(curBPM)] == nil then
+		BPMtable[tostring(curBPM)] = (lastBeat - curBeat)/curBPM
+	else
+		BPMtable[tostring(curBPM)] = BPMtable[tostring(curBPM)] + (lastBeat - curBeat)/curBPM
+	end
+
+	local maxBPM = 0
+	local maxDur = 0
+	for k,v in pairs(BPMtable) do
+		if v > maxDur then
+			maxDur = v
+			maxBPM = tonumber(k)
+		end
+	end
+	return maxBPM
+end
+
+function getBPMChangeCount(bpms)
+	local count = 0
+	local threshhold = 5 -- get rid of ddreamspeed changes
+	local curBPM = bpms[1][2]
+	for k,v in ipairs(bpms) do
+		if math.abs(curBPM - v[2]) > threshhold then
+			count = count + 1
+		end
+		curBPM = v[2]
+	end
+
+	return count
+end

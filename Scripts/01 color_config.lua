@@ -150,7 +150,9 @@ function getPaceMakerColor(type)
 end
 
 function getSongLengthColor(s)
-	if s < PREFSMAN:GetPreference("LongVerSongSeconds") then
+	if s < 1 then
+		return color(colorConfig:get_data().main['disabled'])
+	elseif s < PREFSMAN:GetPreference("LongVerSongSeconds") then
 		return color(colorConfig:get_data().songLength["normal"])
 	elseif s < PREFSMAN:GetPreference("MarathonVerSongSeconds") then
 		return color(colorConfig:get_data().songLength["long"])
