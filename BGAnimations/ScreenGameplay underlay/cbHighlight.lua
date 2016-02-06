@@ -1,6 +1,9 @@
---Highlights the lane in which a combo break has occured.
+-- Deprecated. Moved to Graphics/Notefield board.lua
 
+
+--Highlights the lane in which a combo break has occured.
 --Should be moved to colors.lua
+--[[
 local highlightColor = { -- Colors of Judgment highlights
 	TapNoteScore_W1 = color('0.2,0.773,0.953'),
 	TapNoteScore_W2	= color("1,0.8,0"),
@@ -77,3 +80,5 @@ for _,pn in pairs({PLAYER_1,PLAYER_2}) do
 end
 
 return t
+
+--]]

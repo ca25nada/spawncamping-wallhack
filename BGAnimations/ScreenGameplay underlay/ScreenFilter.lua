@@ -1,6 +1,8 @@
+-- Deprecated. Moved to Graphics/Notefield board.lua
+
 --[[ Screen Filter ]]
 
-
+--[[
 local padding = 8 -- 4px on each side
 local arrowWidth = 64 -- until noteskin metrics are implemented...
 
@@ -72,3 +74,4 @@ else
 end
 
 return t;
+--]]

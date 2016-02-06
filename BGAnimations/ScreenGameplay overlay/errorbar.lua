@@ -24,8 +24,8 @@ local tickDuration = 1 -- Time duration in seconds before the ticks fade out
 
 
 local currentbar = 1
-local protimingsum = 0
-local offset = 0
+local protimingsum = 0 -- unused
+local offset = 0 -- offset of the last note hit
 
 function proTimingTicks(pn,index)
 	return Def.Quad{
