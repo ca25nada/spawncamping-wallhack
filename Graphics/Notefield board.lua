@@ -5,27 +5,7 @@ local function ScreenFilter()
 		PlayerStateSetCommand = function(self,param)
 			local pn = param.PlayerNumber
 			local style = GAMESTATE:GetCurrentStyle(pn)
-			local width = style:GetWidth(pn)
-			local filterColor = color(colorConfig:get_data().gameplay.ScreenFilter)
-			local filterAlpha = playerConfig:get_data(pn_to_profile_slot(pn)).ScreenFilter
-			if filterAlpha == 0 then
-				return
-			end
-			self:SetWidth(width)
-			self:SetHeight(SCREEN_HEIGHT*4096)
-			self:diffuse(filterColor)
-			self:diffusealpha(filterAlpha)
-		end
-	}
-end
-
-
-local function LaneCover()
-	return Def.Quad{
-		PlayerStateSetCommand = function(self,param)
-			local pn = param.PlayerNumber
-			local style = GAMESTATE:GetCurrentStyle(pn)
-			local width = style:GetWidth(pn)+8
+			local width = style:GetWidth(pn) + 8
 			local filterColor = color(colorConfig:get_data().gameplay.ScreenFilter)
 			local filterAlpha = playerConfig:get_data(pn_to_profile_slot(pn)).ScreenFilter
 			if filterAlpha == 0 then
