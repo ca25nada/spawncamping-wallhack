@@ -164,7 +164,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 				self:settext("Not Available")
 				self:diffuse(getMainColor("disabled"))
 			end
-			self:GetParent():GetChild("Song Length"):x(math.min(((frameWidth-offsetX*2-150)/0.6)-5,self:GetWidth()*0.6+self:GetX()+5))
+			self:GetParent():GetChild("Song Length"):x(math.min(((frameWidth-offsetX*2-capWideScale(120,150))/0.6),self:GetWidth()*0.6+self:GetX()+5))
 		end
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
