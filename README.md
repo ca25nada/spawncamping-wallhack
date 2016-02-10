@@ -59,6 +59,37 @@ You can set an avatar to a profile that is then displayed throughout the theme.
   The theme uses iidx-esque cleartypes because... huur durrr lr2 wannabe theme.   
   They should be self-explanatory. (e.g. PFC = ya got all perfect or higher / AAA)
 
+* **Backgrounds**   
+  On ScreenSelectMusic and ScreenEvaluation, it will show the current song's background by default. It can be turned off at ```Options → Theme Options → Show Background```   
+  It also has a parallax effect with the mouse just because it looks cool on osu..! It can be turned off at ```Options → Theme Options → Move Background```  
+  * **Adding Custom backgrounds for ScreenEvaluation**   
+    The theme also allows users to display their own images/waifu pics in the evaluation screen instead of the song's background image.   
+     First enable the option from ```Options → Theme Options → Eval Background Type``` and set it to either ```Clear+Grade Background``` or ```Grade Background only``` depending on what you want.   
+
+     Then open up the main theme folder, and navigate to this directory:   
+     ```<sc-wh Theme Folder>\Graphics\Eval background```   
+     
+     **DO NOT DELETE**   
+     ```Grade_Cleared``` or    
+     ```Grade_Failed``` folders   
+     *you may remove the placeholder background images inside if you wish.*   
+     
+     Images in "Grade_Failed" will be loaded for failing scores.   
+     Images in "Grade_Cleared" will be loaded for all passing scores.   
+     
+     In addition, to add backgrounds that are grade-specific, (e.g. only shows upon AA)
+     create additional folders with the SM's grade tier as the title.   
+     (```Grade_Tier01``` or AAAA has already been done for you as an example)
+     
+     The theme will then load the backgrounds from the ```Grade_Cleared``` and the ```Grade_Tierxx``` folder.
+     (If the grade specific folder is empty while set to ```Grade Background Only```, the theme will revert back to grade_cleared folder for background images.)
+    
+* **Tips and Quotes**   
+  The theme displays *potentially helpful* tips usually on the bottom center of the screen. 
+  Options to turn off/toggle types can be found at ```Options → Theme Options → Tip Type```.   
+  Set to ```Random Phrases``` for memes.
+
+
 ---
 #### ScreenSelectMusic
 All available tabs in this screen can be accessed either by clicking on the tabs themselves, or pressing ```1 - 5``` on the keyboard for each tab respectively.   
@@ -134,6 +165,8 @@ Some Tabs will be disabled for 2 player modes.
 * **Sudden+/Hidden+ Lane Cover**   
   Displays an overlay above the notefield with adjustable height.  
   Available from ```Player Options  → Lane Cover```. The height can be adjusted ingame with ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>```. The white number represents the height of the cover, The green number shows the equivalent scroll speed.   
+  Currently, unlike screen filters, lane covers are not tied to the notefield. So it will not work properly with perspective mods or any mods that move the notefield around.
+
 
 * **Current/Peak NPS Display**   
   Displays the current NPS and the peak nps value.   
@@ -150,13 +183,3 @@ Some Tabs will be disabled for 2 player modes.
   The number of times the game has been paused will show up on the evaluation screen.   
 
 ---
-#### ScreenEvaluation
-* The Eval Screen Itself 
-* Scoreboard 
-* Judgment Cells 
-* Result Background
-  * Adding Custom result backgrounds
-
----
-#### Misc.
-* Tips and Quotes
