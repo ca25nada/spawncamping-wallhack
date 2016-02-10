@@ -41,26 +41,32 @@ local t = Def.ActorFrame {
     LoadFont("Common Normal") .. {
         Name="TotalTime";
         InitCommand=cmd(xy,SCREEN_CENTER_X+(width/2),frameY-1;halign,1;zoom,0.35;);
-        BeginCommand=cmd(settext,SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()));
+        BeginCommand=cmd(settext,SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()));
     };  
 };
 
 
 local function getMusicProgress()
+    local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()
 	local songLength = GAMESTATE:GetCurrentSong():GetStepsSeconds()
 	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
     setLastSecond(songPosition)
+
     if (GAMESTATE:GetCurrentSong():GetFirstSecond()-songPosition < 2 or songPosition > 5) and not started then
         MESSAGEMAN:Broadcast("SongStarting")
-        --SCREENMAN:SystemMessage("SONGSTARTING")
         started = true
     end
-	songLength = math.max(1,songLength)
+
+    -- Apply rate changes after all the messages have gone through.
+    songPosition = songPosition/rate
+	songLength = math.max(1,songLength/rate)
 	return math.min(1,math.max(0,songPosition/songLength))
 end;
 
 local function getCurrentTime()
-    return SecondsToMSSMsMs(math.max(0,GAMESTATE:GetSongPosition():GetMusicSeconds() or 0))
+    local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()
+    local time = GAMESTATE:GetSongPosition():GetMusicSeconds()
+    return SecondsToMSSMsMs(math.max(0,time/rate or 0))
 end;
 
 local function Update(self)
