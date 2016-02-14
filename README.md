@@ -15,8 +15,16 @@ Requirements: StepMania 5.0.10 or later. Mouse related functions only work on Wi
 * Kyzentun's prefs system is used for setting various profile/theme preferences.
 
 ---
-### Usage Guide (WIP)
+### TODO   
+* Newfield support and moving towards 5.1 in general.
+* Adding back nonstop/course modes.
+* Ghost Data stuff. (eventually)
+* Moving the notefield around during gameplay.
+* Finish Simfile/Profile tabs.
+* Korean usage guide.. maybe...?
+
 ---
+### Usage Guide (WIP)   
 #### Global
 * **Theme Color**  
 The main theme color can be set by entering "Color Config" from the title menu.  
