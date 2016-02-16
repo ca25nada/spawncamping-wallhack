@@ -15,7 +15,7 @@ local brightness = 0.4
 local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("_particles");
 
-if enabled and bgType == 1 then
+if enabled and bgType == 1 then -- SONG BG
 	t[#t+1] = LoadSongBackground()..{
 		Name="MouseXY";
 		BeginCommand=function(self)
@@ -30,7 +30,7 @@ if enabled and bgType == 1 then
 	}
 end
 
-if enabled and bgType > 1 then
+if enabled and bgType > 1 then -- 2 = Grade+Clear, 3 = Grade Only
 
 	local bgList = {} -- Contains paths to potential bgs
 
@@ -48,21 +48,23 @@ if enabled and bgType > 1 then
 	end
 
 	local imgTypes = {".jpg",".png",".gif",".jpeg"}
-	if highestGrade == "Grade_Failed" then
+	if highestGrade == "Grade_Failed" then -- Grab from failed folder
 		bgList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/Grade_Failed/")
 		for k,v in pairs(bgList) do
 			bgList[k] = "Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/Grade_Failed/"..v
 		end
 	else
 		bgList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/Grade_Cleared/")
+
 		for k,v in pairs(bgList) do
 			bgList[k] = "Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/Grade_Cleared/"..v
 		end
+
 		if FILEMAN:DoesFileExist("Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/"..highestGrade) then
 			if bgType == 3 then -- If grade specific bgs only, set bglist to grade backgrounds.
 				bgList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/"..highestGrade.."/")
 				for k,v in pairs(bgList) do
-					bgList[k] = "Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/Grade_Cleared/"..v
+					bgList[k] = "Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/"..highestGrade.."/"..v
 				end
 			else -- Else, append grade backgrounds to bglist.
 				gradeBgList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Eval background/"..highestGrade.."/")
