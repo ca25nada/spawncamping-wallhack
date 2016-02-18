@@ -42,7 +42,12 @@ local defaultConfig = {
 		Challenge 		= "#c97bff",	-- Purple
 		Edit 		= "#666666",	-- gray
 		Couple		= "#ed0972",			-- hot pink
-		Routine		= "#ff9a00"			-- orange
+		Routine		= "#ff9a00",			-- orange
+		Crazy 		= "#ff6666",		-- red
+		Nightmare	= "#c97bff",	-- Purple
+		HalfDouble 	= "#666666",	-- gray
+		HalfDouble 	= "#666666",	-- gray
+		Freestyle 	= "#666666",	-- gray
 	},
 
 	difficultyVivid = {
@@ -61,7 +66,11 @@ local defaultConfig = {
 		Challenge 		= "#cc66ff",	-- Purple
 		Edit 		= "#666666",	-- gray
 		Couple		= "#ed0972",			-- hot pink
-		Routine		= "#ff9a00"			-- orange
+		Routine		= "#ff9a00",			-- orange
+		Crazy		= "#ff0000",		-- red
+		Nightmare 	= "#cc66ff",	-- Purple
+		HalfDouble 	= "#666666",	-- gray
+		Freestyle 	= "#666666",	-- gray
 	},
 
 	grade = {
