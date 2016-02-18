@@ -293,7 +293,9 @@ local Phrases = {
     "*KEYBOARDING INTENSIFIES*", -- https://twitter.com/MOOMANiBE/status/685218392299552768
     "VAC",
     "Play along at home:\n djskdjksdjskdjksdjskdksjdksdjksjdksdjkjsdjkskkksksksdjjsdjksdjksdjkssdjksjdkjksdjksdjksdjksdjkskdjjskdjksdjkjksjdksjdksjkdjksdjkjsdkjsjdskdjksjdksjdskdjksjjdjsddssjssdjkkkkkkkkkkkkkkkkkkkdjksjkdsjksdkjskdjksksdjjsdsksjdkkjksjjksjksd",
-    "Is this how you beat RSI? You commission staiain to tap for you?" -- Sivarro
+    "Is this how you beat RSI? You commission staiain to tap for you?", -- Sivarro
+    "SOUND VOLTAGE", -- #SOUND_VOLTAGE FOR SGDQ 2016
+    "you can't say that you're d7 because you can only jack off in one direction" -- eze
 
 }
 
