@@ -23,52 +23,53 @@ local gradeTiers = {
 	Grade_Failed = 20
 }
 
+
 local scoreWeight =  { -- Score Weights for DP score (MAX2)
-	TapNoteScore_W1				= 2,--PREFSMAN:GetPreference("GradeWeightW1"),					--  2
-	TapNoteScore_W2				= 2,--PREFSMAN:GetPreference("GradeWeightW2"),					--  2
-	TapNoteScore_W3				= 1,--PREFSMAN:GetPreference("GradeWeightW3"),					--  1
-	TapNoteScore_W4				= 0,--PREFSMAN:GetPreference("GradeWeightW4"),					--  0
-	TapNoteScore_W5				= -4,--PREFSMAN:GetPreference("GradeWeightW5"),					-- -4
-	TapNoteScore_Miss			= -8,--PREFSMAN:GetPreference("GradeWeightMiss"),				-- -8
-	HoldNoteScore_Held			= 6,--PREFSMAN:GetPreference("GradeWeightHeld"),				--  6
-	TapNoteScore_HitMine		= -8,--PREFSMAN:GetPreference("GradeWeightHitMine"),				-- -8
-	HoldNoteScore_LetGo			= 0,--PREFSMAN:GetPreference("GradeWeightLetGo"),				--  0
-	HoldNoteScore_MissedHold	 = 0,
+	TapNoteScore_W1				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW1"),					--  2
+	TapNoteScore_W2				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW2"),					--  2
+	TapNoteScore_W3				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW3"),					--  1
+	TapNoteScore_W4				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW4"),					--  0
+	TapNoteScore_W5				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW5"),					-- -4
+	TapNoteScore_Miss			= THEME:GetMetric("ScoreKeeperNormal","GradeWeightMiss"),				-- -8
+	HoldNoteScore_Held			= THEME:GetMetric("ScoreKeeperNormal","GradeWeightHeld"),				--  6
+	TapNoteScore_HitMine		= THEME:GetMetric("ScoreKeeperNormal","GradeWeightHitMine"),				-- -8
+	HoldNoteScore_LetGo			= THEME:GetMetric("ScoreKeeperNormal","GradeWeightLetGo"),				--  0
+	HoldNoteScore_MissedHold	 = THEME:GetMetric("ScoreKeeperNormal","GradeWeightMissedHold"),
 	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit	= 0,--PREFSMAN:GetPreference("GradeWeightCheckpointHit"),		--  0
-	TapNoteScore_CheckpointMiss = 0--PREFSMAN:GetPreference("GradeWeightCheckpointMiss"),		--  0
+	TapNoteScore_CheckpointHit	= THEME:GetMetric("ScoreKeeperNormal","GradeWeightCheckpointHit"),		--  0
+	TapNoteScore_CheckpointMiss = THEME:GetMetric("ScoreKeeperNormal","GradeWeightCheckpointMiss"),		--  0
 }
 
 local psWeight =  { -- Score Weights for percentage scores (EX oni)
-	TapNoteScore_W1			= 3,--PREFSMAN:GetPreference("PercentScoreWeightW1"),
-	TapNoteScore_W2			= 2,--PREFSMAN:GetPreference("PercentScoreWeightW2"),
-	TapNoteScore_W3			= 1,--PREFSMAN:GetPreference("PercentScoreWeightW3"),
-	TapNoteScore_W4			= 0,--PREFSMAN:GetPreference("PercentScoreWeightW4"),
-	TapNoteScore_W5			= 0,--PREFSMAN:GetPreference("PercentScoreWeightW5"),
-	TapNoteScore_Miss			= 0,--PREFSMAN:GetPreference("PercentScoreWeightMiss"),
-	HoldNoteScore_Held			= 3,--PREFSMAN:GetPreference("PercentScoreWeightHeld"),
-	TapNoteScore_HitMine			= -2,--(0 or -2?) PREFSMAN:GetPreference("PercentScoreWeightHitMine"),
-	HoldNoteScore_LetGo			= 0,--PREFSMAN:GetPreference("PercentScoreWeightLetGo"),
-	HoldNoteScore_MissedHold	 = 0,
+	TapNoteScore_W1			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW1"),
+	TapNoteScore_W2			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW2"),
+	TapNoteScore_W3			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW3"),
+	TapNoteScore_W4			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW4"),
+	TapNoteScore_W5			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW5"),
+	TapNoteScore_Miss			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightMiss"),
+	HoldNoteScore_Held			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightHeld"),
+	TapNoteScore_HitMine			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightHitMine"),
+	HoldNoteScore_LetGo			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightLetGo"),
+	HoldNoteScore_MissedHold	 = THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightMissedHold"),
 	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit		= 0,--PREFSMAN:GetPreference("PercentScoreWeightCheckpointHit"),
-	TapNoteScore_CheckpointMiss 	= 0--PREFSMAN:GetPreference("PercentScoreWeightCheckpointMiss"),
+	TapNoteScore_CheckpointHit		= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightCheckpointHit"),
+	TapNoteScore_CheckpointMiss 	= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightCheckpointMiss"),
 }
 
 local migsWeight =  { -- Score Weights for MIGS score
-	TapNoteScore_W1			= 3,
-	TapNoteScore_W2			= 2,
-	TapNoteScore_W3			= 1,
-	TapNoteScore_W4			= 0,
-	TapNoteScore_W5			= -4,
-	TapNoteScore_Miss			= -8,
-	HoldNoteScore_Held			= 6,
+	TapNoteScore_W1					= 3,
+	TapNoteScore_W2					= 2,
+	TapNoteScore_W3					= 1,
+	TapNoteScore_W4					= 0,
+	TapNoteScore_W5					= -4,
+	TapNoteScore_Miss				= -8,
+	HoldNoteScore_Held				= IsGame("pump") and 0 or 6,
 	TapNoteScore_HitMine			= -8,
-	HoldNoteScore_LetGo			= 0,
-	HoldNoteScore_MissedHold	 = 0,
-	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit		= 0,
-	TapNoteScore_CheckpointMiss 	= 0
+	HoldNoteScore_LetGo				= 0,
+	HoldNoteScore_Missed 			= 0,
+	TapNoteScore_AvoidMine			= 0,
+	TapNoteScore_CheckpointHit		= 2,
+	TapNoteScore_CheckpointMiss 	= -8,
 }
 
 function getScoreList(pn)

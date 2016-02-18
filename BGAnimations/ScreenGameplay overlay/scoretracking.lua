@@ -16,11 +16,7 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_1) or GAMESTATE:IsPlayerEnabled(PLAYER_2) th
 				else
 					addJudgeST(PLAYER_1,params.TapNoteScore,false)
 					if params.TapNoteScore ~= 'TapNoteScore_Miss' then
-						--if not params.Early then
-							addOffsetST(PLAYER_1,params.TapNoteOffset)
-						--else
-							--addOffsetST(PLAYER_1,params.TapNoteOffset)
-						--end;
+						addOffsetST(PLAYER_1,params.TapNoteOffset)
 					end;
 				end;
 			end;
@@ -32,11 +28,7 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_1) or GAMESTATE:IsPlayerEnabled(PLAYER_2) th
 				else
 					addJudgeST(PLAYER_2,params.TapNoteScore,false)
 					if params.TapNoteScore ~= 'TapNoteScore_Miss' then
-						--if not params.Early then
-							addOffsetST(PLAYER_2,params.TapNoteOffset)
-						--else
-							--addOffsetST(PLAYER_2,params.TapNoteOffset)
-						--end;
+						addOffsetST(PLAYER_2,params.TapNoteOffset)
 					end;
 				end;
 			end;

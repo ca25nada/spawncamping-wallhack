@@ -186,7 +186,9 @@ function addJudgeST(pn,judge,isHold)
 				(judge =="TapNoteScore_W3") or
 				(judge =="TapNoteScore_W4") or
 				(judge =="TapNoteScore_W5") or
-				(judge =="TapNoteScore_Miss") then
+				(judge =="TapNoteScore_Miss") or
+				(judge =="TapNoteScore_CheckpointHit") or
+				(judge =="TapNoteScore_CheckpointMiss") then
 				judgeTable[pn][#(judgeTable[pn])+1] = judge -- add to judgetable
 			end
 			judgeStats[pn][judge] = judgeStats[pn][judge]+1
@@ -320,11 +322,11 @@ function getCurScoreST(pn,scoreType)
 	end
 
 	if scoreType == 1 then
-		return (judgeStats[pn]["TapNoteScore_W1"]*scoreWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*scoreWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*scoreWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*scoreWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*scoreWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*scoreWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_HitMine"]*scoreWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*scoreWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*scoreWeight["HoldNoteScore_LetGo"]) or 0-- maximum DP
+		return (judgeStats[pn]["TapNoteScore_W1"]*scoreWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*scoreWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*scoreWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*scoreWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*scoreWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*scoreWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_CheckpointHit"]*scoreWeight["TapNoteScore_CheckpointHit"]+judgeStats[pn]["TapNoteScore_CheckpointMiss"]*scoreWeight["TapNoteScore_CheckpointMiss"]+judgeStats[pn]["TapNoteScore_HitMine"]*scoreWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*scoreWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*scoreWeight["HoldNoteScore_LetGo"]) or 0-- maximum DP
 	elseif scoreType == 2 then
-		return (judgeStats[pn]["TapNoteScore_W1"]*psWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*psWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*psWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*psWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*psWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*psWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_HitMine"]*psWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*psWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*psWeight["HoldNoteScore_LetGo"]) or 0  -- maximum %score DP
+		return (judgeStats[pn]["TapNoteScore_W1"]*psWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*psWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*psWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*psWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*psWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*psWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_CheckpointHit"]*psWeight["TapNoteScore_CheckpointHit"]+judgeStats[pn]["TapNoteScore_CheckpointMiss"]*psWeight["TapNoteScore_CheckpointMiss"]+judgeStats[pn]["TapNoteScore_HitMine"]*psWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*psWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*psWeight["HoldNoteScore_LetGo"]) or 0  -- maximum %score DP
 	elseif scoreType == 3 then
-		return (judgeStats[pn]["TapNoteScore_W1"]*migsWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*migsWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*migsWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*migsWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*migsWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*migsWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_HitMine"]*migsWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*migsWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*migsWeight["HoldNoteScore_LetGo"]) or 0
+		return (judgeStats[pn]["TapNoteScore_W1"]*migsWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*migsWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*migsWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*migsWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*migsWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*migsWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_CheckpointHit"]*migsWeight["TapNoteScore_CheckpointHit"]+judgeStats[pn]["TapNoteScore_CheckpointMiss"]*migsWeight["TapNoteScore_CheckpointMiss"]+judgeStats[pn]["TapNoteScore_HitMine"]*migsWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*migsWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*migsWeight["HoldNoteScore_LetGo"]) or 0
 	end
 
 	return 0
