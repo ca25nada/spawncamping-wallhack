@@ -18,7 +18,7 @@ if barPosition == 1 then  -- BOTTOM
     frameY = SCREEN_BOTTOM + bottomModifier
 elseif barPosition == 2 then -- TOP
     frameY = SCREEN_TOP + topModifier 
-end;
+end
 
 local t = Def.ActorFrame {
     Def.Quad{
@@ -44,7 +44,6 @@ local t = Def.ActorFrame {
         BeginCommand=cmd(settext,SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()));
     };  
 };
-
 
 local function getMusicProgress()
     local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()

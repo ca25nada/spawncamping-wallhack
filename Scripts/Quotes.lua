@@ -295,8 +295,11 @@ local Phrases = {
     "Play along at home:\n djskdjksdjskdjksdjskdksjdksdjksjdksdjkjsdjkskkksksksdjjsdjksdjksdjkssdjksjdkjksdjksdjksdjksdjkskdjjskdjksdjkjksjdksjdksjkdjksdjkjsdkjsjdskdjksjdksjdskdjksjjdjsddssjssdjkkkkkkkkkkkkkkkkkkkdjksjkdsjksdkjskdjksksdjjsdsksjdkkjksjjksjksd",
     "Is this how you beat RSI? You commission staiain to tap for you?", -- Sivarro
     "SOUND VOLTAGE", -- #SOUND_VOLTAGE FOR SGDQ 2016
-    "you can't say that you're d7 because you can only jack off in one direction" -- eze
-
+    "you can't say that you're d7 because you can only jack off in one direction", -- eze
+    "SUGOI MISS", -- symbolic gear
+    "ideu food", 
+    "WE LOVE LOBSAK -- WE NEED LOBSAK", -- https://www.youtube.com/watch?v=mvZz_Ulkg1o
+    "mayumi is only prim when she's high"
 }
 
 --tip

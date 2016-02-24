@@ -44,20 +44,22 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 };
 
+
+-- Life graph and the stuff that goes with it
 local function GraphDisplay( pn )
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 
 	local t = Def.ActorFrame {
 		Def.GraphDisplay {
-			InitCommand=cmd(Load,"GraphDisplay";);
+			InitCommand=cmd(Load,"GraphDisplay");
 			BeginCommand=function(self)
-				local ss = SCREENMAN:GetTopScreen():GetStageStats();
-				self:Set( ss, ss:GetPlayerStageStats(pn) );
+				local ss = SCREENMAN:GetTopScreen():GetStageStats()
+				self:Set( ss, ss:GetPlayerStageStats(pn))
 				self:diffusealpha(0.7);
 				self:GetChild("Line"):diffusealpha(0)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
 					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35))
-				end;
+				end
 			end
 		};
 		LoadFont("Common Large")..{
@@ -66,11 +68,11 @@ local function GraphDisplay( pn )
 				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
 					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)-(SCREEN_CENTER_X*0.30))
-				end;
+				end
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(SCREEN_CENTER_X*0.30)
 					self:halign(1)
-				end;
+				end
 				self:glowshift()
 				self:effectcolor1(getGradeColor(pss:GetGrade()))
 				self:effectcolor2(color("1,1,1,0"))
@@ -90,7 +92,7 @@ local function GraphDisplay( pn )
 				self:settext(text)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
 					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
-				end;
+				end
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(SCREEN_CENTER_X*0.30)
 					self:halign(1)
@@ -104,15 +106,15 @@ local function GraphDisplay( pn )
 				local notes = 0
 				if steps ~= nil then
 					notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-				end;
+				end
 				self:settextf("%d Notes",notes)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
 					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
-				end;
+				end
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(SCREEN_CENTER_X*0.30)
 					self:halign(1)
-				end;
+				end
 			end;
 		};
 
@@ -125,11 +127,11 @@ local function ComboGraph( pn )
 		Def.ComboGraph {
 			InitCommand=cmd(Load,"ComboGraph"..ToEnumShortString(pn););
 			BeginCommand=function(self)
-				local ss = SCREENMAN:GetTopScreen():GetStageStats();
-				self:Set( ss, ss:GetPlayerStageStats(pn) );
+				local ss = SCREENMAN:GetTopScreen():GetStageStats()
+				self:Set(ss,ss:GetPlayerStageStats(pn))
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35))
-				end;
+				end
 			end
 		};
 	};
@@ -159,14 +161,12 @@ function scoreBoard(pn,position)
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX-5,frameY;zoomto,frameWidth+10,220;halign,0;valign,0;diffuse,color("#333333CC"););
-	};
-
-
+		InitCommand=cmd(xy,frameX-5,frameY;zoomto,frameWidth+10,220;halign,0;valign,0;diffuse,color("#333333CC");)
+	}
 
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY+55;zoomto,frameWidth,2;halign,0;)
-	};
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth,frameY+0;zoom,0.5;halign,1;valign,1);
@@ -205,6 +205,7 @@ function scoreBoard(pn,position)
 				end
 				self:settext(getHighestClearType(pn,index,1)); 
 				self:diffuse(getHighestClearType(pn,index,2))
+				self:diffusealpha(0.7)
 			end;
 		end;
 	};
@@ -275,6 +276,7 @@ function scoreBoard(pn,position)
 			else
 				self:settextf("%s",percentText)
 			end
+			self:diffusealpha(0.7)
 		end;
 	};
 
@@ -341,6 +343,7 @@ function scoreBoard(pn,position)
 			else
 				self:settext("-")
 			end;
+			self:diffusealpha(0.7)
 		end;
 	};
 

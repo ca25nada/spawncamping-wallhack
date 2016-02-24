@@ -45,7 +45,7 @@ if GAMESTATE:IsPlayerEnabled(player) then
 	profile = GetPlayerOrMachineProfile(player)
 	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
 	origTable = getScoreList(player)
-	score = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetHighScore()--origTable[STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPersonalHighScoreIndex()+1]
+	score = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetHighScore()
 	rtTable = getRateTable(origTable)
 	if themeConfig:get_data().global.RateSort then
 		hsTable = sortScore(rtTable[getRate(score)] or {},0)
@@ -322,15 +322,5 @@ local function Update(self)
 	end
 end
 t.InitCommand=cmd(SetUpdateFunction,Update)
-
-
---[[
-t[#t+1] = LoadFont("Common normal")..{
-	InitCommand=cmd(xy,framex,framey+10+(spacing);zoom,1;halign,0);
-	BeginCommand=function(self)
-		self:settext(scoreIndex)
-	end;
-};
---]]
 
 return t;
