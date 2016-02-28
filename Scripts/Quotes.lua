@@ -299,7 +299,8 @@ local Phrases = {
     "SUGOI MISS", -- symbolic gear
     "ideu food", 
     "WE LOVE LOBSAK -- WE NEED LOBSAK", -- https://www.youtube.com/watch?v=mvZz_Ulkg1o
-    "mayumi is only prim when she's high"
+    "mayumi is only prim when she's high",
+    "DAMN DANIEL"
 }
 
 --tip
