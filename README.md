@@ -15,6 +15,11 @@ Requirements: StepMania 5.0.10 or later. Mouse related functions only work on Wi
 * Kyzentun's prefs system is used for setting various profile/theme preferences.
 
 ---
+### Issues
+ * PIU Scores are broken since there's no way to get the total # of checkpoints.
+ * Courses are disabled.
+
+---
 ### TODO   
 * Newfield support and moving towards 5.1 in general.
 * Adding back nonstop/course modes.
