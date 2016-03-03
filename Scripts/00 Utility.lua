@@ -230,7 +230,7 @@ function getNoteFieldPos(pn)
 	local styleType = ToEnumShortString(style:GetStyleType())
 	local centered = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player"))
 
-	if centered then 
+	if centered and GAMESTATE:GetNumPlayersEnabled() == 1 then 
 		return SCREEN_CENTER_X
 	else
 		return THEME:GetMetric("ScreenGameplay",string.format("PlayerP%i%sX",pNum,styleType))
