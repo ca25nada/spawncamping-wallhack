@@ -62,22 +62,31 @@ local function GraphDisplay( pn )
 				end
 			end
 		};
+
 		LoadFont("Common Large")..{
+			Name = "Grade";
 			InitCommand=cmd(xy,-SCREEN_CENTER_X*0.30,15;zoom,0.7;maxwidth,70/0.8;halign,0;);
 			BeginCommand=function(self) 
 				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
-				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)-(SCREEN_CENTER_X*0.30))
-				end
-				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-					self:x(SCREEN_CENTER_X*0.30)
-					self:halign(1)
-				end
-				self:glowshift()
-				self:effectcolor1(getGradeColor(pss:GetGrade()))
-				self:effectcolor2(color("1,1,1,0"))
 			end;
 		};
+
+		LoadFont("Common Normal")..{
+			InitCommand=cmd(y,15;zoom,0.6;);
+			BeginCommand=function(self) 
+				local score = getCurScoreST(pn,0)
+				local maxScore = getMaxScoreST(pn,0)
+				local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
+				self:halign(0)
+				self:settext(percentText)
+				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
+					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth(),70/0.8)*0.8))
+				else
+					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth(),70/0.8)*0.8))
+				end
+			end;
+		};
+
 		LoadFont("Common Normal")..{
 			InitCommand=cmd(xy,WideScale(get43size(140),140)-5,-35;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
 			BeginCommand=function(self)
