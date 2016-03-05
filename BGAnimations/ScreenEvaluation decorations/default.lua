@@ -428,7 +428,11 @@ function scoreBoard(pn,position)
 			InitCommand=cmd(xy,frameX+frameWidth-38,frameY+80+((k-1)*22);zoom,0.30;halign,0);
 			BeginCommand=cmd(queuecommand,"Set");
 			SetCommand=function(self) 
-				self:settextf("(%03.2f%%)",pss:GetPercentageOfTaps(v)*100)
+				local text = pss:GetPercentageOfTaps(v)*100
+				if tostring(text) == "-nan(ind)" then
+					text = 0
+				end
+				self:settextf("(%03.2f%%)",text)
 			end;
 		};
 	end;

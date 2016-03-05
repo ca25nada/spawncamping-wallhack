@@ -58,16 +58,12 @@ local Phrases = {
     "not even kaiden yet",
     "a noodle soup a day and your skills won't decay",
     "hey girl im kaiden want to go out",
-    --"now with more drops, sadly rain does not produce dubstep.",
     "i dropped out of school to play music games",
-    --"tropical storm more like tropical fart",
-    --"protip: dolphins are not capable of playing music games, let alone make music for them.",
     "did you hear about this cool game called beatmani?",
     "to be honest, it's not ez to dj.",
     "at least we won't lose our source code.", -- rip LR2
     "less woosh more drop", -- SDVX
     "studies show that certain rhythm game communities contain more cancerous and autistic people than other communities.",
-    --"hot new bonefir remix knife party",
     "i'll only date you if you're kaiden",
     "it's called overjoy because the people who plays those charts are masochists",
     "studies show that combo-based scoring is the biggest factor of broken equipment in the rhythm game community",
@@ -89,7 +85,6 @@ local Phrases = {
     "I'm not good enough for Blocko.",
     "Evasiva coches.",
     "future metallic can - premium skin",
-    "2/10",
     "what the fuck is VOS",
     "Party like it's BM98.",
     "Everyone seems a bit too obsessed with the moon. I wonder if they're werewolves...",
@@ -97,23 +92,17 @@ local Phrases = {
     "rice and noodles erryday",
     "reticulating splines",
     ":^)",
-    --"hi spy",
-    --"hi arcwin",
     "protip: to be overjoy you just have to avoid missing",
-    --"have you visited theaquila today?",
-    --"Find us at http://vsrg.club !",
     "Eating children is part of our lives.",
     "Don't you put it in your mouth.",
     "Like the game you may all know stepmania",
     "Time to enjoy. I guess.",
     "Are you kaiden yet?",
     "Overmapping is a mapping style.",
-    "I play volumax. - Hazelnut-",
     "mario paint music!!", -- peppy
     "very spammy",
     "your favourite chart is shit",
     "1.33 -> 0.33 -> 1.0 <=/=> 1.5 -> 0.5 -> 1.0",
-    "rip words",
     "misses are bad",
     "aiae lmao",
     "573 or nothing",
@@ -123,12 +112,9 @@ local Phrases = {
     "As easy as ABCD.",
     "You'll full combo it this time.",
     "You're gonna carry that weight.",
-    --"fappables/duck.gif",
-    --"16 hours of B.O. blocko power!",
     "how can there be 714 bpm if theres only 60 seconds in a minute?", -- osu
     "Far East Nightbird (Twitch remix)",
     "Just hold on. You'll be fine, I promise. Everyday.",
-    "2spooky",
     "i'm not a kaiden i'm a ninja gaiden",
     "did you seriously pay peppy 4$ to upload a fucking thomas the tank engine dump",
     "mania is a pile of unmanageblae shit i'm not fixing it - peppy",
@@ -146,7 +132,6 @@ local Phrases = {
     "What is SOWS? I tried to Google it but all I get is pictures of female pigs",
     "To Abcdullah: your cheating is obvious, doing 100.00% on lv.26-28 maps from the first attempt is cheating, admit it.", -- osu pm
     "konmai", -- konami
-    "haha facerolling",
 	"gonz:pork",
 	"BMS = Button Mashing Simulator", -- Some yt comment... might have been doorknob
 	"leonid fucking hard", -- LUXURY"
@@ -170,7 +155,6 @@ local Phrases = {
 	"IT HAS MEI IN IT", -- Toy's march 
 	"J1L1", -- Pr0 settings 
 	"(KOOKY)", -- EVERY BMS DUMP
-	"bruh...",
 	"(^^)/★★", -- ABCD
 	"less apm for more swage", -- Roar
 	"people age at a rate of about 1 year per year", -- Choofers
@@ -187,11 +171,7 @@ local Phrases = {
 	"Today's Popn", -- leonid
 	"B..bbut... you're supposed to play this on a dance mat", -- Every youtube comment ever on stepmania vids
 	"WinDEU hates you",
-	"nerd",
 	"~kawaii chordsmash~", -- https://www.youtube.com/watch?v=52laML7s9y0
-	">~<",
-	";w;",
-	"uwaaaa",
 	"tatataatatatatattatatattatatataii hihhihihihihhihhihihihihiihihhihihihihhihhi", -- francium 
 	"Is dis a game? If it is can I ask for da link and I need to play dis so badly and I wanna know if dere is any vocaloid songs on it",
 	"Korea team for 4k: Captain:abcd right hand, player 2: abcd left hand", -- longgone
@@ -209,11 +189,9 @@ local Phrases = {
     "you can't ask consistency in players because the next day they could be drunk while playing. or ate a lot of carbo and meat.",
     "Don't do nazi mods,then it will no drama happen.", -- Spy
     "jackhammers are nothing on an IIDX controller.", -- kidlat020
-    "but then good players will have more advantage in the rankings",
+    "but then good players will have more advantage in the rankings", -- osu forums
     "EXTRA CRISPY ORIGINAL RECIPE RASIS BREAST", -- foal irc bot
     "what's a fuckin town without ducks, j-tro?",
-    "mfw",
-    "gross",
     "I bet you were gettin the red face and fast heartbeat...then fucked up and the feeling kinda wore off",
     "I beat off to this background dancer in DDR Supernova once too",
     "Shut the fuck up Trance Core",
@@ -287,7 +265,6 @@ local Phrases = {
     "when you have a GF you will creat here an osu account by th name of staiaina", -- oss firstofall
     "my method for jacks is i move my finger and it presses down everytime it see's a note", -- JinXe
     "Xayy lmao", -- http://www.flashflashrevolution.com/vbz/showthread.php?t=143456
-    -- whee agdq stuff
     "over 30 notes per second atm, this guy could single handedly out spam twitch chat", -- r/speedrun oinkbane
     "HES TALKING AND PLAYING AT THE SAME TIME WTF",
     "*KEYBOARDING INTENSIFIES*", -- https://twitter.com/MOOMANiBE/status/685218392299552768
@@ -300,7 +277,9 @@ local Phrases = {
     "ideu food", 
     "WE LOVE LOBSAK -- WE NEED LOBSAK", -- https://www.youtube.com/watch?v=mvZz_Ulkg1o
     "mayumi is only prim when she's high",
-    "DAMN DANIEL"
+    "DAMN DANIEL",
+    "/!\ Shitmapping in Progress /!\ ",
+    "pls enjoy gaem"
 }
 
 --tip
