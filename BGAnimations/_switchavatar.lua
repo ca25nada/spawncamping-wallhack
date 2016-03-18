@@ -75,7 +75,7 @@ local function saveAvatar(pn)
 	avatarConfig:get_data().avatar[GUID] = avatar
 	avatarConfig:set_dirty()
 	avatarConfig:save()
-	SCREENMAN:SystemMessage(string.format("%s Avatar set to: '%s'",pn,avatar))
+	SCREENMAN:SystemMessage(string.format("%s's Avatar set to: '%s'",PROFILEMAN:GetPlayerName(pn),avatar))
 end
 
 -- The main function that contains errything
