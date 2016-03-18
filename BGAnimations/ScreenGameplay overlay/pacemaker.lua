@@ -14,7 +14,7 @@ local frameHeight = SCREEN_HEIGHT
 local frameX = SCREEN_WIDTH-frameWidth
 local frameY = 0
 
-local barY = 420-- Starting point/bottom of graph
+local barY = 430-- Starting point/bottom of graph
 local barCount = 3 -- Number of graphs
 local barWidth = 0.65
 local barTrim = 0 -- Final width of each graph = ((frameWidth/barCount)*barWidth) - barTrim
@@ -31,10 +31,6 @@ if player == PLAYER_1 then
 	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
 	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
-
-
-
-
 elseif player == PLAYER_2 then
 	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
@@ -313,6 +309,37 @@ local function markers(scoreType,showMessage)
 
 end;
 
+local function lifejudge()
+	local t = Def.ActorFrame{
+		InitCommand=cmd(diffusealpha,0.5);
+	}
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+2,15;zoom,0.4;halign,0;valign,1;);
+		BeginCommand=function(self)
+			self:settext("Timing Difficulty:")
+		end;
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX+2,28;zoom,0.4;halign,0;valign,1;);
+		BeginCommand=function(self)
+			self:settext("Life Difficulty:")
+		end;
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX-5+frameWidth,15;zoom,0.4;halign,1;valign,1;);
+		BeginCommand=function(self)
+			self:settext(GetTimingDifficulty())
+		end;
+	};
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameX-5+frameWidth,28;zoom,0.4;halign,1;valign,1;);
+		BeginCommand=function(self)
+			self:settext(GetLifeDifficulty())
+		end;
+	};
+	return t
+end;
+
 --Make the graph...!
 local t = Def.ActorFrame{}
 if enabled then
@@ -330,6 +357,7 @@ if enabled then
 	t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("best"))
 
 	t[#t+1] = markers(ghostType,true)
+	t[#t+1] = lifejudge()
 end;
 
 
