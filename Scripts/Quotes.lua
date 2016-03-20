@@ -279,7 +279,13 @@ local Phrases = {
     "mayumi is only prim when she's high",
     "DAMN DANIEL",
     "/!\ Shitmapping in Progress /!\ ",
-    "pls enjoy gaem"
+    "pls enjoy gaem",
+    "尻削り節 [7keys　歌は世につれ世は歌につれ　難易度表に心奪われ　滝汗流し腱鞘炎　来る日も来る日も飽きず筋トレ　誰にでもつらいときはあるものです　それでは聞いていただきましょう　手動ディレイで　尻　削　り　節]",
+    "Krrrrr Krrrrr Krrrrr slide", --blurtic
+    "it looks like burn spiral to kill mosquito, we're not mosquito. But the idea is that we accidentally stepped on it and ARGH IT'S HOT!!!", -- http://www.stepmania.com/forums/themes/show/6085#post11127
+    "somewhere.... someone out there is complaining their days are bad cuz they can't FC overjoy 3s and 4s", -- Lovely
+
+     
 }
 
 --tip
