@@ -45,12 +45,18 @@ local t = Def.ActorFrame {
     };  
 };
 
+
+-- Returns the %of song played from 0~1.
 local function getMusicProgress()
     local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()
 	local songLength = GAMESTATE:GetCurrentSong():GetStepsSeconds()
 	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
+
+    -- Sets the last played song position
+    -- When the player exits to ScreenSelectMusic, the song will continue playing from that point.
     setLastSecond(songPosition)
 
+    -- Sends a message for stuff in title.lua to receive.
     if (GAMESTATE:GetCurrentSong():GetFirstSecond()-songPosition < 2 or songPosition > 5) and not started then
         MESSAGEMAN:Broadcast("SongStarting")
         started = true

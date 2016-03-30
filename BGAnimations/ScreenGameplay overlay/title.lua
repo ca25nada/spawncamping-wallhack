@@ -1,3 +1,6 @@
+--Banner and song info that shows before the gameplay starts.
+--SongStartingMessageCommand is sent from progressbar.lua
+
 local t = Def.ActorFrame{}
 
 t[#t+1] = Def.Quad{

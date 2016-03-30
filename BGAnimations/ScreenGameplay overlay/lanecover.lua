@@ -95,13 +95,6 @@ local function getScrollSpeed(pn,LaneCoverHeight)
 	end;
 end;
 
---inaccurate since the highspeed x1 speed definition is different between the games.
---iidx x1 is defined as the whole measure showing up on the notefield
---SM x1 is defined as 4th notes being next to each other with no gaps or overlaps.
-local function getIIDXGreenNumber(pn,LaneCoverHeight)
-	return (174*((getNoteFieldHeight(pn)-LaneCoverHeight)*(1000/getNoteFieldHeight(pn))))/((getSpeed(pn)/getPlayerBPM(pn))*getPlayerBPM(pn))
-end;
-
 local t = Def.ActorFrame{
 	CodeMessageCommand = function(self, params)
 		moveDownP1 = false

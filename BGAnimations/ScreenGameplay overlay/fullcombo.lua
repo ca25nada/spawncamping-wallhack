@@ -36,6 +36,7 @@ local function FCEffect(pn)
 		end;
 	}
 
+	-- Main fade-in gradient 
 	t[#t+1] = Def.Quad{
 		InitCommand=function(self)
 			self:visible(false)
@@ -57,6 +58,7 @@ local function FCEffect(pn)
 		end;
 	}
 
+	-- Random flying bar thing
 	for i=1,barCount do
 		t[#t+1] = Def.Quad{
 		InitCommand=function(self)
@@ -84,6 +86,7 @@ local function FCEffect(pn)
 	}	
 	end
 
+	-- HAND KERNED TEXT
 	for i=1,#text do
 		t[#t+1] = LoadFont("Common Large") .. {
 			InitCommand=function(self)
@@ -119,7 +122,6 @@ local function FCEffect(pn)
 					self:diffusealpha(1)
 					self:sleep(0.3)
 					self:accelerate(0.6-random)
-					--self:y(SCREEN_TOP+(400*math.random()))
 					self:diffusealpha(0.0)
 				end
 			end;

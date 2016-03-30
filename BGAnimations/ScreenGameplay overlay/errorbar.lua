@@ -84,20 +84,10 @@ if enabled then
 		t[#t+1] = proTimingTicks(pn,i)
 	end;
 
-
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,2,frameHeight;diffuse,color("#FFFFFF");diffusealpha,0.5);
 	};
 
-
-	--[[
-	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX+1-frameWidth/2,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
-	};
-	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX-1+frameWidth/2,frameY;zoomto,2,frameHeight+4;diffuse,color("#FFFFFF");diffusealpha,0.5);
-	};
-	--]]
 	t[#t+1] = LoadFont("Common Normal") .. {
         InitCommand=cmd(xy,frameX+frameWidth/4,frameY;zoom,0.35;);
         BeginCommand=cmd(settext,"Late";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
@@ -107,20 +97,8 @@ if enabled then
         BeginCommand=cmd(settext,"Early";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
     };
 
-
-	--[[
-	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,300,300;halign,0;zoom,2;);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			self:settext(currentbar)
-		end;
-		JudgmentMessageCommand=cmd(playcommand,"Set");
-	};
-	--]]
 end;
 
--- 
 
 
 

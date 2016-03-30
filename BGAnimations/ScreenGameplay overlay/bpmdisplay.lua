@@ -21,6 +21,7 @@ local function getPlayerBPM(pn)
 	return string.format("%03.2f",bpm)
 end
 
+-- Updates bpm text.
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update)
 	if GAMESTATE:IsHumanPlayer(PLAYER_1) then
