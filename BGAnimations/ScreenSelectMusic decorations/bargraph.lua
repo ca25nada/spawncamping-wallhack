@@ -226,7 +226,7 @@ local function barGraph(pn)
 				--self:zoomx(0)
 				self:sleep(animationDelay)
 				self:smooth(animationLength)
-				self:diffuse(getMainColor('highlight'))
+				self:diffuse(TapNoteScoreToColor("TapNoteScore_W1"))
 				self:zoomx((math.min(1,judge/notes))*barWidth)
 			end;
 			CurrentSongChangedMessageCommand=function(self)
