@@ -55,13 +55,13 @@ if themeConfig:get_data().global.SongPreview ~= 1 then
 					if path ~= nil then
 						
 						if startFromPreview then -- When starting from preview point
-							SOUND:PlayMusicPart(path,curSong:GetSampleStart(),song:MusicLengthSeconds()-curSong:GetSampleStart(),2,2,loop,true,true);
+							SOUND:PlayMusicPart(path,curSong:GetSampleStart(),curSong:MusicLengthSeconds()-curSong:GetSampleStart(),2,2,loop,true,true);
 							if themeConfig:get_data().global.SongPreview == 3 then 
 								startFromPreview = false
 							end
 							start = 0
 						else -- When starting from start of from exit point.
-							SOUND:PlayMusicPart(path,start,song:MusicLengthSeconds()-start,2,2,false,true,true);
+							SOUND:PlayMusicPart(path,start,curSong:MusicLengthSeconds()-start,2,2,false,true,true);
 							--SCREENMAN:SystemMessage("Playing: "..path.." from "..start.." seconds")
 							start = 0
 							if themeConfig:get_data().global.SongPreview == 2 then

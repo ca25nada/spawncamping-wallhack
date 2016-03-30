@@ -92,7 +92,7 @@ end
 
 function getScoreFromPn(pn,index)
 	local hsTable = getScoreList(pn)
-	return getScore(hsTable,index)
+	return hsTable[index]
 end
 
 function getMaxNotes(pn)
