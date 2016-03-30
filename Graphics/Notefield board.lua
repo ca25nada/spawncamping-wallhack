@@ -61,11 +61,13 @@ local function LaneHighlight()
 				if params.Player == pn and 
 					params.TapNoteScore and
 					notes ~= nil and notes[i] ~= nil then
-
 					if Enum.Reverse(TapNoteScore)[params.TapNoteScore] < cbThreshold and
 						params.TapNoteScore ~= "TapNoteScore_None" and
 						params.TapNoteScore ~= "TapNoteScore_AvoidMine" and
-						params.TapNoteScore ~= "TapNoteScore_CheckpointMiss" then
+						params.TapNoteScore ~= "TapNoteScore_CheckpointMiss" and
+						(notes[i]:GetTapNoteType() == 'TapNoteType_Tap' or
+						notes[i]:GetTapNoteType() == 'TapNoteType_HoldHead' or
+						notes[i]:GetTapNoteType() == 'TapNoteType_Lift') then
 
 						self:stoptweening();
 						self:visible(true);
