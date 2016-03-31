@@ -32,7 +32,7 @@ local defaultConfig = {
 	}
 }
 
-themeConfig = create_setting("themeConfig", "themeConfig.lua", defaultConfig,-1)
+themeConfig = create_lua_config({name = "themeConfig", file = "themeConfig.lua", default =  defaultConfig, match_depth = -1})
 themeConfig:load()
 
 function getSongPreviewMode()

@@ -4,9 +4,10 @@
 local ghostData = {
 }
 
+--[[
 ghostData = create_setting("ghostData", "ghostData.lua", ghostData,0)
 ghostData:load()
-
+--]]
 
 function ghostDataExists(pn,score)
 	return false 

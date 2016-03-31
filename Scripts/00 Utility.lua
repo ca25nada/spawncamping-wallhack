@@ -283,3 +283,8 @@ function getBPMChangeCount(bpms)
 
 	return count
 end
+
+-- Temporary until i remove all function calls to this.
+function pn_to_profile_slot(pn)
+	return pn
+end

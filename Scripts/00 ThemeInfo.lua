@@ -2,7 +2,7 @@
 
 themeInfo = {
 	Name = "spawncamping-wallhack",
-	Version = "1.0.0", -- a.b.c, a for complete overhauls, b for major releases, c for minor additions/bugfix.
+	Version = "1.1.0", -- a.b.c, a for complete overhauls, b for major releases, c for minor additions/bugfix.
 	Date = "20160330",
 };
 
