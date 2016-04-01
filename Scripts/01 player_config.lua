@@ -5,7 +5,7 @@ local defaultConfig = {
 	JudgeType = 0,
 	AvgScoreType = 0,
 	GhostScoreType = 0,
-	GhostTarget = 1,
+	GhostTarget = 0,
 	ErrorBar = false,
 	PaceMaker = false,
 	LaneCover = 0, -- soon to be changed to: 0=off, 1=sudden, 2=hidden
@@ -13,6 +13,7 @@ local defaultConfig = {
 	NPSDisplay = false,
 	NPSGraph = false,
 	CBHighlight = false,
+	FCEffect = true,
 }
 
 playerConfig = create_lua_config({name = "playerConfig", file = "playerConfig.lua", default = defaultConfig, match_depth =-1})
