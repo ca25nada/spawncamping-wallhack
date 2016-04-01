@@ -2,8 +2,8 @@
 A WIP Stepmania 5 theme aimed primarily for KB players.  
 <a href="http://imgur.com/a/ddHZN" target="_blank">Screenshots</a>
 
-Requirements: StepMania 5.1.0 or later.   
-(might work on 5.0.11 and I'll eventually start backporting for this version.)   
+Requirements: StepMania 5.1.0 Alpha 2 or later.
+* All newfield related stuff are incompatable with 5.0 releases.
 * Mouse related functions only work on Windows.
 * Midgame pauses do not work properly for versions earlier than 5.0.10.
 * RadarCategory_Notes wasn't added until 5.0.8 so earlier versions will output an error.
