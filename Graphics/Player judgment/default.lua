@@ -27,7 +27,11 @@ local TNSFrames = {
 	TapNoteScore_W5 = 4;
 	TapNoteScore_Miss = 5;
 };
-local t = Def.ActorFrame {};
+local t = Def.ActorFrame {
+	InitCommand = function(self)
+		self:draworder(newfield_draw_order.over_field)
+	end;
+};
 t[#t+1] = Def.ActorFrame {
 	LoadActor(THEME:GetPathG("Judgment","Normal")) .. {
 		Name="Judgment";
@@ -44,7 +48,7 @@ t[#t+1] = Def.ActorFrame {
 	};
 	
 	InitCommand = function(self)
-		c = self:GetChildren();
+		c = self:GetChildren()
 	end;
 
 	JudgmentMessageCommand=function(self, param)

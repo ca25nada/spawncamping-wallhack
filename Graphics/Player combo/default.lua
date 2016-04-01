@@ -18,7 +18,7 @@ local LabelMinZoom = THEME:GetMetric("Combo", "LabelMinZoom");
 local LabelMaxZoom = THEME:GetMetric("Combo", "LabelMaxZoom");
 
 local t = Def.ActorFrame {
-	InitCommand=cmd(vertalign,bottom);
+
 	LoadFont( "Combo", "numbers" ) .. {
 		Name="Number";
 		OnCommand = THEME:GetMetric("Combo", "NumberOnCommand"); -- y,240-216-1.5;shadowlength,1;halign,1;valign,1;skewx,-0.125;zoom,0.5;
@@ -51,6 +51,8 @@ local t = Def.ActorFrame {
 		c.Label:visible(false);
 		c.GhostScore:visible(false)
 		c.AvgScore:visible(false)
+		self:valign(1)
+		self:draworder(newfield_draw_order.over_field)
 	end;
 
 	TwentyFiveMilestoneCommand=function(self,parent)
