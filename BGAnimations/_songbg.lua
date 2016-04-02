@@ -61,7 +61,6 @@ if enabled then
 		Name="MouseXY";
 		Def.Sprite {
 			CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"ModifySongBackground");
-			--BeginCommand=cmd(scaletocover,0,0,SCREEN_WIDTH+maxDistX/4,SCREEN_BOTTOM+maxDistY/4;diffusealpha,0.3;);
 			ModifySongBackgroundCommand=function(self)
 				self:finishtweening()
 				if GAMESTATE:GetCurrentSong() then
