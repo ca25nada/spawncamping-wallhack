@@ -27,7 +27,7 @@ local function LaneHighlight()
 					param.tap_note_score ~= "TapNoteScore_None" and
 					param.tap_note_score ~= "TapNoteScore_HitMine" and
 					param.tap_note_score ~= "TapNoteScore_AvoidMine" and
-					param.tap_note_score ~= "TapNoteScore_CheckpointHit" then
+					param.tap_note_score ~= "TapNoteScore_CheckpointHit" and
 					param.tap_note_score ~= "TapNoteScore_CheckpointMiss" then
 					self:stoptweening()
 					self:visible(true)
