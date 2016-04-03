@@ -361,8 +361,7 @@ function getGradeST(pn)
 end
 
 function isFullCombo(pn)
-	local misscount = 0
-	misscount = getJudgeST(pn,"TapNoteScore_Miss") + getJudgeST(pn,"TapNoteScore_W5") + getJudgeST(pn,"TapNoteScore_W4")
+	local misscount = getJudgeST(pn,"TapNoteScore_Miss") + getJudgeST(pn,"TapNoteScore_W5") + getJudgeST(pn,"TapNoteScore_W4")
 	return misscount == 0
 end
 
