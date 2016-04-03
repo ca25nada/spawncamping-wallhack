@@ -1,4 +1,4 @@
-local t = Def.ActorFrame{}
+local t = {}
 
 local function ScreenFilter()
 	return Def.Quad{
