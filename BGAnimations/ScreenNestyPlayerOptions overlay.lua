@@ -149,7 +149,7 @@ local gameplay_options= {
 	nesty_options.bool_config_val(playerConfig, "ErrorBar"),
 
 	{name= "JudgeType", meta= nesty_option_menus.enum_option,
-	 translatable= false,
+	 translatable= true,
 	 args= {
 		 name= "JudgeType", enum= {"Off", "No Highlights", "On"}, fake_enum= true,
 		 obj_get= function(pn) return playerConfig:get_data(pn) end,
@@ -168,7 +168,7 @@ local gameplay_options= {
 	}},
 
 	{name= "AvgScoreType", meta= nesty_option_menus.enum_option,
-	 translatable= false,
+	 translatable= true,
 	 args= {
 		 name= "AvgScoreType", enum= {THEME:GetString('OptionNames','Off'), 'DP', '%Score', 'MIGS'}, fake_enum= true,
 		 obj_get= function(pn) return playerConfig:get_data(pn) end,
@@ -189,7 +189,7 @@ local gameplay_options= {
 	}},
 
 	{name= "GhostScoreType", meta= nesty_option_menus.enum_option,
-	 translatable= false,
+	 translatable= true,
 	 args= {
 		 name= "GhostScoreType", enum= {THEME:GetString('OptionNames','Off'), 'DP', '%Score', 'MIGS'}, fake_enum= true,
 		 obj_get= function(pn) return playerConfig:get_data(pn) end,
