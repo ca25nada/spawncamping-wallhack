@@ -20,6 +20,8 @@ local t = Def.ActorFrame{
 -- ohlookpso2stars
 -- this became a mess rather quickly
 
+local approachSecond = 0.2
+
 local starsX = 10
 local starsY = 110+capWideScale(get43size(120),120)
 local maxStars = 18
@@ -256,20 +258,25 @@ t[#t+1] = Def.ActorFrame{
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 
-	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,starsX+21,starsY+2;zoom,0.6;);
+	Def.RollingNumbers{
+		Font= "Common Normal";
+		InitCommand= function(self)
+			self:xy(starsX+21,starsY+2)
+			self:zoom(0.6)
+		    self:set_chars_wide(1):set_approach_seconds(approachSecond)
+		end;
 		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
+		SetCommand=function(self) 
 			if update then
-				local diff = 0;
-				local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_1);
+				local diff = 0
+				local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_1)
 				if enabled and stepsP1 ~= nil then
-					diff = stepsP1:GetMeter() or 0;
-					self:settext(diff);
+					diff = stepsP1:GetMeter() or 0
+					self:target_number(diff)
 				else
-					self:settext(0);
-				end;
-			end;
+					self:target_number(0)
+				end
+			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -302,38 +309,70 @@ t[#t+1] = Def.ActorFrame{
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 	-- Percentage Score
-	LoadFont("Common Large")..{
-		InitCommand=cmd(xy,starsX+195,starsY+30;zoom,0.45;halign,1;maxwidth,75/0.45);
+	Def.RollingNumbers{
+		Font= "Common Large";
+		InitCommand= function(self)
+			self:xy(starsX+195,starsY+30)
+			self:zoom(0.45):halign(1):maxwidth(75/0.45)
+		    self:set_chars_wide(6):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		end;
 		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			if update then
-				local score = getBestScore(PLAYER_1,0,0)
+		SetCommand=function(self) 
+			local score = getBestScore(PLAYER_1,0,0)
 				local maxscore = getMaxScore(PLAYER_1,0)
 				if maxscore == 0 or maxscore == nil then
 					maxscore = 1
 				end;
 				local pscore = (score/maxscore)
 
-				self:settextf("%05.2f%%",math.floor((pscore)*10000)/100)
-			end;
+				self:target_number(math.floor((pscore)*10000)/100)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
+
 	--Player DP/Exscore / Max DP/Exscore
-	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,starsX+182,starsY+48;zoom,0.5;halign,1;maxwidth,60/0.5);
+
+	Def.RollingNumbers{
+		Font = "Common Normal";
+		Name = "score"; 
+		InitCommand= function(self)
+			self:xy(starsX+182,starsY+48)
+			self:zoom(0.5):halign(1):maxwidth(26/0.5)
+		    self:set_chars_wide(4):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		end;
 		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
+		SetCommand=function(self) 
 			if update then
-				local score = string.format("%04d",getBestScore(PLAYER_1,0,0))
-				local maxscore = string.format("%04d",getMaxScore(PLAYER_1,0))
-				self:settext(score.."/"..maxscore)
-			end;
+				self:target_number(getMaxScore(PLAYER_1,0))
+			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
+
+	Def.RollingNumbers{
+		Font = "Common Normal";
+		InitCommand= function(self)
+			self:xy(starsX+182,starsY+48)
+			self:zoom(0.5):halign(1):maxwidth(34/0.5)
+		    self:set_chars_wide(5):set_text_format("%.0f/"):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		end;
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			if update then
+				self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
+				self:target_number(getBestScore(PLAYER_1,0,0))
+			end
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+
 	--ScoreType superscript(?)
 	LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,starsX+183,starsY+47;zoom,0.3;halign,0;);
@@ -496,20 +535,25 @@ t[#t+1] = Def.ActorFrame{
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 
-	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,starsX+21,starsY+2+playerDistY;zoom,0.6;);
+	Def.RollingNumbers{
+		Font= "Common Normal";
+		InitCommand= function(self)
+			self:xy(starsX+21,starsY+2+playerDistY)
+			self:zoom(0.6)
+		    self:set_chars_wide(1):set_approach_seconds(approachSecond)
+		end;
 		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
+		SetCommand=function(self) 
 			if update then
-				local diff = 0;
-				local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_2);
-				if enabled and stepsP2 ~= nil then
-					diff = stepsP2:GetMeter() or 0;
-					self:settext(diff);
+				local diff = 0
+				local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_2)
+				if enabled and stepsP1 ~= nil then
+					diff = stepsP1:GetMeter() or 0
+					self:target_number(diff)
 				else
-					self:settext(0);
-				end;
-			end;
+					self:target_number(0)
+				end
+			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
@@ -544,34 +588,62 @@ t[#t+1] = Def.ActorFrame{
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 	-- Percentage Score
-	LoadFont("Common Large")..{
-		InitCommand=cmd(xy,starsX+195,starsY+30+playerDistY;zoom,0.45;halign,1;maxwidth,75/0.45);
+	Def.RollingNumbers{
+		Font= "Common Large";
+		InitCommand= function(self)
+			self:xy(starsX+195,starsY+30+playerDistY)
+			self:zoom(0.45):halign(1):maxwidth(75/0.45)
+		    self:set_chars_wide(6):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		end;
 		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			if update then
-				local score = getBestScore(PLAYER_2,0,0)
+		SetCommand=function(self) 
+			local score = getBestScore(PLAYER_2,0,0)
 				local maxscore = getMaxScore(PLAYER_2,0)
 				if maxscore == 0 or maxscore == nil then
 					maxscore = 1
 				end;
 				local pscore = (score/maxscore)
 
-				self:settextf("%05.2f%%",math.floor((pscore)*10000)/100)
-			end;
+				self:target_number(math.floor((pscore)*10000)/100)
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
 	};
 	--Player DP/Exscore / Max DP/Exscore
-	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,starsX+182,starsY+48+playerDistY;zoom,0.5;halign,1;maxwidth,60/0.5);
+	Def.RollingNumbers{
+		Font = "Common Normal";
+		Name = "score"; 
+		InitCommand= function(self)
+			self:xy(starsX+182,starsY+48+playerDistY)
+			self:zoom(0.5):halign(1):maxwidth(26/0.5)
+		    self:set_chars_wide(4):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		end;
 		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
+		SetCommand=function(self) 
 			if update then
-				local score = string.format("%04d",getBestScore(PLAYER_2,0,0))
-				local maxscore = string.format("%04d",getMaxScore(PLAYER_2,0))
-				self:settext(score.."/"..maxscore)
-			end;
+				self:target_number(getMaxScore(PLAYER_2,0))
+			end
+		end;
+		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
+	};
+
+	Def.RollingNumbers{
+		Font = "Common Normal";
+		InitCommand= function(self)
+			self:xy(starsX+182,starsY+48+playerDistY)
+			self:zoom(0.5):halign(1):maxwidth(34/0.5)
+		    self:set_chars_wide(5):set_text_format("%.0f/"):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		end;
+		BeginCommand=cmd(queuecommand,"Set");
+		SetCommand=function(self) 
+			if update then
+				self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
+				self:target_number(getBestScore(PLAYER_2,0,0))
+			end
 		end;
 		CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 		CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");

@@ -1,6 +1,7 @@
 local t = Def.ActorFrame{}
 
 setLastSecond(0)
+local approachSecond = 2
 
 if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
 	t[#t+1] = LoadActor("scoreboard")
@@ -71,21 +72,26 @@ local function GraphDisplay( pn )
 			end;
 		};
 
-		LoadFont("Common Normal")..{
-			InitCommand=cmd(y,15;zoom,0.6;);
+		Def.RollingNumbers{
+			Font= "Common Normal", 
+			InitCommand= function(self)
+				self:y(15):zoom(0.6)
+			    self:set_chars_wide(5):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
+			end;
 			BeginCommand=function(self) 
 				local score = getCurScoreST(pn,0)
 				local maxScore = getMaxScoreST(pn,0)
-				local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
 				self:halign(0)
-				self:settext(percentText)
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth(),70/0.8)*0.8))
 				else
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth(),70/0.8)*0.8))
 				end
+				self:target_number(math.floor((score/maxScore)*10000)/100)
 			end;
 		};
+
+
 
 		LoadFont("Common Normal")..{
 			InitCommand=cmd(xy,WideScale(get43size(140),140)-5,-35;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
@@ -408,7 +414,7 @@ function scoreBoard(pn,position)
 		};
 		t[#t+1] = Def.Quad{
 			InitCommand=cmd(xy,frameX,frameY+80+((k-1)*22);zoomto,0,18;halign,0;diffuse,TapNoteScoreToColor(v);diffusealpha,0.5;);
-			BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,"..tostring(pss:GetPercentageOfTaps(v)*0.4));effectcolor2,color("1,1,1,0");sleep,0.5;decelerate,2;zoomx,frameWidth*pss:GetPercentageOfTaps(v));
+			BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,"..tostring(pss:GetPercentageOfTaps(v)*0.4));effectcolor2,color("1,1,1,0");sleep,0.5;decelerate,1.5;zoomx,frameWidth*pss:GetPercentageOfTaps(v));
 		};
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand=cmd(xy,frameX+10,frameY+80+((k-1)*22);zoom,0.50;halign,0);
@@ -417,24 +423,35 @@ function scoreBoard(pn,position)
 				self:settext(getJudgeStrings(v))
 			end;
 		};
-		t[#t+1] = LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,frameX+frameWidth-40,frameY+80+((k-1)*22);zoom,0.50;halign,1);
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self) 
-				self:settext(pss:GetTapNoteScores(v))
+
+		t[#t+1] = Def.RollingNumbers{
+			Font= "Common Normal";
+			InitCommand= function(self)
+				self:xy(frameX+frameWidth-40,frameY+80+((k-1)*22))
+				self:zoom(0.5):halign(1)
+			    self:set_chars_wide(1):set_approach_seconds(approachSecond)
 			end;
-		};
-		t[#t+1] = LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,frameX+frameWidth-38,frameY+80+((k-1)*22);zoom,0.30;halign,0);
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self) 
+			BeginCommand=function(self) 
+				self:target_number(pss:GetTapNoteScores(v))
+			end
+		}
+
+		t[#t+1] = Def.RollingNumbers{
+			Font= "Common Normal";
+			InitCommand= function(self)
+				self:xy(frameX+frameWidth-38,frameY+80+((k-1)*22))
+				self:zoom(0.3):halign(0)
+			    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
+			end;
+			BeginCommand=function(self) 
 				local text = pss:GetPercentageOfTaps(v)*100
 				if tostring(text) == "-nan(ind)" then
 					text = 0
 				end
-				self:settextf("(%03.2f%%)",text)
-			end;
-		};
+				self:target_number(text)
+			end
+		}
+
 	end;
 
 	t[#t+1] = LoadFont("Common Normal")..{

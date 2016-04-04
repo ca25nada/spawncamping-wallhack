@@ -25,7 +25,7 @@ local AvatarYP2 = SCREEN_HEIGHT-50
 
 -- P1 Avatar
 t[#t+1] = Def.Actor{
-	BeginCommand=cmd(queuecommand,"Set");
+	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
 		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
@@ -54,7 +54,7 @@ t[#t+1] = Def.Actor{
 
 -- P2 Avatar
 t[#t+1] = Def.Actor{
-	BeginCommand=cmd(queuecommand,"Set");
+	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
 		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 			profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
@@ -111,18 +111,25 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 				self:zoomto(50,50)
 			end;	
 		};
-		LoadFont("Common Normal") .. {
-			InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+7;halign,0;zoom,0.6;shadowlength,1;maxwidth,180/0.6);
-			BeginCommand=cmd(queuecommand,"Set");
+
+		Def.RollingNumbers{
+			Font= "Common Normal", 
+			InitCommand= function(self)
+				self:xy(AvatarXP1+53,AvatarYP1+7):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
+			    self:set_approach_seconds(0.1)
+			end;
+			OnCommand=function(self)
+				self:set_text_format(profileNameP1.." %.2f%%")
+			end;
 			SetCommand=function(self)
 				local temp1 = getCurScoreST(PLAYER_1,0)
 				local temp2 = getMaxScoreST(PLAYER_1,0)
 				temp2 = math.max(temp2,1)
-				local text = string.format("%05.2f%%",math.floor((temp1/temp2)*10000)/100)
-				self:settext(profileNameP1.." "..text)
+				self:target_number(math.floor((temp1/temp2)*10000)/100)
 			end;
 			JudgmentMessageCommand=cmd(queuecommand,"Set");
 		};
+
 
 
 		LoadFont("Common Normal") .. {
@@ -181,15 +188,21 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 				self:zoomto(50,50)
 			end;	
 		};
-		LoadFont("Common Normal") .. {
-			InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+7;halign,1;zoom,0.6;shadowlength,1;maxwidth,180/0.6);
-			BeginCommand=cmd(queuecommand,"Set");
+
+		Def.RollingNumbers{
+			Font= "Common Normal", 
+			InitCommand= function(self)
+				self:xy(AvatarXP2-3,AvatarYP2+7):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
+			    self:set_approach_seconds(0.1)
+			end;
+			OnCommand=function(self)
+				self:set_text_format("%.2f%% "..profileNameP2)
+			end;
 			SetCommand=function(self)
 				local temp1 = getCurScoreST(PLAYER_2,0)
 				local temp2 = getMaxScoreST(PLAYER_2,0)
 				temp2 = math.max(temp2,1)
-				local text = string.format("%05.2f%%",math.floor((temp1/temp2)*10000)/100)
-				self:settext(text.." "..profileNameP2)
+				self:target_number(math.floor((temp1/temp2)*10000)/100)
 			end;
 			JudgmentMessageCommand=cmd(queuecommand,"Set");
 		};

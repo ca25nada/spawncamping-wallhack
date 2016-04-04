@@ -15,7 +15,6 @@ local function Update(self)
 
     	for _,v in pairs(GAMESTATE:GetEnabledPlayers()) do
 	    	if isFullCombo(v) then
-	    		SCREENMAN:SystemMessage(v.."FC")
 	    		MESSAGEMAN:Broadcast("FullCombo",{pn = v})
 	    	end
 	    end
