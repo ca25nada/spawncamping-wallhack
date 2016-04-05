@@ -26,3 +26,7 @@ end
 Branch.AfterProfileLoad = function()
 	return "ScreenSelectMusic"
 end
+
+Branch.AfterTitleMenu = function()
+	return Branch.StartGame()
+end
