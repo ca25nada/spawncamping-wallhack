@@ -284,8 +284,9 @@ local Phrases = {
     "Krrrrr Krrrrr Krrrrr slide", --blurtic
     "it looks like burn spiral to kill mosquito, we're not mosquito. But the idea is that we accidentally stepped on it and ARGH IT'S HOT!!!", -- http://www.stepmania.com/forums/themes/show/6085#post11127
     "somewhere.... someone out there is complaining their days are bad cuz they can't FC overjoy 3s and 4s", -- Lovely
-
-     
+    "282 BPM prim working overtime",
+    "noteskins cost like $20",
+    "PRIM -- PRIM PRIM PRIM PRIM prim prim could pri prim "
 }
 
 --tip
