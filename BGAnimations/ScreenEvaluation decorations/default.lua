@@ -95,8 +95,8 @@ local function GraphDisplay( pn )
 				if pss:GetCurrentLife() == 0 then
 					text = string.format("%s\n%.2fs Survived",text,pss:GetAliveSeconds())
 				end
-				if getPauseCount() > 0 then
-					text = string.format("%s\nPaused %d Time(s)",text,getPauseCount())
+				if gameplay_pause_count > 0 then
+					text = string.format("%s\nPaused %d Time(s)",text,gameplay_pause_count)
 				end
 				self:settext(text)
 				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then

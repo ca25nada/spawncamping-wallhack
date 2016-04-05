@@ -395,26 +395,6 @@ function getUnstableRateST(pn)
 	return math.sqrt((sum2 - math.pow(sum3,2)/#offset)/(#offset-1))*10
 end
 
--- Pauses the game. Unpauses if already paused. 
-function pauseGame()
-	local screen = SCREENMAN:GetTopScreen()
-	if screen:GetScreenType() == 'ScreenType_Gameplay' then
-		local paused = screen:IsPaused()
-		if paused then
-			SCREENMAN:GetTopScreen():PauseGame(not paused)
-			SCREENMAN:SystemMessage("Game Unpaused")
-		else
-			SCREENMAN:GetTopScreen():PauseGame(not paused)
-			pauseCount = pauseCount+1
-			SCREENMAN:SystemMessage("Game Paused")
-		end
-	end
-end
-
-function getPauseCount()
-	return pauseCount
-end
-
 function setLastSecond(t)
 	lastSecond = t
 end
