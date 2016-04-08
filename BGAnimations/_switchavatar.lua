@@ -5,7 +5,7 @@ local imgTypes = {".jpg",".png",".gif",".jpeg"}
 local rawList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
 local avatars = filterFileList(rawList,imgTypes)
 
-local maxItems = 7--math.min(7,#avatars)
+local maxItems = 7
 local itemHeight = 30
 local itemWidth = 30
 local border = 5
@@ -143,15 +143,10 @@ local function avatarSwitch(pn)
 		end;
 		--save and exit if exiting. forcefully save both players when 2p as only the changes for the person who pressed exit will be applied.
 		if params.Name == "AvatarExit" then
-			if GAMESTATE:GetNumPlayersEnabled() == 1 then
-				saveAvatar(params.PlayerNumber)
-				setAvatarUpdateStatus(pn,true)
-			else
-				saveAvatar(PLAYER_1)
-				setAvatarUpdateStatus(PLAYER_1,true)
-				saveAvatar(PLAYER_2)
-				setAvatarUpdateStatus(PLAYER_2,true)
-			end;
+			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+				saveAvatar(pn)
+			end
+			MESSAGEMAN:Broadcast("AvatarChanged")
 			SCREENMAN:GetTopScreen():Cancel()
 		end;
 	end;
@@ -221,11 +216,8 @@ local function avatarSwitch(pn)
 	return t
 end
 
-if GAMESTATE:IsHumanPlayer(PLAYER_1) then
-	t[#t+1] = avatarSwitch(PLAYER_1)
-end
-if GAMESTATE:IsHumanPlayer(PLAYER_2) then
-	t[#t+1] = avatarSwitch(PLAYER_2)
+for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+	t[#t+1] = avatarSwitch(pn)
 end
 
 return t

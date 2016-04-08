@@ -1,19 +1,3 @@
-local update = {
-	PLAYER_1 = false,
-	PLAYER_2 = false,
-}
-
---Setting to true will set the avatar as dirty, 
---in which the screen with the avatar that is checking every frame for updates will detect the change
---and re-load the avatar if the value from getAvatarUpdateStatus() returned true
-function setAvatarUpdateStatus(pn,status)
-	update[pn] = status
-end;
-
---Returns the current avatar status
-function getAvatarUpdateStatus(pn)
-	return update[pn]
-end;
 
 --use global prefs instead of playerprefs as the playerprefs can't be grabbed when the profileslots aren't loaded.
 local function addProfileFromGUID(GUID)
