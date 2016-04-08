@@ -148,12 +148,18 @@ local NPSDisplayOptions= {
 	nesty_options.float_config_val(playerConfig, "NPSMaxVerts", 0, 1, 2, 10, 1000),
 }
 
+local ErrorBarOptions= {
+	nesty_options.bool_config_val(playerConfig, "ErrorBar"),
+	nesty_options.float_config_val(playerConfig, "ErrorBarDuration", -2, -1, 1, 0.1, 10),
+	nesty_options.float_config_val(playerConfig, "ErrorBarMaxCount", 0, 1, 2, 1, 1000),
+}
+
 local gameplay_options= {
 	--nesty_options.bool_config_val(player_config, "ComboUnderField"),
 	nesty_options.float_config_val(playerConfig, "ScreenFilter", -2, -1, 0, 0, 1),
 	nesty_options.bool_config_val(playerConfig, "CBHighlight"),
 	nesty_options.bool_config_val(playerConfig, "PaceMaker"),
-	nesty_options.bool_config_val(playerConfig, "ErrorBar"),
+	{name= "ErrorBarOptions", translatable= true, meta= nesty_option_menus.menu, args= ErrorBarOptions},
 
 	{name= "JudgeType", meta= nesty_option_menus.enum_option,
 	 translatable= true,
@@ -217,7 +223,7 @@ local gameplay_options= {
 	}},
 
 	nesty_options.float_config_val(playerConfig, "GhostTarget", -2, 1, 1, 0, 100),
-	{name= "NPSDisplayOptions", translatable= false, meta= nesty_option_menus.menu, args= NPSDisplayOptions},
+	{name= "NPSDisplayOptions", translatable= true, meta= nesty_option_menus.menu, args= NPSDisplayOptions},
 	
 }
 

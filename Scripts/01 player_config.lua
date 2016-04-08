@@ -7,6 +7,8 @@ local defaultConfig = {
 	GhostScoreType = 0,
 	GhostTarget = 0,
 	ErrorBar = false,
+	ErrorBarDuration = 1,
+	ErrorBarMaxCount = 100,
 	PaceMaker = false,
 	LaneCover = 0, -- soon to be changed to: 0=off, 1=sudden, 2=hidden
 	LaneCoverHeight = 0,
