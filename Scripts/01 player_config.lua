@@ -12,6 +12,8 @@ local defaultConfig = {
 	LaneCoverHeight = 0,
 	NPSDisplay = false,
 	NPSGraph = false,
+	NPSUpdateRate = 0.1,
+	NPSMaxVerts = 300,
 	CBHighlight = false,
 	FCEffect = true,
 }

@@ -141,6 +141,13 @@ local chart_mods= {
 	 translatable= true, args= insertion_chart_mods},
 }
 
+local NPSDisplayOptions= {
+	nesty_options.bool_config_val(playerConfig, "NPSDisplay"),
+	nesty_options.bool_config_val(playerConfig, "NPSGraph"),
+	nesty_options.float_config_val(playerConfig, "NPSUpdateRate", -2, -1, -1, 0.01, 1),
+	nesty_options.float_config_val(playerConfig, "NPSMaxVerts", 0, 1, 2, 10, 1000),
+}
+
 local gameplay_options= {
 	--nesty_options.bool_config_val(player_config, "ComboUnderField"),
 	nesty_options.float_config_val(playerConfig, "ScreenFilter", -2, -1, 0, 0, 1),
@@ -210,9 +217,7 @@ local gameplay_options= {
 	}},
 
 	nesty_options.float_config_val(playerConfig, "GhostTarget", -2, 1, 1, 0, 100),
-
-	nesty_options.bool_config_val(playerConfig, "NPSDisplay"),
-	nesty_options.bool_config_val(playerConfig, "NPSGraph"),
+	{name= "NPSDisplayOptions", translatable= false, meta= nesty_option_menus.menu, args= NPSDisplayOptions},
 	
 }
 

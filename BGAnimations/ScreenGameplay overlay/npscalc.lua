@@ -32,10 +32,16 @@ local textPos = { -- Position of the NPS text
 	}
 }
 
-local maxVerts = 300 -- Higher numbers allows for more detailed graph that spans for a longer duration. But may lead to performance issues
-local graphFreq = 0.1 -- The frequency in which the graph updates in seconds. (setting to 0 will freeze the game.)
-local lifeGraph = true -- SHow lifegraph 
---------------------
+local graphPrefs = {
+	PlayerNumber_P1 = {
+		maxVerts = playerConfig:get_data(PLAYER_1).NPSMaxVerts,
+		graphFreq = playerConfig:get_data(PLAYER_1).NPSUpdateRate
+	},
+	PlayerNumber_P2 = {
+		maxVerts = playerConfig:get_data(PLAYER_1).NPSMaxVerts,
+		graphFreq = playerConfig:get_data(PLAYER_1).NPSUpdateRate
+	}
+}
 
 --These should be moved to 02 colors.lua
 local judgeColor = { -- Colors of each Judgment types
@@ -53,12 +59,12 @@ local judgeColor = { -- Colors of each Judgment types
 
 local enabled = {
 	NPSDisplay = {
-		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSDisplay,
-		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSDisplay
+		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(PLAYER_1).NPSDisplay,
+		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(PLAYER_2).NPSDisplay
 	},
 	NPSGraph = {
-		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSGraph,
-		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSGraph
+		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(PLAYER_1).NPSGraph,
+		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(PLAYER_2).NPSGraph
 	}
 }
 
@@ -252,6 +258,8 @@ local function npsGraph(pn)
 	local total = 1
 	local peakNPS = initialPeak
 	local curNPS = 0
+	local graphFreq = graphPrefs[pn].graphFreq
+	local maxVerts = graphPrefs[pn].maxVerts
 	t[#t+1] = Def.Quad{
 		InitCommand=function(self)
 			self:zoomto(graphWidth,graphHeight)
