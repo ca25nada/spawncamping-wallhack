@@ -106,20 +106,12 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerJoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
+		AvatarChangedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		ModifyAvatarCommand=function(self)
-			self:finishtweening();
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_1)));
 			self:zoomto(50,50)
 		end;
 	};
-	--[[
-	LoadActor("../../"..getAvatarPath(PLAYER_1))..{
-		Name="Avatar";
-		InitCommand=cmd(visible,true;zoomto,50,50;halign,0;valign,0;xy,AvatarXP1,AvatarYP1);
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
-	};
-	--]]
 	LoadFont("Common Normal") .. {
 		InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+7;halign,0;zoom,0.6;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
@@ -179,18 +171,13 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerJoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
+		AvatarChangedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		ModifyAvatarCommand=function(self)
-			self:finishtweening();
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_2)));
 			self:zoomto(50,50)
 		end;	
 	};
 
-	--[[
-	LoadActor("../../"..getAvatarPath(PLAYER_2))..{
-		Name="Avatar";
-		InitCommand=cmd(visible,true;zoomto,50,50;halign,0;valign,0;xy,AvatarXP2,AvatarYP2);
-	};--]]
 	LoadFont("Common Normal") .. {
 		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+7;halign,1;zoom,0.6;diffuse,getMainColor('highlight'));
 		BeginCommand=cmd(queuecommand,"Set");
@@ -229,18 +216,5 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"Set");
 	};
 };
-
-local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update);
-	if getAvatarUpdateStatus(PLAYER_1) then
-    	self:GetChild("Avatar"..PLAYER_1):GetChild("Image"):queuecommand("ModifyAvatar")
-    	setAvatarUpdateStatus(PLAYER_1,false)
-    end;
-    if getAvatarUpdateStatus(PLAYER_2) then
-    	self:GetChild("Avatar"..PLAYER_2):GetChild("Image"):queuecommand("ModifyAvatar")
-    	setAvatarUpdateStatus(PLAYER_2,false)
-    end;
-end; 
-t.InitCommand=cmd(SetUpdateFunction,Update);
 
 return t;
