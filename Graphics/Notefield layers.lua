@@ -15,7 +15,7 @@ local function ScreenFilter()
 				return
 			end
 			self:visible(true)
-			self:SetHeight(SCREEN_HEIGHT*4096)
+			self:SetHeight(4096)
 			self:diffuse(filterColor)
 			self:diffusealpha(filterAlpha)
 		end;
@@ -144,7 +144,98 @@ local function FullCombo()
 	return t
 end
 
+--returns 0 if top, 1 if bottom
+local function getNoteCoverDirection(coverType,reverse)
+	if reverse then
+		return coverType-1
+	else
+		return 2-coverType
+	end
+end
+
+local function LaneCover()
+	local pn
+	local height = 0
+	local reverse = false
+	local coverType
+	local direction
+
+	local move = 0
+
+	local t = Def.ActorFrame{
+		PlayerStateSetCommand=function(self, param)
+			pn = param.PlayerNumber
+			coverType = playerConfig:get_data(pn).LaneCover
+			height = playerConfig:get_data(pn).LaneCoverHeight
+			direction = getNoteCoverDirection(coverType,reverse)
+
+			if coverType == 0 then
+				self:visible(false)
+			else
+				self:visible(true)
+			end
+			self:draworder(playerConfig:get_data(pn).LaneCoverLayer)
+		end;
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand=function(self)
+			self:SetHeight(4096)
+			self:diffuse(color(colorConfig:get_data().gameplay.LaneCover))
+		end;
+		OnCommand=function(self)
+			self:queuecommand("Set")
+		end;
+		SetCommand=function(self)
+			height = height + move
+			if direction == 0 then
+				self:valign(1)
+				self:y(-SCREEN_CENTER_Y+height)
+			else
+				self:valign(0)
+				self:y(SCREEN_CENTER_Y-height)
+			end
+			self:sleep(0.01)
+			if move ~= 0 then
+				SCREENMAN:SystemMessage(string.format("%s's LaneCover Height Set to %d",PROFILEMAN:GetPlayerName(pn),height))
+				self:queuecommand("Set") -- Keep updating until player lifted keys
+			end
+		end;
+		WidthSetCommand=function(self, param)
+			self:SetWidth(param.width)
+		end;
+		CodeMessageCommand=function(self, param)
+			if param.PlayerNumber == pn then
+				if param.Name == "LaneUp" then
+					if direction == 0 then
+						move = -1
+					else
+						move = 1
+					end
+				elseif param.Name == "LaneDown" then
+					if direction == 0 then
+						move = 1
+					else
+						move = -1
+					end
+				else -- Player lifted the keys
+					move = 0
+					self:queuecommand("Save")
+				end
+			end
+			self:playcommand("Set")
+		end;
+		SaveCommand=function(self)
+			playerConfig:get_data(pn).LaneCoverHeight = height
+			playerConfig:set_dirty(pn)
+			playerConfig:save(pn)
+		end;
+	}
+	return t
+end
+
+
 t[#t+1] = ScreenFilter()
 t[#t+1] = FullCombo()
-
+t[#t+1] = LaneCover()
 return t

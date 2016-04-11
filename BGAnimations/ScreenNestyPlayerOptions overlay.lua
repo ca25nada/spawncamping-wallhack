@@ -154,12 +154,38 @@ local ErrorBarOptions= {
 	nesty_options.float_config_val(playerConfig, "ErrorBarMaxCount", 0, 1, 2, 1, 1000),
 }
 
+local LaneCoverOptions= {
+	{name= "LaneCover", meta= nesty_option_menus.enum_option,
+	 translatable= true,
+	 args= {
+		 name= "LaneCover", enum= {"Off", "Sudden+", "Hidden+"}, fake_enum= true,
+		 obj_get= function(pn) return playerConfig:get_data(pn) end,
+		 get= function(pn, obj) 
+		 	local t = {"Off", "Sudden+", "Hidden+"}
+		 	return t[obj.LaneCover+1] end,
+		 set= function(pn, obj, value)
+			if value == "Hidden+" then
+				obj.LaneCover = 2
+			elseif value == "Sudden+" then
+				obj.LaneCover = 1
+			else
+				obj.LaneCover = 0
+			end
+		 end,
+	}},
+	nesty_options.float_config_val(playerConfig, "LaneCoverHeight", 0, 1, 2, -SCREEN_HEIGHT*2, SCREEN_HEIGHT*2),
+	nesty_options.float_config_val(playerConfig, "LaneCoverLayer", 1, 1, 2, newfield_draw_order.under_explosions,newfield_draw_order.over_field),
+}
+
 local gameplay_options= {
 	--nesty_options.bool_config_val(player_config, "ComboUnderField"),
 	nesty_options.float_config_val(playerConfig, "ScreenFilter", -2, -1, 0, 0, 1),
 	nesty_options.bool_config_val(playerConfig, "CBHighlight"),
 	nesty_options.bool_config_val(playerConfig, "PaceMaker"),
+
 	{name= "ErrorBarOptions", translatable= true, meta= nesty_option_menus.menu, args= ErrorBarOptions},
+	{name= "LaneCoverOptions", translatable= true, meta= nesty_option_menus.menu, args= LaneCoverOptions},
+
 
 	{name= "JudgeType", meta= nesty_option_menus.enum_option,
 	 translatable= true,
@@ -176,7 +202,7 @@ local gameplay_options= {
 				obj.JudgeType = 1
 			else
 				obj.JudgeType = 2
-			end;
+			end
 		 end,
 	}},
 
