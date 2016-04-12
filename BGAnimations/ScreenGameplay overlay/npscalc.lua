@@ -8,7 +8,7 @@ local dynamicWindow = themeConfig:get_data().NPSDisplay.DynamicWindow -- set to 
 
 --Graph related stuff
 local initialPeak = 10 -- Initial height of the NPS graph.
-local graphWidth = 90
+local graphWidth = capWideScale(50,90)
 local graphHeight = 50
 local graphPos = {  -- Position of the NPS graph
 	PlayerNumber_P1 = {
@@ -34,12 +34,12 @@ local textPos = { -- Position of the NPS text
 
 local graphPrefs = {
 	PlayerNumber_P1 = {
-		maxVerts = playerConfig:get_data(PLAYER_1).NPSMaxVerts,
+		maxVerts = capWideScale(math.floor(playerConfig:get_data(PLAYER_1).NPSMaxVerts*(5/9)),playerConfig:get_data(PLAYER_1).NPSMaxVerts),
 		graphFreq = playerConfig:get_data(PLAYER_1).NPSUpdateRate
 	},
 	PlayerNumber_P2 = {
-		maxVerts = playerConfig:get_data(PLAYER_1).NPSMaxVerts,
-		graphFreq = playerConfig:get_data(PLAYER_1).NPSUpdateRate
+		maxVerts = capWideScale(math.floor(playerConfig:get_data(PLAYER_2).NPSMaxVerts*(5/9)),playerConfig:get_data(PLAYER_2).NPSMaxVerts),
+		graphFreq = playerConfig:get_data(PLAYER_2).NPSUpdateRate
 	}
 }
 
