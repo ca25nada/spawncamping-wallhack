@@ -188,6 +188,7 @@ local function LaneCover()
 		end;
 		SetCommand=function(self)
 			height = height + move
+			direction = getNoteCoverDirection(coverType,reverse)
 			if direction == 0 then
 				self:valign(1)
 				self:y(-SCREEN_CENTER_Y+height)
@@ -203,6 +204,10 @@ local function LaneCover()
 		end;
 		WidthSetCommand=function(self, param)
 			self:SetWidth(param.width)
+		end;
+		ReverseChangedMessageCommand=function(self, param)
+			reverse = (param.sign == -1)
+			self:queuecommand("Set")
 		end;
 		CodeMessageCommand=function(self, param)
 			if param.PlayerNumber == pn then

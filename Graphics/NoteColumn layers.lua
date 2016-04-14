@@ -1,4 +1,11 @@
-local t = {}
+local t = {
+	Def.ActorFrame{
+		ReverseChangedCommand = function(self, param)
+			--SCREENMAN:SystemMessage(param.sign)
+			MESSAGEMAN:Broadcast("ReverseChanged",{sign=param.sign})
+		end
+	}
+}
 
 local function LaneHighlight()
 	local alpha = 0.4
