@@ -168,7 +168,7 @@ Some Tabs will be disabled for 2 player modes.
   Displays an overlay below the notefield.   
   Available from ```Player Options → Gameplay Options → Screen Filter```. The Values correspond to the alpha value of the filter.   
 
-* **CB Lane Highlights**
+* **CB Lane Highlights**   
   Highlights the lane in which a combo breaking judgment has occured.  
   The color of the highlight will correspond to the color of the judgmenht as well.  
   Available from ```Player Options → Gameplay Options → CB Highlight```
