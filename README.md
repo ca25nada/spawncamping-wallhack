@@ -3,30 +3,25 @@ A WIP Stepmania 5 theme aimed primarily for KB players.
 <a href="http://imgur.com/a/ddHZN" target="_blank">Screenshots</a>
 
 Requirements: StepMania 5.1.0 Alpha 2 or later.
-* All newfield related stuff are incompatable with 5.0 releases.
-* Mouse related functions only work on Windows.
-* Midgame pauses do not work properly for versions earlier than 5.0.10.
-* RadarCategory_Notes wasn't added until 5.0.8 so earlier versions will output an error.
+* If the menu is black and white at startup with a bunch of error messages, chances are you aren't running on 5.1.
 
 ---
 ### Acknowledgements
 * The StepMania 5 devs (notably freem and Kyzentun) for making this possible in the first place.
 * people in #vsrg,#stepmania-devs and various other people for feedbacks..!
-* ScreenFilter.lua was taken from the Default theme by Midiman.
 * CDTitle Resizer, ScreenSelectMusic Backgrounds are adapted from Jousway's code.
-* Kyzentun's prefs system is used for setting various profile/theme preferences.
+* Kyzentun's prefs system is used for setting various profile/theme preferences. (now available by default for 5.1)
 
 ---
 ### Issues
  * PIU Scores are broken since there's no way to get the total # of checkpoints.
  * Courses are disabled.
+ * plus whatever is on the issue tracker
 
 ---
 ### TODO   
-* Newfield support and moving towards 5.1 in general.
 * Adding back nonstop/course modes.
 * Ghost Data stuff. (eventually)
-* Moving the notefield around during gameplay.
 * Finish Simfile/Profile tabs.
 * Korean usage guide.. maybe...?
 
@@ -149,52 +144,54 @@ Some Tabs will be disabled for 2 player modes.
 #### ScreenGameplay
 * **Judge Counter**   
   Displays a small window on the side with the amount of judgments made so far and the current letter grade based on these judgments.   
-  There are two options for Judge Counter which are available in ```Player Options → Judge Count```. Having it set as ```on``` also shows a subtle highlight for that judgment whenever the corresponding judgment is made. The other ```No Highlight``` option doesn't.   
+  There are two options for Judge Counter which are available in ```Player Options → Gameplay Options → Judge Count```. Having it set as ```on``` also shows a subtle highlight for that judgment whenever the corresponding judgment is made. The other ```No Highlight``` option doesn't.   
 
 * **Ghost Score**   
   When enabled, displays the score difference from the target for the scoretype selected.   
-  Available from ```Player Options  → Ghost ScoreType```. The target for the ghost score can be set from ```Player Options  → Ghost Target```.
+  Available from ```Player Options → Gameplay Options → Ghost ScoreType```. The target for the ghost score can be set from ```Player Options → Gameplay Options → Ghost Target```.
 
 * **Average Score**   
   When enabled, displays the average percentage score for the scoretype selected.   
-  Available from ```Player Options  → Average ScoreType```.
+  Available from ```Player Options → Gameplay Options → Average ScoreType```.
 
 * **Pacemaker Graph** <sup>Disabled for 2p</sup>   
   The very same stuff from iidx and lr2. Displays a bar graph showing the current, best and the target score.   
   It follows the ```Ghost ScoreType``` and the ```Ghost Target``` settings for the scoretype and the target graph's value respectively.   
-  Available from ```Player Options → PaceMaker Graph```.   
+  Available from ```Player Options → Gameplay Options → PaceMaker Graph```.   
 
 * **Error Bar** <sup>Disabled for 2p</sup>   
   Pretty much the hit error option for the score meter in osu!. This displays the judgment offset visually in a bar that represents the timing window of StepMania. 
-  Available from ```Player Options  → Error Bar```.
+  Available from ```Player Options → Gameplay Options → Error Bar```.
+  Duration for each ticks and the maximum number of ticks that can be present can be set from there as well.
 
 * **Screen Filter**   
   Displays an overlay below the notefield.   
-  Available from ```Player Options  → Screen Filter```. The Values correspond to the alpha value of the filter.   
+  Available from ```Player Options → Gameplay Options → Screen Filter```. The Values correspond to the alpha value of the filter.   
 
 * **CB Lane Highlights**
   Highlights the lane in which a combo breaking judgment has occured.  
   The color of the highlight will correspond to the color of the judgmenht as well.  
-  Available from ```Player Options  → CB Highlight```
+  Available from ```Player Options → Gameplay Options → CB Highlight```
 
 * **Sudden+/Hidden+ Lane Cover**   
   Displays an overlay above the notefield with adjustable height.  
-  Available from ```Player Options  → Lane Cover```. The height can be adjusted ingame with ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>```. The white number represents the height of the cover, The green number shows the equivalent scroll speed.   
-  Currently, unlike screen filters, lane covers are not tied to the notefield. So it will not work properly with perspective mods or any mods that move the notefield around.
-
+  Available from ```Player Options → Gameplay Options → Lane Cover```. The height can be adjusted from the ```Lane Cover Height``` menu or during gameplay with ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>```. 
+  The draworder of the cover can also be set which allows the cover to be above/below the note explosion/combo+judgments.
 
 * **Current/Peak NPS Display**   
   Displays the current NPS and the peak nps value.   
   It takes the average NPS taken from the past ```X``` seconds.   
-  Available from ```Player Options  → NPS Display```. The time window for the ```X``` seconds above can be set from ```Options → Theme Options → NPS Window``` where the values correspond to seconds.   
+  Available from ```Player Options → Gameplay Options → NPS Display```. The time window for the ```X``` seconds above can be set from ```Options → Theme Options → NPS Window``` where the values correspond to seconds.   
   A smaller window updates more quickly but with more unstable values, larger windows does the opposite. 
+  Settings for the update rate and the maximum number of vertices are also available from ```Player Options → Gameplay Options → NPS Display```
 
-* **Mid-game Speed Change**   
+* ~~**Mid-game Speed Change**~~ <sup>Removed temporarily</sup>   
   Allows the player to change the scroll speed ingame by pressing ```<EffectDown>``` and ```<EffectUp>```.   
   The speed change increment is dependent on the settings available from ```Options → Advanced Options → Speed Increment```.
 
 * **Mid-game Pause**   
-  Pause the game during gameplay by quickly pressing ```<Select>``` twice. Doing the same while paused or pressing ```<Start>``` will unpause the game.   
+  Ported from default for the 5.1.0 releases.   
+  Pause the game during gameplay by quickly pressing ```<Select>``` or ```<Back>``` twice. A pause menu will appear allowing the player to continue, restart or quit out from the song.
   The number of times the game has been paused will show up on the evaluation screen.   
 
 ---
