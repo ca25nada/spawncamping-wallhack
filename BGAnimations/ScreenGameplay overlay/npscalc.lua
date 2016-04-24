@@ -115,17 +115,16 @@ end
 -- Every time it is called, the function will loop and remove all old notes
 -- from noteTable and subtract the corresponding chord size from noteSum.
 local function removeNote(pn)
-	local exit = false
-	while not exit do
+	while true do
 		if #noteTable[pn] >= 1 then
 			if noteTable[pn][1][1] + npsWindow[pn] < GetTimeSinceStart() then
 				noteSum[pn] = noteSum[pn] - noteTable[pn][1][2]
 				table.remove(noteTable[pn],1)
 			else
-				exit = true
+				break
 			end
 		else
-			exit = true
+			break
 		end
 	end
 end
@@ -189,10 +188,14 @@ local function npsDisplay(pn)
 		local chordsize = 0
 
 		if params.Player == pn then
-			if params.TapNoteScore and params.TapNoteScore ~= 'TapNoteScore_HitMine' or 
-				params.TapNoteScore ~= 'TapNoteScore_AvoidMine' then
-				-- The notes parameter contains a table where the table indices 
-				-- correspond to the columns in game. 
+			if params.TapNoteScore and
+				params.TapNoteScore ~= "TapNoteScore_None" and
+				params.TapNoteScore ~= 'TapNoteScore_HitMine' and
+				params.TapNoteScore ~= 'TapNoteScore_AvoidMine' and
+				params.TapNoteScore ~= "TapNoteScore_CheckpointMiss" then
+
+				-- The notes parameter contains a table where the table indices
+				-- correspond to the columns in game.
 				-- The items in the table either contains a TapNote object (if there is a note)
 				-- or be simply nil (if there are no notes)
 				
@@ -203,7 +206,10 @@ local function npsDisplay(pn)
 					chordsize = 1
 				else
 					for i=1,GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() do
-						if notes ~= nil and notes[i] ~= nil then
+						if notes ~= nil and notes[i] ~= nil and
+							(notes[i]:GetTapNoteType() == 'TapNoteType_Tap' or
+							notes[i]:GetTapNoteType() == 'TapNoteType_HoldHead' or
+							notes[i]:GetTapNoteType() == 'TapNoteType_Lift') then
 							chordsize = chordsize+1
 						end
 					end
