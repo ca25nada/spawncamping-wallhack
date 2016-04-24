@@ -111,7 +111,6 @@ local judgeTable = {
 	PlayerNumber_P2 = {}
 }
 
-
 --table containing all the timing offsets from non-miss judges 
 local offsetTable = {
 	PlayerNumber_P1 = {},
@@ -135,15 +134,6 @@ local curMaxMines = {
 
 local lastSecond = 0
 local pauseCount = 0
---[[
-function PJudge(pn,judge)
-	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetTapNoteScores(judge)
-end
-
-function PHJudge(pn,judge)
-	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetHoldNoteScores(judge)
-end
---]]
 
 function isFailingST(pn)
 	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetFailed()
@@ -208,14 +198,6 @@ function addOffsetST(pn,offset)
 	if GAMESTATE:IsHumanPlayer(pn) then
 		offsetTable[pn][#(offsetTable[pn])+1] = offset 
 	end
-	--[[
-	if pn == PLAYER_1 and GAMESTATE:IsHumanPlayer(PLAYER_1) then
-		offsetTableP1[#offsetTableP1+1] = offset
-	end
-	if pn == PLAYER_2 and GAMESTATE:IsHumanPlayer(PLAYER_2)then
-		offsetTableP2[#offsetTableP2+1] = offset
-	end
-	--]]
 end
 
 --Returns a table containing all the offset values for every tapnote that results in a judgment (aka: not mines, not checkpoints, and so on)
