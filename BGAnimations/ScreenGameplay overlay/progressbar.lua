@@ -11,7 +11,6 @@ local frameX = SCREEN_CENTER_X
 local bottomModifier = -20;  -- Negative value, how far up
 local topModifier = 15;       -- Positive value, how far down
 local frameY = 0
-local started = false
 --=======================================
 
 if barPosition == 1 then  -- BOTTOM
@@ -51,18 +50,6 @@ local function getMusicProgress()
     local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()
 	local songLength = GAMESTATE:GetCurrentSong():GetStepsSeconds()
 	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
-
-    -- Sets the last played song position
-    -- When the player exits to ScreenSelectMusic, the song will continue playing from that point.
-    setLastSecond(songPosition)
-
-    -- Sends a message for stuff in title.lua to receive.
-    if (GAMESTATE:GetCurrentSong():GetFirstSecond()-songPosition < 2 or songPosition > 5) and not started then
-        MESSAGEMAN:Broadcast("SongStarting")
-        started = true
-    end
-
-    -- Apply rate changes after all the messages have gone through.
     songPosition = songPosition/rate
 	songLength = math.max(1,songLength/rate)
 	return math.min(1,math.max(0,songPosition/songLength))
@@ -79,6 +66,7 @@ local function Update(self)
     	self:GetChild("ProgressFG"):zoomx(width*getMusicProgress())
         self:GetChild("CurrentTime"):settext(getCurrentTime())
 end; 
+
 t.InitCommand=function(self)
     if barPosition ~= 0 then
         self:SetUpdateFunction(Update)
