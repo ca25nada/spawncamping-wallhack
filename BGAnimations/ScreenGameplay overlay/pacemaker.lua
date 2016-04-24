@@ -71,6 +71,21 @@ local markerPoints = { --DP/PS/MIGS in that order.
 --Placeholder for ghostdata graph thing
 local function ghostScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
+
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(xy,frameX+((1+(2*(index-1)))*(frameWidth/(barCount*2))),frameY+barY;zoomto,(frameWidth/barCount)*barWidth,1;valign,1;diffuse,color;diffusealpha,0.7;);
+		SetCommand=function(self)
+			local curScore = getCurScoreGD(player,scoreType)
+			local maxScore = getMaxScoreST(player,scoreType)
+			if maxScore <= 0 then
+				self:zoomy(1)
+			else
+				self:zoomy(math.max(1,barHeight*(curScore/maxScore)))
+			end;
+		end;
+		GhostScoreMessageCommand=cmd(queuecommand,"Set");
+	};
+
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Best Score";)
 	};
@@ -83,18 +98,24 @@ local function ghostScoreGraph(index,scoreType,color)
 				self:settextf("%s Best (%s)",getScoreTypeText(ghostType),getCurRate())
 			end
 		end;
+		
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
-		BeginCommand=function(self)
-			local bestScore = getBestScore(player,0,scoreType)
-			self:settext(bestScore)
+		SetCommand=function(self)
+			local score
+			if ghostDataExists(player,getCurRate()) then
+				score = getCurScoreGS(player,scoreType)
+			else
+				score = getBestScore(player,0,scoreType)
+			end
+			self:settext(score)
 		end;
+		GhostScoreMessageCommand=cmd(queuecommand,"Set");
 	};
 	return t
 end
 
--- Dynamic Graph
 -- Represents the current score/possible score for the specified scoreType
 local function currentScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
@@ -154,7 +175,6 @@ local function avgScoreGraph(index,scoreType,color)
 	return t
 end;
 
--- Static Graph
 -- Represents the best score achieved for the specified scoreType
 local function bestScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
@@ -202,7 +222,6 @@ local function bestScoreGraph(index,scoreType,color)
 	return t
 end;
 
--- Dynamic Graph
 -- Represents the current target score for the specified scoreType
 local function targetScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
@@ -237,7 +256,6 @@ local function targetScoreGraph(index,scoreType,color)
 	return t
 end;
 
--- Static Graph
 -- Represents the total target score for the specified scoreType
 local function targetMaxGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}

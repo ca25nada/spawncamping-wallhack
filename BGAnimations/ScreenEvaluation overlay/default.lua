@@ -1,4 +1,8 @@
-local t = Def.ActorFrame{}
+local t = Def.ActorFrame{
+	OnCommand=function(self)
+		saveGhostData(PLAYER_1)
+	end
+}
 t[#t+1] = LoadActor("../_frame");
 t[#t+1] = LoadActor("../_avatar");
 
