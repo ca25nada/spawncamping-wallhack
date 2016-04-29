@@ -210,6 +210,10 @@ local function LaneCover()
 			self:queuecommand("Set")
 		end;
 		CodeMessageCommand=function(self, param)
+			-- Do not move if the lanecover isn't even enabled.
+			if playerConfig:get_data(pn).LaneCover == 0 then
+				return
+			end
 			if param.PlayerNumber == pn then
 				if param.Name == "LaneUp" then
 					if direction == 0 then
