@@ -126,6 +126,11 @@ end
 
 --Returns true if ghostdata exists.
 function ghostDataExists(pn,rate)
+
+	if not GAMESTATE:IsPlayerEnabled(pn) then
+		return false
+	end
+
 	if rate == nil then
 		rate = "1.0x"
 	end
@@ -151,6 +156,9 @@ end
 --currentghostdata will be a empty table if it doesn't exist.
 function readGhostData(pn)
 	currentGhostData[pn] = {}
+	if not GAMESTATE:IsPlayerEnabled(pn) then
+		return
+	end
 
 	local song = GAMESTATE:GetCurrentSong()
 	local step = GAMESTATE:GetCurrentSteps(pn)
@@ -185,6 +193,10 @@ end
 -- Saves+Overwrites the data loaded in the tempGhostData table as a string
 function saveGhostData(pn) -- Save the temp ghost data
 
+	if not GAMESTATE:IsPlayerEnabled(pn) then
+		return
+	end
+
 	local song = GAMESTATE:GetCurrentSong()
 	local step = GAMESTATE:GetCurrentSteps(pn)
 	local simfileSHA1 = SHA1FileHex(step:GetFilename())
@@ -193,7 +205,7 @@ function saveGhostData(pn) -- Save the temp ghost data
 	local rate = getCurRate()
 	local ghostTableSHA1 = getGhostDataHash(simfileSHA1,stepsType,difficulty)
 	local result = ""
-	
+
 	for _,v in pairs(tempGhostData[pn]) do
 		local temp = 0
 		if v[2] then -- Holds
@@ -212,8 +224,29 @@ function saveGhostData(pn) -- Save the temp ghost data
 	ghostTable:get_data(pn)[ghostTableSHA1][rate] = result
 	ghostTable:set_dirty(pn)
 	ghostTable:save(pn)
-	SCREENMAN:SystemMessage("GhostData saved.")
+	SCREENMAN:SystemMessage("Ghost data saved.")
 	
+end
+
+
+--Removes all ghostdata for a song.
+function deleteGhostData(pn)
+
+	if not GAMESTATE:IsPlayerEnabled(pn) then
+		return
+	end
+
+	local song = GAMESTATE:GetCurrentSong()
+	local step = GAMESTATE:GetCurrentSteps(pn)
+	local simfileSHA1 = SHA1FileHex(step:GetFilename())
+	local stepsType = step:GetStepsType()
+	local difficulty = step:GetDifficulty()
+	local ghostTableSHA1 = getGhostDataHash(simfileSHA1,stepsType,difficulty)
+
+	ghostTable:get_data(pn)[ghostTableSHA1] = nil
+	ghostTable:set_dirty(pn)
+	ghostTable:save(pn)
+	SCREENMAN:SystemMessage("Ghost data deleted.")
 end
 
 --not exactly a pop anymore since I keep the values in the table but w/e.
