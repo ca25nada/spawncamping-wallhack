@@ -1,17 +1,37 @@
+-- Most of the scoretracking function calls and message broadcasting are done here.
+
+
 resetJudgeST() -- Reset scoretracking data.
 resetGhostData() -- Reset ghostscore data.
-readGhostData(PLAYER_1)
-local i = 0
-local started = false
+readGhostData(PLAYER_1) -- Read ghost data.
+readGhostData(PLAYER_2)
+
+local startFlag = false
+local fcFlag = false
+local fcFlagDelay = 0.1
+local firstSecond = GAMESTATE:GetCurrentSong():GetFirstSecond()
+local lastSecond = GAMESTATE:GetCurrentSong():GetLastSecond()
+
 local function Update(self)
 	self.InitCommand=cmd(SetUpdateFunction,Update)
-	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
-	setLastSecond(songPosition)
+	local curSecond = GAMESTATE:GetSongPosition():GetMusicSeconds()
 
-	if (GAMESTATE:GetCurrentSong():GetFirstSecond()-songPosition < 2 or songPosition > 3) and not started then
+	setLastSecond(curSecond)
+
+	if not startFlag and (firstSecond-curSecond < 2 or curSecond > 3) then
         MESSAGEMAN:Broadcast("SongStarting")
-        started = true
+        startFlag = true
     end
+
+    if not fcFlag and curSecond > lastSecond+fcFlagDelay then
+    	for _,v in pairs(GAMESTATE:GetEnabledPlayers()) do
+	    	if isFullCombo(v) then
+	    		MESSAGEMAN:Broadcast("FullCombo",{pn = v})
+	    	end
+	    end
+	    fcFlag = true
+    end
+
 end
 
 local t = Def.ActorFrame{
@@ -23,10 +43,8 @@ local t = Def.ActorFrame{
 if GAMESTATE:GetNumPlayersEnabled() >= 1 then
 	t[#t+1] = Def.Actor{
 		JudgmentMessageCommand=function(self,params)
-			i = i+1
-			local data = popGhostData(params.Player)
+			popGhostData(params.Player)
 			MESSAGEMAN:Broadcast('GhostScore')
-			--SCREENMAN:SystemMessage(i)
 			if getAutoplay() == 1 then
 				if params.HoldNoteScore then
 					addJudgeGD(params.Player,'HoldNoteScore_None',true)

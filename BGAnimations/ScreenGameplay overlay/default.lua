@@ -1,8 +1,6 @@
 local t = Def.ActorFrame{}
 t[#t+1] = use_newfield_actor()
 t[#t+1] = LoadActor("scoretracking")
-t[#t+1] = LoadActor("fullcombo")
---t[#t+1] = LoadActor("lanecover")
 t[#t+1] = LoadActor("judgecount")
 t[#t+1] = LoadActor("pacemaker")
 t[#t+1] = LoadActor("progressbar")
