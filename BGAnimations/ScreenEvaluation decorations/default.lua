@@ -163,7 +163,7 @@ local frameX = 20
 local frameY = 170
 local frameWidth = SCREEN_CENTER_X-60
 
-function scoreBoard(pn,position)
+local function scoreBoard(pn,position)
 	local hsTable = getScoreList(pn)
 	local t = Def.ActorFrame{
 		BeginCommand=function(self)

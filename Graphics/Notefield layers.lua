@@ -9,7 +9,7 @@ local function ScreenFilter()
 			local pn = param.PlayerNumber
 			local style = GAMESTATE:GetCurrentStyle(pn)
 			local filterColor = color(colorConfig:get_data().gameplay.ScreenFilter)
-			local filterAlpha = playerConfig:get_data(pn_to_profile_slot(pn)).ScreenFilter
+			local filterAlpha = playerConfig:get_data(pn).ScreenFilter
 			if filterAlpha == 0 then
 				self:visible(false)
 				return

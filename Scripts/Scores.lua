@@ -1,29 +1,3 @@
-
-local gradeTiers = {
-	Grade_Tier01 = 0,
-	Grade_Tier02 = 1,
-	Grade_Tier03 = 2,
-	Grade_Tier04 = 3,
-	Grade_Tier05 = 4,
-	Grade_Tier06 = 5,
-	Grade_Tier07 = 6,
-	Grade_Tier08 = 7,
-	Grade_Tier09 = 8,
-	Grade_Tier10 = 9,
-	Grade_Tier11 = 10,
-	Grade_Tier12 = 11,
-	Grade_Tier13 = 12,
-	Grade_Tier14 = 13,
-	Grade_Tier15 = 14,
-	Grade_Tier16 = 15,
-	Grade_Tier17 = 16,
-	Grade_Tier18 = 17,
-	Grade_Tier19 = 18,
-	Grade_Tier20 = 19,
-	Grade_Failed = 20
-}
-
-
 local scoreWeight =  { -- Score Weights for DP score (MAX2)
 	TapNoteScore_W1				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW1"),					--  2
 	TapNoteScore_W2				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW2"),					--  2
@@ -392,7 +366,7 @@ function getBestGrade(pn,ignore)
 			if i ~= ignore then
 				indexScore = hsTable[i]
 				if indexScore ~= nil then
-					temp = gradeTiers[indexScore:GetGrade()] or 21
+					temp = Enum.Reverse(Grade)[indexScore:GetGrade()] or 21
 					if temp <= highest and isScoreValid(pn,steps,indexScore) then
 						grade = getScoreGrade(indexScore)
 						highest = temp

@@ -5,16 +5,14 @@ local defaultConfig = {
 		SongBGEnabled = true, 
 		SongBGMouseEnabled = true,
 		Particles = true,
-		--AvatarEnabled = true, -- Unused
 		RateSort = true,
 		HelpMenu = true,
 		ScoreBoardNag = true,
 		MeasureLines = true,
 		ProgressBar = 1, -- 0 = off, 1 bottom , 2 top
-		SongPreview = 1, -- 1 = SM style, 2 = osu! Style (new), 3 = osu! style (old)
+		SongPreview = 3, -- 1 = SM style, 2 = osu! Style (new), 3 = osu! style (old)
 	},
 	NPSDisplay = {
-		--Enabled = true, -- Player Controlled
 		DynamicWindow = false, -- unused
 		MaxWindow = 2,
 		MinWindow = 1, -- unused.

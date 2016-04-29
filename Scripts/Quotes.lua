@@ -286,7 +286,15 @@ local Phrases = {
     "somewhere.... someone out there is complaining their days are bad cuz they can't FC overjoy 3s and 4s", -- Lovely
     "282 BPM prim working overtime",
     "noteskins cost like $20",
-    "PRIM -- PRIM PRIM PRIM PRIM prim prim could pri prim "
+    "PRIM -- PRIM PRIM PRIM PRIM prim prim could pri prim ",
+    "i play stepmania at home before school then i go to school and play it during class and at lunch i play it instead of eating and when i go home i play some then i go to the arcade and play keYbEaT",
+    "the technical problem is not my issue.", -- https://osu.ppy.sh/forum/p/5038917
+    "You're pretty good for a 13 y/o, have you played games like osu!mania before?", -- tristan
+    "dragonforce fury of the storm osu!mania 4k beatmap 5 star",
+    "Suck people never know their noob, good mappers always know what they are not good at.", -- Tsukuyomi https://osu.ppy.sh/s/368336
+    "the male sign -- you know -- the little o with a stepmania coming out of it", -- PiXL
+    "bruh brainpower is amaze", -- S_Cero
+    "if you're playing music games to compete you're already losing",
 }
 
 --tip
