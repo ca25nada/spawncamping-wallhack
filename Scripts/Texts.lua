@@ -68,20 +68,20 @@ local scoreTypeText = {
 }
 
 function getShortDifficulty(diff)
-	if diff ~= nil and diff ~= "" then
-		return shortDiffName[diff]
+	local text = shortDiffName[diff]
+	if text ~= nil then
+		return text
 	else
 		return "ED"
 	end
 end;
 
 function getDifficulty(diff)
-	if diff ~= nil and diff ~= "" then
-		return DiffName[diff]
-	elseif diff == "" then
+	local text = DiffName[diff]
+	if text ~= nil then
+		return text
+	else
 		return "Edit"
-	else 
-		return diff
 	end
 end;
 

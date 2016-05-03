@@ -218,24 +218,27 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local diff;
-				local stype;
-				local notes = 0
-				local holds = 0
-				local rolls = 0
-				local mines = 0
-				local lifts = 0
-				local test1,test2
+				local diff,stype
+				local notes,holds,rolls,mines,lifts = 0
+				local difftext = ""
+
 				if stepsP1 ~= nil then
 					notes = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Notes")
 					holds = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Holds")
 					rolls = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Rolls")
 					mines = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Mines")
 					lifts = stepsP1:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Lifts")
-					diff = getDifficulty(stepsP1:GetDifficulty())
-					stype = ToEnumShortString(stepsP1:GetStepsType()):gsub("%_"," ")
+					diff = stepsP1:GetDifficulty()
 
-					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts);
+					if diff == 'Difficulty_Edit' then
+						difftext = stepsP1:GetDescription()
+						difftext = difftext == '' and getDifficulty(diff) or difftext
+					else
+						difftext = getDifficulty(diff)
+					end
+
+					stype = ToEnumShortString(stepsP1:GetStepsType()):gsub("%_"," ")
+					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,difftext,notes,holds,rolls,mines,lifts);
 				else
 					self:settext("Disabled");
 				end;
@@ -497,22 +500,27 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			if update then
-				local diff;
-				local stype;
-				local notes = 0
-				local holds = 0
-				local rolls = 0
-				local mines = 0
-				local lifts = 0
+				local diff,stype
+				local notes,holds,rolls,mines,lifts = 0
+				local difftext = ""
+
 				if stepsP2 ~= nil then
 					notes = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Notes")
 					holds = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Holds")
 					rolls = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Rolls")
 					mines = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Mines")
 					lifts = stepsP2:GetRadarValues(PLAYER_2):GetValue("RadarCategory_Lifts")
-					diff = getDifficulty(stepsP2:GetDifficulty())
+					diff = stepsP2:GetDifficulty()
+
+					if diff == 'Difficulty_Edit' then
+						difftext = stepsP2:GetDescription()
+						difftext = difftext == '' and getDifficulty(diff) or difftext
+					else
+						difftext = getDifficulty(diff)
+					end
+
 					stype = ToEnumShortString(stepsP2:GetStepsType()):gsub("%_"," ")
-					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts);
+					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,difftext,notes,holds,rolls,mines,lifts);
 				else
 					self:settext("Disabled");
 				end;
