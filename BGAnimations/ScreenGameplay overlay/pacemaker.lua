@@ -45,6 +45,9 @@ if themeConfig:get_data().global.RateSort then
 	origTable = getScoreList(player)
 	rtTable = getRateTable(origTable)
 	hsTable = sortScore(rtTable[getCurRate()] or {},ghostType)
+else
+	origTable = getScoreList(player)
+	hsTable = sortScore(origTable,ghostType)
 end
 
 
@@ -105,7 +108,7 @@ local function ghostScoreGraph(index,scoreType,color)
 		SetCommand=function(self)
 			local score
 			if ghostDataExists(player,getCurRate()) then
-				score = getCurScoreGS(player,scoreType)
+				score = getCurScoreGD(player,scoreType)
 			else
 				score = getBestScore(player,0,scoreType)
 			end

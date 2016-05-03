@@ -240,8 +240,8 @@ t[#t+1] = LoadFont("Common Normal")..{
 	Name="Mods";
 	InitCommand=cmd(xy,frameX+offsetX,frameY+frameHeight-10;zoom,0.4;halign,0);
 	SetCommand=function(self)
-		if update and rates ~= nil then
-			if ghostDataExists(pn,rates[rateIndex]) then
+		if update and score ~= nil then
+			if ghostDataExists(pn,score) then
 				self:settext("Ghost Data Available")
 				self:diffuse(getMainColor('enabled'))
 			else

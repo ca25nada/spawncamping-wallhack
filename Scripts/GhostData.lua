@@ -1,3 +1,19 @@
+--[[ 
+more like an extension of the highscore class...ish now.
+format:
+ghostdata = {
+	judgmentData = string
+	judgmentHash = string
+	timingDifficulty = number
+	lifeDifficulty = number
+	offsetMean = number
+	offsetStdDev = number
+}
+	
+
+--]]
+
+
 
 local defaultScoreType = themeConfig:get_data().global.DefaultScoreType
 
@@ -112,70 +128,56 @@ function resetGhostData()
 end
 
 
---Adds a judgment event to the tempghostdata table.
+-- Adds a judgment event to the tempghostdata table.
 function addJudgeGD(pn,judgment,isHold)
 	tempGhostData[pn][#(tempGhostData[pn])+1] = {judgment,isHold}
 end
 
 
---Returns the SHA-1 Hash that will be used for the ghostdata table key.
-local function getGhostDataHash(simfileHash,stepsType,difficulty)
-	return SHA1StringHex(string.format("%s%s%s",simfileHash,stepsType,difficulty))
+-- Returns the SHA-1 Hash that will be used for the ghostdata table key.
+-- Since we're trying to tie each ghostdata to a score,
+-- We're just going to hash it use it as the key. (hopefully each object is considered unique)
+local function getGhostDataHash(score)
+	SCREENMAN:SystemMessage(tostring(score))
+	return SHA1StringHex(score:GetDate())
+end
+
+-- Hash the ghostdata hash with the judgment data.
+local function getJudgmentDataHash(score,judgmentDataString)
+	return SHA1StringHex(getGhostDataHash(score)..SHA1StringHex(judgmentDataString))
 end
 
 
 --Returns true if ghostdata exists.
-function ghostDataExists(pn,rate)
-
+function ghostDataExists(pn,score)
 	if not GAMESTATE:IsPlayerEnabled(pn) then
 		return false
 	end
 
-	if rate == nil then
-		rate = "1.0x"
-	end
-
-	local song = GAMESTATE:GetCurrentSong()
-	local step = GAMESTATE:GetCurrentSteps(pn)
-	local simfileSHA1 = SHA1FileHex(step:GetFilename())
-	local stepsType = step:GetStepsType()
-	local difficulty = step:GetDifficulty()
-	local ghostTableSHA1 = getGhostDataHash(simfileSHA1,stepsType,difficulty)
+	local ghostTableSHA1 = getGhostDataHash(score)
 	local ghostData = ghostTable:get_data(pn)[ghostTableSHA1]
 
-	if ghostData ~= nil then
-		if ghostData[rate] ~= nil then
-			return true
-		end
-	end
-	return false
+	return ghostData ~= nil
 end
 
 
 --Reads the ghostdata string and loads it into the currentghostdata table.
 --currentghostdata will be a empty table if it doesn't exist.
-function readGhostData(pn)
+function readGhostData(pn,score)
 	currentGhostData[pn] = {}
 	if not GAMESTATE:IsPlayerEnabled(pn) then
 		return
 	end
 
-	local song = GAMESTATE:GetCurrentSong()
-	local step = GAMESTATE:GetCurrentSteps(pn)
-	local simfileSHA1 = SHA1FileHex(step:GetFilename())
-	local stepsType = step:GetStepsType()
-	local difficulty = step:GetDifficulty()
-	local rate = getCurRate()
-	local ghostTableSHA1 = getGhostDataHash(simfileSHA1,stepsType,difficulty)
+	local ghostTableSHA1 = getGhostDataHash(score)
 
 	if ghostDataExists(pn,rate) then
-		local ghostDataString = ghostTable:get_data(pn)[ghostTableSHA1][rate]
+		local judgmentDataString = ghostTable:get_data(pn)[ghostTableSHA1].judgmentData
 
-
-		for i = 1 , #ghostDataString do
+		for i = 1 , #judgmentDataString do
 			local isHold
 			local judgment
-			local num = string.byte(ghostDataString,i)
+			local num = string.byte(judgmentDataString,i)
 			
 			isHold = num >= 16
 			if isHold then
@@ -191,20 +193,14 @@ function readGhostData(pn)
 end
 
 -- Saves+Overwrites the data loaded in the tempGhostData table as a string
-function saveGhostData(pn) -- Save the temp ghost data
+function saveGhostData(pn,score) -- Save the temp ghost data
 
 	if not GAMESTATE:IsPlayerEnabled(pn) then
 		return
 	end
 
-	local song = GAMESTATE:GetCurrentSong()
-	local step = GAMESTATE:GetCurrentSteps(pn)
-	local simfileSHA1 = SHA1FileHex(step:GetFilename())
-	local stepsType = step:GetStepsType()
-	local difficulty = step:GetDifficulty()
-	local rate = getCurRate()
-	local ghostTableSHA1 = getGhostDataHash(simfileSHA1,stepsType,difficulty)
-	local result = ""
+	local ghostTableSHA1 = getGhostDataHash(score)
+	local judgmentDataString = ""
 
 	for _,v in pairs(tempGhostData[pn]) do
 		local temp = 0
@@ -214,14 +210,17 @@ function saveGhostData(pn) -- Save the temp ghost data
 		else
 			temp = tonumber(Enum.Reverse(TapNoteScore)[v[1]])
 		end
-		result = result..string.format("%c",temp)
+		judgmentDataString = judgmentDataString..string.format("%c",temp)
 	end
 
 	if ghostTable:get_data(pn)[ghostTableSHA1] == nil then
 		ghostTable:get_data(pn)[ghostTableSHA1] = {}
 	end
 
-	ghostTable:get_data(pn)[ghostTableSHA1][rate] = result
+	ghostTable:get_data(pn)[ghostTableSHA1].judgmentData = judgmentDataString
+	ghostTable:get_data(pn)[ghostTableSHA1].judgmentHash = getJudgmentDataHash(score,judgmentDataString)
+
+
 	ghostTable:set_dirty(pn)
 	ghostTable:save(pn)
 	SCREENMAN:SystemMessage("Ghost data saved.")
@@ -230,18 +229,14 @@ end
 
 
 --Removes all ghostdata for a song.
-function deleteGhostData(pn)
+function deleteGhostData(pn,score)
 
 	if not GAMESTATE:IsPlayerEnabled(pn) then
 		return
 	end
 
-	local song = GAMESTATE:GetCurrentSong()
-	local step = GAMESTATE:GetCurrentSteps(pn)
-	local simfileSHA1 = SHA1FileHex(step:GetFilename())
-	local stepsType = step:GetStepsType()
-	local difficulty = step:GetDifficulty()
-	local ghostTableSHA1 = getGhostDataHash(simfileSHA1,stepsType,difficulty)
+	local ghostTableSHA1 = getGhostDataHash(score)
+	local ghostData = ghostTable:get_data(pn)[ghostTableSHA1]
 
 	ghostTable:get_data(pn)[ghostTableSHA1] = nil
 	ghostTable:set_dirty(pn)
