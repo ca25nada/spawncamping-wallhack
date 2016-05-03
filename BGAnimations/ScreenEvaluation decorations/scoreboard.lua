@@ -224,6 +224,20 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			end;
 		};
 
+		LoadFont("Common normal")..{
+			Name="ghostData";
+			InitCommand=cmd(xy,framex+frameWidth-5,framey+2+(drawindex*spacing);zoom,0.35;halign,1;maxwidth,(frameWidth-15)/0.35);
+			BeginCommand=function(self)
+				self:settext("GD")
+				if ghostDataExists(pn,hsTable[index]) then
+					self:diffuse(getMainColor('enabled'))
+				else
+					self:diffuse(getMainColor('disabled'))
+				end;
+				self:diffusealpha(0.8)
+			end;
+		};
+
 	};
 	return t;
 end
