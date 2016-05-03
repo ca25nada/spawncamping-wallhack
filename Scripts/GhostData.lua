@@ -138,7 +138,6 @@ end
 -- Since we're trying to tie each ghostdata to a score,
 -- We're just going to hash it use it as the key. (hopefully each object is considered unique)
 local function getGhostDataHash(score)
-	SCREENMAN:SystemMessage(tostring(score))
 	return SHA1StringHex(score:GetDate())
 end
 
@@ -150,7 +149,7 @@ end
 
 --Returns true if ghostdata exists.
 function ghostDataExists(pn,score)
-	if not GAMESTATE:IsPlayerEnabled(pn) then
+	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
 		return false
 	end
 
@@ -165,13 +164,15 @@ end
 --currentghostdata will be a empty table if it doesn't exist.
 function readGhostData(pn,score)
 	currentGhostData[pn] = {}
-	if not GAMESTATE:IsPlayerEnabled(pn) then
+	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
 		return
 	end
 
+
 	local ghostTableSHA1 = getGhostDataHash(score)
 
-	if ghostDataExists(pn,rate) then
+
+	if ghostDataExists(pn,score) then
 		local judgmentDataString = ghostTable:get_data(pn)[ghostTableSHA1].judgmentData
 
 		for i = 1 , #judgmentDataString do

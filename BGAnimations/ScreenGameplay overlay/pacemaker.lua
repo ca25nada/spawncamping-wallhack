@@ -107,7 +107,7 @@ local function ghostScoreGraph(index,scoreType,color)
 		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
 		SetCommand=function(self)
 			local score
-			if ghostDataExists(player,getCurRate()) then
+			if ghostDataExists(player,hsTable[1]) then
 				score = getCurScoreGD(player,scoreType)
 			else
 				score = getBestScore(player,0,scoreType)
