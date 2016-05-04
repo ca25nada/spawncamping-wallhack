@@ -1,16 +1,18 @@
 --[[ 
 more like an extension of the highscore class...ish now.
 format:
-ghostdata = {
-	judgmentData = string
-	judgmentHash = string
-	timingDifficulty = number
-	lifeDifficulty = number
-	offsetMean = number
-	offsetStdDev = number
+ghostTable = {
+	[SimfileSHA1] = {
+		[ghostTableSHA1] = {
+			judgmentData = string,
+			judgmentHash = string,
+			timingDifficulty = number,
+			lifeDifficulty = number,
+			offsetMean = number,
+			offsetStdDev = number
+		}
+	}
 }
-	
-
 --]]
 
 
@@ -33,6 +35,7 @@ local scoreWeight =  { -- Score Weights for DP score (MAX2)
 	TapNoteScore_CheckpointMiss = THEME:GetMetric("ScoreKeeperNormal","GradeWeightCheckpointMiss"),		--  0
 }
 
+
 local psWeight =  { -- Score Weights for percentage scores (EX oni)
 	TapNoteScore_W1			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW1"),
 	TapNoteScore_W2			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW2"),
@@ -48,6 +51,7 @@ local psWeight =  { -- Score Weights for percentage scores (EX oni)
 	TapNoteScore_CheckpointHit		= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightCheckpointHit"),
 	TapNoteScore_CheckpointMiss 	= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightCheckpointMiss"),
 }
+
 
 local migsWeight =  { -- Score Weights for MIGS score
 	TapNoteScore_W1					= 3,
@@ -71,15 +75,18 @@ local currentGhostData = {
 	PlayerNumber_P2 = {}
 } -- Loaded from theme
 
+
 local currentGhostIndex = {
 	PlayerNumber_P1 = 1,
 	PlayerNumber_P2 = 1
 }
 
+
 local tempGhostData = {
 	PlayerNumber_P1 = {},
 	PlayerNumber_P2 = {}
 } -- Tracked
+
 
 local ghostScoreStats = { -- Table containing the # of judgements made so far
 	PlayerNumber_P1 = {
@@ -115,6 +122,7 @@ local ghostScoreStats = { -- Table containing the # of judgements made so far
 }
 
 
+-- Resets the variables
 function resetGhostData()
 	for _,pn in pairs({PLAYER_1,PLAYER_2}) do
 		currentGhostData[pn] = {}
@@ -134,11 +142,11 @@ function addJudgeGD(pn,judgment,isHold)
 end
 
 
-
--- Returns the SHA-1 Hash that will be used for the ghostdata table key.
+-- Returns the SHA-1 Hash of the simfile that will be used for the ghostdata table key.
 local function getSimfileHash(steps)
 	return SHA1FileHex(steps:GetFilename())
 end
+
 
 -- Returns the SHA-1 of the score's timestamp to be used as the 2nd key of the 2d table.
 -- Since we're trying to tie each ghostdata to each HighScore saved in stepmania,
@@ -147,13 +155,14 @@ local function getGhostDataHash(score)
 	return SHA1StringHex(score:GetDate())
 end
 
--- Hash the ghostdata hash with the judgment data.
-local function getJudgmentDataHash(score,judgmentDataString)
-	return SHA1StringHex(getGhostDataHash(score)..SHA1StringHex(judgmentDataString))
+
+-- Returns the hash of the concatenated string of several ghostdata metadata.
+local function getJudgmentDataHash(score,judgmentDataString,timingDifficulty,lifeDifficulty)
+	return SHA1StringHex(string.format("%s%s%d%d",getGhostDataHash(score),SHA1StringHex(judgmentDataString),timingDifficulty,lifeDifficulty))
 end
 
 
---Returns true if ghostdata exists.
+-- Returns true if ghostdata exists.
 function ghostDataExists(pn,score)
 	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
 		return false
@@ -170,6 +179,23 @@ function ghostDataExists(pn,score)
 end
 
 
+-- Returns true if the ghostdata is valid.
+function isGhostDataValid(pn,score)
+	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
+	local ghostTableSHA1 = getGhostDataHash(score)
+
+	if ghostDataExists(pn,score) then
+		local judgmentHash = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentHash
+		local judgmentDataString = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentData
+		local timingDifficulty = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].timingDifficulty
+		local lifeDifficulty = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].lifeDifficulty
+		return judgmentHash == getJudgmentDataHash(score,judgmentDataString,timingDifficulty,lifeDifficulty)
+	end
+
+	return false
+end
+
+
 --Reads the ghostdata string and loads it into the currentghostdata table.
 --currentghostdata will be a empty table if it doesn't exist.
 function readGhostData(pn,score)
@@ -182,15 +208,9 @@ function readGhostData(pn,score)
 	local ghostTableSHA1 = getGhostDataHash(score)
 
 
-	if ghostDataExists(pn,score) then
+	if isGhostDataValid(pn,score) then
 		local judgmentDataString = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentData
-		local judgmentHash = getJudgmentDataHash(score,judgmentDataString)
-
 		-- Check if the hash of the data string match the hash saved in the ghostdata.
-		if judgmentHash ~= ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentHash then
-			SCREENMAN:SystemMessage("Ghost data hash does not match.")
-			return
-		end
 
 		for i = 1 , #judgmentDataString do
 			local isHold
@@ -210,8 +230,23 @@ function readGhostData(pn,score)
 	end
 end
 
--- Saves+Overwrites the data loaded in the tempGhostData table as a string
-function saveGhostData(pn,score) -- Save the temp ghost data
+
+-- Returns the ghostscore table parameter if it exists.
+function getGhostDataParameter(pn,score,parameter)
+	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
+		return
+	end
+
+	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
+	local ghostTableSHA1 = getGhostDataHash(score)
+	if ghostDataExists(pn,score) then
+		return ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1][parameter]
+	end
+end
+
+
+-- Saves the data loaded in the tempGhostData table as a string
+function saveGhostData(pn,score)
 
 	if not GAMESTATE:IsPlayerEnabled(pn) then
 		return
@@ -219,8 +254,9 @@ function saveGhostData(pn,score) -- Save the temp ghost data
 
 	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
 	local ghostTableSHA1 = getGhostDataHash(score)
-	local judgmentDataString = ""
 
+	-- Convert the data in tempGhostData table into a binary string.
+	local judgmentDataString = ""
 	for _,v in pairs(tempGhostData[pn]) do
 		local temp = 0
 		if v[2] then -- Holds
@@ -232,18 +268,21 @@ function saveGhostData(pn,score) -- Save the temp ghost data
 		judgmentDataString = judgmentDataString..string.format("%c",temp)
 	end
 
+	-- If there's no previous ghostscore entry for a song, make a new table.
 	if ghostTable:get_data(pn)[simfileSHA1] == nil then
 		ghostTable:get_data(pn)[simfileSHA1] = {}
 	end
 
+	-- Make and save all the table parameters
 	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1] = {}
 	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentData = judgmentDataString
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentHash = getJudgmentDataHash(score,judgmentDataString)
-
+	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].timingDifficulty = GetTimingDifficulty()
+	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].lifeDifficulty = GetLifeDifficulty()
+	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentHash = getJudgmentDataHash(score,judgmentDataString,GetTimingDifficulty(),GetLifeDifficulty())
 	ghostTable:set_dirty(pn)
 	ghostTable:save(pn)
+
 	SCREENMAN:SystemMessage("Ghost data saved.")
-	
 end
 
 
@@ -264,6 +303,7 @@ function deleteGhostData(pn,score)
 	SCREENMAN:SystemMessage("Ghost data deleted.")
 end
 
+
 --not exactly a pop anymore since I keep the values in the table but w/e.
 --returns the judgment and adds the judgment to the ghostScoreStats table.
 function popGhostData(pn)
@@ -275,6 +315,7 @@ function popGhostData(pn)
 	currentGhostIndex[pn] = currentGhostIndex[pn] + 1
 	return judgment
 end
+
 
 -- Gets the current exscore of the ghost data.
 function getCurScoreGD(pn,scoreType)

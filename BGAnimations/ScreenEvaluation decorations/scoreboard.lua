@@ -228,10 +228,16 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			Name="ghostData";
 			InitCommand=cmd(xy,framex+frameWidth-5,framey+2+(drawindex*spacing);zoom,0.35;halign,1;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
-				self:settext("GD")
 				if ghostDataExists(pn,hsTable[index]) then
-					self:diffuse(getMainColor('enabled'))
+					if isGhostDataValid(pn,hsTable[index]) then
+						self:settext("GD Available")
+						self:diffuse(getMainColor('enabled'))
+					else
+						self:settext("GD Invalid")
+						self:diffuse(getMainColor('negative'))
+					end
 				else
+					self:settext("GD Unavailable")
 					self:diffuse(getMainColor('disabled'))
 				end;
 				self:diffusealpha(0.8)

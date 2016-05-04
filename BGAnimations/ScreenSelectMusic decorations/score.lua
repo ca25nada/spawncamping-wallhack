@@ -242,8 +242,13 @@ t[#t+1] = LoadFont("Common Normal")..{
 	SetCommand=function(self)
 		if update then
 			if score ~= nil and ghostDataExists(pn,score) then
-				self:settext("Ghost Data Available")
-				self:diffuse(getMainColor('enabled'))
+				if isGhostDataValid(pn,score) then
+					self:settext("Ghost Data Available")
+					self:diffuse(getMainColor('enabled'))
+				else
+					self:settext("Ghost Data Invalid")
+					self:diffuse(getMainColor('negative'))
+				end
 			else
 				self:settext("Ghost Data Unavailable")
 				self:diffuse(getMainColor('disabled'))

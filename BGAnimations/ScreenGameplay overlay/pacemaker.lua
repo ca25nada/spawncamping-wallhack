@@ -28,13 +28,13 @@ local enabled = GAMESTATE:GetNumPlayersEnabled() == 1
 
 local player = GAMESTATE:GetEnabledPlayers()[1]
 if player == PLAYER_1 then
-	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
-	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
-	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
+	ghostType = playerConfig:get_data(player).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
+	target = playerConfig:get_data(player).GhostTarget/100; -- target score from 0% to 100%.
+	enabled =  enabled and playerConfig:get_data(player).PaceMaker
 elseif player == PLAYER_2 then
-	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
-	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
-	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
+	ghostType = playerConfig:get_data(player).GhostScoreType; -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
+	target = playerConfig:get_data(player).GhostTarget/100; -- target score from 0% to 100%.
+	enabled =  enabled and playerConfig:get_data(player).PaceMaker
 	frameX = 0
 end
 
@@ -107,7 +107,7 @@ local function ghostScoreGraph(index,scoreType,color)
 		InitCommand=cmd(xy,frameX+frameWidth-2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,25/0.35;halign,1;settext,"0");
 		SetCommand=function(self)
 			local score
-			if ghostDataExists(player,hsTable[1]) then
+			if isGhostDataValid(player,hsTable[1]) then
 				score = getCurScoreGD(player,scoreType)
 			else
 				score = getBestScore(player,0,scoreType)
