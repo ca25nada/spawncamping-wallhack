@@ -346,10 +346,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if update then
-			local song = GAMESTATE:GetCurrentSong()
 			local pn = GAMESTATE:GetEnabledPlayers()[1]
 			local step = GAMESTATE:GetCurrentSteps(pn)
-			if song ~= nil then
+			if step ~= nil then
 				self:diffuse(color("#FFFFFF"))
 				self:settext(SHA1FileHex(step:GetFilename()))
 			else
@@ -381,10 +380,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if update then
-			local song = GAMESTATE:GetCurrentSong()
 			local pn = GAMESTATE:GetEnabledPlayers()[1]
 			local step = GAMESTATE:GetCurrentSteps(pn)
-			if song ~= nil then
+			if step ~= nil then
 				self:diffuse(color("#FFFFFF"))
 				self:settext(MD5FileHex(step:GetFilename()))
 			else
