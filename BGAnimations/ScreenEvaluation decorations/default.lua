@@ -49,7 +49,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 -- Life graph and the stuff that goes with it
 local function GraphDisplay( pn )
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
-	saveGhostData(pn,pss:GetHighScore())
+
+	if playerConfig:get_data(pn).SaveGhostScore then
+		saveGhostData(pn,pss:GetHighScore())
+	end
 
 
 	local t = Def.ActorFrame {

@@ -177,6 +177,10 @@ local LaneCoverOptions= {
 	nesty_options.float_config_val(playerConfig, "LaneCoverLayer", 1, 1, 2, newfield_draw_order.under_explosions,newfield_draw_order.over_field),
 }
 
+local ghostscore_options= {
+	nesty_options.bool_config_val(playerConfig, "SaveGhostScore"),
+}
+
 local gameplay_options= {
 	--nesty_options.bool_config_val(player_config, "ComboUnderField"),
 	nesty_options.float_config_val(playerConfig, "ScreenFilter", -2, -1, 0, 0, 1),
@@ -287,6 +291,7 @@ local base_options= {
 	nesty_options.bool_config_val(newfield_prefs_config, "sudden"),
 	{name= "advanced_notefield_config", translatable= true, meta= nesty_option_menus.menu, args= notefield_config},
 	{name= "gameplay_options", translatable= true, meta= nesty_option_menus.menu, args= gameplay_options},
+	{name= "ghostscore_options", translatable= true, meta= nesty_option_menus.menu, args= ghostscore_options},
 	{name= "reload_newskins", translatable= true, meta= "execute",
 	 execute= function() NEWSKIN:reload_skins() end},
 }

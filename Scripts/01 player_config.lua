@@ -19,6 +19,7 @@ local defaultConfig = {
 	NPSMaxVerts = 300,
 	CBHighlight = false,
 	FCEffect = true,
+	SaveGhostScore = true,
 }
 
 playerConfig = create_lua_config({name = "playerConfig", file = "playerConfig.lua", default = defaultConfig, match_depth =-1})
