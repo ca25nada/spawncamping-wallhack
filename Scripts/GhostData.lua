@@ -181,6 +181,11 @@ end
 
 -- Returns true if the ghostdata is valid.
 function isGhostDataValid(pn,score)
+
+	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
+		return false
+	end
+	
 	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
 	local ghostTableSHA1 = getGhostDataHash(score)
 
