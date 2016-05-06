@@ -83,7 +83,7 @@ local function stars(ind,pn)
 						self:rotationz(360);
 						self:zoom(starSize)
 					else
-						self:sleep(((maxStars-ind)/math.min(diff,maxStars))/2);
+						self:sleep(((maxStars-ind)/maxStars)/2);
 						self:accelerate(0.5);
 						self:rotationz(360);
 						self:zoom(0)
