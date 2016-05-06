@@ -218,11 +218,8 @@ end
 --Returns the number of "taps" for the steps that the specified player has selected.
 --Note that this isn't the number of actual notes since jumps/hands count as 1 judgment or "taps".
 function getMaxNotesST(pn)
-	local steps 
-
 	if GAMESTATE:IsCourseMode() then
 		local trail = GAMESTATE:GetCurrentTrail(pn)
-		local index = GAMESTATE:GetCourseSongIndex()
 		local notes = 0
 
 		for _,v in pairs(trail:GetTrailEntries()) do
@@ -234,7 +231,7 @@ function getMaxNotesST(pn)
 		end
 		return notes
 	else
-		steps = GAMESTATE:GetCurrentSteps(pn)
+		local steps  = GAMESTATE:GetCurrentSteps(pn)
 		if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
 			return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 		else
@@ -251,10 +248,8 @@ end
 --Returns the number of holds for the steps that the specified player has selected.
 --This includes any notes that has a OK/NG judgment. (holds and rolls)
 function getMaxHoldsST(pn)
-	local steps 
 	if GAMESTATE:IsCourseMode() then
 		local trail = GAMESTATE:GetCurrentTrail(pn)
-		local index = GAMESTATE:GetCourseSongIndex()
 		local holds = 0
 
 		for _,v in pairs(trail:GetTrailEntries()) do
@@ -263,7 +258,7 @@ function getMaxHoldsST(pn)
 
 		return holds 
 	else
-		steps = GAMESTATE:GetCurrentSteps(pn)
+		local steps  = GAMESTATE:GetCurrentSteps(pn)
 		return steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
 	end
 end

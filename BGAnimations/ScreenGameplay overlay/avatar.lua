@@ -101,6 +101,7 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 				self:diffuse(getDifficultyColor(diff))
 				self:diffusealpha(0.7)
 			end;
+			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		};
 		Def.Sprite {
 			InitCommand=cmd(visible,true;halign,0;valign,0;xy,AvatarXP1,AvatarYP1;);
@@ -142,6 +143,7 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 				local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 				self:settext(stype.." "..diff.." "..meter)
 			end;
+			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		};
 
 		LoadFont("Common Normal") .. {
@@ -178,6 +180,7 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 				self:diffuse(getDifficultyColor(diff))
 				self:diffusealpha(0.7)
 			end;
+			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		};
 		Def.Sprite {
 			InitCommand=cmd(visible,true;halign,0;valign,0;xy,AvatarXP2,AvatarYP2);
@@ -217,6 +220,7 @@ if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 				local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 				self:settext(stype.." "..diff.." "..meter)
 			end;
+			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		};
 
 		LoadFont("Common Normal") .. {

@@ -39,7 +39,7 @@ local steps = {
 	PlayerNumber_P2
 }
 
-local trails = {
+local trail = {
 	PlayerNumber_P1,
 	PlayerNumber_P2
 }
@@ -211,25 +211,43 @@ local function generalFrame(pn)
 				local notes,holds,rolls,mines,lifts = 0
 				local difftext = ""
 
-				if steps[pn] ~= nil then
-					notes = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-					holds = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
-					rolls = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-					mines = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
-					lifts = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
-					diff = steps[pn]:GetDifficulty()
+				if GAMESTATE:IsCourseMode() then
+					if course:AllSongsAreFixed() then
+						if trail[pn] ~= nil then
+							notes = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+							holds = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
+							rolls = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
+							mines = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
+							lifts = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
+							diff = trail[pn]:GetDifficulty()
+						end
 
-					if diff == 'Difficulty_Edit' then
-						difftext = steps[pn]:GetDescription()
-						difftext = difftext == '' and getDifficulty(diff) or difftext
+						stype = ToEnumShortString(trail[pn]:GetStepsType()):gsub("%_"," ")
+						self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts);
 					else
-						difftext = getDifficulty(diff)
+						self:settextf("Disabled for courses containing random songs.")
 					end
-
-					stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,difftext,notes,holds,rolls,mines,lifts);
 				else
-					self:settext("Disabled");
+					if steps[pn] ~= nil then
+						notes = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+						holds = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
+						rolls = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
+						mines = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
+						lifts = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
+						diff = steps[pn]:GetDifficulty()
+
+						if diff == 'Difficulty_Edit' then
+							difftext = steps[pn]:GetDescription()
+							difftext = difftext == '' and getDifficulty(diff) or difftext
+						else
+							difftext = getDifficulty(diff)
+						end
+
+						stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
+						self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,difftext,notes,holds,rolls,mines,lifts);
+					else
+						self:settext("Disabled");
+					end
 				end
 			end
 		end;
@@ -485,13 +503,25 @@ t[#t+1] = Def.Actor{
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand=function(self)
 		if update then
-			song = GAMESTATE:GetCurrentSong()
-			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-				profile[pn] = GetPlayerOrMachineProfile(pn)
-				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
-				hsTable[pn] = getScoreList(pn)
-				if hsTable[pn] ~= nil then
-					topScore[pn] = getScoreFromTable(hsTable[pn],1)
+			if GAMESTATE:IsCourseMode() then
+				course = GAMESTATE:GetCurrentCourse()
+				for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+					profile[pn] = GetPlayerOrMachineProfile(pn)
+					trail[pn] = GAMESTATE:GetCurrentTrail(pn)
+					hsTable[pn] = getScoreList(pn)
+					if hsTable[pn] ~= nil then
+						topScore[pn] = getScoreFromTable(hsTable[pn],1)
+					end
+				end
+			else
+				song = GAMESTATE:GetCurrentSong()
+				for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+					profile[pn] = GetPlayerOrMachineProfile(pn)
+					steps[pn] = GAMESTATE:GetCurrentSteps(pn)
+					hsTable[pn] = getScoreList(pn)
+					if hsTable[pn] ~= nil then
+						topScore[pn] = getScoreFromTable(hsTable[pn],1)
+					end
 				end
 			end
 		end

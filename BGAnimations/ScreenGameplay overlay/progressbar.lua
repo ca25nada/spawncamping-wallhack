@@ -31,7 +31,9 @@ local t = Def.ActorFrame {
     LoadFont("Common Normal") .. {
         Name="Song Name";
         InitCommand=cmd(xy,SCREEN_CENTER_X,frameY-1;zoom,0.35;maxwidth,(width-50)/0.35;);
-        BeginCommand=cmd(settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist(););
+        SetCommand=cmd(settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist());
+        BeginCommand = function(self) self:playcommand('Set') end;
+        CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
     };
     LoadFont("Common Normal") .. {
         Name="CurrentTime";
@@ -40,7 +42,9 @@ local t = Def.ActorFrame {
     LoadFont("Common Normal") .. {
         Name="TotalTime";
         InitCommand=cmd(xy,SCREEN_CENTER_X+(width/2),frameY-1;halign,1;zoom,0.35;);
-        BeginCommand=cmd(settext,SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()));
+        SetCommand=cmd(settext,SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()));
+        BeginCommand = function(self) self:playcommand('Set') end;
+        CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
     };  
 };
 

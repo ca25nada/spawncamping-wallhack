@@ -7,11 +7,11 @@ resetGhostData() -- Reset ghostscore data.
 local startFlag = false
 local fcFlag = false
 local fcFlagDelay = 0.1
-local firstSecond = GAMESTATE:GetCurrentSong():GetFirstSecond()
-local lastSecond = GAMESTATE:GetCurrentSong():GetLastSecond()
+local firstSecond
+local lastSecond
 
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-	
+
 	if GAMESTATE:IsCourseMode() then
 		break
 	end
@@ -55,8 +55,14 @@ end
 
 
 local t = Def.ActorFrame{
-	InitCommand=function(self)
+	InitCommand = function(self)
 		self:SetUpdateFunction(Update)
+	end;
+	CurrentSongChangedMessageCommand = function(self)
+		firstSecond = GAMESTATE:GetCurrentSong():GetFirstSecond()
+		lastSecond = GAMESTATE:GetCurrentSong():GetLastSecond()
+		startFlag = false
+		fcFlag = false
 	end
 }
 

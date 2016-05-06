@@ -77,9 +77,24 @@ function getScoreFromPn(pn,index)
 end
 
 function getMaxNotes(pn)
-	local steps
-	if GAMESTATE:IsPlayerEnabled(pn) then
-		steps = GAMESTATE:GetCurrentSteps(pn)
+	if not GAMESTATE:IsPlayerEnabled(pn) then
+		return 0
+	end
+
+	if GAMESTATE:IsCourseMode() then
+		local trail = GAMESTATE:GetCurrentTrail(pn)
+		local notes = 0
+
+		for _,v in pairs(trail:GetTrailEntries()) do
+			if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
+				notes = notes + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Notes")
+			else
+				notes = notes + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds")-- Radarvalue, maximum number of notes
+			end
+		end
+		return notes
+	else
+		local steps = GAMESTATE:GetCurrentSteps(pn)
 		if steps ~= nil then 
 			if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
 				return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes") or 0
@@ -88,19 +103,27 @@ function getMaxNotes(pn)
 			end
 		end
 	end
-	return 0
 end
 
 function getMaxHolds(pn)
-	local song = GAMESTATE:GetCurrentSong()
-	local steps
-	if GAMESTATE:IsPlayerEnabled(pn) then
-		steps = GAMESTATE:GetCurrentSteps(pn)
+	if not GAMESTATE:IsPlayerEnabled(pn) then
+		return 0
+	end
+	if GAMESTATE:IsCourseMode() then
+		local trail = GAMESTATE:GetCurrentTrail(pn)
+		local holds = 0
+
+		for _,v in pairs(trail:GetTrailEntries()) do
+			holds = holds + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Holds") + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Rolls")
+		end
+
+		return holds 
+	else
+		local steps = GAMESTATE:GetCurrentSteps(pn)
 		if steps ~= nil then 
 			return  (steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")) or 0
 		end
 	end
-	return 0
 end
 
 --Gets the highest score possible for the scoretype
