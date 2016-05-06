@@ -166,6 +166,10 @@ end
 
 -- Just something to get rid of scores where the player quit out early.
 function isScoreValid(pn,steps,score)
+	if GAMESTATE:IsCourseMode() then
+		return true -- Don't care about course mode atm.
+	end
+
 	if score:GetGrade() == "Grade_Failed" then
 		return true
 	end

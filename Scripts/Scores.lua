@@ -47,17 +47,24 @@ local migsWeight =  { -- Score Weights for MIGS score
 }
 
 function getScoreList(pn)
-	local song = GAMESTATE:GetCurrentSong()
-	local profile
-	local steps
+
+	local profile = GetPlayerOrMachineProfile(pn)
+
 	if GAMESTATE:IsPlayerEnabled(pn) then
-		profile = GetPlayerOrMachineProfile(pn)
-		steps = GAMESTATE:GetCurrentSteps(pn)
-		if profile ~= nil and steps ~= nil and song ~= nil then
-			return profile:GetHighScoreList(song,steps):GetHighScores()
+		if GAMESTATE:IsCourseMode() then
+			local course = GAMESTATE:GetCurrentCourse()
+			local trail = GAMESTATE:GetCurrentTrail(pn)
+			if profile ~= nil and trail ~= nil and course ~= nil then
+				return profile:GetHighScoreList(course,trail):GetHighScores()
+			end
+		else
+			local song = GAMESTATE:GetCurrentSong()
+			local steps = GAMESTATE:GetCurrentSteps(pn)
+			if profile ~= nil and steps ~= nil and song ~= nil then
+				return profile:GetHighScoreList(song,steps):GetHighScores()
+			end
 		end
 	end
-	return nil
 end
 
 function getScoreFromTable(hsTable,index)
@@ -70,7 +77,6 @@ function getScoreFromPn(pn,index)
 end
 
 function getMaxNotes(pn)
-	local song = GAMESTATE:GetCurrentSong()
 	local steps
 	if GAMESTATE:IsPlayerEnabled(pn) then
 		steps = GAMESTATE:GetCurrentSteps(pn)

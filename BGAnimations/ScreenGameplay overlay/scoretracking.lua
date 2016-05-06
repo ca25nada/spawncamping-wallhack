@@ -4,7 +4,6 @@
 resetJudgeST() -- Reset scoretracking data.
 resetGhostData() -- Reset ghostscore data.
 
-
 local startFlag = false
 local fcFlag = false
 local fcFlagDelay = 0.1
@@ -12,6 +11,11 @@ local firstSecond = GAMESTATE:GetCurrentSong():GetFirstSecond()
 local lastSecond = GAMESTATE:GetCurrentSong():GetLastSecond()
 
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+	
+	if GAMESTATE:IsCourseMode() then
+		break
+	end
+
 	local origTable
 	local rtTable
 	local hsTable
@@ -25,7 +29,6 @@ for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	end
 	readGhostData(pn,hsTable[1]) -- Read ghost data.
 end
-
 
 
 local function Update(self)
@@ -50,6 +53,7 @@ local function Update(self)
 
 end
 
+
 local t = Def.ActorFrame{
 	InitCommand=function(self)
 		self:SetUpdateFunction(Update)
@@ -59,6 +63,7 @@ local t = Def.ActorFrame{
 
 t[#t+1] = Def.Actor{
 	JudgmentMessageCommand=function(self,params)
+
 		popGhostData(params.Player)
 		MESSAGEMAN:Broadcast('GhostScore')
 		if getAutoplay() == 1 then

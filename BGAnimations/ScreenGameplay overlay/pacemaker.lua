@@ -2,11 +2,8 @@
 --Supports arbituary bar dimensions, number of bars so far. (although none of them are in preferences atm.)
 --Support for arbituary display range to be added eventually.
 
---Disable for Doubles mode? idk
-
 local ghostType
 local target
-
 
 local frameWidth = 105
 local frameHeight = SCREEN_HEIGHT
@@ -15,7 +12,7 @@ local frameX = SCREEN_WIDTH-frameWidth
 local frameY = 0
 
 local barY = 430-- Starting point/bottom of graph
-local barCount = 3 -- Number of graphs
+local barCount = GAMESTATE:IsCourseMode() and 2 or 3 -- Number of graphs
 local barWidth = 0.65
 local barTrim = 0 -- Final width of each graph = ((frameWidth/barCount)*barWidth) - barTrim
 local barHeight = 350 -- Max Height of graphs
@@ -178,6 +175,7 @@ local function avgScoreGraph(index,scoreType,color)
 	return t
 end;
 
+
 -- Represents the best score achieved for the specified scoreType
 local function bestScoreGraph(index,scoreType,color)
 	local t = Def.ActorFrame{}
@@ -224,6 +222,7 @@ local function bestScoreGraph(index,scoreType,color)
 	};
 	return t
 end;
+
 
 -- Represents the current target score for the specified scoreType
 local function targetScoreGraph(index,scoreType,color)
@@ -330,6 +329,8 @@ local function markers(scoreType,showMessage)
 
 end;
 
+
+-- Text showing life/judge setting
 local function lifejudge()
 	local t = Def.ActorFrame{
 		InitCommand=cmd(diffusealpha,0.5);
@@ -367,15 +368,17 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)
 	};
-	t[#t+1] = targetMaxGraph(3,ghostType,getPaceMakerColor("target"))
-	t[#t+1] = targetScoreGraph(3,ghostType,getPaceMakerColor("target"))
+	
+	t[#t+1] = targetMaxGraph(math.min(barCount,3),ghostType,getPaceMakerColor("target"))
+	t[#t+1] = targetScoreGraph(math.min(barCount,3),ghostType,getPaceMakerColor("target"))
 
-	--t[#t+1] = bestScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 	t[#t+1] = avgScoreGraph(1,ghostType,getPaceMakerColor("current"))
 	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("current"))
 
-	t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("best"))
-	t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("best"))
+	if not GAMESTATE:IsCourseMode() then
+		t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("best"))
+		t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("best"))
+	end
 
 	t[#t+1] = markers(ghostType,true)
 	t[#t+1] = lifejudge()

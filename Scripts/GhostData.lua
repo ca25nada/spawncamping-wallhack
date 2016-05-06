@@ -164,7 +164,9 @@ end
 
 -- Returns true if ghostdata exists.
 function ghostDataExists(pn,score)
-	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
+	if not GAMESTATE:IsPlayerEnabled(pn) or 
+		GAMESTATE:IsCourseMode() or 
+		score == nil then
 		return false
 	end
 
@@ -182,7 +184,9 @@ end
 -- Returns true if the ghostdata is valid.
 function isGhostDataValid(pn,score)
 
-	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
+	if not GAMESTATE:IsPlayerEnabled(pn) or 
+		GAMESTATE:IsCourseMode() or 
+		score == nil then
 		return false
 	end
 	
@@ -205,7 +209,10 @@ end
 --currentghostdata will be a empty table if it doesn't exist.
 function readGhostData(pn,score)
 	currentGhostData[pn] = {}
-	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
+
+	if not GAMESTATE:IsPlayerEnabled(pn) or 
+		GAMESTATE:IsCourseMode() or 
+		score == nil then
 		return
 	end
 
@@ -238,7 +245,9 @@ end
 
 -- Returns the ghostscore table parameter if it exists.
 function getGhostDataParameter(pn,score,parameter)
-	if not GAMESTATE:IsPlayerEnabled(pn) or score == nil then
+	if not GAMESTATE:IsPlayerEnabled(pn) or
+		GAMESTATE:IsCourseMode() or
+		score == nil then
 		return
 	end
 
@@ -253,7 +262,9 @@ end
 -- Saves the data loaded in the tempGhostData table as a string
 function saveGhostData(pn,score)
 
-	if not GAMESTATE:IsPlayerEnabled(pn) then
+	if not GAMESTATE:IsPlayerEnabled(pn) or 
+		GAMESTATE:IsCourseMode() or 
+		score == nil then
 		return
 	end
 
@@ -294,7 +305,9 @@ end
 --Deletes a single ghostdata given the player, score.
 function deleteGhostData(pn,score)
 
-	if not GAMESTATE:IsPlayerEnabled(pn) then
+	if not GAMESTATE:IsPlayerEnabled(pn) or 
+		GAMESTATE:IsCourseMode() or 
+		score == nil then
 		return
 	end
 

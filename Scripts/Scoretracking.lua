@@ -218,14 +218,27 @@ end
 --Returns the number of "taps" for the steps that the specified player has selected.
 --Note that this isn't the number of actual notes since jumps/hands count as 1 judgment or "taps".
 function getMaxNotesST(pn)
+	local steps 
 
 	if GAMESTATE:IsCourseMode() then
-		return 0
+		local trail = GAMESTATE:GetCurrentTrail(pn)
+		local index = GAMESTATE:GetCourseSongIndex()
+		local notes = 0
+
+		for _,v in pairs(trail:GetTrailEntries()) do
+			if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
+				notes = notes + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Notes")
+			else
+				notes = notes + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds")-- Radarvalue, maximum number of notes
+			end
+		end
+		return notes
 	else
+		steps = GAMESTATE:GetCurrentSteps(pn)
 		if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
-			return GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_Notes") or 0
+			return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 		else
-			return GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0 -- Radarvalue, maximum number of notes
+			return steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") -- Radarvalue, maximum number of notes
 		end
 	end
 end
@@ -238,11 +251,20 @@ end
 --Returns the number of holds for the steps that the specified player has selected.
 --This includes any notes that has a OK/NG judgment. (holds and rolls)
 function getMaxHoldsST(pn)
-
+	local steps 
 	if GAMESTATE:IsCourseMode() then
-		return 0
+		local trail = GAMESTATE:GetCurrentTrail(pn)
+		local index = GAMESTATE:GetCourseSongIndex()
+		local holds = 0
+
+		for _,v in pairs(trail:GetTrailEntries()) do
+			holds = holds + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Holds") + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Rolls")
+		end
+
+		return holds 
 	else
-		return (GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_Holds") + GAMESTATE:GetCurrentSteps(pn):GetRadarValues(pn):GetValue("RadarCategory_Rolls")) or 0 -- Radarvalue, maximum number of holds
+		steps = GAMESTATE:GetCurrentSteps(pn)
+		return steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
 	end
 end
 
