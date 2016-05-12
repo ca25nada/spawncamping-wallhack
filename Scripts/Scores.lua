@@ -101,6 +101,8 @@ function getMaxNotes(pn)
 			else
 				return steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0
 			end
+		else
+			return 0
 		end
 	end
 end
@@ -122,6 +124,8 @@ function getMaxHolds(pn)
 		local steps = GAMESTATE:GetCurrentSteps(pn)
 		if steps ~= nil then 
 			return  (steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")) or 0
+		else
+			return 0
 		end
 	end
 end
