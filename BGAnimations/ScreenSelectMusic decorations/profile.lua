@@ -18,10 +18,10 @@ local t = Def.ActorFrame{
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 };
 
-local frameX = 10
-local frameY = 45
-local frameWidth = capWideScale(320,400)
-local frameHeight = 350
+local frameX = 18
+local frameY = 30
+local frameWidth = capWideScale(get43size(390),390)
+local frameHeight = 300
 local fontScale = 0.4
 local distY = 15
 local offsetX1 = 100
@@ -37,24 +37,16 @@ local stringList2 = {
 }
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333CC"));
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self)
-	end;
-	CodeMessageCommand=cmd(queuecommand,"Set");
+	InitCommand=cmd(xy,frameX,frameY+offsetY;zoomto,frameWidth,frameHeight-offsetY;halign,0;valign,0;diffuse,color("#000000");diffusealpha,0.6);
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,getMainColor('frames'));
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self)
-	end;
-	CodeMessageCommand=cmd(queuecommand,"Set");
+	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,color("#000000");diffusealpha,0.8);
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.6;halign,0;diffuse,getMainColor('highlight'));
-	BeginCommand=cmd(settext,"Profile Info")
+	BeginCommand=cmd(settext,"Profile")
 };
 
 local function makeText1(index)

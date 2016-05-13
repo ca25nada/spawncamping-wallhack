@@ -5,14 +5,16 @@ local imgTypes = {".jpg",".png",".gif",".jpeg"}
 local rawList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
 local avatars = filterFileList(rawList,imgTypes)
 
-local maxItems = 7
-local itemHeight = 30
-local itemWidth = 30
+local maxItems = 5
+local itemHeight = 25
+local itemWidth = 25
 local border = 5
-local frameX = 0
-local frameY = SCREEN_HEIGHT-55
-local height = itemHeight+(border*2)
 local width = maxItems*(itemWidth+border)+border
+
+local frameX = SCREEN_CENTER_X/2 + capWideScale(get43size(390),390)/2 - width
+local frameY = SCREEN_HEIGHT-86
+local height = itemHeight+(border*2)
+
 
 --search for avatar currently being used. if none are found, revert to _fallback.png which is assumed to be on index 1.
 local function getInitAvatarIndex(pn)
@@ -83,29 +85,17 @@ local function avatarSwitch(pn)
 	local t = Def.ActorFrame{
 		Name="AvatarSwitch"..pn;
 		BeginCommand=function(self)
-			if pn == PLAYER_1 then
-				self:x(-width);
-				self:sleep(0.3)
-				self:smooth(0.2)
-				self:x(0)
-			end;
-			if pn == PLAYER_2 then
-				self:x(SCREEN_WIDTH)
-				self:sleep(0.3)
-				self:smooth(0.2)
-				self:x(SCREEN_WIDTH-width)
-			end;
+			if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
+				self:addx(SCREEN_WIDTH/2)
+			end
+			self:diffusealpha(0)
+			self:decelerate(0.5)
+			self:diffusealpha(1)
 		end;
 		CodeMessageCommand=function(self,params)
 			if params.Name == "AvatarCancel" or params.Name == "AvatarExit" then
-				if pn == PLAYER_1 then
-					self:smooth(0.2)
-					self:x(-width)
-				end
-				if pn == PLAYER_2 then
-					self:smooth(0.2)
-					self:x(SCREEN_WIDTH)
-				end
+				self:smooth(0.2)
+				self:y(SCREEN_HEIGHT)
 			end;
 		end;
 	}
@@ -153,20 +143,12 @@ local function avatarSwitch(pn)
 	}
 
 	--Background Quad
-	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX,frameY;zoomto,width,height;halign,0;valign,1;diffuse,color("#00000066"));
-	}
 
 	--MASKING SCKS
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,width,0;zoomto,SCREEN_WIDTH-width,SCREEN_HEIGHT;halign,0;valign,0;zwrite,true;clearzbuffer,true;blend,'BlendMode_NoEffect';);
-		BeginCommand=function(self)
-			if pn == PLAYER_2 then
-				self:x(0)
-				self:halign(1)
-			end;
-		end;
+		InitCommand=cmd(xy,frameX,frameY;zoomto,width,height;halign,0;valign,1;zwrite,true;clearzbuffer,false;blend,'BlendMode_NoEffect';);
 	}
+
 
 	--Cursor
 	t[#t+1] = Def.Quad{
@@ -188,7 +170,7 @@ local function avatarSwitch(pn)
 	t[#t+1] = avatarTable
 	for k,v in pairs(avatars) do
 		avatarTable[#avatarTable+1] = Def.Sprite {
-			InitCommand=cmd(visible,true;halign,0;valign,1;xy,frameX+border+((border+itemWidth)*(k-1)),frameY-border;ztest,true;);
+			InitCommand=cmd(visible,true;halign,0;valign,1;xy,frameX+border+((border+itemWidth)*(k-1)),frameY-border;ztest,true;ztestmode,'ZTestMode_WriteOnFail');
 			BeginCommand=cmd(queuecommand,"ModifyAvatar");
 			ModifyAvatarCommand=function(self)
 				self:finishtweening();
@@ -200,16 +182,10 @@ local function avatarSwitch(pn)
 
 	--Text
 	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,frameX,frameY-height;halign,0;valign,1;zoom,0.35;);
+		InitCommand=cmd(xy,frameX+width,frameY-height;halign,1;valign,1;zoom,0.35;diffuse,color("#111111"));
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self,params)
-			--self:settextf("Player 1 avatar: ci%d ai%d",cursorIndex,avatarIndex)
-			if pn == PLAYER_1 then
-				self:settextf("Player 1 Avatar: %s",avatars[data[pn]["avatarIndex"]])
-			end;
-			if pn == PLAYER_2 then
-				self:settextf("Player 2 Avatar: %s",avatars[data[pn]["avatarIndex"]])
-			end;
+			self:settext(avatars[data[pn]["avatarIndex"]])
 		end;
 		CodeMessageCommand=cmd(queuecommand,"Set");
 	};

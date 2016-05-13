@@ -3,6 +3,7 @@ local function input(event)
 	local top = SCREENMAN:GetTopScreen()
 	if event.DeviceInput.button == 'DeviceButton_left mouse button' then
 		if event.type == "InputEventType_Release" then
+			--[[
 			if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 				if isOver(top:GetChild("Overlay"):GetChild("PlayerAvatar"):GetChild("Avatar"..PLAYER_1):GetChild("Image")) then
 					SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch");
@@ -13,6 +14,7 @@ local function input(event)
 					SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch");
 				end;
 			end;
+			--]]
 		end;
 	end
 return false;
@@ -29,13 +31,20 @@ t[#t+1] = Def.Actor{
 		end;
 	end;
 };
-t[#t+1] = LoadActor("../_frame");
-t[#t+1] = LoadActor("../_avatar");
-t[#t+1] = LoadActor("currentsort");
-t[#t+1] = LoadFont("Common Large")..{
-	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor('highlight');settext,"Select Music:";);
-}
 
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(y,SCREEN_HEIGHT;halign,0;valign,1;zoomto,SCREEN_WIDTH,200;diffuse,color("#FFFFFF");fadetop,1);
+};
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(halign,0;valign,0;zoomto,SCREEN_WIDTH,20;diffuse,color("#111111"));
+};
+
+t[#t+1] = LoadActor("profilecard");
+t[#t+1] = LoadActor("tabs");
+t[#t+1] = LoadActor("currentsort");
+t[#t+1] = StandardDecorationFromFileOptional("BPMDisplay","BPMDisplay");
+t[#t+1] = StandardDecorationFromFileOptional("BPMLabel","BPMLabel");
 t[#t+1] = LoadActor("../_cursor");
 t[#t+1] = LoadActor("../_halppls");
 t[#t+1] = LoadActor("bgm");

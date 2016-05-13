@@ -5,6 +5,13 @@ function get43size(size4_3)
 	return 640*(size4_3/854)
 end;
 
+function getLevel(exp)
+	return math.floor(math.sqrt(math.sqrt(exp+4)-2))
+end
+
+function getExp(level)
+	return math.pow(level,4) + 4*math.pow(level,2)
+end
 
 function capWideScale(AR4_3,AR16_9)
 	if AR4_3 < AR16_9 then
@@ -166,6 +173,10 @@ end
 
 -- Just something to get rid of scores where the player quit out early.
 function isScoreValid(pn,steps,score)
+	if pn == nil or steps == nil or score == nil then
+		return false
+	end
+
 	if GAMESTATE:IsCourseMode() then
 		return true -- Don't care about course mode atm.
 	end

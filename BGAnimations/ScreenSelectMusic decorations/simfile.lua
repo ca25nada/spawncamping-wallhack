@@ -18,10 +18,10 @@ local t = Def.ActorFrame{
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
 };
 
-local frameX = 10
-local frameY = 45
-local frameWidth = capWideScale(320,400)
-local frameHeight = 350
+local frameX = 18
+local frameY = 30
+local frameWidth = capWideScale(get43size(390),390)
+local frameHeight = 300
 local fontScale = 0.4
 local distY = 15
 local offsetX = 10
@@ -29,12 +29,19 @@ local offsetY = 20
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333CC"));
+	InitCommand=cmd(xy,frameX,frameY+offsetY;zoomto,frameWidth,frameHeight-offsetY;halign,0;valign,0;diffuse,color("#000000");diffusealpha,0.6);
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY+5;zoomto,150,150*3/4;halign,0;valign,0;diffuse,color("#000000CC"));
+	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,color("#000000");diffusealpha,0.8);
 };
+
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.5;halign,0;diffuse,getMainColor('highlight'));
+	BeginCommand=cmd(settext,"Simfile Info")
+};
+
 
 t[#t+1] = Def.Sprite {
 	InitCommand=cmd(xy,frameX,frameY+offsetY-75;diffusealpha,0.8;);
@@ -121,7 +128,11 @@ t[#t+1] = LoadFont("Common Normal")..{
 			local diff = getDifficulty(steps:GetDifficulty())
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			local meter = steps:GetMeter()
-			self:settext(stype.." "..diff.." "..meter)
+			if IsUsingWideScreen() then
+				self:settext(stype.." "..diff.." "..meter)
+			else
+				self:settext(diff.." "..meter)
+			end
 			self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
 		end
 	end;
@@ -164,7 +175,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 				self:settext("Not Available")
 				self:diffuse(getMainColor("disabled"))
 			end
-			self:GetParent():GetChild("Song Length"):x(math.min(((frameWidth-offsetX*2-capWideScale(120,150))/0.6),self:GetWidth()*0.6+self:GetX()+5))
+			self:GetParent():GetChild("Song Length"):x(frameX+offsetX+155+(math.min(self:GetWidth()*0.60,frameWidth-195)))
 		end
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
@@ -392,15 +403,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 		end
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
-};
-
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,getMainColor('frames'));
-};
-
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.6;halign,0;diffuse,getMainColor('highlight'));
-	BeginCommand=cmd(settext,"Simfile Info")
 };
 
 return t

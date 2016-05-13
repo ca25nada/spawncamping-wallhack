@@ -84,10 +84,10 @@ local t = Def.ActorFrame{
 	end;
 };
 
-local frameX = 10
-local frameY = 45
-local frameWidth = capWideScale(320,400)
-local frameHeight = 350
+local frameX = 18
+local frameY = 30
+local frameWidth = capWideScale(get43size(390),390)
+local frameHeight = 300
 local fontScale = 0.4
 local offsetX = 10
 local offsetY = 20
@@ -95,11 +95,11 @@ local offsetY = 20
 local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss','HoldNoteScore_Held','HoldNoteScore_LetGo'}
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333CC"));
+	InitCommand=cmd(xy,frameX,frameY+offsetY;zoomto,frameWidth,frameHeight-offsetY;halign,0;valign,0;diffuse,color("#000000");diffusealpha,0.6);
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,getMainColor('frames'));
+	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,color("#000000");diffusealpha,0.8);
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
@@ -268,7 +268,11 @@ t[#t+1] = LoadFont("Common Normal")..{
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			local meter = steps:GetMeter()
 			if update then
-				self:settext(stype.." "..diff.." "..meter)
+				if IsUsingWideScreen() then
+					self:settext(stype.." "..diff.." "..meter)
+				else
+					self:settext(diff.." "..meter)
+				end
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
 			end;
 		end;
