@@ -18,11 +18,11 @@ t[#t+1] = Def.ActorFrame {
 
 	OnCommand=function(self)
 		self:bouncebegin(0.2)
-		self:y(270)
+		self:xy(SCREEN_CENTER_X/2-150,270)
 		self:zoomx(1)
-		self:playcommand("PositionSet")
+		--self:playcommand("PositionSet")
 	end;
-
+	--[[Position bugs out with charts with steps not available with the current player count.
 	PositionSetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		local count = 1
@@ -40,7 +40,7 @@ t[#t+1] = Def.ActorFrame {
 			self:x(SCREEN_CENTER_X/2-50*(math.min(3,count-1)))
 		end;
 	end;
-
+	--]]
 	TabChangedMessageCommand=function(self)
 		self:finishtweening()
 		if getTabIndex() == 1 then
