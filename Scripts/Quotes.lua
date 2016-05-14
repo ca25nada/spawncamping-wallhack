@@ -295,6 +295,10 @@ local Phrases = {
     "the male sign -- you know -- the little o with a stepmania coming out of it", -- PiXL
     "bruh brainpower is amaze", -- S_Cero
     "if you're playing music games to compete you're already losing",
+    "suddenly some scratch notes come in like a fucking nuke on Hiroshima to shit all over your life bar",
+    "what the fuck did you just fucking say about jumpstreams you piece of shit. I map over 6000 arrows in 5 seconds",
+    "i bet you memorized the notes",
+    "I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.",
 }
 
 --tip
