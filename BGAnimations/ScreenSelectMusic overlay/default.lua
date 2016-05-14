@@ -47,6 +47,15 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:xy(10,10)
 		self:settext("Select Music")
 	end;
+	OnCommand = function(self)
+		self:y(-10)
+		self:smooth(0.5)
+		self:y(10)
+	end;
+	OffCommand = function(self)
+		self:smooth(0.5)
+		self:y(-10)
+	end;
 };
 
 

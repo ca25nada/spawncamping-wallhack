@@ -3,11 +3,39 @@ local topFrameHeight = 20
 local bottomFrameHeight = 20
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,0,0;halign,0;valign,0;zoomto,SCREEN_WIDTH,topFrameHeight;diffuse,color("#000000");diffusealpha,0.8);
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X,0)
+		self:valign(0)
+		self:zoomto(SCREEN_WIDTH,topFrameHeight)
+		self:diffuse(color("#000000")):diffusealpha(0.8)
+	end;
+	OnCommand = function(self)
+		self:zoomy(0)
+		self:smooth(0.5)
+		self:zoomy(topFrameHeight)
+	end;
+	OffCommand = function(self)
+		self:smooth(0.5)
+		self:zoomy(0)
+	end;
 }
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,0,SCREEN_HEIGHT;halign,0;valign,1;zoomto,SCREEN_WIDTH,bottomFrameHeight;diffuse,color("#000000");diffusealpha,0.8);
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_HEIGHT)
+		self:valign(1)
+		self:zoomto(SCREEN_WIDTH,bottomFrameHeight)
+		self:diffuse(color("#000000")):diffusealpha(0.8)
+	end;
+	OnCommand = function(self)
+		self:zoomy(0)
+		self:smooth(0.5)
+		self:zoomy(bottomFrameHeight)
+	end;
+	OffCommand = function(self)
+		self:smooth(0.5)
+		self:zoomy(0)
+	end;
 }
 
 --[[

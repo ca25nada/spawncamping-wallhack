@@ -14,9 +14,18 @@ end
 
 
 local t = Def.ActorFrame{
-	OnCommand=function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end;
 	BeginCommand=function(self) resetTabIndex() end;
 	PlayerJoinedMessageCommand=function(self) resetTabIndex() end;
+	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(input)
+		self:diffusealpha(0)
+		self:smooth(0.5)
+		self:diffusealpha(1)
+	end;
+	OffCommand = function(self)
+		self:smooth(0.5)
+		self:diffusealpha(0)
+	end;
 }
 
 -- Just for debug
@@ -40,8 +49,7 @@ function tabs(index)
 	local t = Def.ActorFrame{
 		Name="Tab"..index;
 		InitCommand=cmd(xy,frameX+((index-1)*frameWidth),frameY;);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
+		SetCommand = function(self)
 			self:finishtweening()
 			self:linear(0.1)
 			--show tab if it's the currently selected one
@@ -53,9 +61,11 @@ function tabs(index)
 				self:diffusealpha(0.5)
 			end;
 		end;
-		TabChangedMessageCommand=cmd(queuecommand,"Set");
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-	};
+		BeginCommand = function(self) self:queuecommand("Set") end;
+		TabChangedMessageCommand = function(self) self:queuecommand("Set") end;
+		PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
+	}
+
 	t[#t+1] = Def.Quad{
 		Name="TabBG";
 		InitCommand=cmd(valign,1;zoomto,frameWidth,20;diffuse,color("#111111"));
@@ -64,7 +74,6 @@ function tabs(index)
 				setTabIndex(index)
 			end;
 		end;
-		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:finishtweening()
 			self:linear(0.1)
@@ -75,13 +84,13 @@ function tabs(index)
 				self:diffuse(color("#333333"))
 			end;
 		end;
-		TabChangedMessageCommand=cmd(queuecommand,"Set");
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+		BeginCommand = function(self) self:queuecommand("Set") end;
+		TabChangedMessageCommand = function(self) self:queuecommand("Set") end;
+		PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
 	};
 		
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand=cmd(y,-5;valign,1;zoom,0.4;);
-		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(getTabName(index))
 			if isTabEnabled(index) then
@@ -90,7 +99,9 @@ function tabs(index)
 				self:diffuse(getMainColor('disabled'))
 			end;
 		end;
-		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+		BeginCommand = function(self) self:queuecommand("Set") end;
+		TabChangedMessageCommand = function(self) self:queuecommand("Set") end;
+		PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
 	};
 	return t
 end;

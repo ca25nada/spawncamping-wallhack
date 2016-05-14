@@ -60,7 +60,7 @@ if enabled then
 	t[#t+1] = Def.ActorFrame{
 		Name="MouseXY";
 		Def.Sprite {
-			OnCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"ModifySongBackground");
+			OnCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;queuecommand,"ModifySongBackground");
 			CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"ModifySongBackground");
 			ModifySongBackgroundCommand=function(self)
 				self:finishtweening()
@@ -76,7 +76,6 @@ if enabled then
 							self:scaletocover(0,0,SCREEN_WIDTH,SCREEN_BOTTOM);
 						end;
 
-						self:sleep(0.25)
 						self:smooth(0.5)
 						self:diffusealpha(brightness)
 					end;

@@ -34,13 +34,23 @@ local sortTable = {
 local t = Def.ActorFrame{
 	InitCommand = function(self)
 		self:xy(frameX,frameY)
-	end
+	end;
+	OnCommand = function(self)
+		self:y(-frameHeight/2)
+		self:smooth(0.5)
+		self:y(frameY)
+	end;
+	OffCommand = function(self)
+		self:smooth(0.5)
+		self:y(-frameHeight/2)
+	end;
 };
 
 
 t[#t+1] = Def.Quad{
 	Name="CurrentSort";
 	InitCommand=cmd(halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor('highlight'););
+
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
