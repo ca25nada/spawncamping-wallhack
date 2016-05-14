@@ -36,9 +36,20 @@ t[#t+1] = Def.Quad{
 	InitCommand=cmd(y,SCREEN_HEIGHT;halign,0;valign,1;zoomto,SCREEN_WIDTH,200;diffuse,color("#FFFFFF");fadetop,1);
 };
 
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(halign,0;valign,0;zoomto,SCREEN_WIDTH,20;diffuse,color("#111111"));
+
+t[#t+1] = LoadActor("../_frame");
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function (self)
+		self:diffuse(color("#FFFFFF"))
+		self:zoom(0.5)
+		self:halign(0)
+		self:xy(10,10)
+		self:settext("Select Music")
+	end;
 };
+
+
 
 t[#t+1] = LoadActor("profilecard");
 t[#t+1] = LoadActor("tabs");

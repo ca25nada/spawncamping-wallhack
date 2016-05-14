@@ -12,7 +12,7 @@ local border = 5
 local width = maxItems*(itemWidth+border)+border
 
 local frameX = SCREEN_CENTER_X/2 + capWideScale(get43size(390),390)/2 - width
-local frameY = SCREEN_HEIGHT-86
+local frameY = SCREEN_HEIGHT-106
 local height = itemHeight+(border*2)
 
 
@@ -87,6 +87,9 @@ local function avatarSwitch(pn)
 		BeginCommand=function(self)
 			if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 				self:addx(SCREEN_WIDTH/2)
+			end
+			if getTabIndex() ~= 1 then
+				self:y(49)
 			end
 			self:diffusealpha(0)
 			self:decelerate(0.5)

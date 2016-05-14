@@ -12,7 +12,7 @@ t[#t+1] = Def.Quad{
 		self:halign(0)
 	end;
 	SetCommand = function(self)
-		self:diffuse(color("#000000"))
+		self:diffuse(color("#111111"))
 	end;
 	BeginCommand = function(self) self:queuecommand('Set') end;
 	OffCommand = function(self) self:visible(false) end;

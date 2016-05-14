@@ -1,19 +1,25 @@
-local update = false
 local t = Def.ActorFrame{
-	BeginCommand=cmd(queuecommand,"Set");
 	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
 	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
-	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+	TabChangedMessageCommand=function(self)
+		if getTabIndex() == 1 then
+			MESSAGEMAN:Broadcast("Expand")
+		else 
+			MESSAGEMAN:Broadcast("Contract")
+		end;
+	end;
+	PlayerJoinedMessageCommand=cmd(queuecommand,"TabChangedMessage");
 };
 
 local approachSecond = 0.2
 
 local frameX = SCREEN_CENTER_X/2
-local frameY = SCREEN_CENTER_Y+120
+local frameY = SCREEN_CENTER_Y+100
 local maxMeter = 30
 local starSize = 0.55
 local frameWidth = capWideScale(get43size(390),390)
 local frameHeight = 110
+local frameHeightShort = 61
 local song
 local course
 
@@ -55,6 +61,16 @@ local function generalFrame(pn)
 		BeginCommand = function(self) self:playcommand('Set') end;
 		PlayerJoinedMessageCommand = function(self) self:playcommand('Set') end;
 		PlayerUnjoinedMessageCommand = function(self) self:playcommand('Set') end;
+		ContractMessageCommand = function(self)
+			self:stoptweening()
+			self:smooth(0.1)
+			self:y(frameY+frameHeight-frameHeightShort)
+		end;
+		ExpandMessageCommand = function(self)
+			self:stoptweening()
+			self:smooth(0.1)
+			self:y(frameY)
+		end;
 	}
 
 	--Upper Bar
@@ -64,7 +80,17 @@ local function generalFrame(pn)
 			self:valign(0)
 			self:diffuse(color("#000000"))
 			self:diffusealpha(0.8)
-		end
+		end;
+		ContractMessageCommand = function(self)
+			self:stoptweening()
+			self:smooth(0.1)
+			self:zoomy(frameHeightShort)
+		end;
+		ExpandMessageCommand = function(self)
+			self:stoptweening()
+			self:smooth(0.1)
+			self:zoomy(frameHeight)
+		end;
 	}
 
 	t[#t+1] = Def.Quad{
@@ -345,6 +371,8 @@ local function generalFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		ContractMessageCommand = function(self) self:visible(false) end;
+		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 
@@ -363,6 +391,8 @@ local function generalFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		ContractMessageCommand = function(self) self:visible(false) end;
+		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 
@@ -389,6 +419,8 @@ local function generalFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		ContractMessageCommand = function(self) self:visible(false) end;
+		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 
@@ -409,6 +441,8 @@ local function generalFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		ContractMessageCommand = function(self) self:visible(false) end;
+		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 	t[#t+1] = Def.RollingNumbers{
@@ -427,6 +461,8 @@ local function generalFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		ContractMessageCommand = function(self) self:visible(false) end;
+		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
 
 	--ScoreType superscript(?)
@@ -439,6 +475,8 @@ local function generalFrame(pn)
 		BeginCommand = function(self)
 			self:settext(getScoreTypeText(0))
 		end;
+		ContractMessageCommand = function(self) self:visible(false) end;
+		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 	--MaxCombo
@@ -456,6 +494,8 @@ local function generalFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		ContractMessageCommand = function(self) self:visible(false) end;
+		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
 
 
@@ -478,6 +518,8 @@ local function generalFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		ContractMessageCommand = function(self) self:visible(false) end;
+		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
 
 	return t

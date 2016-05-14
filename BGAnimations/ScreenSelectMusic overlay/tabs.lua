@@ -34,7 +34,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 
 local frameWidth = (SCREEN_WIDTH*(403/854))/(getTabSize()-1)
 local frameX = frameWidth/2
-local frameY = 0
+local frameY = SCREEN_HEIGHT
 
 function tabs(index)
 	local t = Def.ActorFrame{
@@ -58,7 +58,7 @@ function tabs(index)
 	};
 	t[#t+1] = Def.Quad{
 		Name="TabBG";
-		InitCommand=cmd(valign,0;zoomto,frameWidth,20;diffuse,color("#111111"));
+		InitCommand=cmd(valign,1;zoomto,frameWidth,20;diffuse,color("#111111"));
 		MouseLeftClickMessageCommand=function(self)
 			if isOver(self) then
 				setTabIndex(index)
@@ -80,7 +80,7 @@ function tabs(index)
 	};
 		
 	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand=cmd(y,5;valign,0;zoom,0.4;);
+		InitCommand=cmd(y,-5;valign,1;zoom,0.4;);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
 			self:settext(getTabName(index))
@@ -94,11 +94,6 @@ function tabs(index)
 	};
 	return t
 end;
-
---Make tabs
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(halign,0;valign,0;zoomto,SCREEN_WIDTH,20;diffuse,color("#111111"));
-};
 
 for i=1,getTabSize() do
 	t[#t+1] =tabs(i)
