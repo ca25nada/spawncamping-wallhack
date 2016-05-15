@@ -1,19 +1,32 @@
 local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("../_frame");
-t[#t+1] = LoadActor("../_avatar");
-
---t[#t+1] = LoadActor("temp");
 
 --what the settext says
-t[#t+1] = LoadFont("Common Large")..{
-	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor('highlight');settext,"Results:";);
-}
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function (self)
+		self:diffuse(color("#FFFFFF"))
+		self:zoom(0.5)
+		self:halign(0)
+		self:xy(10,10)
+		self:settext("Results")
+	end;
+	OnCommand = function(self)
+		self:y(-10)
+		self:smooth(0.5)
+		self:y(10)
+	end;
+	OffCommand = function(self)
+		self:smooth(0.5)
+		self:y(-10)
+	end;
+};
+
 
 --Group folder name
 local frameWidth = 280
 local frameHeight = 20
-local frameX = SCREEN_WIDTH-5
-local frameY = 15
+local frameX = SCREEN_WIDTH
+local frameY = 10
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,frameX,frameY;halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor('highlight'););

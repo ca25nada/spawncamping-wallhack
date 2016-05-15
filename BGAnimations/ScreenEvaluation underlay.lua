@@ -13,6 +13,12 @@ local moveBG = themeConfig:get_data().global.SongBGMouseEnabled and enabled
 local brightness = 0.4
 
 local t = Def.ActorFrame{}
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(FullScreen;diffuse,color("#FFFFFF"));
+}
+
+
 t[#t+1] = LoadActor("_particles");
 
 if enabled and bgType == 1 then -- SONG BG

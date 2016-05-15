@@ -29,22 +29,4 @@ t[#t+1] = Def.Quad{
 	OffCommand = function(self) self:visible(false) end;
 }
 
-t[#t+1] = Def.Banner{
-	InitCommand = function(self)
-		self:fadeleft(1)
-		self:halign(1)
-		self:x(capWideScale(get43size(340),340))
-	 	self:scaletoclipped(capWideScale(get43size(340),340),44)
-	 	self:diffusealpha(0.3)
-	end;
-	SetMessageCommand = function(self,params)
-		local group = params.Text
-		if group then
-			self:LoadFromSongGroup(group)
-		else
-			self:Load(THEME:GetPathG("Common fallback","banner"))
-		end
-	end;
-}
-
 return t
