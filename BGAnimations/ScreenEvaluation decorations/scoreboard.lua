@@ -1,30 +1,8 @@
 
 
-function gradestring(tier) --to be moved
-	if tier == "Grade_Tier01" then
-		return 'AAAA'
-	elseif tier == "Grade_Tier02" then
-		return 'AAA'
-	elseif tier == "Grade_Tier03" then
-		return 'AA'
-	elseif tier == "Grade_Tier04" then
-		return 'A'
-	elseif tier == "Grade_Tier05" then
-		return 'B'
-	elseif tier == "Grade_Tier06" then
-		return 'C'
-	elseif tier == "Grade_Tier07" then
-		return 'D'
-	elseif tier == 'Grade_Failed' then
-		return 'F'
-	else
-		return tier
-	end;
-end;
-
-local lines = math.min(themeConfig:get_data().eval.ScoreBoardMaxEntry,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")) -- number of scores to display
+local lines = math.min(8,math.min(themeConfig:get_data().eval.ScoreBoardMaxEntry,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer"))) -- number of scores to display
 local framex = SCREEN_WIDTH-capWideScale(get43size(270),270)
-local framey = 60
+local framey = 150
 local frameWidth = capWideScale(get43size(260),260)
 local spacing = 34
 
@@ -95,7 +73,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--The main quad
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#333333");diffusealpha,1;diffuserightedge,color("#33333333"));
+			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#000000");diffusealpha,0.8);
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn));
 			end;
@@ -103,7 +81,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--Highlight quad for the current score
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#ffffff");diffusealpha,0.3;diffuserightedge,color("#33333300"));
+			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor("highlight");diffusealpha,0.3);
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn) and equals);
 			end;
@@ -148,11 +126,12 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 					self:settext(index)
 					if equals then
 						self:diffuseshift()
-						self:effectcolor1(color("#ffcccc"))
+						self:effectcolor1(color("#000000"))
 						self:effectcolor2(color("#3399cc"))
 						self:effectperiod(0.1)
 					else
 						self:stopeffect()
+						self:diffuse(color("#000000"))
 					end;
 				end;
 			end;
@@ -169,7 +148,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 					maxscore = 1
 				end;
 				local pscore = (curscore/maxscore)
-				self:settextf("%s %.2f%% (x%d)",(gradestring(hsTable[index]:GetGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()); 
+				self:settextf("%s %.2f%% (x%d)",(getGradeStrings(hsTable[index]:GetGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()); 
 				--self:settextf("%s",getRate(hsTable[index]))
 			end;
 		};
@@ -295,6 +274,7 @@ t[#t+1] = LoadFont("Common normal")..{
 			end
 		end
 		self:settext(text)
+		self:diffuse(color("#000000")):diffusealpha(0.8)
 	end;
 };
 
@@ -302,6 +282,7 @@ t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(xy,framex+frameWidth,framey+drawindex*spacing;zoom,0.35;halign,1;diffusealpha,0.8);
 	BeginCommand=function(self)
 		self:settextf("%d/%s Scores saved",(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
+		self:diffuse(color("#000000")):diffusealpha(0.8)
 	end;
 }
 

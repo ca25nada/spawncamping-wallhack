@@ -47,7 +47,8 @@ local shortJudgeString = { -- Text strings for each Judgment types
 	TapNoteScore_W5	= 'BD',
 	TapNoteScore_Miss = 'MS',			
 	HoldNoteScore_Held = 'OK',	
-	HoldNoteScore_LetGo = 'NG',	
+	HoldNoteScore_LetGo = 'NG',
+	HoldNoteScore_MissedHold = 'HM',
 }
 
 local judgeString = { -- Text strings for each Judgment types
@@ -59,6 +60,7 @@ local judgeString = { -- Text strings for each Judgment types
 	TapNoteScore_Miss = 'Miss',			
 	HoldNoteScore_Held = 'OK',	
 	HoldNoteScore_LetGo = 'NG',	
+	HoldNoteScore_MissedHold = 'Hold Miss',
 }
 
 local scoreTypeText = {

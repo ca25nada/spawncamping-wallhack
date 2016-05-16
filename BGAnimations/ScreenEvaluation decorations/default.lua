@@ -1,46 +1,97 @@
 local t = Def.ActorFrame{}
+local song = GAMESTATE:GetCurrentSong()
+local course = GAMESTATE:GetCurrentCourse()
+
+--ScoreBoard
+local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss'}
+local hjudges = {'HoldNoteScore_LetGo','HoldNoteScore_Held','HoldNoteScore_MissedHold'}
+local frameX = SCREEN_CENTER_X/2
+local frameY = 150
+local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
+local frameHeight = 300
 
 setLastSecond(0)
-local approachSecond = 2
+local approachSecond = 0.5
 
 if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
 	t[#t+1] = LoadActor("scoreboard")
 end;
 
-if themeConfig:get_data().eval.CurrentTimeEnabled then
-	t[#t+1] = LoadActor("currenttime")
-end;
-
 if themeConfig:get_data().eval.JudgmentBarEnabled then
-	t[#t+1] = LoadActor("adefaultmoreripoff")
+	--t[#t+1] = LoadActor("adefaultmoreripoff")
 end;
-
---t[#t+1] = LoadActor("mousetest")
---t[#t+1] = LoadActor("soundtest")
 
 t[#t+1] = Def.ActorFrame{
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,20,140;zoom,0.4;maxwidth,100/0.4;halign,0;);
+		InitCommand=cmd(xy,10,40;zoom,0.4;halign,0;diffuse,color("#111111"));
 		BeginCommand=function(self)
 			self:settextf("Timing Difficulty: %d",GetTimingDifficulty())
 		end;
 	};
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,20,155;zoom,0.4;maxwidth,100/0.4;halign,0;);
+		InitCommand=cmd(xy,10,55;zoom,0.4;halign,0;diffuse,color("#111111"));
 		BeginCommand=function(self)
 			self:settextf("Life Difficulty: %d",GetLifeDifficulty())
 		end;
 	};
 };
 
+t[#t+1] = Def.Quad{
+	InitCommand = function(self)
+		self:zoomto(256+10,80+10)
+		self:xy(SCREEN_CENTER_X,70)
+		self:diffuse(color("#000000")):diffusealpha(0.8)
+	end
+}
+
+t[#t+1] = Def.Banner{
+	BeginCommand = function(self)
+		if song and not course then
+			self:LoadFromSong(song)
+		elseif course and not song then
+			self:LoadFromCourse(course)
+		end
+		self:scaletofit(0,0,256,80)
+		self:xy(SCREEN_CENTER_X,70)
+	end;
+}
+
+
+
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,SCREEN_CENTER_X,135;zoom,0.4;maxwidth,400/0.4);
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self) 
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X+5+(266/2),50)
+		self:zoom(0.6)
+		self:maxwidth(((SCREEN_WIDTH/2 -5 -266/2)/0.6) - 10)
+		self:diffuse(color("#000000")):diffusealpha(0.8)
+		self:halign(0):valign(0)
+	end;
+	BeginCommand = function(self) 
 		if GAMESTATE:IsCourseMode() then
-			self:settext(GAMESTATE:GetCurrentCourse():GetDisplayFullTitle().." // "..GAMESTATE:GetCurrentCourse():GetScripter())
+			self:settext(course:GetDisplayFullTitle())
 		else
-			self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist()) 
+			self:settext(song:GetDisplayMainTitle()) 
+		end;
+	end;
+};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X+5+(266/2),65)
+		self:zoom(0.4)
+		self:maxwidth(((SCREEN_WIDTH/2 -5 -266/2)/0.4) - 10)
+		self:diffuse(color("#000000")):diffusealpha(0.8)
+		self:halign(0):valign(0)
+	end;
+	BeginCommand = function(self) 
+		if GAMESTATE:IsCourseMode() then
+			self:settext("//"..course:GetScripter())
+		else
+			if song:GetDisplaySubTitle() ~= "" then
+				self:settextf("%s\n// %s",song:GetDisplaySubTitle(),song:GetDisplayArtist())
+			else
+				self:settext("//"..song:GetDisplayArtist())
+			end
 		end;
 	end;
 };
@@ -56,22 +107,21 @@ local function GraphDisplay( pn )
 
 
 	local t = Def.ActorFrame {
+
 		Def.GraphDisplay {
 			InitCommand=cmd(Load,"GraphDisplay");
 			BeginCommand=function(self)
 				local ss = SCREENMAN:GetTopScreen():GetStageStats()
-				self:Set( ss, ss:GetPlayerStageStats(pn))
-				self:diffusealpha(0.7);
+				self:Set(ss,pss)
+				self:diffusealpha(0.5);
 				self:GetChild("Line"):diffusealpha(0)
-				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35))
-				end
+				self:y(60)
 			end
 		};
 
 		LoadFont("Common Large")..{
 			Name = "Grade";
-			InitCommand=cmd(xy,-SCREEN_CENTER_X*0.30,15;zoom,0.7;maxwidth,70/0.8;halign,0;);
+			InitCommand=cmd(xy,-frameWidth/2+35,60;zoom,0.7;maxwidth,70/0.8;);
 			BeginCommand=function(self) 
 				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
 			end;
@@ -80,7 +130,7 @@ local function GraphDisplay( pn )
 		Def.RollingNumbers{
 			Font= "Common Normal", 
 			InitCommand= function(self)
-				self:y(15):zoom(0.6)
+				self:y(60):zoom(0.6)
 			    self:set_chars_wide(5):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
 			end;
 			BeginCommand=function(self) 
@@ -88,9 +138,9 @@ local function GraphDisplay( pn )
 				local maxScore = getMaxScoreST(pn,0)
 				self:halign(0)
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth(),70/0.8)*0.8))
+					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8,70/0.8))*0.6)
 				else
-					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth(),70/0.8)*0.8))
+					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8,70/0.8))*0.6)
 				end
 				self:target_number(math.floor((score/maxScore)*10000)/100)
 			end;
@@ -99,7 +149,7 @@ local function GraphDisplay( pn )
 
 
 		LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,WideScale(get43size(140),140)-5,-35;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
+			InitCommand=cmd(xy,frameWidth/2-5,60-25;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
 			BeginCommand=function(self)
 				local text = ""
 				text = string.format("Life: %.0f%%",pss:GetCurrentLife()*100)
@@ -119,6 +169,7 @@ local function GraphDisplay( pn )
 				end;
 			end;
 		};
+		--[[
 		LoadFont("Common Normal")..{
 			InitCommand=cmd(xy,WideScale(get43size(140),140)-5,30;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
 			BeginCommand=function(self) 
@@ -136,60 +187,114 @@ local function GraphDisplay( pn )
 					self:halign(1)
 				end
 			end;
-		};
+		};--]]
 
 	};
 	return t;
 end
 
-local function ComboGraph( pn )
-	local t = Def.ActorFrame {
-		Def.ComboGraph {
-			InitCommand=cmd(Load,"ComboGraph"..ToEnumShortString(pn););
-			BeginCommand=function(self)
-				local ss = SCREENMAN:GetTopScreen():GetStageStats()
-				self:Set(ss,ss:GetPlayerStageStats(pn))
-				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35))
-				end
-			end
-		};
-	};
-	return t;
-end;
-
---ScoreBoard
-local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss'}
-
-local pssP1 = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
-local pssP2 = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2)
-
-local frameX = 20
-local frameY = 170
-local frameWidth = SCREEN_CENTER_X-60
-
-local function scoreBoard(pn,position)
+local function scoreBoard(pn)
 	local hsTable = getScoreList(pn)
-	local t = Def.ActorFrame{
-		BeginCommand=function(self)
-			if position == 1 then
-				self:x(SCREEN_WIDTH-(frameX*2)-frameWidth)
-			end;
-		end;
-	}
-
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+	local profile = PROFILEMAN:GetProfile(pn)
 
-	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX-5,frameY;zoomto,frameWidth+10,220;halign,0;valign,0;diffuse,color("#333333CC");)
+	local t = Def.ActorFrame{
+		InitCommand=function(self)
+			if GAMESTATE:GetNumPlayersEnabled() > 1 then
+				if pn == PLAYER_1 then
+					self:x(frameX)
+				else 
+					self:x(SCREEN_WIDTH - frameX)
+				end
+			else
+				self:x(frameX)
+			end
+			self:y(frameY)
+		end
 	}
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX,frameY+55;zoomto,frameWidth,2;halign,0;)
+		InitCommand=cmd(zoomto,frameWidth,frameHeight;valign,0;diffuse,color("#000000");diffusealpha,0.8)
+	}
+
+	t[#t+1] = StandardDecorationFromTable("GraphDisplay"..ToEnumShortString(PLAYER_1), GraphDisplay(PLAYER_1))
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:xy(25+10-(frameWidth/2),5)
+			self:zoomto(56,56)
+			self:diffuse(color("#000000"))
+			self:diffusealpha(0.8)
+		end;
+		SetCommand = function(self)
+			self:stoptweening()
+			self:smooth(0.5)
+			self:diffuse(getHighestClearType(pn,0,2))
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:xy(25+10-(frameWidth/2),5)
+			self:zoomto(56,56)
+			self:diffusealpha(0.8)
+		end;
+		BeginCommand=function(self)
+			self:diffuseramp()
+			self:effectcolor2(color("1,1,1,0.6"))
+			self:effectcolor1(color("1,1,1,0"))
+			self:effecttiming(2,1,0,0)
+		end
+	}
+
+	t[#t+1] = Def.Sprite {
+		InitCommand=function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
+		ModifyAvatarCommand=function(self)
+			self:visible(true)
+			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(pn)));
+			self:zoomto(50,50)
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+frameWidth,frameY+0;zoom,0.5;halign,1;valign,1);
+		InitCommand  = function(self)
+			self:xy(66-frameWidth/2,10)
+			self:zoom(0.6)
+			self:halign(0)
+		end;
+		SetCommand = function(self)
+			local text = pn == PLAYER_1 and "Player 1" or "Player 2"
+			if profile ~= nil then
+				text = profile:GetDisplayName()
+			end
+			self:settext(text)
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(66-frameWidth/2,22)
+			self:zoom(0.3)
+			self:halign(0)
+		end;
+		SetCommand = function(self)
+			if profile ~= nil then
+				local level = getLevel(profile:GetTotalTapsAndHolds())
+				local currentExp = profile:GetTotalTapsAndHolds()-getExp(level)
+				local nextExp = getExp(level+1)-getExp(level)
+				self:settextf("Lv.%d - %2.2f%%",level, currentExp/nextExp*100)
+			end
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	--Difficulty
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameWidth/2-5,5;zoom,0.5;halign,1;valign,0);
 		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.05");effectcolor2,color("1,1,1,0");effectperiod,2;queuecommand,"Set");
 		SetCommand=function(self) 
 			local steps = GAMESTATE:GetCurrentSteps(pn)
@@ -198,24 +303,52 @@ local function scoreBoard(pn,position)
 			local meter = steps:GetMeter()
 			self:settext(stype.." "..diff.." "..meter)
 			self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
+		end
+	}
+
+	--ClearType
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand = function(self)
+			self:xy(-frameWidth/2+5,107)
+			self:zoom(0.35)
+			self:halign(0):valign(1)
+			self:settext("ClearType")
 		end;
-	};
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:y(110)
+			self:zoomto(frameWidth-10,2)
+			self:valign(0)
+			self:diffusealpha(0.8)
+		end
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX,frameY+13;zoom,0.45;halign,0);
-		BeginCommand=cmd(settext,"ClearType:")
-	};
+		InitCommand = function(self)
+			self:xy(frameWidth/2-50,107)
+			self:zoom(0.5)
+			self:halign(1):valign(1)
+		end;
+		BeginCommand = function(self)
+			local score = pss:GetHighScore()
+			if score ~= nil then
+				self:settext(getClearTypeFromScore(pn,score,0))
+				self:diffuse(getClearTypeFromScore(pn,score,2))
+			end;
+		end;
+	}
+
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+13;zoom,0.45);
-		BeginCommand=cmd(settext,">>")
-	};
-
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+13;zoom,0.40;);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			local score = pss:GetHighScore();
+		InitCommand = function(self)
+			self:xy(frameWidth/2-50,113)
+			self:zoom(0.35)
+			self:halign(1):valign(0)
+		end;
+		BeginCommand = function(self)
+			local score = pss:GetHighScore()
 			if score ~= nil then
 				local index
 				if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
@@ -223,32 +356,23 @@ local function scoreBoard(pn,position)
 				else
 					index = pss:GetPersonalHighScoreIndex()+1
 				end
-				self:settext(getHighestClearType(pn,index,1)); 
+				self:settext(getHighestClearType(pn,index,0))
 				self:diffuse(getHighestClearType(pn,index,2))
-				self:diffusealpha(0.7)
-			end;
+				self:diffusealpha(0.5)
+			end
 		end;
-	};
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+13;zoom,0.40;);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			local score = pss:GetHighScore();
-			if score ~= nil then
-				self:settext(getClearTypeFromScore(pn,score,1)); 
-				self:diffuse(getClearTypeFromScore(pn,score,2))
-			end;
+		InitCommand = function(self)
+			self:xy(frameWidth/2-40,106)
+			self:zoom(0.30)
+			self:valign(1)
 		end;
-	};
-
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)+10,frameY+13;zoom,0.30;maxwidth,20/0.3);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
+		BeginCommand = function(self) 
 			local score = pss:GetHighScore();
 			local index
-			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+			if GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
 				index = pss:GetMachineHighScoreIndex()+2
 			else
 				index = pss:GetPersonalHighScoreIndex()+1
@@ -256,32 +380,64 @@ local function scoreBoard(pn,position)
 			local recCT = getHighestClearType(pn,index,3)
 			local curCT = getClearTypeFromScore(pn,score,3)
 			if curCT < recCT then
-				self:settext("↑")
+				self:settext("▲")
+				self:diffuse(getMainColor("positive"))
 			elseif curCT > recCT then
-				self:settext("↓")
+				self:settext("▼")
+				self:diffuse(getMainColor("negative"))
 			else
-				self:settext("→")
-			end;
+				self:settext("-")
+			end
 		end;
-	};
+	}
+
+	-- Score
+
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX,frameY+28;zoom,0.45;halign,0);
-		BeginCommand=function(self)
-			self:settextf("Score(%s):",getScoreTypeText(0))
+		InitCommand = function(self)
+			self:xy(-frameWidth/2+5,137)
+			self:zoom(0.35)
+			self:halign(0):valign(1)
+			self:settext("Score")
 		end;
-	};
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:y(140)
+			self:zoomto(frameWidth-10,2)
+			self:valign(0)
+			self:diffusealpha(0.8)
+		end
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+28;zoom,0.45);
-		BeginCommand=cmd(settext,">>")
-	};
-
+		InitCommand = function(self)
+			self:xy(frameWidth/2-50,137)
+			self:zoom(0.5)
+			self:halign(1):valign(1)
+		end;
+		BeginCommand = function(self)
+			local score = getCurScoreST(pn,0)
+			local maxScore = getMaxScoreST(pn,0)
+			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
+			if IsUsingWideScreen() then
+				self:settextf("%s (%d/%d)",percentText,score,maxScore)
+			else
+				self:settextf("%s",percentText)
+			end
+		end;
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+28;zoom,0.4;);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
+		InitCommand = function(self)
+			self:xy(frameWidth/2-50,143)
+			self:zoom(0.35)
+			self:halign(1):valign(0)
+			self:diffusealpha(0.3)
+		end;
+		BeginCommand = function(self)
 			local index
 			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
 				index = pss:GetMachineHighScoreIndex()+2
@@ -296,29 +452,47 @@ local function scoreBoard(pn,position)
 			else
 				self:settextf("%s",percentText)
 			end
-			self:diffusealpha(0.7)
 		end;
-	};
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+28;zoom,0.4;);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			local score = getCurScoreST(pn,0)
-			local maxScore = getMaxScoreST(pn,0)
-			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
-			if IsUsingWideScreen() then
-				self:settextf("%s (%d/%d)",percentText,score,maxScore)
+		InitCommand = function(self)
+			self:xy(frameWidth/2-40,136)
+			self:zoom(0.30)
+			self:valign(1)
+		end;
+		BeginCommand = function(self) 
+			local index
+
+			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
 			else
-				self:settextf("%s",percentText)
+				index = pss:GetPersonalHighScoreIndex()+1
+			end
+
+			local recScore = getBestScore(pn,index,0)
+			local curScore = getCurScoreST(pn,0)
+			local diff = curScore - recScore
+
+			if diff > 0 then
+				self:settext("▲")
+				self:diffuse(getMainColor("positive"))
+			elseif diff < 0 then
+				self:settext("▼")
+				self:diffuse(getMainColor("negative"))
+			else
+				self:settext("-")
 			end
 		end;
-	};
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)+10,frameY+28;zoom,0.30;maxwidth,30/0.3);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
+		InitCommand = function(self)
+			self:xy(frameWidth/2-20,136)
+			self:zoom(0.30)
+			self:valign(1)
+		end;
+		BeginCommand = function(self) 
 			local index
 			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
 				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
@@ -334,23 +508,49 @@ local function scoreBoard(pn,position)
 			end;
 			self:settextf("%s%d",extra,diff)
 		end;
-	};
+	}
+
+	-- Misscount
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX,frameY+43;zoom,0.45;halign,0);
-		BeginCommand=cmd(settext,"MissCount:")
-	};
+		InitCommand = function(self)
+			self:xy(-frameWidth/2+5,167)
+			self:zoom(0.35)
+			self:halign(0):valign(1)
+			self:settext("MissCount")
+		end;
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:y(170)
+			self:zoomto(frameWidth-10,2)
+			self:valign(0)
+			self:diffusealpha(0.8)
+		end
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.5,frameY+43;zoom,0.45);
-		BeginCommand=cmd(settext,">>")
-	};
-
+		InitCommand = function(self)
+			self:xy(frameWidth/2-50,167)
+			self:zoom(0.5)
+			self:halign(1):valign(1)
+		end;
+		BeginCommand = function(self)
+			local score = pss:GetHighScore();
+			local missCount = getScoreMissCount(score)
+			self:settext(missCount)
+		end;
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.25,frameY+43;zoom,0.4;);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
+		InitCommand = function(self)
+			self:xy(frameWidth/2-50,173)
+			self:zoom(0.35)
+			self:halign(1):valign(0)
+			self:diffusealpha(0.3)
+		end;
+		BeginCommand = function(self)
 			local index
 			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
 				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
@@ -362,25 +562,54 @@ local function scoreBoard(pn,position)
 				self:settext(missCount)
 			else
 				self:settext("-")
-			end;
-			self:diffusealpha(0.7)
+			end
 		end;
-	};
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)*0.75,frameY+43;zoom,0.4;);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
+		InitCommand = function(self)
+			self:xy(frameWidth/2-40,166)
+			self:zoom(0.30)
+			self:valign(1)
+		end;
+		BeginCommand = function(self) 
+			local index
+			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
+				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
+			else
+				index = pss:GetPersonalHighScoreIndex()+1
+			end
 			local score = pss:GetHighScore();
-			local missCount = getScoreMissCount(score)
-			self:settext(missCount)
+			
+			local recMissCount = (getBestMissCount(pn,index))
+			local curMissCount = getScoreMissCount(score)
+			local diff = 0
+
+			if recMissCount ~= nil then
+				diff = curMissCount - recMissCount
+				if diff > 0 then
+					self:settext("▼")
+					self:diffuse(getMainColor("negative"))
+				elseif diff < 0 then
+					self:settext("▲")
+					self:diffuse(getMainColor("positive"))
+				else
+					self:settext("-")
+					self:rotationz(90)
+				end
+			else
+				self:settext("▲")
+			end;
 		end;
-	};
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+50+(frameWidth-80)+10,frameY+43;zoom,0.30;maxwidth,30/0.3);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
+		InitCommand = function(self)
+			self:xy(frameWidth/2-20,166)
+			self:zoom(0.30)
+			self:valign(1)
+		end;
+		BeginCommand = function(self) 
 			local index
 			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
 				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
@@ -403,37 +632,46 @@ local function scoreBoard(pn,position)
 				self:settext("+"..curMissCount)
 			end;
 		end;
-	};
+	}
+
+	-- Tap judgments
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+5,frameY+63;zoom,0.40;halign,0;maxwidth,frameWidth/0.4);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			self:settext(pss:GetHighScore():GetModifiers())
+		InitCommand = function(self)
+			self:xy(-frameWidth/2+5,196)
+			self:zoom(0.35)
+			self:halign(0):valign(1)
+			self:settext("Judgment")
 		end;
-	};
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:y(200)
+			self:zoomto(frameWidth-10,2)
+			self:valign(0)
+			self:diffusealpha(0.8)
+		end
+	}
 
 	for k,v in ipairs(judges) do
-		t[#t+1] = Def.Quad{
-			InitCommand=cmd(xy,frameX,frameY+80+((k-1)*22);zoomto,frameWidth,18;halign,0;diffuse,TapNoteScoreToColor(v);diffusealpha,0.5;);
-		};
-		t[#t+1] = Def.Quad{
-			InitCommand=cmd(xy,frameX,frameY+80+((k-1)*22);zoomto,0,18;halign,0;diffuse,TapNoteScoreToColor(v);diffusealpha,0.5;);
-			BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,"..tostring(pss:GetPercentageOfTaps(v)*0.4));effectcolor2,color("1,1,1,0");sleep,0.5;decelerate,1.5;zoomx,frameWidth*pss:GetPercentageOfTaps(v));
-		};
 		t[#t+1] = LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,frameX+10,frameY+80+((k-1)*22);zoom,0.50;halign,0);
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self) 
+
+			InitCommand= function(self)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),210)
+				self:zoom(0.4)
+			end;
+			BeginCommand = function(self) 
 				self:settext(getJudgeStrings(v))
+				self:diffuse(TapNoteScoreToColor(v))
 			end;
 		};
 
 		t[#t+1] = Def.RollingNumbers{
 			Font= "Common Normal";
 			InitCommand= function(self)
-				self:xy(frameX+frameWidth-40,frameY+80+((k-1)*22))
-				self:zoom(0.5):halign(1)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),225)
+				self:zoom(0.35)
 			    self:set_chars_wide(1):set_approach_seconds(approachSecond)
 			end;
 			BeginCommand=function(self) 
@@ -444,8 +682,8 @@ local function scoreBoard(pn,position)
 		t[#t+1] = Def.RollingNumbers{
 			Font= "Common Normal";
 			InitCommand= function(self)
-				self:xy(frameX+frameWidth-38,frameY+80+((k-1)*22))
-				self:zoom(0.3):halign(0)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),235)
+				self:zoom(0.30)
 			    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
 			end;
 			BeginCommand=function(self) 
@@ -456,94 +694,108 @@ local function scoreBoard(pn,position)
 				self:target_number(text)
 			end
 		}
+	end
 
-	end;
+	for k,v in ipairs(hjudges) do
+		t[#t+1] = LoadFont("Common Normal")..{
+
+			InitCommand= function(self)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),260)
+				self:zoom(0.4)
+			end;
+			BeginCommand=cmd(queuecommand,"Set");
+			SetCommand=function(self) 
+				self:settext(getJudgeStrings(v))
+			end;
+		};
+
+		t[#t+1] = Def.RollingNumbers{
+			Font= "Common Normal";
+			InitCommand= function(self)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),275)
+				self:zoom(0.35)
+			    self:set_chars_wide(1):set_approach_seconds(approachSecond)
+			end;
+			BeginCommand=function(self) 
+				self:target_number(pss:GetHoldNoteScores(v))
+			end
+		}
+
+		t[#t+1] = Def.RollingNumbers{
+			Font= "Common Normal";
+			InitCommand= function(self)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),285)
+				self:zoom(0.30)
+			    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
+			end;
+			BeginCommand=function(self) 
+				local text = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))*100
+				if tostring(text) == "-nan(ind)" then
+					text = 0
+				end
+				self:target_number(text)
+			end
+		}
+	end
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+(frameWidth*0.1),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
+
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),260)
+			self:zoom(0.4)
+		end;
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
-			self:settextf("Holds %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Holds"),pss:GetRadarPossible():GetValue("RadarCategory_Holds"))
+			self:settext("Mines Hit")
 		end;
 	};
 
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+(frameWidth*0.3),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			self:settextf("Rolls %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Rolls"),pss:GetRadarPossible():GetValue("RadarCategory_Rolls"))
+	t[#t+1] = Def.RollingNumbers{
+		Font= "Common Normal";
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),275)
+			self:zoom(0.35)
+		    self:set_chars_wide(1):set_approach_seconds(approachSecond)
 		end;
-	};
+		BeginCommand=function(self) 
+			self:target_number(pss:GetTapNoteScores('TapNoteScore_HitMine'))
+		end
+	}
 
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+(frameWidth*0.5),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			self:settextf("Mines %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Mines"),pss:GetRadarPossible():GetValue("RadarCategory_Mines"))
+	t[#t+1] = Def.RollingNumbers{
+		Font= "Common Normal";
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),285)
+			self:zoom(0.30)
+		    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
 		end;
-	};
+		BeginCommand=function(self) 
+			local text = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
+			if tostring(text) == "-nan(ind)" then
+				text = 0
+			end
+			self:target_number(text)
+		end
+	}
 
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+(frameWidth*0.7),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			self:settextf("Lifts %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Lifts"),pss:GetRadarPossible():GetValue("RadarCategory_Lifts"))
-		end;
-	};
 
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+(frameWidth*0.9),frameY+210;zoom,0.35;maxwidth,((frameWidth/5)-5)/0.35);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			self:settextf("Fakes %03d/%03d",pss:GetRadarActual():GetValue("RadarCategory_Fakes"),pss:GetRadarPossible():GetValue("RadarCategory_Fakes"))
-		end;
-	};
 
+	--[[
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX,frameY+230;zoom,0.35;halign,0);
+		InitCommand=cmd(xy,0,230;zoom,0.35;halign,0);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self) 
 			self:settextf("Unstable Rate: %0.1f",getUnstableRateST(pn))
 		end;
 	};
-
+	--]]
 
 	return t
 end;
 
 
-if GAMESTATE:GetNumPlayersEnabled() >= 1 then
-	if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
-		--initScoreList(PLAYER_1)
-		t[#t+1] = scoreBoard(PLAYER_1,0)
-		if ShowStandardDecoration("GraphDisplay") then
-			t[#t+1] = StandardDecorationFromTable( "GraphDisplay" .. ToEnumShortString(PLAYER_1), GraphDisplay(PLAYER_1) )
-		end;
-		if ShowStandardDecoration("ComboGraph") then
-			t[#t+1] = StandardDecorationFromTable( "ComboGraph" .. ToEnumShortString(PLAYER_1),ComboGraph(PLAYER_1) );
-		end;
-	elseif GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-		--initScoreList(PLAYER_2)
-		t[#t+1] = scoreBoard(PLAYER_2,0)
-		if ShowStandardDecoration("GraphDisplay") then
-			t[#t+1] = StandardDecorationFromTable( "GraphDisplay" .. ToEnumShortString(PLAYER_2), GraphDisplay(PLAYER_2) )
-		end;
-		if ShowStandardDecoration("ComboGraph") then
-			t[#t+1] = StandardDecorationFromTable( "ComboGraph" .. ToEnumShortString(PLAYER_2),ComboGraph(PLAYER_2) );
-		end;
-	end;
-end;
-if GAMESTATE:GetNumPlayersEnabled() == 2 then
-	--initScoreList(PLAYER_2)
-	if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-		t[#t+1] = scoreBoard(PLAYER_2,1)
-		if ShowStandardDecoration("GraphDisplay") then
-			t[#t+1] = StandardDecorationFromTable( "GraphDisplay" .. ToEnumShortString(PLAYER_2), GraphDisplay(PLAYER_2) )
-		end;
-		if ShowStandardDecoration("ComboGraph") then
-			t[#t+1] = StandardDecorationFromTable( "ComboGraph" .. ToEnumShortString(PLAYER_2),ComboGraph(PLAYER_2) );
-		end;
-	end;
-end;
+for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+	t[#t+1] = scoreBoard(pn)
+end
 
 return t
