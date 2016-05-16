@@ -10,7 +10,7 @@ t[#t+1] = LoadActor("other");
 
 
 t[#t+1] = Def.ActorFrame {
-	InitCommand=cmd(zoom,math.min(1,SCREEN_WIDTH/854);rotationz,-90);
+	InitCommand=cmd(rotationz,-90);
 	OffCommand=function(self)
 		self:bouncebegin(0.2)
 		self:zoomx(0)
@@ -18,7 +18,7 @@ t[#t+1] = Def.ActorFrame {
 
 	OnCommand=function(self)
 		self:bouncebegin(0.2)
-		self:xy(SCREEN_CENTER_X/2-150,270)
+		self:xy(SCREEN_CENTER_X/2-WideScale(get43size(150),150),270)
 		self:zoomx(1)
 		--self:playcommand("PositionSet")
 	end;
