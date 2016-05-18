@@ -169,26 +169,6 @@ local function GraphDisplay( pn )
 				end;
 			end;
 		};
-		--[[
-		LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,WideScale(get43size(140),140)-5,30;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
-			BeginCommand=function(self) 
-				local steps = GAMESTATE:GetCurrentSteps(pn);
-				local notes = 0
-				if steps ~= nil then
-					notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-				end
-				self:settextf("%d Notes",notes)
-				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
-				end
-				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-					self:x(SCREEN_CENTER_X*0.30)
-					self:halign(1)
-				end
-			end;
-		};--]]
-
 	};
 	return t;
 end
@@ -199,7 +179,7 @@ local function scoreBoard(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 
 	local t = Def.ActorFrame{
-		InitCommand=function(self)
+		InitCommand = function(self)
 			if GAMESTATE:GetNumPlayersEnabled() > 1 then
 				if pn == PLAYER_1 then
 					self:x(frameX)
@@ -210,6 +190,11 @@ local function scoreBoard(pn)
 				self:x(frameX)
 			end
 			self:y(frameY)
+		end;
+		OnCommand = function(self)
+			self:diffusealpha(0)
+			self:decelerate(1)
+			self:diffusealpha(1)
 		end
 	}
 
@@ -305,6 +290,27 @@ local function scoreBoard(pn)
 			self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
 		end
 	}
+
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand=cmd(xy,frameWidth/2-5,19;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
+		BeginCommand=function(self) 
+			local steps = GAMESTATE:GetCurrentSteps(pn);
+			local notes = 0
+			if steps ~= nil then
+				notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+			end
+			self:settextf("%d Notes",notes)
+			if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
+				self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
+			end
+			if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
+				self:x(SCREEN_CENTER_X*0.30)
+				self:halign(1)
+			end
+			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())),0.3))
+		end;
+	};
 
 	--ClearType
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -595,7 +601,6 @@ local function scoreBoard(pn)
 					self:diffuse(getMainColor("positive"))
 				else
 					self:settext("-")
-					self:rotationz(90)
 				end
 			else
 				self:settext("▲")
