@@ -11,6 +11,7 @@ local defaultConfig = {
 		MeasureLines = true,
 		ProgressBar = 1, -- 0 = off, 1 bottom , 2 top
 		SongPreview = 3, -- 1 = SM style, 2 = osu! Style (new), 3 = osu! style (old)
+		BannerWheel = true,
 	},
 	NPSDisplay = {
 		DynamicWindow = false, -- unused
