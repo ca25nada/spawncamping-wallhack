@@ -6,7 +6,7 @@ resetGhostData() -- Reset ghostscore data.
 
 local startFlag = false
 local fcFlag = false
-local fcFlagDelay = 0.1
+local fcFlagDelay = 0.5
 local firstSecond
 local lastSecond
 
