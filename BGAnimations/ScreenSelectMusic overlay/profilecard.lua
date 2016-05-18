@@ -161,10 +161,10 @@ local function generalFrame(pn)
 		end;
 		SetCommand = function(self)
 			if profile[pn] ~= nil then
-				local level = getLevel(profile[pn]:GetTotalTapsAndHolds())
-				local currentExp = profile[pn]:GetTotalTapsAndHolds()-getExp(level)
-				local nextExp = getExp(level+1)-getExp(level)
-				self:settextf("Lv.%d - %2.2f%%",level, currentExp/nextExp*100)
+				local level = getLevel(getProfileExp(pn))
+				local currentExp = getProfileExp(pn) - getLvExp(level)
+				local nextExp = getNextLvExp(level)
+				self:settextf("Lv.%d (%d/%d)",level, currentExp, nextExp)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;

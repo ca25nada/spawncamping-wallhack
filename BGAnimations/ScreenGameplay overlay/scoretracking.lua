@@ -11,7 +11,7 @@ local firstSecond
 local lastSecond
 
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-
+	setCurExp(pn)
 	if GAMESTATE:IsCourseMode() then
 		break
 	end

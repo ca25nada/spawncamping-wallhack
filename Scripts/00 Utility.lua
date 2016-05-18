@@ -5,14 +5,6 @@ function get43size(size4_3)
 	return 640*(size4_3/854)
 end;
 
-function getLevel(exp)
-	return math.floor(math.sqrt(math.sqrt(exp+4)-2))
-end
-
-function getExp(level)
-	return math.pow(level,4) + 4*math.pow(level,2)
-end
-
 function capWideScale(AR4_3,AR16_9)
 	if AR4_3 < AR16_9 then
 		return clamp(WideScale(AR4_3, AR16_9),AR4_3,AR16_9)
@@ -34,41 +26,41 @@ end;
 
 --Gets the true X/Y Position by recursively grabbing the parents' position.
 --Does not take zoom into account.
-function getTrueX(element)
-	if element == nil then
+function getTrueX(actor)
+	if actor == nil then
 		return 0
 	end;
-	if element:GetParent() == nil then
-		return element:GetX() or 0
+	if actor:GetParent() == nil then
+		return actor:GetX() or 0
 	else
-		return element:GetX()+getTrueX(element:GetParent())
+		return actor:GetX()+getTrueX(actor:GetParent())
 	end;
 end;
 
-function getTrueY(element)
-	if element == nil then
+function getTrueY(actor)
+	if actor == nil then
 		return 0
 	end;
-	if element:GetParent() == nil then
-		return element:GetY() or 0
+	if actor:GetParent() == nil then
+		return actor:GetY() or 0
 	else
-		return element:GetY()+getTrueY(element:GetParent())
+		return actor:GetY()+getTrueY(actor:GetParent())
 	end;
 end;
 
 --Button Rollovers
-function isOver(element)
+function isOver(actor)
 	--[[
-	if element:GetVisible() == false then
+	if actor:GetVisible() == false then
 		return false
 	end;
 	--]]
-	local x = getTrueX(element)
-	local y = getTrueY(element)
-	local hAlign = element:GetHAlign()
-	local vAlign = element:GetVAlign()
-	local w = element:GetZoomedWidth()
-	local h = element:GetZoomedHeight()
+	local x = getTrueX(actor)
+	local y = getTrueY(actor)
+	local hAlign = actor:GetHAlign()
+	local vAlign = actor:GetVAlign()
+	local w = actor:GetZoomedWidth()
+	local h = actor:GetZoomedHeight()
 
 	local mouseX = INPUTFILTER:GetMouseX()
 	local mouseY = INPUTFILTER:GetMouseY()
@@ -204,54 +196,6 @@ function isScoreValid(pn,steps,score)
 	return true
 end
 
--- No way of turn score saving off for just one player, so it will disqualify both players once called.
--- Doesn't work for some reason rip-
-function disqualifyScore()
-	local so = GAMESTATE:GetSongOptionsObject('ModsLevel_Song')
-	if so:SaveScore() then
-		so:SaveScore(false)
-		SCREENMAN:SystemMessage("SaveScore set to false")
-	else
-		SCREENMAN:SystemMessage("SaveScore already set to false")
-	end
-end
-
--- Values based on ArrowEffects.cpp
--- Gets the note scale from the mini mod being used.
-function getNoteFieldScale(pn)
-	local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions('ModsLevel_Preferred')
-	local val,as = po:Mini()
-	local zoom = 1
-	zoom = 1-(val*0.5)
-	if math.abs(zoom) < 0.01 then
-		zoom = 0.01
-	end
-	return zoom
-end
-
--- Gets the width of the note assuming the base width is 64.
-function getNoteFieldWidth(pn)
-	local baseWidth = 64 -- is there a way to grab a noteskin width..?
-	local style = GAMESTATE:GetCurrentStyle()
-	local cols = style:ColumnsPerPlayer()
-	return cols*baseWidth*getNoteFieldScale(pn)
-end
-
--- Gets the center X position of the notefield.
-function getNoteFieldPos(pn)
-	local pNum = (pn == PLAYER_1) and 1 or 2
-	local style = GAMESTATE:GetCurrentStyle()
-	local cols = style:ColumnsPerPlayer()
-	local styleType = ToEnumShortString(style:GetStyleType())
-	local centered = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player"))
-
-	if centered and GAMESTATE:GetNumPlayersEnabled() == 1 then 
-		return SCREEN_CENTER_X
-	else
-		return THEME:GetMetric("ScreenGameplay",string.format("PlayerP%i%sX",pNum,styleType))
-	end
-
-end
 
 -- I probably should check for correctness later.
 function getCommonBPM(bpms,lastBeat)

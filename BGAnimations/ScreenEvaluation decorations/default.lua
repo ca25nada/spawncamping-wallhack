@@ -245,19 +245,17 @@ local function scoreBoard(pn)
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
+		Name = "DisplayName";
 		InitCommand  = function(self)
 			self:xy(66-frameWidth/2,10)
 			self:zoom(0.6)
 			self:halign(0)
-		end;
-		SetCommand = function(self)
 			local text = pn == PLAYER_1 and "Player 1" or "Player 2"
 			if profile ~= nil then
 				text = profile:GetDisplayName()
 			end
 			self:settext(text)
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -268,11 +266,32 @@ local function scoreBoard(pn)
 		end;
 		SetCommand = function(self)
 			if profile ~= nil then
-				local level = getLevel(profile:GetTotalTapsAndHolds())
-				local currentExp = profile:GetTotalTapsAndHolds()-getExp(level)
-				local nextExp = getExp(level+1)-getExp(level)
-				self:settextf("Lv.%d - %2.2f%%",level, currentExp/nextExp*100)
+				local text = "Lv.%d (%d/%d)"
+				local level = getLevel(getProfileExp(pn))
+				local currentExp = getProfileExp(pn) - getLvExp(level)
+				local nextExp = getNextLvExp(level)
+				if playerLeveled(pn) then
+					text = text.." - Level Up!"
+					self:diffuse(getMainColor("positive"))
+				end
+
+				self:settextf(text,level, currentExp,nextExp)
 			end
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(self:GetParent():GetChild("DisplayName"):GetX()+self:GetParent():GetChild("DisplayName"):GetWidth()*0.6+5,10)
+			self:zoom(0.3)
+			self:halign(0)
+		end;
+		SetCommand = function(self)
+			self:settextf("+%d",getExpDiff(pn))
+			self:smooth(2)
+			self:diffusealpha(0)
+			self:y(-10)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end
 	}
