@@ -19,9 +19,8 @@ local t = Def.ActorFrame{
 
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2,55)
-		self:valign(0)
-		self:zoomto(capWideScale(get43size(384),384)+10,capWideScale(get43size(120),120)+30)
+		self:xy(SCREEN_CENTER_X/2,120)
+		self:zoomto(capWideScale(get43size(384),384)+10,capWideScale(get43size(120),120)+50)
 		self:diffuse(color("#000000"))
 		self:diffusealpha(0.8)		
 	end
@@ -29,11 +28,13 @@ t[#t+1] = Def.Quad{
 
 -- Song banner
 t[#t+1] = Def.Banner{
-	InitCommand=cmd(x,SCREEN_CENTER_X/2;y,60;valign,0);
+	InitCommand=cmd(x,SCREEN_CENTER_X/2;y,120;);
 	SetMessageCommand=function(self)
 		if update then
 			local top = SCREENMAN:GetTopScreen()
 			if top:GetName() == "ScreenSelectMusic" or top:GetName() == "ScreenNetSelectMusic" then
+				self:stoptweening()
+				self:sleep(0.5)
 				local song = GAMESTATE:GetCurrentSong()
 				local course = GAMESTATE:GetCurrentCourse()
 				local group = top:GetMusicWheel():GetSelectedSection()
