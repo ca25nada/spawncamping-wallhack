@@ -17,7 +17,7 @@ end
 local Tips = {
     --SM Tips
     "Pressing Scroll Lock immediately allows you to go to options",
-    "You can mute action scounds by pressing <Pause/Break>",
+    "You can mute action sounds by pressing <Pause/Break>",
     "Holding F3 brings up the debug menu",
     "Hold down Tab to make things go fast, ~ for making things slow, and both to make things stop.",
     "Press Ctrl+Backspace on ScreenSelectMusic delete the song from the music wheel. Make sure Allow Song Deletion is On from Advanced Options",
@@ -33,13 +33,13 @@ local Tips = {
     "Please don't bug the StepMania devs regarding bugs on this theme. (bug whoever made this theme instead.!! who will likely bug the devs anyway-)",
     "Feel free to suggest feature requests on the github issue tracker or on the forum thread.",
     "You can change the default scoring type in Theme Options",
-    "You can change the color scheme of the theme by editing the values in scripts/02 Colors.lua",
+    "You can change the color scheme of the theme in the Color Config menu.",
     "Tap <Select> twice quickly in ScreenSelectMusic to bring up the avatar switch screen.",
     "Press keys 1~5 on the keyboard to select the corresponding tabs on ScreenSelectMusic",
     "While the Score tab is selected, press <effectUp>/<effectDown> to scroll through scores.",
     "While the Score tab is selected, press <effectUp>/<effectDown> while <Select> is held down to scroll through rates.",
     "You can set preferences for various theme functions in Options > Theme Options",
-    "The theme is only supported for SM 5.0.10 or newer.",
+    "The theme is only supported for SM 5.1 or newer.",
     "This theme updates rather often, so make sure to check the thread/github page once every while for bugfixes and updates.",
     "Check the Other tab for general information regarding StepMania and the theme",
     "Rave and Course modes are disabled in this theme because it's terribly broken right now.",
@@ -278,7 +278,7 @@ local Phrases = {
     "WE LOVE LOBSAK -- WE NEED LOBSAK", -- https://www.youtube.com/watch?v=mvZz_Ulkg1o
     "mayumi is only prim when she's high",
     "DAMN DANIEL",
-    "/!\ Shitmapping in Progress /!\ ",
+    "/!\\ Shitmapping in Progress /!\\ ",
     "pls enjoy gaem",
     "尻削り節 [7keys　歌は世につれ世は歌につれ　難易度表に心奪われ　滝汗流し腱鞘炎　来る日も来る日も飽きず筋トレ　誰にでもつらいときはあるものです　それでは聞いていただきましょう　手動ディレイで　尻　削　り　節]",
     "Krrrrr Krrrrr Krrrrr slide", --blurtic
@@ -299,6 +299,7 @@ local Phrases = {
     "what the fuck did you just fucking say about jumpstreams you piece of shit. I map over 6000 arrows in 5 seconds",
     "i bet you memorized the notes",
     "I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.",
+    "i had an AAA on scorpion fire but my keyboard turned into a fucking cake" -- CAKE MANIAAAAAAAAAA
 }
 
 --tip
