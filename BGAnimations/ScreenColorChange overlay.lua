@@ -74,7 +74,7 @@ local function generateCategory()
 				if visibleItems[k] == currentItems[1][cursorIndex[1]] then
 					self:diffuse(getMainColor('highlight'))
 				else
-					self:diffuse(color("#FFFFFF"))
+					self:diffuse(color("#111111"))
 				end
 			end
 		}
@@ -154,7 +154,7 @@ local function generateCategoryColors()
 					if visibleItems[i] == currentItems[2][cursorIndex[2]] then
 						self:diffuse(getMainColor('highlight'))
 					else
-						self:diffuse(color("#FFFFFF"))
+						self:diffuse(color("#111111"))
 					end
 					if curLevel == 2 then
 						self:diffusealpha(1)
@@ -201,12 +201,8 @@ local function generateCategoryColors()
 						self:settext("dis is nil")
 					end
 					
-					if visibleItems[i] == currentItems[2][cursorIndex[2]] then
-						
-						self:diffuse(color(configData[selected[1]][visibleItems[i]]))
-					else
-						self:diffuse(color("#FFFFFF"))
-					end
+					self:diffuse(color(configData[selected[1]][visibleItems[i]]))
+
 
 					if curLevel == 2 then
 						self:diffusealpha(1)
@@ -270,10 +266,12 @@ local t = Def.ActorFrame{
 	end;
 }
 
-t[#t+1] = LoadActor("_frame");
-t[#t+1] = LoadFont("Common Large")..{
-	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor('highlight');settext,"Color Config:";);
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(FullScreen;diffuse,color("#FFFFFF"));
 }
+
+t[#t+1] = LoadActor("_particles");
+t[#t+1] = LoadActor("_frame");
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,frameX[1],frameY;halign,0;valign,1;zoom,0.6;settext,"Category:";);

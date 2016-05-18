@@ -279,15 +279,4 @@ t[#t+1] = Def.ActorFrame{
 }
 
 t[#t+1] = LoadActor("_frame");
-
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand = function (self)
-		self:diffuse(color("#FFFFFF"))
-		self:zoom(0.5)
-		self:halign(0)
-		self:xy(10,10)
-		self:settext("Player Options")
-	end;
-};
-
 return t

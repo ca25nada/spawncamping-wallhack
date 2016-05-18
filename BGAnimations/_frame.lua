@@ -2,6 +2,20 @@ local t = Def.ActorFrame{}
 local topFrameHeight = 20
 local bottomFrameHeight = 20
 
+local screenName = {
+	ScreenSelectStyle = "Select Style",
+    ScreenSelectPlayMode = "Select Mode", 
+    ScreenSelectMusic = "Select Music", 
+    ScreenSelectCourse = "Select Course",
+    ScreenPlayerOptions = "Player Options",
+    ScreenNestyPlayerOptions = "Player Options",
+    ScreenOptionsService = "Service Menu",
+    ScreenEvaluationNormal = "Results", 
+    ScreenColorChange = "Color Config",
+    ScreenSelectProfile = "Select Profile",
+    ScreenColorEdit = "Color Config"
+}
+
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X,0)
@@ -64,20 +78,42 @@ end;
 
 t.InitCommand=cmd(SetUpdateFunction,Update)
 
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function (self)
+		self:diffuse(color("#FFFFFF"))
+		self:zoom(0.5)
+		self:halign(0)
+		self:xy(10,10)
+	end;
+	OnCommand = function(self)
+		self:y(-10)
+		self:smooth(0.5)
+		self:y(10)
 
+		self:settext(screenName[SCREENMAN:GetTopScreen():GetName()] or "")
+	end;
+	OffCommand = function(self)
+		self:smooth(0.5)
+		self:y(-10)
+	end;
+};
 
---[[
-if themeConfig:get_data().global.TipType == 2 or themeConfig:get_data().global.TipType == 3 then
+if themeConfig:get_data().global.TipType >= 2 then
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_BOTTOM-7;zoom,0.35;settext,getRandomQuotes(themeConfig:get_data().global.TipType);diffuse,getMainColor('highlight');diffusealpha,0;zoomy,0;maxwidth,(SCREEN_WIDTH-350)/0.35;);
-		BeginCommand=function(self)
-			self:sleep(2)
-			self:smooth(1)
-			self:diffusealpha(1)
-			self:zoomy(0.35)
+		InitCommand=cmd(xy,10,SCREEN_HEIGHT-10;zoom,0.4;maxwidth,(SCREEN_WIDTH-150)/0.4;halign,0);
+		OnCommand = function(self)
+			if SCREENMAN:GetTopScreen():GetName() ~= "ScreenSelectMusic" then
+				self:settext(getRandomQuotes(themeConfig:get_data().global.TipType))
+			end
+			self:y(SCREEN_HEIGHT+bottomFrameHeight/2)
+			self:smooth(0.5)
+			self:y(SCREEN_HEIGHT-bottomFrameHeight/2)
 		end;
-	};
+		OffCommand = function(self)
+			self:smooth(0.5)
+			self:y(SCREEN_HEIGHT+bottomFrameHeight/2)
+		end
+	}
 end;
---]]
 
 return t

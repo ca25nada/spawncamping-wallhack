@@ -1,27 +1,6 @@
 local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("../_frame");
 
---what the settext says
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand = function (self)
-		self:diffuse(color("#FFFFFF"))
-		self:zoom(0.5)
-		self:halign(0)
-		self:xy(10,10)
-		self:settext("Results")
-	end;
-	OnCommand = function(self)
-		self:y(-10)
-		self:smooth(0.5)
-		self:y(10)
-	end;
-	OffCommand = function(self)
-		self:smooth(0.5)
-		self:y(-10)
-	end;
-};
-
-
 --Group folder name
 local frameWidth = 280
 local frameHeight = 20

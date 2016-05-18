@@ -39,27 +39,6 @@ t[#t+1] = Def.Quad{
 
 t[#t+1] = LoadActor("../_frame");
 
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand = function (self)
-		self:diffuse(color("#FFFFFF"))
-		self:zoom(0.5)
-		self:halign(0)
-		self:xy(10,10)
-		self:settext("Select Music")
-	end;
-	OnCommand = function(self)
-		self:y(-10)
-		self:smooth(0.5)
-		self:y(10)
-	end;
-	OffCommand = function(self)
-		self:smooth(0.5)
-		self:y(-10)
-	end;
-};
-
-
-
 t[#t+1] = LoadActor("profilecard");
 t[#t+1] = LoadActor("tabs");
 t[#t+1] = LoadActor("currentsort");

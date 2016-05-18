@@ -48,8 +48,8 @@ function LoadCard(cColor)
 		--LoadActor( THEME:GetPathG("ScreenSelectProfile","CardFrame") );
 
 		Def.Quad {
-			InitCommand=cmd(zoomto,200+4,230+4);
-			OnCommand=cmd(diffuse,color("1,1,1,1"));
+			InitCommand=cmd(zoomto,200+10,230+10);
+			OnCommand=cmd(diffuse,color("#000000");diffusealpha,0.8);
 		};
 		Def.Quad {
 			InitCommand=cmd(zoomto,200,230);
@@ -116,10 +116,9 @@ function LoadPlayerStuff(Player)
 	t[#t+1] = Def.ActorFrame {
 		Name = "EffectFrame";
 	};
-	t[#t+1] = LoadFont("Common Normal") .. {
+	t[#t+1] = LoadFont("Common Large") .. {
 		Name = 'SelectedProfileText';
-		--InitCommand=cmd(y,160;shadowlength,1;diffuse,PlayerColor(Player));
-		InitCommand=cmd(y,160;shadowlength,1;);
+		InitCommand=cmd(y,160;diffuse,color("#000000");diffusealpha,0.8;zoom,0.5);
 	};
 
 	return t;
@@ -176,6 +175,13 @@ function UpdateInternal3(self, Player)
 end;
 
 local t = Def.ActorFrame {}
+
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(FullScreen;diffuse,color("#FFFFFF"));
+}
+
+t[#t+1] = LoadActor("_particles");
 
 t[#t+1] = Def.ActorFrame{
 	StorageDevicesChangedMessageCommand=function(self, params)
@@ -277,9 +283,7 @@ t[#t+1] = Def.ActorFrame{
 		};
 	};
 };
+
 t[#t+1] = LoadActor("_frame");
-t[#t+1] = LoadFont("Common Large")..{
-	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor('highlight');settext,"Select Profile:";);
-}
 
 return t;
