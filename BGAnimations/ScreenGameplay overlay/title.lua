@@ -1,63 +1,74 @@
 --Banner and song info that shows before the gameplay starts.
 --SongStartingMessageCommand is sent from progressbar.lua
 
-local t = Def.ActorFrame{}
+local bannerWidth = 256
+local bannerHeight = 80
+local borderWidth = 5
+
+local t = Def.ActorFrame{
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y-30)
+	end
+}
+
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y+7;zoomto,256,30;diffusealpha,0.8;fadeleft,0.2;faderight,0.2;diffusealpha,0);
-	SetCommand=cmd(smooth,0.5;diffusealpha,0.7;diffuse,getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()));
+	InitCommand = function(self)
+		self:y(15)
+		self:zoomto(bannerWidth+borderWidth*2+8,bannerHeight+borderWidth*2+38)
+		self:diffuse(color("#000000"))
+		self:diffusealpha(0)
+	end;
+	SetCommand = function(self)
+		self:smooth(0.5)
+		self:diffuse(getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()))
+		self:diffusealpha(0.8)
+	end;
 	CurrentSongChangedMessageCommand = function(self)
 		self:queuecommand('Init')
 		self:queuecommand('Set')
 	end;
 	SongStartingMessageCommand = function(self)
 		self:smooth(0.3)
-		self:addy(-40)
+		self:zoomy(0.5)
 		self:diffusealpha(0)
 	end
 };
 
-t[#t+1] = LoadFont("Common Large") .. {
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y;zoom,0.35;diffusealpha,0;maxwidth,256/0.35);
-	BeginCommand=cmd(settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle(););
-	SetCommand=cmd(smooth,0.5;diffusealpha,1;);
+t[#t+1] = Def.Quad{
+	InitCommand = function(self)
+		self:y(15)
+		self:zoomto(bannerWidth+borderWidth*2,bannerHeight+borderWidth*2+30)
+		self:diffuse(color("#000000"))
+		self:diffusealpha(0)
+	end;
+	SetCommand = function(self)
+		self:smooth(0.5)
+		self:diffusealpha(0.8)
+	end;
 	CurrentSongChangedMessageCommand = function(self)
 		self:queuecommand('Init')
 		self:queuecommand('Set')
 	end;
-	SongStartingMessageCommand=function(self)
+	SongStartingMessageCommand = function(self)
 		self:smooth(0.3)
-		self:addy(-40)
+		self:zoomy(0.5)
 		self:diffusealpha(0)
 	end
-};
-
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y+15;zoom,0.4;;diffusealpha,0;maxwidth,256/0.4);
-	BeginCommand=cmd(settext,GAMESTATE:GetCurrentSong():GetDisplayArtist());
-	SetCommand=cmd(smooth,0.5;diffusealpha,1;);
-	CurrentSongChangedMessageCommand = function(self)
-		self:queuecommand('Init')
-		self:queuecommand('Set')
-	end;
-	SongStartingMessageCommand=function(self)
-		self:smooth(0.3)
-		self:addy(-40)
-		self:diffusealpha(0)
-	end
-};
+}
 
 t[#t+1] = Def.Banner{
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y-50;);
+	InitCommand = function(self)
+		self:diffusealpha(0)
+	end;
 	SetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		if song then
 			self:LoadFromSong(song)
 		end
-		self:diffusealpha(0)
 		self:smooth(0.5)
 		self:diffusealpha(1)
-		self:scaletoclipped(capWideScale(get43size(256),256),capWideScale(get43size(80),80))
+		self:scaletoclipped(bannerWidth,bannerHeight)
 	end;
 	CurrentSongChangedMessageCommand = function(self)
 		self:queuecommand('Init')
@@ -65,10 +76,56 @@ t[#t+1] = Def.Banner{
 	end;
 	SongStartingMessageCommand=function(self)
 		self:smooth(0.3)
-		self:addy(40)
+		self:zoomy(0.5)
 		self:diffusealpha(0)
 	end
-};
+}
+
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:y(50)
+		self:zoom(0.6)
+		self:diffusealpha(0)
+		self:maxwidth(bannerWidth/0.6)
+	end;
+	SetCommand = function(self)
+		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle())
+		self:smooth(0.5)
+		self:diffusealpha(1)
+	end;
+	CurrentSongChangedMessageCommand = function(self)
+		self:queuecommand('Init')
+		self:queuecommand('Set')
+	end;
+	SongStartingMessageCommand=function(self)
+		self:smooth(0.3)
+		self:addy(-40)
+		self:diffusealpha(0)
+	end
+}
+
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:y(65)
+		self:zoom(0.4)
+		self:diffusealpha(0)
+		self:maxwidth(bannerWidth/0.4)
+	end;
+	SetCommand = function(self)
+		self:settext(GAMESTATE:GetCurrentSong():GetDisplayArtist())
+		self:smooth(0.5)
+		self:diffusealpha(1)
+	end;
+	CurrentSongChangedMessageCommand = function(self)
+		self:queuecommand('Init')
+		self:queuecommand('Set')
+	end;
+	SongStartingMessageCommand=function(self)
+		self:smooth(0.3)
+		self:addy(-40)
+		self:diffusealpha(0)
+	end
+}
 
 
 return t
