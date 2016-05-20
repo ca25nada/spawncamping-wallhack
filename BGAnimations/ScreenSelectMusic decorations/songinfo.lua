@@ -56,7 +56,7 @@ t[#t+1] = Def.Banner{
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songTitle";
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2+5, 72+capWideScale(get43size(120),120))
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2+5,132+capWideScale(get43size(60),60))
 		self:halign(0)
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)
@@ -80,7 +80,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songLength";
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2-5, 72+capWideScale(get43size(120),120))
+		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2-5,132+capWideScale(get43size(60),60))
 		self:halign(1)
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)

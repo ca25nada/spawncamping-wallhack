@@ -53,7 +53,6 @@ local function getPosY()
 end
 
 local t = Def.ActorFrame{}
-t[#t+1] = LoadActor("_particles");
 
 if enabled then
 

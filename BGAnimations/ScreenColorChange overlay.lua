@@ -74,7 +74,7 @@ local function generateCategory()
 				if visibleItems[k] == currentItems[1][cursorIndex[1]] then
 					self:diffuse(getMainColor('highlight'))
 				else
-					self:diffuse(color("#111111"))
+					self:diffuse(color("#FFFFFF"))
 				end
 			end
 		}
@@ -154,7 +154,7 @@ local function generateCategoryColors()
 					if visibleItems[i] == currentItems[2][cursorIndex[2]] then
 						self:diffuse(getMainColor('highlight'))
 					else
-						self:diffuse(color("#111111"))
+						self:diffuse(color("#FFFFFF"))
 					end
 					if curLevel == 2 then
 						self:diffusealpha(1)
@@ -266,11 +266,6 @@ local t = Def.ActorFrame{
 	end;
 }
 
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(FullScreen;diffuse,color("#FFFFFF"));
-}
-
-t[#t+1] = LoadActor("_particles");
 t[#t+1] = LoadActor("_frame");
 
 t[#t+1] = LoadFont("Common Normal")..{

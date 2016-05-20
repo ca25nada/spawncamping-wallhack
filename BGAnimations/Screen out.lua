@@ -1,4 +1,8 @@
-return Def.Quad {
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y;zoomto,SCREEN_WIDTH,SCREEN_HEIGHT);
-	OnCommand=cmd(diffuse,color("0,0,0,0");sleep,0.1;linear,0.1;diffusealpha,1);
-};
+local t = Def.ActorFrame{}
+
+t[#t+1] = Def.Quad{
+	InitCommand=cmd(FullScreen;diffuse,getMainColor("background");diffusealpha,0);
+	OnCommand=cmd(smooth,0.2;diffusealpha,1);
+}
+
+return t

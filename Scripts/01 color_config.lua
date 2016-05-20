@@ -2,11 +2,11 @@ local defaultConfig = {
 
 	main = {
 		highlight = "#00AEEF",
-		frames = "#FFFFFF",
+		background = "#FFFFFF",
 		enabled = "#4CBB17",
 		disabled = "#666666",
 		negative = "#FF9999",
-		positive = "#66ccff"
+		positive = "#66ccff",
 	},
 
 	clearType = {

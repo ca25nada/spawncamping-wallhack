@@ -258,7 +258,7 @@ local function generalFrame(pn)
 				local stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
 				local meter = steps[pn]:GetMeter()
 				local difftext
-				if diff == 'Difficulty_Edit' then
+				if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
 					difftext = steps[pn]:GetDescription()
 					difftext = difftext == '' and getDifficulty(diff) or difftext
 				else

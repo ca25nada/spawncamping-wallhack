@@ -286,12 +286,13 @@ local function scoreBoard(pn)
 			self:xy(self:GetParent():GetChild("DisplayName"):GetX()+self:GetParent():GetChild("DisplayName"):GetWidth()*0.6+5,10)
 			self:zoom(0.3)
 			self:halign(0)
+			self:diffuse(getMainColor("positive"))
 		end;
 		SetCommand = function(self)
 			self:settextf("+%d",getExpDiff(pn))
 			self:smooth(2)
 			self:diffusealpha(0)
-			self:y(-10)
+			self:addy(-5)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end
 	}
@@ -302,11 +303,23 @@ local function scoreBoard(pn)
 		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.05");effectcolor2,color("1,1,1,0");effectperiod,2;queuecommand,"Set");
 		SetCommand=function(self) 
 			local steps = GAMESTATE:GetCurrentSteps(pn)
-			local diff = getDifficulty(steps:GetDifficulty())
+			local diff = steps:GetDifficulty()
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			local meter = steps:GetMeter()
-			self:settext(stype.." "..diff.." "..meter)
+			local difftext
+			if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
+				difftext = steps:GetDescription()
+				difftext = difftext == '' and getDifficulty(diff) or difftext
+			else
+				difftext = getDifficulty(diff)
+			end
+			if IsUsingWideScreen() then
+				self:settext(stype.." "..difftext.." "..meter)
+			else
+				self:settext(difftext.." "..meter)
+			end
 			self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
+
 		end
 	}
 
