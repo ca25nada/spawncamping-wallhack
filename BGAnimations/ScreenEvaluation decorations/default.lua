@@ -160,13 +160,6 @@ local function GraphDisplay( pn )
 					text = string.format("%s\nPaused %d Time(s)",text,gameplay_pause_count)
 				end
 				self:settext(text)
-				if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-					self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
-				end
-				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-					self:x(SCREEN_CENTER_X*0.30)
-					self:halign(1)
-				end;
 			end;
 		};
 	};
@@ -202,7 +195,7 @@ local function scoreBoard(pn)
 		InitCommand=cmd(zoomto,frameWidth,frameHeight;valign,0;diffuse,color("#000000");diffusealpha,0.8)
 	}
 
-	t[#t+1] = StandardDecorationFromTable("GraphDisplay"..ToEnumShortString(PLAYER_1), GraphDisplay(PLAYER_1))
+	t[#t+1] = StandardDecorationFromTable("GraphDisplay"..ToEnumShortString(pn), GraphDisplay(pn))
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
@@ -335,10 +328,6 @@ local function scoreBoard(pn)
 			self:settextf("%d Notes",notes)
 			if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
 				self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
-			end
-			if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-				self:x(SCREEN_CENTER_X*0.30)
-				self:halign(1)
 			end
 			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())),0.3))
 		end;
