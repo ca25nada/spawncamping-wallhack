@@ -8,18 +8,18 @@ local curExp = {
 function getProfileExp(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	if profile ~= nil then
-		return math.floor(profile:GetTotalTapsAndHolds()/10 + profile:GetTotalNumSongsPlayed()*10)
+		return math.floor(profile:GetTotalDancePoints()/10 + profile:GetTotalNumSongsPlayed()*50)
 	else
 		return 0
 	end
 end
 
 function getLevel(exp)
-	return math.floor(math.sqrt(math.sqrt(exp+4)-2))
+	return math.floor(math.sqrt(math.sqrt(exp+441)-20))
 end
 
 function getLvExp(level)
-	return math.pow(level,4) + 4*math.pow(level,2)
+	return math.pow(level,4) + 40*math.pow(level,2) - 41
 end
 
 function getNextLvExp(level)
