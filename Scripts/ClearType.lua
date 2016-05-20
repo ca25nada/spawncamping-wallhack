@@ -170,6 +170,7 @@ function getClearTypeFromScore(pn,score,ret)
 	local playCount = 0
 	local stageAward
 	local missCount = 0
+	local grade
 	if score == nil then
 		return getClearTypeItem(13,ret)
 	end;

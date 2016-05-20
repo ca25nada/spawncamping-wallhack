@@ -283,7 +283,7 @@ local function scoreBoard(pn)
 		end;
 		SetCommand = function(self)
 			self:settextf("+%d",getExpDiff(pn))
-			self:smooth(2)
+			self:smooth(4)
 			self:diffusealpha(0)
 			self:addy(-5)
 		end;

@@ -299,7 +299,8 @@ local Phrases = {
     "what the fuck did you just fucking say about jumpstreams you piece of shit. I map over 6000 arrows in 5 seconds",
     "i bet you memorized the notes",
     "I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.",
-    "i had an AAA on scorpion fire but my keyboard turned into a fucking cake" -- CAKE MANIAAAAAAAAAA
+    "i had an AAA on scorpion fire but my keyboard turned into a fucking cake", -- CAKE MANIAAAAAAAAAA
+    "when's the brazilian p90 rush theme coming out?"
 }
 
 --tip

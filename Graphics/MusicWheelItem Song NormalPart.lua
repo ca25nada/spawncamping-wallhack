@@ -62,4 +62,28 @@ if themeConfig:get_data().global.BannerWheel then
 	}
 end
 
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:xy(340-5,-22+5)
+		self:halign(1)
+		self:zoom(0.3)
+	end;
+	SetMessageCommand = function(self,params)
+		local song = params.Song
+
+		if song then
+			local seconds = song:GetStepsSeconds()
+			self:visible(true)
+			if seconds > PREFSMAN:GetPreference("MarathonVerSongSeconds") then
+				self:settext("Marathon")
+			elseif seconds > PREFSMAN:GetPreference("LongVerSongSeconds") then
+				self:settext("Long")
+			else
+				self:visible(false)
+			end
+			self:diffuse(getSongLengthColor(seconds))
+		end
+	end;
+};
+
 return t

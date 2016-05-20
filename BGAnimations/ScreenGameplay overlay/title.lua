@@ -22,7 +22,7 @@ t[#t+1] = Def.Quad{
 	SetCommand = function(self)
 		self:smooth(0.5)
 		self:diffuse(getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()))
-		self:diffusealpha(0.8)
+		self:diffusealpha(0.3)
 	end;
 	CurrentSongChangedMessageCommand = function(self)
 		self:queuecommand('Init')
@@ -67,7 +67,7 @@ t[#t+1] = Def.Banner{
 			self:LoadFromSong(song)
 		end
 		self:smooth(0.5)
-		self:diffusealpha(1)
+		self:diffusealpha(0.8)
 		self:scaletoclipped(bannerWidth,bannerHeight)
 	end;
 	CurrentSongChangedMessageCommand = function(self)

@@ -108,6 +108,7 @@ local function generalFrame(pn)
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = Def.Quad{

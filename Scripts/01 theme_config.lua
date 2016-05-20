@@ -26,9 +26,6 @@ local defaultConfig = {
 		ScoreBoardMaxEntry = 10,
 		SongBGType = 1, -- 1 = song bg, 2 = grade+common, 3 = grade only
 	},
-	color ={
-		main = "#00AEEF"
-	}
 }
 
 themeConfig = create_lua_config({name = "themeConfig", file = "themeConfig.lua", default =  defaultConfig, match_depth = -1})
