@@ -21,7 +21,7 @@ t[#t+1] = Def.Quad{
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name = "currentTime";
-	InitCommand=cmd(xy,SCREEN_WIDTH-5,SCREEN_HEIGHT-height/2;zoom,0.45;halign,1);
+	InitCommand=cmd(xy,SCREEN_WIDTH-10,SCREEN_HEIGHT-height/2;zoom,0.45;halign,1);
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+height/2)
 		self:smooth(0.5)

@@ -1,6 +1,6 @@
 local frameWidth = 280
 local frameHeight = 20
-local frameX = SCREEN_WIDTH
+local frameX = SCREEN_WIDTH-10
 local frameY = 10
 
 local sortTable = {
@@ -49,7 +49,7 @@ local t = Def.ActorFrame{
 
 t[#t+1] = Def.Quad{
 	Name="CurrentSort";
-	InitCommand=cmd(halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor('highlight'););
+	InitCommand=cmd(halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor('highlight');diffusealpha,0.8);
 
 };
 
