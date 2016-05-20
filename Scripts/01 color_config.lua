@@ -119,8 +119,8 @@ local defaultConfig = {
 	},
 
 	gameplay = {
-		ScreenFilter = "#222222",
-		LaneCover = "#333333"
+		ScreenFilter = "#000000",
+		LaneCover = "#111111"
 	},
 }
 
