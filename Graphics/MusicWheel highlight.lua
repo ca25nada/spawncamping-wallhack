@@ -7,7 +7,7 @@ return Def.ActorFrame{
 			self:diffuseramp();
 			self:effectperiod(1)
 			self:effectcolor1(color("#FFFFFF11"));
-			self:effectcolor2(color("#00ccff33"));
+			self:effectcolor2(Alpha(getMainColor("highlight"),0.3));
 		end;
 		BeginCommand=cmd(queuecommand,"Set");
 		OffCommand=cmd(visible,false);
