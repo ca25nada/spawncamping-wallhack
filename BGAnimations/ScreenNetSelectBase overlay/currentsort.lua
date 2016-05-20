@@ -1,9 +1,7 @@
-local t = Def.ActorFrame{};
-
 local frameWidth = 280
 local frameHeight = 20
-local frameX = SCREEN_WIDTH-5
-local frameY = 15
+local frameX = SCREEN_WIDTH
+local frameY = 10
 
 local sortTable = {
 	SortOrder_Preferred 			= 'Preferred',
@@ -33,13 +31,30 @@ local sortTable = {
 	SortOrder_Recent 				= 'Recently Played'
 };
 
+local t = Def.ActorFrame{
+	InitCommand = function(self)
+		self:xy(frameX,frameY)
+	end;
+	OnCommand = function(self)
+		self:y(-frameHeight/2)
+		self:smooth(0.5)
+		self:y(frameY)
+	end;
+	OffCommand = function(self)
+		self:smooth(0.5)
+		self:y(-frameHeight/2)
+	end;
+};
+
+
 t[#t+1] = Def.Quad{
 	Name="CurrentSort";
-	InitCommand=cmd(xy,frameX,frameY;halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor('highlight'););
+	InitCommand=cmd(halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor('highlight'););
+
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,frameX-frameWidth+5,frameY;halign,0;zoom,0.45;maxwidth,(frameWidth-40)/0.45);
+	InitCommand=cmd(x,5-frameWidth;halign,0;zoom,0.45;maxwidth,(frameWidth-40)/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		local sort = GAMESTATE:GetSortOrder()
@@ -58,7 +73,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,frameX-5,frameY;halign,1;zoom,0.3;maxwidth,40/0.45);
+	InitCommand=cmd(x,-5;halign,1;zoom,0.3;maxwidth,40/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		local top = SCREENMAN:GetTopScreen()
@@ -73,9 +88,5 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	SortOrderChangedMessageCommand=cmd(queuecommand,"Set");
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 };
-
-
-t[#t+1] = StandardDecorationFromFileOptional("BPMDisplay","BPMDisplay");
-t[#t+1] = StandardDecorationFromFileOptional("BPMLabel","BPMLabel");
 
 return t
