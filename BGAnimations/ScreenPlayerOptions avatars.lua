@@ -24,7 +24,7 @@ local noteCountP2 = 0
 
 local AvatarXP1 = SCREEN_CENTER_X/2 - 270/2 + 5
 local AvatarYP1 = 60
-local AvatarXP2 = SCREEN_CENTER_X/2*3 + 270/2 + 5
+local AvatarXP2 = SCREEN_CENTER_X/2*3 + 270/2 - 35
 local AvatarYP2 = 60
 
 local bpms = {}
