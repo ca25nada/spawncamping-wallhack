@@ -49,7 +49,7 @@ function LoadCard(cColor)
 
 		Def.Quad {
 			InitCommand=cmd(zoomto,200+10,230+10);
-			OnCommand=cmd(diffuse,color("#000000");diffusealpha,0.8);
+			OnCommand=cmd(diffuse,getMainColor("frame");diffusealpha,0.8);
 		};
 		Def.Quad {
 			InitCommand=cmd(zoomto,200,230);
@@ -118,7 +118,7 @@ function LoadPlayerStuff(Player)
 	};
 	t[#t+1] = LoadFont("Common Large") .. {
 		Name = 'SelectedProfileText';
-		InitCommand=cmd(y,160;diffuse,color("#000000");diffusealpha,0.8;zoom,0.5);
+		InitCommand=cmd(y,160;diffuse,getMainColor("frame");diffusealpha,0.8;zoom,0.5);
 	};
 
 	return t;
@@ -175,13 +175,6 @@ function UpdateInternal3(self, Player)
 end;
 
 local t = Def.ActorFrame {}
-
-
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(FullScreen;diffuse,color("#FFFFFF"));
-}
-
-t[#t+1] = LoadActor("_particles");
 
 t[#t+1] = Def.ActorFrame{
 	StorageDevicesChangedMessageCommand=function(self, params)

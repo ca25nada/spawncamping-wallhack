@@ -68,7 +68,7 @@ function tabs(index)
 
 	t[#t+1] = Def.Quad{
 		Name="TabBG";
-		InitCommand=cmd(valign,1;zoomto,frameWidth,20;diffuse,color("#111111"));
+		InitCommand=cmd(valign,1;zoomto,frameWidth,20;diffusealpha,0.5);
 		MouseLeftClickMessageCommand=function(self)
 			if isOver(self) then
 				setTabIndex(index)

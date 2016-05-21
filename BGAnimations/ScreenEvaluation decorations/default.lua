@@ -23,13 +23,13 @@ end;
 
 t[#t+1] = Def.ActorFrame{
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,10,40;zoom,0.4;halign,0;diffuse,color("#111111"));
+		InitCommand=cmd(xy,10,40;zoom,0.4;halign,0;diffuse,getMainColor("frame"),diffusealpha,0.8);
 		BeginCommand=function(self)
 			self:settextf("Timing Difficulty: %d",GetTimingDifficulty())
 		end;
 	};
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,10,55;zoom,0.4;halign,0;diffuse,color("#111111"));
+		InitCommand=cmd(xy,10,55;zoom,0.4;halign,0;diffuse,getMainColor("frame"),diffusealpha,0.8);
 		BeginCommand=function(self)
 			self:settextf("Life Difficulty: %d",GetLifeDifficulty())
 		end;
@@ -40,7 +40,7 @@ t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:zoomto(256+10,80+10)
 		self:xy(SCREEN_CENTER_X,70)
-		self:diffuse(color("#000000")):diffusealpha(0.8)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 	end
 }
 
@@ -63,7 +63,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:xy(SCREEN_CENTER_X+5+(266/2),50)
 		self:zoom(0.6)
 		self:maxwidth(((SCREEN_WIDTH/2 -5 -266/2)/0.6) - 10)
-		self:diffuse(color("#000000")):diffusealpha(0.8)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 		self:halign(0):valign(0)
 	end;
 	BeginCommand = function(self) 
@@ -80,7 +80,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:xy(SCREEN_CENTER_X+5+(266/2),65)
 		self:zoom(0.4)
 		self:maxwidth(((SCREEN_WIDTH/2 -5 -266/2)/0.4) - 10)
-		self:diffuse(color("#000000")):diffusealpha(0.8)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 		self:halign(0):valign(0)
 	end;
 	BeginCommand = function(self) 
@@ -192,7 +192,7 @@ local function scoreBoard(pn)
 	}
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(zoomto,frameWidth,frameHeight;valign,0;diffuse,color("#000000");diffusealpha,0.8)
+		InitCommand=cmd(zoomto,frameWidth,frameHeight;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8)
 	}
 
 	t[#t+1] = StandardDecorationFromTable("GraphDisplay"..ToEnumShortString(pn), GraphDisplay(pn))

@@ -21,7 +21,7 @@ t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2,120)
 		self:zoomto(capWideScale(get43size(384),384)+10,capWideScale(get43size(120),120)+50)
-		self:diffuse(color("#000000"))
+		self:diffuse(getMainColor("frame"))
 		self:diffusealpha(0.8)		
 	end
 }

@@ -78,7 +78,7 @@ local function generalFrame(pn)
 		InitCommand = function(self)
 			self:zoomto(frameWidth,frameHeight)
 			self:valign(0)
-			self:diffuse(color("#000000"))
+			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
 		end;
 		ContractMessageCommand = function(self)

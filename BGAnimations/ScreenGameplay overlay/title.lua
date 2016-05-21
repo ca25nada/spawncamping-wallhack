@@ -39,7 +39,7 @@ t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:y(15)
 		self:zoomto(bannerWidth+borderWidth*2,bannerHeight+borderWidth*2+30)
-		self:diffuse(color("#000000"))
+		self:diffuse(getMainColor("frame"))
 		self:diffusealpha(0)
 	end;
 	SetCommand = function(self)

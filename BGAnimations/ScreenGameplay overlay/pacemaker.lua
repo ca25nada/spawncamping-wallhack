@@ -366,7 +366,7 @@ end;
 local t = Def.ActorFrame{}
 if enabled then
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,color("#333333");diffusealpha,0.7;)
+		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.4;)
 	};
 	
 	t[#t+1] = targetMaxGraph(math.min(barCount,3),ghostType,getPaceMakerColor("target"))

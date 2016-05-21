@@ -1,6 +1,7 @@
 local defaultConfig = {
 
 	main = {
+		frame = "#000000",
 		highlight = "#00AEEF",
 		background = "#FFFFFF",
 		enabled = "#4CBB17",

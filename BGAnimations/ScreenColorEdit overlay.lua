@@ -100,7 +100,7 @@ local t = Def.ActorFrame{
 
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,0,0;halign,0;valign,0;zoomto,SCREEN_WIDTH,SCREEN_HEIGHT;diffuse,color("#000000EE"););
+	InitCommand=cmd(xy,0,0;halign,0;valign,0;zoomto,SCREEN_WIDTH,SCREEN_HEIGHT;diffuse,getMainColor("frame");diffusealpha,0.6);
 };
 
 t[#t+1] = LoadActor("_frame");

@@ -73,7 +73,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--The main quad
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,color("#000000");diffusealpha,0.8);
+			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8);
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn));
 			end;
@@ -126,12 +126,12 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 					self:settext(index)
 					if equals then
 						self:diffuseshift()
-						self:effectcolor1(color("#000000"))
+						self:effectcolor1(getMainColor("frame"))
 						self:effectcolor2(color("#3399cc"))
 						self:effectperiod(0.1)
 					else
 						self:stopeffect()
-						self:diffuse(color("#000000"))
+						self:diffuse(getMainColor("frame"))
 					end;
 				end;
 			end;
@@ -274,7 +274,7 @@ t[#t+1] = LoadFont("Common normal")..{
 			end
 		end
 		self:settext(text)
-		self:diffuse(color("#000000")):diffusealpha(0.8)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 	end;
 };
 
@@ -282,7 +282,7 @@ t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(xy,framex+frameWidth,framey+drawindex*spacing;zoom,0.35;halign,1;diffusealpha,0.8);
 	BeginCommand=function(self)
 		self:settextf("%d/%s Scores saved",(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
-		self:diffuse(color("#000000")):diffusealpha(0.8)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 	end;
 }
 

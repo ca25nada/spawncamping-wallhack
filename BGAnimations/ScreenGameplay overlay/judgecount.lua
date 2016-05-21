@@ -151,7 +151,7 @@ end
 --Make one for P1
 if enabled1P then
 	t[#t+1] = Def.Quad{ -- Judgecount Background
-		InitCommand=cmd(xy,frameX1P,frameY1P;zoomto,frameWidth,frameHeight;diffuse,color("0,0,0,0.4");horizalign,left;vertalign,top);
+		InitCommand=cmd(xy,frameX1P,frameY1P;zoomto,frameWidth,frameHeight;diffuse,getMainColor("frame");diffusealpha,0.4;horizalign,left;vertalign,top);
 	}
 
 	local index = 0 --purely for positional purposes

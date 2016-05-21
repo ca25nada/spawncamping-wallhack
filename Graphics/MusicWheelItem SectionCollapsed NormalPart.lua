@@ -1,7 +1,4 @@
 local t =  Def.ActorFrame{
-	InitCommand=function(self)
-		self:diffusealpha(0.8)
-	end
 }
 
 
@@ -12,7 +9,8 @@ t[#t+1] = Def.Quad{
 		self:halign(0)
 	end;
 	SetCommand = function(self)
-		self:diffuse(color("#000000"))
+		self:diffuse(getMainColor("frame"))
+		self:diffusealpha(0.9)
 	end;
 	BeginCommand = function(self) self:queuecommand('Set') end;
 	OffCommand = function(self) self:visible(false) end;

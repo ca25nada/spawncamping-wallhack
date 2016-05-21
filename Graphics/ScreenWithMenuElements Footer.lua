@@ -6,7 +6,7 @@ t[#t+1] = Def.Quad{
 		self:xy(SCREEN_CENTER_X,SCREEN_HEIGHT)
 		self:valign(1)
 		self:zoomto(SCREEN_WIDTH,height)
-		self:diffuse(color("#000000")):diffusealpha(0.8)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 	end;
 	OnCommand = function(self)
 		self:zoomy(0)

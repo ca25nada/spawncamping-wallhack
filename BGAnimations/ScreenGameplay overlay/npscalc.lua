@@ -270,7 +270,7 @@ local function npsGraph(pn)
 		InitCommand=function(self)
 			self:zoomto(graphWidth,graphHeight)
 			self:xy(0,graphHeight)
-			self:diffuse(color("#333333")):diffusealpha(0.8)
+			self:diffuse(getMainColor("frame")):diffusealpha(0.4)
 			self:horizalign(0):vertalign(2)
 			self:fadetop(1)
 		end

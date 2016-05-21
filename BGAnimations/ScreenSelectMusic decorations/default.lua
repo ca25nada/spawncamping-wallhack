@@ -2,7 +2,6 @@ reset_needs_defective_field_for_all_players()
 
 local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("songinfo");
-t[#t+1] = LoadActor("currenttime");
 t[#t+1] = LoadActor("simfile");
 t[#t+1] = LoadActor("score");
 t[#t+1] = LoadActor("profile");

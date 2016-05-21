@@ -6,7 +6,7 @@ t[#t+1] = Def.Quad{
 		self:Center()
 		self:zoomto(200,50)
 		self:smooth(1)
-		self:diffuse(color("#000000"))
+		self:diffuse(getMainColor("frame"))
 		self:diffusealpha(0.8)
 	end;
 };
