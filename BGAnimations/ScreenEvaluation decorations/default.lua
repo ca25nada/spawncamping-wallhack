@@ -115,7 +115,7 @@ local function GraphDisplay( pn )
 				self:Set(ss,pss)
 				self:diffusealpha(0.5);
 				self:GetChild("Line"):diffusealpha(0)
-				self:y(60)
+				self:y(55)
 			end
 		};
 
@@ -163,8 +163,21 @@ local function GraphDisplay( pn )
 			end;
 		};
 	};
-	return t;
+	return t
 end
+
+local function ComboGraph( pn ) 
+  	local t = Def.ActorFrame { 
+	    Def.ComboGraph { 
+		    InitCommand=cmd(Load,"ComboGraph"..ToEnumShortString(pn);); 
+		    BeginCommand=function(self) 
+		        local ss = SCREENMAN:GetTopScreen():GetStageStats() 
+		        self:Set(ss,ss:GetPlayerStageStats(pn)) 
+			end 
+		}
+  	}
+  	return t
+end; 
 
 local function scoreBoard(pn)
 	local hsTable = getScoreList(pn)
@@ -196,6 +209,7 @@ local function scoreBoard(pn)
 	}
 
 	t[#t+1] = StandardDecorationFromTable("GraphDisplay"..ToEnumShortString(pn), GraphDisplay(pn))
+	t[#t+1] = StandardDecorationFromTable("ComboGraph"..ToEnumShortString(pn),ComboGraph(pn))
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
@@ -426,7 +440,7 @@ local function scoreBoard(pn)
 			self:xy(-frameWidth/2+5,137)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
-			self:settext(THEME:GetString("ScreenEvaluation","CategoryScore"))
+			self:settextf("%s - %s",THEME:GetString("ScreenEvaluation","CategoryScore"),getScoreTypeText(0))
 		end;
 	}
 
