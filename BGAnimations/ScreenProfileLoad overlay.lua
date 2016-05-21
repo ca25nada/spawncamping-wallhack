@@ -12,7 +12,7 @@ t[#t+1] = Def.Quad{
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Text=ScreenString("Saving Profiles");
+	Text=ScreenString("Loading Profiles");
 	InitCommand = function(self)
 		self:Center()
 		self:zoom(0.5)
