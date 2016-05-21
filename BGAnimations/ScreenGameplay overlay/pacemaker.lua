@@ -87,7 +87,7 @@ local function ghostScoreGraph(index,scoreType,color)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Best Score";)
+		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,THEME:GetString("ScreenGameplay","PacemakerBest");)
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;);
@@ -133,7 +133,7 @@ local function currentScoreGraph(index,scoreType,color)
 		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Current Score";)
+		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,THEME:GetString("ScreenGameplay","PacemakerCurrent");)
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;);
@@ -241,7 +241,7 @@ local function targetScoreGraph(index,scoreType,color)
 		JudgmentMessageCommand=cmd(queuecommand,"Set");
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,"Target Score");
+		InitCommand=cmd(xy,frameX+frameWidth/2,bottomTextY+textSpacing*(index-1);zoom,0.35;maxwidth,frameWidth/0.35;diffuse,color;settext,THEME:GetString("ScreenGameplay","PacemakerTarget"));
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+2,topTextY+textSpacing*(index-1);zoom,0.35;maxwidth,((frameWidth*0.8)-2)/0.35;halign,0;diffuse,color;settextf,"%s %0.2f%%",getScoreTypeText(ghostType),target*100);
@@ -338,13 +338,13 @@ local function lifejudge()
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+2,15;zoom,0.4;halign,0;valign,1;);
 		BeginCommand=function(self)
-			self:settext("Timing Difficulty:")
+			self:settext(THEME:GetString("ScreenGameplay","PacemakerTimingDifficulty")..":")
 		end;
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameX+2,28;zoom,0.4;halign,0;valign,1;);
 		BeginCommand=function(self)
-			self:settext("Life Difficulty:")
+			self:settext(THEME:GetString("ScreenGameplay","PacemakerLifeDifficulty")..":")
 		end;
 	};
 	t[#t+1] = LoadFont("Common Normal")..{

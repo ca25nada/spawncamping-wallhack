@@ -45,8 +45,8 @@ t[#t+1] = Def.Quad{
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.6;halign,0;diffuse,getMainColor('highlight'));
-	BeginCommand=cmd(settext,"Profile")
+	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.4;halign,0;diffuse,getMainColor('highlight'));
+	BeginCommand=cmd(settext,THEME:GetString("ScreenSelectMusic","ProfileInfoHeader"))
 };
 
 local function makeText1(index)

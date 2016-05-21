@@ -134,7 +134,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y+100;zoom,0.4;);
 	OnCommand=function(self)
-		self:settextf("This will change the color \"%s - %s\".\n\nPress <Left>/<Right> to move cursor, <Up>/<Down> to change value.\nPress <Start> to confirm and <Back> to exit.\nPlease reload metrics after changing colors as some colors will not update unless you do so.",selected[1],selected[2])
+		self:settextf("%s \"%s - %s\".\n\n%s",THEME:GetString("ScreenColorEdit","Description1"),selected[1],selected[2],THEME:GetString("ScreenColorEdit","Description2"))
 		self:diffuse(color("#FFFFFF"))
 	end;
 }

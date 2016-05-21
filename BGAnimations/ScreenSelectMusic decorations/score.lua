@@ -103,8 +103,8 @@ t[#t+1] = Def.Quad{
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.6;halign,0;diffuse,getMainColor('highlight'));
-	BeginCommand=cmd(settext,"Score Info")
+	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.4;halign,0;diffuse,getMainColor('highlight'));
+	BeginCommand=cmd(settext,THEME:GetString("ScreenSelectMusic","ScoreInfoHeader"))
 };
 
 t[#t+1] = LoadFont("Common Large")..{
@@ -184,9 +184,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 	SetCommand=function(self)
 		if score ~= nil then
 			local maxCombo = getScoreMaxCombo(score)
-			self:settextf("Max Combo: %d",maxCombo)
+			self:settextf("%s: %d",THEME:GetString("ScreenSelectMusic","ScoreInfoMaxCombo"),maxCombo)
 		else
-			self:settext("Max Combo: 0")
+			self:settextf("%s: 0",THEME:GetString("ScreenSelectMusic","ScoreInfoMaxCombo"))
 		end;
 	end;
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
@@ -199,12 +199,12 @@ t[#t+1] = LoadFont("Common Normal")..{
 		if score ~= nil then
 			local missCount = getScoreMissCount(score)
 			if missCount ~= nil then
-				self:settext("Miss Count: "..missCount)
+				self:settextf("%s: %d",THEME:GetString("ScreenSelectMusic","ScoreInfoMissCount"),missCount)
 			else
-				self:settext("Miss Count: -")
+				self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoMissCount")..": -")
 			end
 		else
-			self:settext("Miss Count: -")
+			self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoMissCount")..": -")
 		end;
 	end;
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
@@ -215,9 +215,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+88;zoom,0.4;halign,0);
 	SetCommand=function(self)
 		if score ~= nil then
-			self:settext("Date Achieved: "..getScoreDate(score))
+			self:settextf("%s: %s",THEME:GetString("ScreenSelectMusic","ScoreInfoDate"),getScoreDate(score))
 		else
-			self:settext("Date Achieved: ")
+			self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoDate")..": ")
 		end;
 	end;
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
@@ -228,9 +228,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+103;zoom,0.4;halign,0);
 	SetCommand=function(self)
 		if score ~= nil then
-			self:settext("Mods: " ..score:GetModifiers())
+			self:settextf("%s: %s",THEME:GetString("ScreenSelectMusic","ScoreInfoOptions"),score:GetModifiers())
 		else
-			self:settext("Mods:")
+			self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoOptions")..":")
 		end;
 	end;
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
@@ -243,14 +243,14 @@ t[#t+1] = LoadFont("Common Normal")..{
 		if update then
 			if score ~= nil and ghostDataExists(pn,score) then
 				if isGhostDataValid(pn,score) then
-					self:settext("Ghost Data Available")
+					self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoGhostDataAvailable"))
 					self:diffuse(getMainColor('enabled'))
 				else
-					self:settext("Ghost Data Invalid")
+					self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoGhostDataInvalid"))
 					self:diffuse(getMainColor('negative'))
 				end
 			else
-				self:settext("Ghost Data Unavailable")
+				self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoGhostDataUnavailable"))
 				self:diffuse(getMainColor('disabled'))
 			end;
 		end
@@ -286,7 +286,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		if hsTable ~= nil and rates ~= nil and rtTable[rates[rateIndex]] ~= nil then
 			self:settextf("Rate %s - Showing %d/%d",rates[rateIndex],scoreIndex,#rtTable[rates[rateIndex]])
 		else
-			self:settext("No Scores Saved")
+			self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoNoScore"))
 		end;
 	end;
 	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");

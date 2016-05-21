@@ -29,16 +29,16 @@ local offsetX2 = 10
 local offsetY = 20
 
 local stringList = {
-	{"StepMania Version:",		ProductFamily().." "..ProductVersion()},
-	{"Build Date:",				VersionDate().." "..VersionTime()},
-	{"Theme Version:",			getThemeName().." "..getThemeVersion()},
-	{"Total Songs:",			SONGMAN:GetNumSongs().." Songs in "..SONGMAN:GetNumSongGroups().." Groups"},
-	{"Total Courses:",			SONGMAN:GetNumCourses().." Courses in "..SONGMAN:GetNumCourseGroups().." Groups"},
-	{"Global Offset:",			string.format("%2.4f",(PREFSMAN:GetPreference("GlobalOffsetSeconds") or 0)*1000).." ms"},
-	{"Life Difficulty:",			GetLifeDifficulty()},
-	{"Timing Difficulty:",		GetTimingDifficulty()},
-	{"Max Machine Scores:",		PREFSMAN:GetPreference("MaxHighScoresPerListForMachine") or 0},
-	{"Max Personal Scores:",		PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0}
+	{THEME:GetString("ScreenSelectMusic","OtherInfoSMVersion")..":",		ProductFamily().." "..ProductVersion()},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoSMBuildDate")..":",				VersionDate().." "..VersionTime()},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoThemeVersion")..":",			getThemeName().." "..getThemeVersion()},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoTotalSongs")..":",			SONGMAN:GetNumSongs().." Songs in "..SONGMAN:GetNumSongGroups().." Groups"},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoTotalCourses")..":",			SONGMAN:GetNumCourses().." Courses in "..SONGMAN:GetNumCourseGroups().." Groups"},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoGlobalOffset")..":",			string.format("%2.4f",(PREFSMAN:GetPreference("GlobalOffsetSeconds") or 0)*1000).." ms"},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoLifeDifficulty")..":",			GetLifeDifficulty()},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoTimingDifficulty")..":",		GetTimingDifficulty()},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoMaxMachineScores")..":",		PREFSMAN:GetPreference("MaxHighScoresPerListForMachine") or 0},
+	{THEME:GetString("ScreenSelectMusic","OtherInfoMaxPersonalScores")..":",		PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0}
 }
 
 t[#t+1] = Def.Quad{
@@ -50,8 +50,8 @@ t[#t+1] = Def.Quad{
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.6;halign,0;diffuse,getMainColor('highlight'));
-	BeginCommand=cmd(settext,"Other Info")
+	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.4;halign,0;diffuse,getMainColor('highlight'));
+	BeginCommand=cmd(settext,THEME:GetString("ScreenSelectMusic","OtherInfoHeader"))
 };
 
 local function makeText1(index)

@@ -339,7 +339,7 @@ local function scoreBoard(pn)
 			self:xy(-frameWidth/2+5,107)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
-			self:settext("ClearType")
+			self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
 		end;
 	}
 
@@ -426,7 +426,7 @@ local function scoreBoard(pn)
 			self:xy(-frameWidth/2+5,137)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
-			self:settext("Score")
+			self:settext(THEME:GetString("ScreenEvaluation","CategoryScore"))
 		end;
 	}
 
@@ -544,7 +544,7 @@ local function scoreBoard(pn)
 			self:xy(-frameWidth/2+5,167)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
-			self:settext("MissCount")
+			self:settext(THEME:GetString("ScreenEvaluation","CategoryMissCount"))
 		end;
 	}
 
@@ -624,7 +624,7 @@ local function scoreBoard(pn)
 					self:settext("-")
 				end
 			else
-				self:settext("▲")
+				self:settext("-")
 			end;
 		end;
 	}
@@ -667,7 +667,7 @@ local function scoreBoard(pn)
 			self:xy(-frameWidth/2+5,196)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
-			self:settext("Judgment")
+			self:settext(THEME:GetString("ScreenEvaluation","CategoryJudgment"))
 		end;
 	}
 

@@ -38,8 +38,8 @@ t[#t+1] = Def.Quad{
 
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.5;halign,0;diffuse,getMainColor('highlight'));
-	BeginCommand=cmd(settext,"Simfile Info")
+	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.4;halign,0;diffuse,getMainColor('highlight'));
+	BeginCommand=cmd(settext,THEME:GetString("ScreenSelectMusic","SimfileInfoHeader"))
 };
 
 
@@ -151,7 +151,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		if steps ~= nil and song ~= nil and update then
 			length = song:GetStepsSeconds()
 			notecount = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-			self:settext(string.format("%0.2f Average NPS",notecount/length))
+			self:settext(string.format("%0.2f %s",notecount/length,THEME:GetString("ScreenSelectMusic","SimfileInfoAvgNPS")))
 			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())),0.3))
 		else
 			self:settext("0.00 Average NPS")
