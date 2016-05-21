@@ -12,15 +12,7 @@ local profileP1
 local profileP2
 
 local profileNameP1 = "No Profile"
-local playCountP1 = 0
-local playTimeP1 = 0
-local noteCountP1 = 0
-
 local profileNameP2 = "No Profile"
-local playCountP2 = 0
-local playTimeP2 = 0
-local noteCountP2 = 0
-
 
 local AvatarXP1 = SCREEN_CENTER_X/2 - 270/2 + 5
 local AvatarYP1 = 60
@@ -46,20 +38,11 @@ t[#t+1] = Def.Actor{
 				else
 					profileNameP1 = profileP1:GetDisplayName()
 				end
-				playCountP1 = profileP1:GetTotalNumSongsPlayed()
-				playTimeP1 = profileP1:GetTotalSessionSeconds()
-				noteCountP1 = profileP1:GetTotalTapsAndHolds()
 			else 
 				profileNameP1 = "No Profile"
-				playCountP1 = 0
-				playTimeP1 = 0
-				noteCountP1 = 0
 			end; 
 		else
 			profileNameP1 = "No Profile"
-			playCountP1 = 0
-			playTimeP1 = 0
-			noteCountP1 = 0
 		end;
 	end;
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
@@ -78,20 +61,11 @@ t[#t+1] = Def.Actor{
 				else
 					profileNameP2 = profileP2:GetDisplayName()
 				end
-				playCountP2 = profileP2:GetTotalNumSongsPlayed()
-				playTimeP2 = profileP2:GetTotalSessionSeconds()
-				noteCountP2 = profileP2:GetTotalTapsAndHolds()
 			else 
 				profileNameP2 = "No Profile"
-				playCountP2 = 0
-				playTimeP2 = 0
-				noteCountP2 = 0
 			end;
 		else
 			profileNameP2 = "No Profile"
-			playCountP2 = 0
-			playTimeP2 = 0
-			noteCountP2 = 0
 		end;
 	end;
 	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
@@ -136,8 +110,6 @@ t[#t+1] = Def.ActorFrame{
 	LoadFont("Common Normal") .. {
 		InitCommand=cmd(xy,AvatarXP1+33,AvatarYP1+19;halign,0;zoom,0.40;);
 		BeginCommand=function(self)
-			--local speed, mode= GetSpeedModeAndValueFromPoptions(PLAYER_1)
-			--self:playcommand("SpeedChoiceChanged", {pn= PLAYER_1, mode= mode, speed= speed})
 			self:playcommand("ConfigValueChanged", {pn= PLAYER_1, field_name= "speed_mod"})
 		end;
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
@@ -227,8 +199,6 @@ t[#t+1] = Def.ActorFrame{
 	LoadFont("Common Normal") .. {
 		InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+19;halign,1;zoom,0.45;);
 		BeginCommand=function(self)
-			--local speed, mode= GetSpeedModeAndValueFromPoptions(PLAYER_2)
-			--self:playcommand("SpeedChoiceChanged", {pn= PLAYER_2, mode= mode, speed= speed})
 			self:playcommand("ConfigValueChanged", {pn= PLAYER_2, field_name= "speed_mod"})
 		end;
 		PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
