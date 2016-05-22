@@ -284,6 +284,7 @@ local function generalFrame(pn)
 			self:zoomto(frameWidth-10,10)
 			self:halign(0)
 			self:diffusealpha(1)
+			self:diffuse(getMainColor("background"))
 		end
 	}
 

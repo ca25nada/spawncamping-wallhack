@@ -185,7 +185,7 @@ local function avatarSwitch(pn)
 
 	--Text
 	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,frameX+width,frameY-height;halign,1;valign,1;zoom,0.35;diffuse,color("#111111"));
+		InitCommand=cmd(xy,frameX+width,frameY-height;halign,1;valign,1;zoom,0.35;diffuse,getMainColor("frame");diffusealpha,0.8);
 		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self,params)
 			self:settext(avatars[data[pn]["avatarIndex"]])
