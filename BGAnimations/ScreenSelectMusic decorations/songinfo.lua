@@ -28,7 +28,7 @@ t[#t+1] = Def.Quad{
 
 -- Song banner
 t[#t+1] = Def.Banner{
-	InitCommand=cmd(x,SCREEN_CENTER_X/2;y,120;);
+	InitCommand=cmd(xy,SCREEN_CENTER_X/2,120;);
 	SetMessageCommand=function(self)
 		if update then
 			local top = SCREENMAN:GetTopScreen()
@@ -50,6 +50,52 @@ t[#t+1] = Def.Banner{
 		self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 	end;
 	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+};
+
+t[#t+1] = Def.Sprite {
+	InitCommand = function(self)
+		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)-40)
+		self:y(120-(capWideScale(get43size(120),120)/2)+30)
+		self:wag():effectmagnitude(0,0,5)
+	end;
+	Name="CDTitle";
+	SetCommand=function(self)
+		if update then
+			self:finishtweening()
+			self:sleep(0.5)
+			local song = GAMESTATE:GetCurrentSong()	
+			if song then
+				if song:HasCDTitle() then
+					self:visible(true)
+					self:Load(song:GetCDTitlePath())
+				else
+					self:visible(false)
+				end
+			else
+				self:visible(false)
+			end;
+			local height = self:GetHeight()
+			local width = self:GetWidth()
+			
+			if height >= 60 and width >= 80 then
+				if height*(80/60) >= width then
+					self:zoom(60/height)
+				else
+					self:zoom(80/width)
+				end
+			elseif height >= 60 then
+				self:zoom(60/height)
+			elseif width >= 80 then
+				self:zoom(80/width)
+			else
+				self:zoom(1)
+			end
+			self:smooth(0.5)
+			self:diffusealpha(0.8)
+		end
+	end;
+	BeginCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;queuecommand,"Set");
 };
 
 -- Song title // Artist on top of the banner

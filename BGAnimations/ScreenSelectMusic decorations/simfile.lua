@@ -76,49 +76,6 @@ t[#t+1] = Def.Sprite {
 	CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"Set");
 };
 
-t[#t+1] = Def.Sprite {
-		InitCommand=cmd(xy,frameX+75,frameY+125;zoomy,0;valign,1);
-		Name="CDTitle";
-		SetCommand=function(self)
-			if update then
-				self:finishtweening()
-				self:sleep(0.45)
-				local song = GAMESTATE:GetCurrentSong()	
-				if song then
-					if song:HasCDTitle() then
-						self:visible(true)
-						self:Load(song:GetCDTitlePath())
-					else
-						self:visible(false)
-					end
-				else
-					self:visible(false)
-				end;
-				local height = self:GetHeight()
-				local width = self:GetWidth()
-				
-				if height >= 80 and width >= 100 then
-					if height*(100/80) >= width then
-					self:zoom(80/height)
-					else
-					self:zoom(100/width)
-					end
-				elseif height >= 80 then
-					self:zoom(80/height)
-				elseif width >= 100 then
-					self:zoom(100/width)
-				else
-					self:zoom(1)
-				end
-				self:smooth(0.5)
-				self:diffusealpha(1)
-			end
-		end;
-	BeginCommand=cmd(queuecommand,"Set");
-	CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"Set");
-};
-		
-
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="StepsAndMeter";
 	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+10;zoom,0.5;halign,1;);
