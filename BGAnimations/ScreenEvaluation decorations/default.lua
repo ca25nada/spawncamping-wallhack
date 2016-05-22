@@ -17,9 +17,6 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBo
 	t[#t+1] = LoadActor("scoreboard")
 end;
 
-if themeConfig:get_data().eval.JudgmentBarEnabled then
-	--t[#t+1] = LoadActor("adefaultmoreripoff")
-end;
 
 t[#t+1] = Def.ActorFrame{
 	LoadFont("Common Normal")..{
@@ -101,7 +98,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 local function GraphDisplay( pn )
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 
-	if playerConfig:get_data(pn).SaveGhostScore then
+	if (PROFILEMAN:GetProfile(pn):GetDisplayName() ~= PROFILEMAN:GetMachineProfile():GetDisplayName()) and playerConfig:get_data(pn).SaveGhostScore then
 		saveGhostData(pn,pss:GetHighScore())
 	end
 
@@ -121,7 +118,7 @@ local function GraphDisplay( pn )
 
 		LoadFont("Common Large")..{
 			Name = "Grade";
-			InitCommand=cmd(xy,-frameWidth/2+35,60;zoom,0.7;maxwidth,70/0.8;);
+			InitCommand=cmd(xy,-frameWidth/2+35,55;zoom,0.7;maxwidth,70/0.8;);
 			BeginCommand=function(self) 
 				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
 			end;
@@ -130,7 +127,7 @@ local function GraphDisplay( pn )
 		Def.RollingNumbers{
 			Font= "Common Normal", 
 			InitCommand= function(self)
-				self:y(60):zoom(0.6)
+				self:y(55):zoom(0.6)
 			    self:set_chars_wide(5):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
 			end;
 			BeginCommand=function(self) 
@@ -257,9 +254,12 @@ local function scoreBoard(pn)
 			self:xy(66-frameWidth/2,10)
 			self:zoom(0.6)
 			self:halign(0)
-			local text = pn == PLAYER_1 and "Player 1" or "Player 2"
+			local text = ""
 			if profile ~= nil then
 				text = profile:GetDisplayName()
+				if text == "" then
+					text = pn == PLAYER_1 and "Player 1" or "Player 2"
+				end
 			end
 			self:settext(text)
 		end;
@@ -833,9 +833,12 @@ local function scoreBoard(pn)
 	return t
 end;
 
-
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	t[#t+1] = scoreBoard(pn)
 end
+
+if themeConfig:get_data().eval.JudgmentBarEnabled then
+	t[#t+1] = LoadActor("adefaultmoreripoff")
+end;
 
 return t

@@ -144,9 +144,12 @@ local function generalFrame(pn)
 			self:halign(0)
 		end;
 		SetCommand = function(self)
-			local text = pn == PLAYER_1 and "Player 1" or "Player 2"
+			local text = ""
 			if profile[pn] ~= nil then
 				text = profile[pn]:GetDisplayName()
+				if text == "" then
+					text = pn == PLAYER_1 and "Player 1" or "Player 2"
+				end
 			end
 			self:settext(text)
 		end;
