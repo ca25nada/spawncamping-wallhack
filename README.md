@@ -27,6 +27,8 @@ Requirements: StepMania 5.1.0 Alpha 2 or later.
 
 ---
 ### Usage Guide (WIP)   
+This is tad outdated now. I'll start updating this over the next few days.
+
 #### Global
 * **Theme Color**  
 The main theme color can be set by entering "Color Config" from the title menu.  
