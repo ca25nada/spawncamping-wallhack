@@ -15,8 +15,6 @@ ghostTable = {
 }
 --]]
 
-
-
 local defaultScoreType = themeConfig:get_data().global.DefaultScoreType
 
 local scoreWeight =  { -- Score Weights for DP score (MAX2)
@@ -319,8 +317,26 @@ function deleteGhostData(pn,score)
 	ghostTable:set_dirty(pn)
 	ghostTable:save(pn)
 	SCREENMAN:SystemMessage("Ghost data deleted.")
+
 end
 
+--Deletes all ghostdata for a song given player.
+function deleteGhostDataForSong(pn)
+
+	if not GAMESTATE:IsPlayerEnabled(pn) or 
+		GAMESTATE:IsCourseMode() or 
+		score == nil then
+		return
+	end
+
+	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
+
+	ghostTable:get_data(pn)[simfileSHA1] = nil
+	ghostTable:set_dirty(pn)
+	ghostTable:save(pn)
+	SCREENMAN:SystemMessage("All Ghost data for this song deleted.")
+	
+end
 
 --not exactly a pop anymore since I keep the values in the table but w/e.
 --returns the judgment and adds the judgment to the ghostScoreStats table.
