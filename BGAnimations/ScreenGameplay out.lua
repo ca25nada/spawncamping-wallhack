@@ -3,6 +3,7 @@ local t = Def.ActorFrame{
 		self:diffusealpha(0)
 	end;
 	OffCommand = function(self)
+		self:sleep(3)
 		self:smooth(1)
 		self:diffusealpha(1)
 		self:sleep(1)
@@ -21,7 +22,7 @@ t[#t+1] = Def.Quad{
 		self:diffusealpha(0.8)
 	end;
 	OffCommand = function(self)
-		self:sleep(1)
+		self:sleep(4)
 		self:smooth(1)
 		self:diffusealpha(0)
 	end
@@ -39,7 +40,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:effectcolor1(color("#FFFFFF")):effectcolor2(getMainColor("positive"))
 	end;
 	OffCommand = function(self)
-		self:sleep(1)
+		self:sleep(4)
 		self:smooth(1)
 		self:diffusealpha(0)
 	end

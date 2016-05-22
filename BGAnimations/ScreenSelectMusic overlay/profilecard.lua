@@ -1,5 +1,5 @@
 local t = Def.ActorFrame{
-	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
+	OffCommand=cmd(bouncebegin,0.2;xy,0,500;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
 	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
 	TabChangedMessageCommand=function(self)
 		if getTabIndex() == 1 then
