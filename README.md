@@ -1,6 +1,6 @@
 # spawncamping-wallhack
 A WIP Stepmania 5 theme aimed primarily for KB players.  
-<a href="http://imgur.com/a/ddHZN" target="_blank">Screenshots</a>
+<a href="http://imgur.com/a/RpFvQ" target="_blank">Screenshots</a>
 
 Requirements: StepMania 5.1.0 Alpha 2 or later.
 * If the menu is black and white at startup with a bunch of error messages, chances are you aren't running on 5.1.
