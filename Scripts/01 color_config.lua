@@ -8,6 +8,7 @@ local defaultConfig = {
 		disabled = "#666666",
 		negative = "#FF9999",
 		positive = "#66ccff",
+		headerText = "#FFFFFF",
 	},
 
 	clearType = {
@@ -47,29 +48,6 @@ local defaultConfig = {
 		Crazy 		= "#ff6666",		-- red
 		Nightmare	= "#c97bff",	-- Purple
 		HalfDouble 	= "#666666",	-- gray
-		HalfDouble 	= "#666666",	-- gray
-		Freestyle 	= "#666666",	-- gray
-	},
-
-	difficultyVivid = {
-		Difficulty_Beginner	= "#0099ff",		-- light blue
-		Difficulty_Easy		= "#00ff00",		-- green
-		Difficulty_Medium	= "#ffff00",		-- yellow
-		Difficulty_Hard		= "#ff0000",		-- red
-		Difficulty_Challenge= "#cc66ff",	-- light blue
-		Difficulty_Edit 	= "#666666",	-- gray
-		Difficulty_Couple	= "#ed0972",			-- hot pink
-		Difficulty_Routine	= "#ff9a00",			-- orange
-		Beginner	= "#0099ff",		-- light blue
-		Easy		= "#00ff00",		-- green
-		Medium		= "#ffff00",		-- yellow
-		Hard		= "#ff0000",		-- red
-		Challenge 		= "#cc66ff",	-- Purple
-		Edit 		= "#666666",	-- gray
-		Couple		= "#ed0972",			-- hot pink
-		Routine		= "#ff9a00",			-- orange
-		Crazy		= "#ff0000",		-- red
-		Nightmare 	= "#cc66ff",	-- Purple
 		HalfDouble 	= "#666666",	-- gray
 		Freestyle 	= "#666666",	-- gray
 	},
@@ -121,8 +99,31 @@ local defaultConfig = {
 
 	gameplay = {
 		ScreenFilter = "#000000",
-		LaneCover = "#111111"
+		LaneCover = "#111111",
+		PacemakerBest = "#00FF00",
+		PacemakerTarget = "#FF9999",
+		PacemakerCurrent = "#0099FF",
 	},
+
+	evaluation = {
+		BackgroundText = "#000000",
+		ScoreCardText = "#FFFFFF",
+		ScoreCardDivider = "#FFFFFF",
+		ScoreCardCategoryText = "#FFFFFF",
+		ScoreBoardText = "#FFFFFF",
+	},
+
+	selectMusic = {
+		MusicWheelTitleText = "#FFFFFF",
+		MusicWheelSubtitleText = "#FFFFFF",
+		MusicWheelArtistText = "#FFFFFF",
+		MusicWheelDivider = "#FFFFFF",
+		ProfileCardText = "#FFFFFF",
+		TabContentText = "#FFFFFF",
+		BannerText = "#FFFFFF",
+		StepsDisplayListText = "#FFFFFF"
+	}
+
 }
 
 colorConfig = create_lua_config({name = "colorConfig", file = "colorConfig.lua", default = defaultConfig, match_depth = -1})
@@ -149,10 +150,6 @@ end
 
 function getDifficultyColor(diff)
 	return color(colorConfig:get_data().difficulty[diff]) or color("#ffffff");
-end
-
-function getVividDifficultyColor(diff)
-	return color(colorConfig:get_data().difficultyVivid[diff]) or color("#ffffff")
 end
 
 function getPaceMakerColor(type)
