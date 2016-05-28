@@ -117,7 +117,6 @@ local defaultConfig = {
 		MusicWheelTitleText = "#FFFFFF",
 		MusicWheelSubtitleText = "#FFFFFF",
 		MusicWheelArtistText = "#FFFFFF",
-		MusicWheelSectionText = "#FFFFFF",
 		MusicWheelSectionCountText = "#FFFFFF",
 		MusicWheelDivider = "#FFFFFF",
 		MusicWheelExtraColor = "#FFCCCC",
