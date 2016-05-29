@@ -142,7 +142,7 @@ local function generalFrame(pn)
 	-- Player name
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(66-frameWidth/2,10)
+			self:xy(69-frameWidth/2,10)
 			self:zoom(0.6)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
@@ -164,7 +164,7 @@ local function generalFrame(pn)
 	-- Level and exp
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(66-frameWidth/2,22)
+			self:xy(69-frameWidth/2,23)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
@@ -420,7 +420,6 @@ local function generalFrame(pn)
 			self:zoom(0.45):halign(1):maxwidth(75/0.45)
 		    self:set_chars_wide(6):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
 		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
-		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
 		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
 		end;
 		SetCommand = function(self)
@@ -451,7 +450,6 @@ local function generalFrame(pn)
 			self:zoom(0.5):halign(1):maxwidth(26/0.5)
 		    self:set_chars_wide(4):set_approach_seconds(approachSecond)
 		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
-		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
 		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
 		end;
 		SetCommand = function(self) 
@@ -472,7 +470,6 @@ local function generalFrame(pn)
 			self:zoom(0.5):halign(1):maxwidth(34/0.5)
 		    self:set_chars_wide(5):set_text_format("%.0f/"):set_approach_seconds(approachSecond)
 		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
-		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
 		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
 		end;
 		SetCommand = function(self) 
