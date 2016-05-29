@@ -9,6 +9,7 @@ local defaultConfig = {
 		negative = "#FF9999",
 		positive = "#66ccff",
 		headerText = "#FFFFFF",
+		headerFrameText = "#FFFFFF",
 	},
 
 	clearType = {

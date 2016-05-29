@@ -23,6 +23,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	Name = "currentTime";
 	InitCommand=cmd(xy,SCREEN_WIDTH-10,SCREEN_HEIGHT-height/2;zoom,0.45;halign,1);
 	OnCommand = function(self)
+		self:diffuse(color(colorConfig:get_data().main.headerText))
 		self:y(SCREEN_HEIGHT+height/2)
 		self:smooth(0.5)
 		self:y(SCREEN_HEIGHT-height/2)
@@ -49,6 +50,7 @@ if themeConfig:get_data().global.TipType >= 2 then
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,10,SCREEN_HEIGHT-10;zoom,0.4;maxwidth,(SCREEN_WIDTH-150)/0.4;halign,0);
 		OnCommand = function(self)
+			self:diffuse(color(colorConfig:get_data().main.headerText))
 			if SCREENMAN:GetTopScreen():GetName() ~= "ScreenSelectMusic" then
 				self:settext(getRandomQuotes(themeConfig:get_data().global.TipType))
 			end

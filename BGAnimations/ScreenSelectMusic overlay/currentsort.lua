@@ -57,6 +57,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=cmd(x,5-frameWidth;halign,0;zoom,0.45;maxwidth,(frameWidth-40)/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
+		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 		local sort = GAMESTATE:GetSortOrder()
 		local song = GAMESTATE:GetCurrentSong()
 		if sort == nil then
@@ -76,6 +77,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=cmd(x,-5;halign,1;zoom,0.3;maxwidth,40/0.45);
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
+		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 		local top = SCREENMAN:GetTopScreen()
 		if top:GetName() == "ScreenSelectMusic" or top:GetName() == "ScreenNetSelectMusic" then
 			local wheel = top:GetMusicWheel()

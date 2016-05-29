@@ -25,8 +25,8 @@ t[#t+1] = Def.ActorFrame{
 	};
 	LoadFont("Common Normal") .. {
 		InitCommand=cmd(x,-frameWidth+5;halign,0;zoom,0.45;maxwidth,(frameWidth-10)/0.45);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
+		BeginCommand=function(self)
+			self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 			local song = GAMESTATE:GetCurrentSong()
 			local course = GAMESTATE:GetCurrentCourse()
 			if song ~= nil and (not GAMESTATE:IsCourseMode()) then
