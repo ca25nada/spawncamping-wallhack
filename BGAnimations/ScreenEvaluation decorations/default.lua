@@ -4,7 +4,7 @@ local course = GAMESTATE:GetCurrentCourse()
 
 --ScoreBoard
 local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss'}
-local hjudges = {'HoldNoteScore_LetGo','HoldNoteScore_Held','HoldNoteScore_MissedHold'}
+local hjudges = {'HoldNoteScore_Held','HoldNoteScore_LetGo','HoldNoteScore_MissedHold'}
 local frameX = SCREEN_CENTER_X/2
 local frameY = 150
 local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
@@ -20,16 +20,22 @@ end;
 
 t[#t+1] = Def.ActorFrame{
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,10,40;zoom,0.4;halign,0;diffuse,getMainColor("frame"),diffusealpha,0.8);
-		BeginCommand=function(self)
+		InitCommand = function(self)
+			self:xy(10,40)
+			self:zoom(0.4)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 			self:settextf("Timing Difficulty: %d",GetTimingDifficulty())
-		end;
+		end
 	};
 	LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,10,55;zoom,0.4;halign,0;diffuse,getMainColor("frame"),diffusealpha,0.8);
-		BeginCommand=function(self)
+		InitCommand = function(self)
+			self:xy(10,55)
+			self:zoom(0.4)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 			self:settextf("Life Difficulty: %d",GetLifeDifficulty())
-		end;
+		end
 	};
 };
 
@@ -60,7 +66,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:xy(SCREEN_CENTER_X+5+(266/2),50)
 		self:zoom(0.6)
 		self:maxwidth(((SCREEN_WIDTH/2 -5 -266/2)/0.6) - 10)
-		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		self:halign(0):valign(0)
 	end;
 	BeginCommand = function(self) 
@@ -77,7 +83,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:xy(SCREEN_CENTER_X+5+(266/2),65)
 		self:zoom(0.4)
 		self:maxwidth(((SCREEN_WIDTH/2 -5 -266/2)/0.4) - 10)
-		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		self:halign(0):valign(0)
 	end;
 	BeginCommand = function(self) 
@@ -146,7 +152,7 @@ local function GraphDisplay( pn )
 
 
 		LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,frameWidth/2-5,60-25;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
+			InitCommand=cmd(xy,frameWidth/2-5,60-25+5;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
 			BeginCommand=function(self)
 				local text = ""
 				text = string.format("Life: %.0f%%",pss:GetCurrentLife()*100)
@@ -251,9 +257,11 @@ local function scoreBoard(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name = "DisplayName";
 		InitCommand  = function(self)
-			self:xy(66-frameWidth/2,10)
+			self:xy(69-frameWidth/2,10)
 			self:zoom(0.6)
 			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+
 			local text = ""
 			if profile ~= nil then
 				text = profile:GetDisplayName()
@@ -267,9 +275,10 @@ local function scoreBoard(pn)
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(66-frameWidth/2,22)
+			self:xy(69-frameWidth/2,23)
 			self:zoom(0.3)
 			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		SetCommand = function(self)
 			if profile ~= nil then
@@ -330,7 +339,7 @@ local function scoreBoard(pn)
 		end
 	}
 
-
+	-- Notecount
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameWidth/2-5,19;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
 		BeginCommand=function(self) 
@@ -354,6 +363,7 @@ local function scoreBoard(pn)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
 			self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
 		end;
 	}
 
@@ -362,7 +372,7 @@ local function scoreBoard(pn)
 			self:y(110)
 			self:zoomto(frameWidth-10,2)
 			self:valign(0)
-			self:diffusealpha(0.8)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardDivider)):diffusealpha(0.8)
 		end
 	}
 
@@ -428,6 +438,7 @@ local function scoreBoard(pn)
 				self:diffuse(getMainColor("negative"))
 			else
 				self:settext("-")
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end
 		end;
 	}
@@ -440,6 +451,7 @@ local function scoreBoard(pn)
 			self:xy(-frameWidth/2+5,137)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
 			self:settextf("%s - %s",THEME:GetString("ScreenEvaluation","CategoryScore"),getScoreTypeText(0))
 		end;
 	}
@@ -449,7 +461,7 @@ local function scoreBoard(pn)
 			self:y(140)
 			self:zoomto(frameWidth-10,2)
 			self:valign(0)
-			self:diffusealpha(0.8)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardDivider)):diffusealpha(0.8)
 		end
 	}
 
@@ -458,6 +470,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-50,137)
 			self:zoom(0.5)
 			self:halign(1):valign(1)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand = function(self)
 			local score = getCurScoreST(pn,0)
@@ -476,7 +489,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-50,143)
 			self:zoom(0.35)
 			self:halign(1):valign(0)
-			self:diffusealpha(0.3)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText)):diffusealpha(0.3)
 		end;
 		BeginCommand = function(self)
 			local index
@@ -523,6 +536,7 @@ local function scoreBoard(pn)
 				self:diffuse(getMainColor("negative"))
 			else
 				self:settext("-")
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end
 		end;
 	}
@@ -532,6 +546,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-20,136)
 			self:zoom(0.30)
 			self:valign(1)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand = function(self) 
 			local index
@@ -558,6 +573,7 @@ local function scoreBoard(pn)
 			self:xy(-frameWidth/2+5,167)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
 			self:settext(THEME:GetString("ScreenEvaluation","CategoryMissCount"))
 		end;
 	}
@@ -567,7 +583,7 @@ local function scoreBoard(pn)
 			self:y(170)
 			self:zoomto(frameWidth-10,2)
 			self:valign(0)
-			self:diffusealpha(0.8)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardDivider)):diffusealpha(0.8)
 		end
 	}
 
@@ -576,6 +592,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-50,167)
 			self:zoom(0.5)
 			self:halign(1):valign(1)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand = function(self)
 			local score = pss:GetHighScore();
@@ -589,7 +606,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-50,173)
 			self:zoom(0.35)
 			self:halign(1):valign(0)
-			self:diffusealpha(0.3)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText)):diffusealpha(0.3)
 		end;
 		BeginCommand = function(self)
 			local index
@@ -636,9 +653,11 @@ local function scoreBoard(pn)
 					self:diffuse(getMainColor("positive"))
 				else
 					self:settext("-")
+					self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 				end
 			else
 				self:settext("-")
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end;
 		end;
 	}
@@ -648,6 +667,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-20,166)
 			self:zoom(0.30)
 			self:valign(1)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand = function(self) 
 			local index
@@ -682,6 +702,7 @@ local function scoreBoard(pn)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
 			self:settext(THEME:GetString("ScreenEvaluation","CategoryJudgment"))
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
 		end;
 	}
 
@@ -690,13 +711,12 @@ local function scoreBoard(pn)
 			self:y(200)
 			self:zoomto(frameWidth-10,2)
 			self:valign(0)
-			self:diffusealpha(0.8)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardDivider)):diffusealpha(0.8)
 		end
 	}
 
 	for k,v in ipairs(judges) do
 		t[#t+1] = LoadFont("Common Normal")..{
-
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),210)
 				self:zoom(0.4)
@@ -713,8 +733,14 @@ local function scoreBoard(pn)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),225)
 				self:zoom(0.35)
 			    self:set_chars_wide(1):set_approach_seconds(approachSecond)
+			    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
 			end;
 			BeginCommand=function(self) 
+				local percent = pss:GetPercentageOfTaps(v)
+				if tostring(percent) == "-nan(ind)" then
+					percent = 0
+				end
+				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4))}
 				self:target_number(pss:GetTapNoteScores(v))
 			end
 		}
@@ -725,13 +751,15 @@ local function scoreBoard(pn)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),235)
 				self:zoom(0.30)
 			    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
+			    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
 			end;
 			BeginCommand=function(self) 
-				local text = pss:GetPercentageOfTaps(v)*100
-				if tostring(text) == "-nan(ind)" then
-					text = 0
+				local percent = pss:GetPercentageOfTaps(v)
+				if tostring(percent) == "-nan(ind)" then
+					percent = 0
 				end
-				self:target_number(text)
+				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4))}
+				self:target_number(percent*100)
 			end
 		}
 	end
@@ -740,40 +768,60 @@ local function scoreBoard(pn)
 		t[#t+1] = LoadFont("Common Normal")..{
 
 			InitCommand= function(self)
-				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),260)
+				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),260)
 				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end;
 			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self) 
-				self:settext(getJudgeStrings(v))
+			SetCommand=function(self)
+				local text = getJudgeStrings(v)
+				if text == "OK" or text == "NG" then
+					text = "Hold "..text
+				end
+				self:settext(text)
 			end;
 		};
 
 		t[#t+1] = Def.RollingNumbers{
 			Font= "Common Normal";
 			InitCommand= function(self)
-				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),275)
+				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),275)
 				self:zoom(0.35)
 			    self:set_chars_wide(1):set_approach_seconds(approachSecond)
+			    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
+		    	self:set_number_attribute{Diffuse =color(colorConfig:get_data().evaluation.ScoreCardText)}
 			end;
 			BeginCommand=function(self) 
+				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
+				if tostring(percent) == "-nan(ind)" then
+					percent = 0
+				end
+				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
+				
+
+
 				self:target_number(pss:GetHoldNoteScores(v))
+
+
 			end
 		}
 
 		t[#t+1] = Def.RollingNumbers{
 			Font= "Common Normal";
 			InitCommand= function(self)
-				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),285)
+				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),285)
 				self:zoom(0.30)
 			    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
+			    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
+		    	self:set_number_attribute{Diffuse =color(colorConfig:get_data().evaluation.ScoreCardText)}
 			end;
 			BeginCommand=function(self) 
-				local text = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))*100
-				if tostring(text) == "-nan(ind)" then
-					text = 0
+				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
+				if tostring(percent) == "-nan(ind)" then
+					percent = 0
 				end
-				self:target_number(text)
+				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
+				self:target_number(percent*100)
 			end
 		}
 	end
@@ -781,11 +829,9 @@ local function scoreBoard(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 
 		InitCommand= function(self)
-			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),260)
+			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),260)
 			self:zoom(0.4)
-		end;
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			self:settext("Mines Hit")
 		end;
 	};
@@ -793,11 +839,19 @@ local function scoreBoard(pn)
 	t[#t+1] = Def.RollingNumbers{
 		Font= "Common Normal";
 		InitCommand= function(self)
-			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),275)
+			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),275)
 			self:zoom(0.35)
 		    self:set_chars_wide(1):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
+		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().evaluation.ScoreCardText)}
 		end;
 		BeginCommand=function(self) 
+			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
+			if tostring(percent) == "-nan(ind)" then
+				percent = 0
+			end
+			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
+			
 			self:target_number(pss:GetTapNoteScores('TapNoteScore_HitMine'))
 		end
 	}
@@ -805,16 +859,19 @@ local function scoreBoard(pn)
 	t[#t+1] = Def.RollingNumbers{
 		Font= "Common Normal";
 		InitCommand= function(self)
-			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),285)
+			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),285)
 			self:zoom(0.30)
 		    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
+		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().evaluation.ScoreCardText)}
 		end;
 		BeginCommand=function(self) 
-			local text = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
-			if tostring(text) == "-nan(ind)" then
-				text = 0
+			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
+			if tostring(percent) == "-nan(ind)" then
+				percent = 0
 			end
-			self:target_number(text)
+			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
+			self:target_number(percent*100)
 		end
 	}
 
