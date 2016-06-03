@@ -106,7 +106,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:halign(0)
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)
-		self:diffusealpha(0.8)		
+		self:diffuse(color(colorConfig:get_data().selectMusic.BannerText))
 	end;
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
@@ -129,8 +129,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2-5,132+capWideScale(get43size(60),60))
 		self:halign(1)
 		self:zoom(0.45)
-		self:maxwidth(capWideScale(get43size(340),340)/0.45)
-		self:diffusealpha(0.8)		
+		self:maxwidth(capWideScale(get43size(340),340)/0.45)	
 	end;	
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
