@@ -18,26 +18,36 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBo
 end;
 
 
-t[#t+1] = Def.ActorFrame{
-	LoadFont("Common Normal")..{
-		InitCommand = function(self)
-			self:xy(10,40)
-			self:zoom(0.4)
-			self:halign(0)
-			self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-			self:settextf("Timing Difficulty: %d",GetTimingDifficulty())
-		end
-	};
-	LoadFont("Common Normal")..{
-		InitCommand = function(self)
-			self:xy(10,55)
-			self:zoom(0.4)
-			self:halign(0)
-			self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-			self:settextf("Life Difficulty: %d",GetLifeDifficulty())
-		end
-	};
-};
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function(self)
+		self:xy(10,40)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
+		self:settextf("Timing Difficulty: %d",GetTimingDifficulty())
+	end
+}
+
+t[#t+1] = 	LoadFont("Common Normal")..{
+	InitCommand = function(self)
+		self:xy(10,55)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
+		self:settextf("Life Difficulty: %d",GetLifeDifficulty())
+	end
+}
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function(self)
+		self:xy(10,70)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
+		self:settextf("Music Rate: %s",getCurRate())
+	end
+}
 
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
