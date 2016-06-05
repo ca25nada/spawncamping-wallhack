@@ -16,10 +16,10 @@ else
 end;
 
 local t = Def.ActorFrame{
-	BeginCommand=cmd(queuecommand,"Set";visible,false);
-	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
-	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
-	SetCommand=function(self)
+	BeginCommand = cmd(queuecommand,"Set";visible,false);
+	OffCommand = cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
+	OnCommand = cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
+	SetCommand = function(self)
 		self:finishtweening()
 		if getTabIndex() == 3 then
 			self:queuecommand("On");
@@ -31,8 +31,8 @@ local t = Def.ActorFrame{
 			update = false
 		end;
 	end;
-	TabChangedMessageCommand=cmd(queuecommand,"Set");
-	CodeMessageCommand=function(self,params)
+	TabChangedMessageCommand = cmd(queuecommand,"Set");
+	CodeMessageCommand = function(self,params)
 		if update then
 			if params.Name == "NextRate" then
 				rateIndex = ((rateIndex)%(#rates))+1
@@ -55,11 +55,11 @@ local t = Def.ActorFrame{
 			end;
 		end;
 	end;
-	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
-	CurrentStepsP1ChangedMessageCommand=cmd(queuecommand,"Set");
-	CurrentStepsP2ChangedMessageCommand=cmd(queuecommand,"Set");
-	InitScoreCommand=function(self)
+	PlayerJoinedMessageCommand = cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand = cmd(queuecommand,"Set");
+	CurrentStepsP1ChangedMessageCommand = cmd(queuecommand,"Set");
+	CurrentStepsP2ChangedMessageCommand = cmd(queuecommand,"Set");
+	InitScoreCommand = function(self)
 			if GAMESTATE:GetCurrentSong() ~= nil then
 				hsTable = getScoreList(pn)
 				if hsTable ~= nil and hsTable[1] ~= nil then
@@ -95,36 +95,42 @@ local offsetY = 20
 local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss','HoldNoteScore_Held','HoldNoteScore_LetGo'}
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY+offsetY;zoomto,frameWidth,frameHeight-offsetY;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.6);
+	InitCommand = cmd(xy,frameX,frameY+offsetY;zoomto,frameWidth,frameHeight-offsetY;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.6);
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8);
+	InitCommand = cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8);
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.4;halign,0;diffuse,getMainColor('highlight'));
-	BeginCommand=cmd(settext,THEME:GetString("ScreenSelectMusic","ScoreInfoHeader"))
+	InitCommand = cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.45;halign,0;diffuse,getMainColor('highlight'));
+	BeginCommand = cmd(settext,THEME:GetString("ScreenSelectMusic","ScoreInfoHeader"))
 };
 
 t[#t+1] = LoadFont("Common Large")..{
-	Name="Grades";
-	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+20;zoom,0.6;halign,0;maxwidth,50/0.6);
-	SetCommand=function(self)
+	Name = "Grades";
+	InitCommand = cmd(xy,frameX+offsetX,frameY+offsetY+20;zoom,0.6;halign,0;maxwidth,50/0.6);
+	SetCommand = function(self)
 		if score ~= nil then
 			self:settext(THEME:GetString("Grade",ToEnumShortString(score:GetGrade())))
 			self:diffuse(getGradeColor(score:GetGrade()))
+			self:visible(true)
 		else
-			self:settext("")
+			self:visible(false)
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="Score";
-	InitCommand=cmd(xy,frameX+offsetX+55,frameY+offsetY+14;zoom,0.5;halign,0;);
-	SetCommand=function(self)
+	Name = "Score";
+	InitCommand = function(self)
+		self:xy(frameX+offsetX+55,frameY+offsetY+14)
+		self:zoom(0.5)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+	end;
+	SetCommand = function(self)
 		if score ~= nil then
 			local curscore = getScore(score,0)
 			local maxscore = getMaxScore(pn,0)	
@@ -132,19 +138,23 @@ t[#t+1] = LoadFont("Common Normal")..{
 				maxscore = 1
 			end;
 			local pscore = (curscore/maxscore)
-
 			self:settextf("%05.2f%% (%s)",math.floor((pscore)*10000)/100,getScoreTypeText(0))
 		else
 			self:settextf("00.00%% (%s)",getScoreTypeText(0))
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="RawScore";
-	InitCommand=cmd(xy,frameX+offsetX+55,frameY+offsetY+26;zoom,0.4;halign,0;);
-	SetCommand=function(self)
+	Name = "RawScore";
+	InitCommand = function(self)
+		self:xy(frameX+offsetX+55,frameY+offsetY+26)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+	end;
+	SetCommand = function(self)
 		if score ~= nil then
 			local curscore = getScore(score,0)
 			local dpscore = getScore(score,1)
@@ -165,23 +175,32 @@ t[#t+1] = LoadFont("Common Normal")..{
 			self:settext("0000/0000 (D +0)")
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="ClearType";
-	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+41;zoom,0.5;halign,0);
-	SetCommand=function(self)
+	Name = "ClearType";
+	InitCommand = function(self)
+		self:xy(frameX+offsetX,frameY+offsetY+41)
+		self:zoom(0.5)
+		self:halign(0)
+	end;
+	SetCommand = function(self)
 		self:settext(getClearTypeFromScore(pn,score,0))
 		self:diffuse(getClearTypeFromScore(pn,score,2))
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="Combo";
-	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+58;zoom,0.4;halign,0);
-	SetCommand=function(self)
+	Name = "Combo";
+	InitCommand = function(self)
+		self:xy(frameX+offsetX,frameY+offsetY+58)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+	end;
+	SetCommand = function(self)
 		if score ~= nil then
 			local maxCombo = getScoreMaxCombo(score)
 			self:settextf("%s: %d",THEME:GetString("ScreenSelectMusic","ScoreInfoMaxCombo"),maxCombo)
@@ -189,13 +208,18 @@ t[#t+1] = LoadFont("Common Normal")..{
 			self:settextf("%s: 0",THEME:GetString("ScreenSelectMusic","ScoreInfoMaxCombo"))
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="MissCount";
-	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+73;zoom,0.4;halign,0);
-	SetCommand=function(self)
+	Name = "MissCount";
+	InitCommand = function(self)
+		self:xy(frameX+offsetX,frameY+offsetY+73)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+	end;
+	SetCommand = function(self)
 		if score ~= nil then
 			local missCount = getScoreMissCount(score)
 			if missCount ~= nil then
@@ -207,39 +231,51 @@ t[#t+1] = LoadFont("Common Normal")..{
 			self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoMissCount")..": -")
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="Date";
-	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+88;zoom,0.4;halign,0);
-	SetCommand=function(self)
+	Name = "Date";
+	InitCommand = function(self)
+		self:xy(frameX+offsetX,frameY+offsetY+88)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+	end;
+	SetCommand = function(self)
 		if score ~= nil then
 			self:settextf("%s: %s",THEME:GetString("ScreenSelectMusic","ScoreInfoDate"),getScoreDate(score))
 		else
 			self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoDate")..": ")
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
+
+--[[
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="Mods";
-	InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+103;zoom,0.4;halign,0);
-	SetCommand=function(self)
+	Name = "Mods";
+	InitCommand = function(self)
+		self:xy(frameX+offsetX,frameY+offsetY+103)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+	end;
+	SetCommand = function(self)
 		if score ~= nil then
 			self:settextf("%s: %s",THEME:GetString("ScreenSelectMusic","ScoreInfoOptions"),score:GetModifiers())
 		else
 			self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoOptions")..":")
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="Mods";
-	InitCommand=cmd(xy,frameX+offsetX,frameY+frameHeight-10;zoom,0.4;halign,0);
-	SetCommand=function(self)
+	Name = "Mods";
+	InitCommand = cmd(xy,frameX+offsetX,frameY+frameHeight-10;zoom,0.4;halign,0);
+	SetCommand = function(self)
 		if update then
 			if score ~= nil and ghostDataExists(pn,score) then
 				if isGhostDataValid(pn,score) then
@@ -255,13 +291,13 @@ t[#t+1] = LoadFont("Common Normal")..{
 			end;
 		end
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
-};
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
+};--]]
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name="StepsAndMeter";
-	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+10;zoom,0.5;halign,1;);
-	SetCommand=function(self)
+	Name = "StepsAndMeter";
+	InitCommand = cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+10;zoom,0.5;halign,1;);
+	SetCommand = function(self)
 		local steps = GAMESTATE:GetCurrentSteps(pn)
 		if steps ~= nil then
 			local diff = getDifficulty(steps:GetDifficulty())
@@ -277,26 +313,28 @@ t[#t+1] = LoadFont("Common Normal")..{
 			end;
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+frameHeight-10;zoom,0.4;halign,1;);
-	SetCommand=function(self)
+	InitCommand = cmd(xy,frameX+frameWidth-offsetX,frameY+frameHeight-10;zoom,0.4;halign,1;);
+	SetCommand = function(self)
 		if hsTable ~= nil and rates ~= nil and rtTable[rates[rateIndex]] ~= nil then
 			self:settextf("Rate %s - Showing %d/%d",rates[rateIndex],scoreIndex,#rtTable[rates[rateIndex]])
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		else
 			self:settext(THEME:GetString("ScreenSelectMusic","ScoreInfoNoScore"))
+			self:diffuse(getMainColor("disabled"))
 		end;
 	end;
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = Def.Quad{
-	Name="ScrollBar";
-	InitCommand=cmd(xy,frameX+frameWidth,frameY+frameHeight;zoomto,4,0;halign,1;valign,1;diffuse,getMainColor('highlight'));
-	ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self,params)
+	Name = "ScrollBar";
+	InitCommand = cmd(xy,frameX+frameWidth,frameY+frameHeight;zoomto,4,0;halign,1;valign,1;diffuse,getMainColor('highlight'));
+	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
+	SetCommand = function(self,params)
 		self:finishtweening()
 		self:smooth(0.2)
 		if hsTable ~= nil and rates ~= nil and rtTable[rates[rateIndex]] ~= nil then
@@ -312,8 +350,8 @@ t[#t+1] = Def.Quad{
 
 local function makeText(index)
 	return LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+15+(index*15);zoom,fontScale;halign,1;);
-		SetCommand=function(self)
+		InitCommand = cmd(xy,frameX+frameWidth-offsetX,frameY+offsetY+15+(index*15);zoom,fontScale;halign,1;);
+		SetCommand = function(self)
 			local count = 0
 			if update then
 				if rtTable[rates[index]] ~= nil then
@@ -324,38 +362,43 @@ local function makeText(index)
 					if index == rateIndex then
 						self:diffuse(getMainColor('highlight'))
 					else
-						self:diffuse(color("#FFFFFF"))
+						self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 					end;
 				else
 					self:settext("")
 				end;
 			end;
 		end;
-		ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+		ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 	};
 end;
 
 for i=1,10 do
-	t[#t+1] =makeText(i)
+	t[#t+1] = makeText(i)
 end;
 
 local function makeJudge(index,judge)
 	local t = Def.ActorFrame{
-		InitCommand=cmd(xy,frameX+offsetX,frameY+offsetY+125+((index-1)*18););
+		InitCommand = cmd(xy,frameX+offsetX,frameY+offsetY+125+((index-1)*18););
 	}
 
 	--labels
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(zoom,0.5;halign,0;);
-		BeginCommand=function(self)
+		InitCommand = cmd(zoom,0.5;halign,0;);
+		BeginCommand = function(self)
 			self:settext(getJudgeStrings(judge))
 			self:diffuse(TapNoteScoreToColor(judge))
 		end;
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(x,120;zoom,0.5;halign,1;);
-		SetCommand=function(self)
+		InitCommand = function(self)
+			self:x(120)
+			self:zoom(0.5)
+			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		end;
+		SetCommand = function(self)
 			if score ~= nil then
 				if judge ~= 'HoldNoteScore_Held' and judge ~= 'HoldNoteScore_LetGo' then
 					self:settext(getScoreTapNoteScore(score,judge))
@@ -366,12 +409,17 @@ local function makeJudge(index,judge)
 				self:settext("0")
 			end;
 		end;
-		ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+		ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(x,122;zoom,0.3;halign,0;);
-		SetCommand=function(self)
+		InitCommand = function(self)
+			self:x(122)
+			self:zoom(0.3)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		end;
+		SetCommand = function(self)
 			if score ~= nil then
 				if judge ~= 'HoldNoteScore_Held' and judge ~= 'HoldNoteScore_LetGo' then
 					local taps = math.max(1,getMaxNotes(pn))
@@ -387,7 +435,7 @@ local function makeJudge(index,judge)
 				self:settext("(0.00%)")
 			end;
 		end;
-		ScoreUpdateMessageCommand=cmd(queuecommand,"Set");
+		ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 	};
 
 	return t
@@ -395,7 +443,7 @@ local function makeJudge(index,judge)
 end;
 
 for i=1,#judges do
-	t[#t+1] =makeJudge(i,judges[i])
+	t[#t+1] = makeJudge(i,judges[i])
 end;
 
 return t

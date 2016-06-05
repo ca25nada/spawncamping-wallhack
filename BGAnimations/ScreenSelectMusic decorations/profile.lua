@@ -1,9 +1,9 @@
 local update = false
 local t = Def.ActorFrame{
-	BeginCommand=cmd(queuecommand,"Set";visible,false);
-	OffCommand=cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
-	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
-	SetCommand=function(self)
+	BeginCommand = cmd(queuecommand,"Set";visible,false);
+	OffCommand = cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
+	OnCommand = cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
+	SetCommand = function(self)
 		self:finishtweening()
 		if getTabIndex() == 4 then
 			self:queuecommand("On");
@@ -14,8 +14,8 @@ local t = Def.ActorFrame{
 			update = false
 		end;
 	end;
-	TabChangedMessageCommand=cmd(queuecommand,"Set");
-	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+	TabChangedMessageCommand = cmd(queuecommand,"Set");
+	PlayerJoinedMessageCommand = cmd(queuecommand,"Set");
 };
 
 local frameX = 18
@@ -37,37 +37,37 @@ local stringList2 = {
 }
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY+offsetY;zoomto,frameWidth,frameHeight-offsetY;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.6);
+	InitCommand = cmd(xy,frameX,frameY+offsetY;zoomto,frameWidth,frameHeight-offsetY;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.6);
 };
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8);
+	InitCommand = cmd(xy,frameX,frameY;zoomto,frameWidth,offsetY;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8);
 };
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.4;halign,0;diffuse,getMainColor('highlight'));
-	BeginCommand=cmd(settext,THEME:GetString("ScreenSelectMusic","ProfileInfoHeader"))
+	InitCommand = cmd(xy,frameX+5,frameY+offsetY-9;zoom,0.45;halign,0;diffuse,getMainColor('highlight'));
+	BeginCommand = cmd(settext,THEME:GetString("ScreenSelectMusic","ProfileInfoHeader"))
 };
 
 local function makeText1(index)
 	return LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,offsetX1/fontScale);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
+		InitCommand = cmd(xy,frameX+offsetX2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,offsetX1/fontScale);
+		BeginCommand = cmd(queuecommand,"Set");
+		SetCommand = function(self)
 			self:settext(stringList1[index])
 		end;
-		CodeMessageCommand=cmd(queuecommand,"Set");
+		CodeMessageCommand = cmd(queuecommand,"Set");
 	};
 end;
 
 local function makeText2(index)
 	return LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
+		InitCommand = cmd(xy,frameX+offsetX1+offsetX2*2,frameY+offsetY+(index*distY);zoom,fontScale;halign,0;maxwidth,(frameWidth-offsetX1)/fontScale);
+		BeginCommand = cmd(queuecommand,"Set");
+		SetCommand = function(self)
 			self:settext(stringList2[index])
 		end;
-		CodeMessageCommand=cmd(queuecommand,"Set");
+		CodeMessageCommand = cmd(queuecommand,"Set");
 	};
 end;
 

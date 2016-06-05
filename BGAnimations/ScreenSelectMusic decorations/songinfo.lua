@@ -1,9 +1,9 @@
 local update = false -- don't update if not visible on screen.
 local t = Def.ActorFrame{
-	BeginCommand=cmd(queuecommand,"Set");
-	OffCommand=cmd(bouncebegin,0.2;xy,-500,0);
-	OnCommand=cmd(bouncebegin,0.2;xy,0,0);
-	SetCommand=function(self)
+	BeginCommand = cmd(queuecommand,"Set");
+	OffCommand = cmd(bouncebegin,0.2;xy,-500,0);
+	OnCommand = cmd(bouncebegin,0.2;xy,0,0);
+	SetCommand = function(self)
 		self:finishtweening()
 		if getTabIndex() == 1 then
 			self:queuecommand("On");
@@ -13,8 +13,8 @@ local t = Def.ActorFrame{
 			update = false
 		end;
 	end;
-	TabChangedMessageCommand=cmd(queuecommand,"Set");
-	PlayerJoinedMessageCommand=cmd(queuecommand,"Set");
+	TabChangedMessageCommand = cmd(queuecommand,"Set");
+	PlayerJoinedMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = Def.Quad{
@@ -28,8 +28,8 @@ t[#t+1] = Def.Quad{
 
 -- Song banner
 t[#t+1] = Def.Banner{
-	InitCommand=cmd(xy,SCREEN_CENTER_X/2,120;);
-	SetMessageCommand=function(self)
+	InitCommand = cmd(xy,SCREEN_CENTER_X/2,120;);
+	SetMessageCommand = function(self)
 		if update then
 			local top = SCREENMAN:GetTopScreen()
 			if top:GetName() == "ScreenSelectMusic" or top:GetName() == "ScreenNetSelectMusic" then
@@ -49,7 +49,7 @@ t[#t+1] = Def.Banner{
 		end;
 		self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 	end;
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand = cmd(queuecommand,"Set");
 };
 
 t[#t+1] = Def.Sprite {
@@ -59,7 +59,7 @@ t[#t+1] = Def.Sprite {
 		self:wag():effectmagnitude(0,0,5)
 	end;
 	Name="CDTitle";
-	SetCommand=function(self)
+	SetCommand = function(self)
 		if update then
 			self:finishtweening()
 			self:sleep(0.5)
@@ -94,8 +94,8 @@ t[#t+1] = Def.Sprite {
 			self:diffusealpha(0.8)
 		end
 	end;
-	BeginCommand=cmd(queuecommand,"Set");
-	CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;queuecommand,"Set");
+	BeginCommand = cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand = cmd(finishtweening;smooth,0.5;diffusealpha,0;queuecommand,"Set");
 };
 
 -- Song title // Artist on top of the banner
@@ -108,8 +108,8 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)
 		self:diffuse(color(colorConfig:get_data().selectMusic.BannerText))
 	end;
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self)
+	BeginCommand = cmd(queuecommand,"Set");
+	SetCommand = function(self)
 		if update then
 			local song = GAMESTATE:GetCurrentSong()
 			if song ~= nil then
@@ -120,7 +120,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			end
 		end
 	end;
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand = cmd(queuecommand,"Set");
 };
 
 -- Song length (todo: take rates into account..?)
@@ -132,8 +132,8 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)	
 	end;	
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self)
+	BeginCommand = cmd(queuecommand,"Set");
+	SetCommand = function(self)
 		if update then
 			local song = GAMESTATE:GetCurrentSong()
 			local seconds = 0
@@ -146,7 +146,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			end
 		end
 	end;
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand = cmd(queuecommand,"Set");
 };
 
 
