@@ -486,11 +486,7 @@ local function scoreBoard(pn)
 			local score = getCurScoreST(pn,0)
 			local maxScore = getMaxScoreST(pn,0)
 			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
-			if IsUsingWideScreen() then
-				self:settextf("%s (%d/%d)",percentText,score,maxScore)
-			else
-				self:settextf("%s",percentText)
-			end
+			self:settextf("%s (%d/%d)",percentText,score,maxScore)
 		end;
 	}
 
@@ -511,11 +507,7 @@ local function scoreBoard(pn)
 			local score = getBestScore(pn,index,0)
 			local maxScore = getMaxScoreST(pn,0)
 			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
-			if IsUsingWideScreen() then
-				self:settextf("%s (%d/%d)",percentText,score,maxScore)
-			else
-				self:settextf("%s",percentText)
-			end
+			self:settextf("%s (%d/%d)",percentText,score,maxScore)
 		end;
 	}
 
