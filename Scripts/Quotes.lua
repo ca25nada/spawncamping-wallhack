@@ -281,12 +281,12 @@ local Phrases = {
     "/!\\ Shitmapping in Progress /!\\ ",
     "pls enjoy gaem",
     "尻削り節 [7keys　歌は世につれ世は歌につれ　難易度表に心奪われ　滝汗流し腱鞘炎　来る日も来る日も飽きず筋トレ　誰にでもつらいときはあるものです　それでは聞いていただきましょう　手動ディレイで　尻　削　り　節]",
-    "Krrrrr Krrrrr Krrrrr slide", --blurtic
+    "Krrrrr Krrrrr Krrrrr slide", --blurtic vids
     "it looks like burn spiral to kill mosquito, we're not mosquito. But the idea is that we accidentally stepped on it and ARGH IT'S HOT!!!", -- http://www.stepmania.com/forums/themes/show/6085#post11127
     "somewhere.... someone out there is complaining their days are bad cuz they can't FC overjoy 3s and 4s", -- Lovely
-    "282 BPM prim working overtime",
-    "noteskins cost like $20",
-    "PRIM -- PRIM PRIM PRIM PRIM prim prim could pri prim ",
+    "282 BPM prim working overtime", -- foal
+    "noteskins cost like $20", -- foal
+    "PRIM -- PRIM PRIM PRIM PRIM prim prim could pri prim ", -- foal
     "i play stepmania at home before school then i go to school and play it during class and at lunch i play it instead of eating and when i go home i play some then i go to the arcade and play keYbEaT",
     "the technical problem is not my issue.", -- https://osu.ppy.sh/forum/p/5038917
     "You're pretty good for a 13 y/o, have you played games like osu!mania before?", -- tristan
@@ -300,7 +300,14 @@ local Phrases = {
     "i bet you memorized the notes",
     "I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.",
     "i had an AAA on scorpion fire but my keyboard turned into a fucking cake", -- CAKE MANIAAAAAAAAAA
-    "when's the brazilian p90 rush theme coming out?"
+    "when's the brazilian p90 rush theme coming out?",
+    "when you already pine nutted but she keep on gengaozo_succin", -- ritkoi
+    "wow -- this map -- is very -- ssibal", --jakads https://osu.ppy.sh/b/823842?m=3
+    "The only mark you will leave on this world is your utterly insignificant carbon footprint. Your entire life will be obsoleted by a handful of cattle in wyoming and undone by a few fucking square meters of shrubbery in scotland.", -- mina
+    "THIS IS NOT GOOBYE", -- Beatcraft cyclone
+    "REMINDER THERE IS GIRLISH CAFE FOR O!M",
+    "guilmon digivolves too Guilhermeziatomon",
+
 }
 
 --tip
