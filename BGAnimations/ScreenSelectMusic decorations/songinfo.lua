@@ -115,7 +115,8 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			if song ~= nil then
 				self:settext(song:GetDisplayMainTitle().." // "..song:GetDisplayArtist())
 			else
-				self:settext("")
+				local wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
+				self:settext(wheel:GetSelectedSection())
 			end
 		end
 	end;
