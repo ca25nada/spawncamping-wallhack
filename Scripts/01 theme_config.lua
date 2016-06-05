@@ -21,7 +21,6 @@ local defaultConfig = {
 	eval = {
 		CurrentTimeEnabled = true,
 		JudgmentBarEnabled = true,
-		JudgmentBarCellCount = 100, --Will be halved for 2p
 		ScoreBoardEnabled = true,
 		ScoreBoardMaxEntry = 10,
 		SongBGType = 1, -- 1 = song bg, 2 = grade+common, 3 = grade only

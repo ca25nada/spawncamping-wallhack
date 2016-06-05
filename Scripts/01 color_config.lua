@@ -9,6 +9,7 @@ local defaultConfig = {
 		negative = "#FF9999",
 		positive = "#66ccff",
 		headerText = "#FFFFFF",
+		headerFrameText = "#FFFFFF",
 	},
 
 	clearType = {
@@ -117,7 +118,9 @@ local defaultConfig = {
 		MusicWheelTitleText = "#FFFFFF",
 		MusicWheelSubtitleText = "#FFFFFF",
 		MusicWheelArtistText = "#FFFFFF",
+		MusicWheelSectionCountText = "#FFFFFF",
 		MusicWheelDivider = "#FFFFFF",
+		MusicWheelExtraColor = "#FFCCCC",
 		ProfileCardText = "#FFFFFF",
 		TabContentText = "#FFFFFF",
 		BannerText = "#FFFFFF",

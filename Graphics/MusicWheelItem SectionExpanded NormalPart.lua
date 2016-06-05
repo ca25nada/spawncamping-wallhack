@@ -22,6 +22,7 @@ t[#t+1] = Def.Quad{
 		self:x(30)
 		self:zoomto(2,32)
 		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.MusicWheelDivider))
 	end;
 	BeginCommand = function(self) self:queuecommand('Set') end;
 	OffCommand = function(self) self:visible(false) end;

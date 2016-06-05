@@ -93,6 +93,7 @@ local function generalFrame(pn)
 		end;
 	}
 
+	-- Avatar background frame
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:xy(25+10-(frameWidth/2),5)
@@ -125,6 +126,7 @@ local function generalFrame(pn)
 		end;
 	}
 
+	-- Avatar
 	t[#t+1] = Def.Sprite {
 		InitCommand=function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
 		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
@@ -137,11 +139,13 @@ local function generalFrame(pn)
 		end;
 	}
 
+	-- Player name
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(66-frameWidth/2,10)
+			self:xy(69-frameWidth/2,10)
 			self:zoom(0.6)
 			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
 			local text = ""
@@ -157,11 +161,13 @@ local function generalFrame(pn)
 		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
+	-- Level and exp
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(66-frameWidth/2,22)
+			self:xy(69-frameWidth/2,23)
 			self:zoom(0.3)
 			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
 			if profile[pn] ~= nil then
@@ -181,7 +187,7 @@ local function generalFrame(pn)
 			self:xy(frameWidth/2-150,3)
 			self:zoom(0.35)
 		    self:halign(0):valign(0)
-		    self:diffusealpha(0.5)
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText)):diffusealpha(0.5)
 		end;
 		SetCommand = function(self)
 			if getScoreDate(topScore[pn]) == "" then
@@ -196,12 +202,13 @@ local function generalFrame(pn)
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
-
+	-- Steps info
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self)
 			self:xy(5-frameWidth/2,40)
 			self:zoom(0.3)
 			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
 			local diff,stype
@@ -254,6 +261,7 @@ local function generalFrame(pn)
 			self:xy(frameWidth/2-5,38)
 			self:zoom(0.5)
 			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
 			if steps[pn] ~= nil then
@@ -291,6 +299,7 @@ local function generalFrame(pn)
 		end
 	}
 
+	-- Stepstype and Difficulty meter
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self)
 			self:xy(frameWidth-10-frameWidth/2-2,50)
@@ -341,6 +350,8 @@ local function generalFrame(pn)
 			self:y(50)
 			self:zoom(0.3)
 		    self:set_chars_wide(1):set_approach_seconds(approachSecond)
+		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
+		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
 		end;
 		SetCommand = function(self) 
 			self:stoptweening()
@@ -409,6 +420,7 @@ local function generalFrame(pn)
 			self:zoom(0.45):halign(1):maxwidth(75/0.45)
 		    self:set_chars_wide(6):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
 		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
 		end;
 		SetCommand = function(self)
 			local score = getBestScore(pn,0,0)
@@ -438,6 +450,7 @@ local function generalFrame(pn)
 			self:zoom(0.5):halign(1):maxwidth(26/0.5)
 		    self:set_chars_wide(4):set_approach_seconds(approachSecond)
 		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
 		end;
 		SetCommand = function(self) 
 			self:target_number(getMaxScore(pn,0))
@@ -457,6 +470,7 @@ local function generalFrame(pn)
 			self:zoom(0.5):halign(1):maxwidth(34/0.5)
 		    self:set_chars_wide(5):set_text_format("%.0f/"):set_approach_seconds(approachSecond)
 		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
+		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
 		end;
 		SetCommand = function(self) 
 			self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
@@ -476,6 +490,7 @@ local function generalFrame(pn)
 			self:xy(178-frameWidth/2,frameHeight-19)
 			self:zoom(0.3)
 		    self:halign(0)
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		BeginCommand = function(self)
 			self:settext(getScoreTypeText(0))
@@ -490,6 +505,7 @@ local function generalFrame(pn)
 			self:xy(210-frameWidth/2,frameHeight-40)
 			self:zoom(0.4)
 		    self:halign(0)
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
 			local maxCombo = getBestMaxCombo(pn,0)
@@ -510,6 +526,7 @@ local function generalFrame(pn)
 			self:xy(210-frameWidth/2,frameHeight-28)
 			self:zoom(0.4)
 		    self:halign(0)
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
 			local missCount = getBestMissCount(pn,0)

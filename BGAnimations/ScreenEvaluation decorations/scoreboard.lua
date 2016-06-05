@@ -126,12 +126,12 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 					self:settext(index)
 					if equals then
 						self:diffuseshift()
-						self:effectcolor1(getMainColor("frame"))
+						self:effectcolor1(color(colorConfig:get_data().evaluation.BackgroundText))
 						self:effectcolor2(color("#3399cc"))
 						self:effectperiod(0.1)
 					else
 						self:stopeffect()
-						self:diffuse(getMainColor("frame"))
+						self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText))
 					end;
 				end;
 			end;
@@ -148,6 +148,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 					maxscore = 1
 				end;
 				local pscore = (curscore/maxscore)
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 				self:settextf("%s %.2f%% (x%d)",(getGradeStrings(hsTable[index]:GetGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()); 
 				--self:settextf("%s",getRate(hsTable[index]))
 			end;
@@ -158,6 +159,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			Name="option";
 			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 				self:settext(hsTable[index]:GetModifiers()); 
 				self:visible(false)
 			end;
@@ -188,6 +190,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 						hsTable[index]:GetTapNoteScore("TapNoteScore_W5"),
 						hsTable[index]:GetTapNoteScore("TapNoteScore_Miss"))
 				end;
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 			end;
 		};
 
@@ -196,6 +199,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			Name="date";
 			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0);
 			BeginCommand=function(self)
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 				if #hsTable >= 1 and index>= 1 then
 					self:settext(hsTable[index]:GetDate())
 				end;
@@ -274,7 +278,7 @@ t[#t+1] = LoadFont("Common normal")..{
 			end
 		end
 		self:settext(text)
-		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 	end;
 };
 
@@ -282,7 +286,7 @@ t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(xy,framex+frameWidth,framey+drawindex*spacing;zoom,0.35;halign,1;diffusealpha,0.8);
 	BeginCommand=function(self)
 		self:settextf("%d/%s Scores saved",(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
-		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 	end;
 }
 

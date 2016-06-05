@@ -23,7 +23,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 	Name = "HeaderTitle";
 	Text = Screen.String("HeaderText");
 	InitCommand = function (self)
-		self:diffuse(color("#FFFFFF"))
+		self:diffuse(color(colorConfig:get_data().main.headerText))
 		self:zoom(0.5)
 		self:halign(0)
 		self:xy(10,height/2)
