@@ -86,12 +86,6 @@ local defaultConfig = {
 		HoldNoteScore_LetGo = "#cc2929"
 	},
 
-	pacemaker = {
-		current = "#0099ff",
-		target = "#ff9999",
-		best = "#00ff00" -- unused,
-	},
-
 	songLength = {
 		normal = "#FFFFFF", -- normal
 		long = "#ff9a00", --orange
@@ -156,7 +150,7 @@ function getDifficultyColor(diff)
 end
 
 function getPaceMakerColor(type)
-	return color(colorConfig:get_data().pacemaker[type]) or color("#ffffff");
+	return color(colorConfig:get_data().gameplay["Pacemaker"..type]) or color("#ffffff");
 end
 
 function getSongLengthColor(s)

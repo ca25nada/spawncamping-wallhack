@@ -369,15 +369,15 @@ if enabled then
 		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.4;)
 	};
 	
-	t[#t+1] = targetMaxGraph(math.min(barCount,3),ghostType,getPaceMakerColor("target"))
-	t[#t+1] = targetScoreGraph(math.min(barCount,3),ghostType,getPaceMakerColor("target"))
+	t[#t+1] = targetMaxGraph(math.min(barCount,3),ghostType,getPaceMakerColor("Target"))
+	t[#t+1] = targetScoreGraph(math.min(barCount,3),ghostType,getPaceMakerColor("Target"))
 
-	t[#t+1] = avgScoreGraph(1,ghostType,getPaceMakerColor("current"))
-	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("current"))
+	t[#t+1] = avgScoreGraph(1,ghostType,getPaceMakerColor("Current"))
+	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 
 	if not GAMESTATE:IsCourseMode() then
-		t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("best"))
-		t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("best"))
+		t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("Best"))
+		t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("Best"))
 	end
 
 	t[#t+1] = markers(ghostType,true)
