@@ -23,76 +23,85 @@ local clearType = {
 	[18]="ClearType_None",
 }
 
+
 local clearTypeReverse = { -- Reverse Lookup table for clearType
-	ClearType_MFC 	= 1,
-	ClearType_WF 	= 2,
-	ClearType_SDP 	= 3,
-	ClearType_PFC 	= 4,
-	ClearType_BF 	= 5,
-	ClearType_SDG	= 6,
-	ClearType_FC 	= 7,
-	ClearType_MF 	= 8,
-	ClearType_SDCB	= 9,
-	ClearType_EXHC	= 10,
+	ClearType_MFC 		= 1,
+	ClearType_WF 		= 2,
+	ClearType_SDP 		= 3,
+	ClearType_PFC 		= 4,
+	ClearType_BF 		= 5,
+	ClearType_SDG		= 6,
+	ClearType_FC 		= 7,
+	ClearType_MF 		= 8,
+	ClearType_SDCB		= 9,
+	ClearType_EXHC		= 10,
 	ClearType_HClear 	= 11,
 	ClearType_Clear 	= 12,
 	ClearType_EClear 	= 13,
 	ClearType_AClear 	= 14,
-	ClearType_Failed = 15,
-	ClearType_Invalid = 16,
-	ClearType_Noplay = 17,
-	ClearType_None = 18,
+	ClearType_Failed 	= 15,
+	ClearType_Invalid 	= 16,
+	ClearType_Noplay 	= 17,
+	ClearType_None 		= 18,
 }
 
-local clearTypeText = { -- ClearType texts
-	ClearType_MFC 	= "Marvelous Full Combo",
-	ClearType_WF 	= "Whiteflag",
-	ClearType_SDP 	= "Single Digit Perfects",
-	ClearType_PFC 	= "Perfect Full Combo",
-	ClearType_BF 	= "Blackflag",
-	ClearType_SDG	= "Single Digit Greats",
-	ClearType_FC 	= "Full Combo",
-	ClearType_MF 	= "Missflag",
-	ClearType_SDCB	= "Single Digit CBs",
-	ClearType_EXHC	= "EX Hard Clear",
+
+-- TODO: Move these to en.ini
+-- ClearType texts
+local clearTypeText = {
+	ClearType_MFC 		= "Marvelous Full Combo",
+	ClearType_WF 		= "Whiteflag",
+	ClearType_SDP 		= "Single Digit Perfects",
+	ClearType_PFC 		= "Perfect Full Combo",
+	ClearType_BF 		= "Blackflag",
+	ClearType_SDG		= "Single Digit Greats",
+	ClearType_FC 		= "Full Combo",
+	ClearType_MF 		= "Missflag",
+	ClearType_SDCB		= "Single Digit CBs",
+	ClearType_EXHC		= "EX-Hard Clear",
 	ClearType_HClear 	= "Hard Clear",
 	ClearType_Clear 	= "Clear",
 	ClearType_EClear 	= "Easy Clear",
 	ClearType_AClear 	= "Assist Clear",
-	ClearType_Failed = "Failed",
-	ClearType_Invalid = "Invalid",
-	ClearType_Noplay = "No Play",
-	ClearType_None = "", -- song is nil
+	ClearType_Failed 	= "Failed",
+	ClearType_Invalid 	= "Invalid",
+	ClearType_Noplay 	= "No Play",
+	ClearType_None 		= "",
 }
 
-local clearTypeTextShort = { -- Shorthand Versions of ClearType. Not Really used anywhere yet but who knows
-	ClearType_MFC 	= "Marv F-Combo",
-	ClearType_WF 	= "Whiteflag",
-	ClearType_SDP 	= "SDP",
-	ClearType_PFC 	= "Perf F-Combo",
-	ClearType_BF 	= "Blackflag",
-	ClearType_SDG	= "SDG",
-	ClearType_FC 	= "F-Combo",
-	ClearType_MF 	= "Missflag",
-	ClearType_SDCB	= "SDCB",
-	ClearType_EXHC	= "EXH-Clear",
+
+ -- Shorter ClearType texts
+local clearTypeTextShort = {
+	ClearType_MFC 		= "Marv F-Combo",
+	ClearType_WF 		= "Whiteflag",
+	ClearType_SDP 		= "SDP",
+	ClearType_PFC 		= "Perf F-Combo",
+	ClearType_BF 		= "Blackflag",
+	ClearType_SDG		= "SDG",
+	ClearType_FC 		= "F-Combo",
+	ClearType_MF 		= "Missflag",
+	ClearType_SDCB		= "SDCB",
+	ClearType_EXHC		= "EXH-Clear",
 	ClearType_HClear 	= "H-Clear",
 	ClearType_Clear 	= "Clear",
 	ClearType_EClear 	= "E-Clear",
 	ClearType_AClear 	= "A-Clear",
-	ClearType_Failed = "Failed",
-	ClearType_Invalid = "Invalid",
-	ClearType_Noplay = "No Play",
-	ClearType_None = "", -- song is nil
+	ClearType_Failed 	= "Failed",
+	ClearType_Invalid 	= "Invalid",
+	ClearType_Noplay 	= "No Play",
+	ClearType_None 		= "",
 }
 
 	
-
+-- Returns an integer corresponding to the clear level of the score.
 local function getClearLevel (pn,steps,score)
+
+	-- Return no play if score doesn't exist.
 	if score == nil then
 		return 17
 	end
 
+	-- Return invalid if the score isn't uhh valid.
 	if not isScoreValid(pn,steps,score) then
 		return 16
 	end
@@ -104,11 +113,14 @@ local function getClearLevel (pn,steps,score)
 	local lifeDiff = 4 -- default to 4
 
 	if grade == nil then
+		-- Return no play if there's no grade for the score. (which shoudn't happen anyway)
 		clearLevel = 17
 	else
+		-- Go through all the Stage award based cleartypes
 		if grade == 'Grade_Failed' then -- failed
 			clearLevel = 15
-		elseif stageAward == 'StageAward_SingleDigitW2'then -- SDP
+
+		elseif stageAward == 'StageAward_SingleDigitW2' then -- SDP
 			clearLevel = 3
 		elseif stageAward == 'StageAward_SingleDigitW3' then -- SDG
 			clearLevel = 6
@@ -123,9 +135,11 @@ local function getClearLevel (pn,steps,score)
 		elseif stageAward == 'StageAward_FullComboW3' then -- FC
 			clearLevel = 7
 		else
+			-- Missflag
 			if missCount == 1 then 
-				clearLevel = 8; -- missflag
+				clearLevel = 8;
 			else
+				-- Everything else are clears.
 				-- Load life difficulty off of ghost data.
 				local ghostLifeDiff = getGhostDataParameter(pn,score,'lifeDifficulty')
 				if ghostLifeDiff ~= nil then
@@ -135,37 +149,48 @@ local function getClearLevel (pn,steps,score)
 				if lifeDiff == 4 then
 					clearLevel = 12 -- Clear
 				elseif lifeDiff < 4 then
-					clearLevel = 13
+					clearLevel = 13 -- Easy Clear
 				elseif lifeDiff == 5 or lifeDiff == 6 then
-					clearLevel = 11
+					clearLevel = 11 -- Hard Clear
 				else
-					clearLevel = 10
+					clearLevel = 10 -- EXHC
 				end
 			end
 		end
 	end
+
 	return clearLevel
 end
 
+
+-- Returns the ClearType level integer given the ClearType string.
 function getClearTypeLevel(clearType)
 	return clearTypeReverse[clearType]
 end
 
+
+-- Returns the full text given the ClearType.
 function getClearTypeText(clearType)
 	return clearTypeText[clearType]
 end
 
+
+-- Returns the shortened text given the ClearType.
 function getClearTypeShortText(clearType)
 	return clearTypeTextShort[clearType]
 end
 
--- Returns the cleartype given the score
+
+-- Returns the ClearType from the given HighScore
 function getClearType(pn,steps,score)
 	return clearType[getClearLevel(pn,steps,score)]
 end
 
--- Returns the highest cleartype
+
+-- Returns the highest ClearType from the given HighScoreList.
+-- Optional parameter ignore will ignore the specified index in the HighScoreList when provided.
 function getHighestClearType(pn,steps,scoreList,ignore)
+
 	if steps == nil then
 		return clearType[18]
 	end
@@ -186,6 +211,7 @@ function getHighestClearType(pn,steps,scoreList,ignore)
 			i = i+1
 		end
 	end
+
 	return clearType[highest]
 end
 
