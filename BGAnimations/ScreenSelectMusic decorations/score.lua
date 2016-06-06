@@ -186,8 +186,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(0)
 	end;
 	SetCommand = function(self)
-		self:settext(getClearTypeFromScore(pn,score,0))
-		self:diffuse(getClearTypeFromScore(pn,score,2))
+		local steps = GAMESTATE:GetCurrentSteps(pn)
+		local clearType = getClearType(pn,steps,score)
+		self:settext(getClearTypeText(clearType))
+		self:diffuse(getClearTypeColor(clearType))
 	end;
 	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
@@ -271,9 +273,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
+--]]
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name = "Mods";
 	InitCommand = cmd(xy,frameX+offsetX,frameY+frameHeight-10;zoom,0.4;halign,0);
 	SetCommand = function(self)
 		if update then
@@ -292,7 +294,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		end
 	end;
 	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
-};--]]
+};
 
 t[#t+1] = LoadFont("Common Normal")..{
 	Name = "StepsAndMeter";

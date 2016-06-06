@@ -104,7 +104,12 @@ local function generalFrame(pn)
 		SetCommand = function(self)
 			self:stoptweening()
 			self:smooth(0.5)
-			self:diffuse(getHighestClearType(pn,0,2))
+			local scoreList
+			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
+				scoreList = profile[pn]:GetHighScoreList(song,steps[pn]):GetHighScores()
+			end
+			local clearType = getHighestClearType(pn,steps[pn],scoreList,0)
+			self:diffuse(getClearTypeColor(clearType))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -391,7 +396,6 @@ local function generalFrame(pn)
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
-
 	--ClearType
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self)
@@ -400,8 +404,14 @@ local function generalFrame(pn)
 			self:maxwidth(110/0.4)
 		end;
 		SetCommand = function(self)
-			self:settext(getHighestClearType(pn,0,0))
-			self:diffuse(getHighestClearType(pn,0,2))
+			self:stoptweening()
+			local scoreList
+			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
+				scoreList = profile[pn]:GetHighScoreList(song,steps[pn]):GetHighScores()
+			end
+			local clearType = getHighestClearType(pn,steps[pn],scoreList,0)
+			self:settext(getClearTypeText(clearType))
+			self:diffuse(getClearTypeColor(clearType))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -410,7 +420,6 @@ local function generalFrame(pn)
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
-
 
 	-- Percentage Score
 	t[#t+1] = Def.RollingNumbers{

@@ -13,20 +13,24 @@ local defaultConfig = {
 	},
 
 	clearType = {
-		MFC		= "#66ccff",
-		WF		= "#dddddd",
-		SDP 	= "#cc8800",
-		PFC 	= "#eeaa00",
-		BF		= "#999999",
-		SDG		= "#448844",
-		FC		= "#66cc66",
-		MF		= "#cc6666",
-		SDCB	= "#666666",
-		Clear	= "#33aaff",
-		Failed	= "#e61e25",
-		Invalid	= "#e61e25",
-		NoPlay	= "#666666",
-		None	= "#666666",
+		ClearType_MFC 	= "#66ccff",
+		ClearType_WF 	= "#dddddd",
+		ClearType_SDP 	= "#cc8800",
+		ClearType_PFC 	= "#eeaa00",
+		ClearType_BF 	= "#999999",
+		ClearType_SDG	= "#448844",
+		ClearType_FC 	= "#66cc66",
+		ClearType_MF 	= "#cc6666",
+		ClearType_SDCB	= "#666666",
+		ClearType_EXHC 	= "#ff9933",
+		ClearType_HClear 	= "#ff6666",
+		ClearType_Clear 	= "#33aaff",
+		ClearType_EClear 	= "#66ff66",
+		ClearType_AClear 	= "#9966ff",
+		ClearType_Failed = "#e61e25",
+		ClearType_Invalid = "#e61e25",
+		ClearType_Noplay = "#666666",
+		ClearType_None = "#666666",
 	},
 
 	difficulty = {
@@ -163,6 +167,10 @@ function getSongLengthColor(s)
 	else
 		return color(colorConfig:get_data().songLength["marathon"])
 	end
+end
+
+function getClearTypeColor(clearType)
+	return color(colorConfig:get_data().clearType[clearType])
 end
 
 function offsetToJudgeColor(offset)

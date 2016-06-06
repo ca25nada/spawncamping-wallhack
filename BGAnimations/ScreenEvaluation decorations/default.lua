@@ -195,6 +195,7 @@ end;
 local function scoreBoard(pn)
 	local hsTable = getScoreList(pn)
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+	local steps = GAMESTATE:GetCurrentSteps(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 
 	local t = Def.ActorFrame{
@@ -234,7 +235,14 @@ local function scoreBoard(pn)
 		SetCommand = function(self)
 			self:stoptweening()
 			self:smooth(0.5)
-			self:diffuse(getHighestClearType(pn,0,2))
+
+			local scoreList
+
+			if profile ~= nil and song ~= nil and steps ~= nil then
+				scoreList = profile:GetHighScoreList(song,steps):GetHighScores()
+			end
+			local clearType = getHighestClearType(pn,steps,scoreList,0)
+			self:diffuse(getClearTypeColor(clearType))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -328,7 +336,6 @@ local function scoreBoard(pn)
 		InitCommand=cmd(xy,frameWidth/2-5,5;zoom,0.5;halign,1;valign,0);
 		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.05");effectcolor2,color("1,1,1,0");effectperiod,2;queuecommand,"Set");
 		SetCommand=function(self) 
-			local steps = GAMESTATE:GetCurrentSteps(pn)
 			local diff = steps:GetDifficulty()
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			local meter = steps:GetMeter()
@@ -353,7 +360,6 @@ local function scoreBoard(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=cmd(xy,frameWidth/2-5,19;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
 		BeginCommand=function(self) 
-			local steps = GAMESTATE:GetCurrentSteps(pn);
 			local notes = 0
 			if steps ~= nil then
 				notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
@@ -395,8 +401,9 @@ local function scoreBoard(pn)
 		BeginCommand = function(self)
 			local score = pss:GetHighScore()
 			if score ~= nil then
-				self:settext(getClearTypeFromScore(pn,score,0))
-				self:diffuse(getClearTypeFromScore(pn,score,2))
+				local clearType = getClearType(pn,steps,score)
+				self:settext(getClearTypeText(clearType))
+				self:diffuse(getClearTypeColor(clearType))
 			end;
 		end;
 	}
@@ -417,8 +424,15 @@ local function scoreBoard(pn)
 				else
 					index = pss:GetPersonalHighScoreIndex()+1
 				end
-				self:settext(getHighestClearType(pn,index,0))
-				self:diffuse(getHighestClearType(pn,index,2))
+
+				local scoreList
+
+				if profile ~= nil and song ~= nil and steps ~= nil then
+					scoreList = profile:GetHighScoreList(song,steps):GetHighScores()
+				end
+				local clearType = getHighestClearType(pn,steps,scoreList,index)
+				self:settext(getClearTypeText(clearType))
+				self:diffuse(getClearTypeColor(clearType))
 				self:diffusealpha(0.5)
 			end
 		end;
@@ -438,12 +452,19 @@ local function scoreBoard(pn)
 			else
 				index = pss:GetPersonalHighScoreIndex()+1
 			end
-			local recCT = getHighestClearType(pn,index,3)
-			local curCT = getClearTypeFromScore(pn,score,3)
-			if curCT < recCT then
+
+			local scoreList
+
+			if profile ~= nil and song ~= nil and steps ~= nil then
+				scoreList = profile:GetHighScoreList(song,steps):GetHighScores()
+			end
+
+			local recCTLevel = getClearTypeLevel(getHighestClearType(pn,steps,scoreList,index))
+			local curCTLevel = getClearTypeLevel(getClearType(pn,steps,score))
+			if curCTLevel < recCTLevel then
 				self:settext("▲")
 				self:diffuse(getMainColor("positive"))
-			elseif curCT > recCT then
+			elseif curCTLevel > recCTLevel then
 				self:settext("▼")
 				self:diffuse(getMainColor("negative"))
 			else
