@@ -55,9 +55,6 @@ local t = Def.ActorFrame {
 		self:draworder(newfield_draw_order.over_field)
 	end;
 
-	TwentyFiveMilestoneCommand=function(self,parent)
-		(cmd(skewy,-0.125;decelerate,0.325;skewy,0))(self);
-	end;
 	ComboCommand=function(self, param)
 		local iCombo = param.Misses or param.Combo;
 		if not iCombo or iCombo < ShowComboAt then
@@ -152,15 +149,6 @@ local t = Def.ActorFrame {
 		PulseLabel( c.Label, param );
 		-- Milestone Logic
 	end;
---[[ 	ScoreChangedMessageCommand=function(self,param)
-		local iToastyCombo = param.ToastyCombo;
-		if iToastyCombo and (iToastyCombo > 0) then
--- 			(cmd(thump;effectmagnitude,1,1.2,1;effectclock,'beat'))(c.Number)
--- 			(cmd(thump;effectmagnitude,1,1.2,1;effectclock,'beat'))(c.Number)
-		else
--- 			c.Number:stopeffect();
-		end;
-	end; --]]
 };
 
 return t;
