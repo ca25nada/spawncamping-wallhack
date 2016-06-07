@@ -1,10 +1,10 @@
 local update = false -- don't update if not visible on screen.
 local t = Def.ActorFrame{
 	BeginCommand = cmd(queuecommand,"Set");
-	OffCommand = cmd(bouncebegin,0.2;xy,-500,0);
-	OnCommand = cmd(bouncebegin,0.2;xy,0,0);
+	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
+	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,-100):diffusealpha(0) end;
+	OnCommand = function(self) self:bouncy(0.3) self:xy(0,0):diffusealpha(1) end;
 	SetCommand = function(self)
-		self:finishtweening()
 		if getTabIndex() == 1 then
 			self:queuecommand("On");
 			update = true

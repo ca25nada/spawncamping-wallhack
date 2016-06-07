@@ -209,11 +209,14 @@ local function scoreBoard(pn)
 			else
 				self:x(frameX)
 			end
-			self:y(frameY)
+			self:y(frameY+100)
+			self:zoom(0.5)
+			self:diffusealpha(0)
 		end;
 		OnCommand = function(self)
-			self:diffusealpha(0)
-			self:decelerate(1)
+			self:bouncy(0.3)
+			self:y(frameY)
+			self:zoom(1)
 			self:diffusealpha(1)
 		end
 	}

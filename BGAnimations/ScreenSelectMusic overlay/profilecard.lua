@@ -1,10 +1,14 @@
 local t = Def.ActorFrame{
-	OffCommand=cmd(bouncebegin,0.2;xy,0,500;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
-	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
+	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
+	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,100):diffusealpha(0) end;
+	OnCommand = function(self) self:bouncy(0.3) self:xy(0,0):diffusealpha(1) end;
 	TabChangedMessageCommand = function(self)
+		self:finishtweening()
 		if getTabIndex() == 1 then
+			self:finishtweening()
 			MESSAGEMAN:Broadcast("Expand")
 		else 
+			self:finishtweening()
 			MESSAGEMAN:Broadcast("Contract")
 		end
 	end;
@@ -65,12 +69,12 @@ local function generalFrame(pn)
 		PlayerUnjoinedMessageCommand = function(self) self:playcommand('Set') end;
 		ContractMessageCommand = function(self)
 			self:stoptweening()
-			self:smooth(0.1)
+			self:bouncy(0.3)
 			self:y(frameY+frameHeight-frameHeightShort)
 		end;
 		ExpandMessageCommand = function(self)
 			self:stoptweening()
-			self:smooth(0.1)
+			self:bouncy(0.3)
 			self:y(frameY)
 		end;
 	}

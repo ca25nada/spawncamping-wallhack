@@ -2,7 +2,7 @@
 
 local lines = math.min(8,math.min(themeConfig:get_data().eval.ScoreBoardMaxEntry,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer"))) -- number of scores to display
 local framex = SCREEN_WIDTH-capWideScale(get43size(270),270)
-local framey = 150
+local framey = 153
 local frameWidth = capWideScale(get43size(260),260)
 local spacing = 34
 
@@ -70,6 +70,13 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 	--
 	local t = Def.ActorFrame {
 		Name="scoreItem"..tostring(drawindex);
+		InitCommand = function(self)
+			self:diffusealpha(0)
+			self:x(100)
+			self:bouncy(0.2+index*0.05)
+			self:x(0)
+			self:diffusealpha(1)
+		end;
 
 		--The main quad
 		Def.Quad{
