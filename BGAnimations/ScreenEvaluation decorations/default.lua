@@ -897,7 +897,7 @@ local function scoreBoard(pn)
 				percent = 0
 			end
 			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
-			self:target_number(percent*100)
+			self:target_number(percent)
 		end
 	}
 
