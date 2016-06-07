@@ -7,7 +7,19 @@ local borderWidth = 5
 
 local t = Def.ActorFrame{
 	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y)
+		self:diffusealpha(0)
+	end;
+	CurrentSongChangedMessageCommand = function(self)
+		self:easeOut(1)
+		self:diffusealpha(0.8)
 		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y-30)
+	end;
+	SongStartingMessageCommand = function(self)
+		self:stoptweening()
+		self:bouncyOut(1)
+		self:zoomy(0.5):zoomx(0.5)
+		self:diffusealpha(0)
 	end
 }
 
@@ -19,20 +31,9 @@ t[#t+1] = Def.Quad{
 		self:diffuse(color("#000000"))
 		self:diffusealpha(0)
 	end;
-	SetCommand = function(self)
-		self:smooth(0.5)
-		self:diffuse(getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()))
-		self:diffusealpha(0.3)
-	end;
 	CurrentSongChangedMessageCommand = function(self)
-		self:queuecommand('Init')
-		self:queuecommand('Set')
+		self:diffuse(getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()))
 	end;
-	SongStartingMessageCommand = function(self)
-		self:smooth(0.3)
-		self:zoomy(0.5)
-		self:diffusealpha(0)
-	end
 };
 
 t[#t+1] = Def.Quad{
@@ -40,91 +41,42 @@ t[#t+1] = Def.Quad{
 		self:y(15)
 		self:zoomto(bannerWidth+borderWidth*2,bannerHeight+borderWidth*2+30)
 		self:diffuse(getMainColor("frame"))
-		self:diffusealpha(0)
-	end;
-	SetCommand = function(self)
-		self:smooth(0.5)
 		self:diffusealpha(0.8)
 	end;
-	CurrentSongChangedMessageCommand = function(self)
-		self:queuecommand('Init')
-		self:queuecommand('Set')
-	end;
-	SongStartingMessageCommand = function(self)
-		self:smooth(0.3)
-		self:zoomy(0.5)
-		self:diffusealpha(0)
-	end
 }
 
 t[#t+1] = Def.Banner{
-	InitCommand = function(self)
-		self:diffusealpha(0)
-	end;
-	SetCommand=function(self)
+	CurrentSongChangedMessageCommand = function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		if song then
 			self:LoadFromSong(song)
 		end
-		self:smooth(0.5)
-		self:diffusealpha(0.8)
 		self:scaletoclipped(bannerWidth,bannerHeight)
 	end;
-	CurrentSongChangedMessageCommand = function(self)
-		self:queuecommand('Init')
-		self:queuecommand('Set')
-	end;
-	SongStartingMessageCommand=function(self)
-		self:smooth(0.3)
-		self:zoomy(0.5)
-		self:diffusealpha(0)
-	end
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand = function(self)
 		self:y(50)
 		self:zoom(0.6)
-		self:diffusealpha(0)
+		self:diffusealpha(1)
 		self:maxwidth(bannerWidth/0.6)
 	end;
-	SetCommand = function(self)
-		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle())
-		self:smooth(0.5)
-		self:diffusealpha(1)
-	end;
 	CurrentSongChangedMessageCommand = function(self)
-		self:queuecommand('Init')
-		self:queuecommand('Set')
+		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle())
 	end;
-	SongStartingMessageCommand=function(self)
-		self:smooth(0.3)
-		self:addy(-40)
-		self:diffusealpha(0)
-	end
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand = function(self)
 		self:y(65)
 		self:zoom(0.4)
-		self:diffusealpha(0)
+		self:diffusealpha(1)
 		self:maxwidth(bannerWidth/0.4)
 	end;
-	SetCommand = function(self)
-		self:settext(GAMESTATE:GetCurrentSong():GetDisplayArtist())
-		self:smooth(0.5)
-		self:diffusealpha(1)
-	end;
 	CurrentSongChangedMessageCommand = function(self)
-		self:queuecommand('Init')
-		self:queuecommand('Set')
+		self:settext(GAMESTATE:GetCurrentSong():GetDisplayArtist())
 	end;
-	SongStartingMessageCommand=function(self)
-		self:smooth(0.3)
-		self:addy(-40)
-		self:diffusealpha(0)
-	end
 }
 
 

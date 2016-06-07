@@ -37,7 +37,7 @@ local function Update(self)
 
 	setLastSecond(curSecond)
 
-	if not startFlag and (firstSecond-curSecond < 2 or curSecond > 3) then
+	if not startFlag and (firstSecond-curSecond < 2 or curSecond > 1) then
         MESSAGEMAN:Broadcast("SongStarting")
         startFlag = true
     end
