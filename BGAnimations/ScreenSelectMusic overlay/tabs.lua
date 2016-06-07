@@ -1,15 +1,20 @@
 local function input(event)
+
 	if event.type == "InputEventType_FirstPress" then
+		
 		for i=1,getTabSize() do
 			if event.DeviceInput.button == "DeviceButton_"..i then
 				setTabIndex(i)
-			end;
-		end;
+			end
+		end
+
 		if event.DeviceInput.button == "DeviceButton_left mouse button" then
 			MESSAGEMAN:Broadcast("MouseLeftClick")
-		end;
-	end;
-return false;
+		end
+	end
+
+return false
+
 end
 
 
@@ -27,19 +32,6 @@ local t = Def.ActorFrame{
 		self:diffusealpha(0)
 	end;
 }
-
--- Just for debug
---[[
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,300,300;halign,0;zoom,2;diffuse,getMainColor(2));
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self)
-		self:settext(getTabIndex())
-	end;
-	CodeMessageCommand=cmd(queuecommand,"Set");
-};
---]]
---======================================================================================
 
 local frameWidth = (SCREEN_WIDTH*(403/854))/(getTabSize()-1)
 local frameX = frameWidth/2
