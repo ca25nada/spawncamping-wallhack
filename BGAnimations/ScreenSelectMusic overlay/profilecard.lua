@@ -8,7 +8,10 @@ local t = Def.ActorFrame{
 			MESSAGEMAN:Broadcast("Contract")
 		end
 	end;
-	PlayerJoinedMessageCommand=cmd(queuecommand,"TabChangedMessage");
+	PlayerJoinedMessageCommand = function(self)
+		self:queuecommand("TabChangedMessage")
+		MESSAGEMAN:Broadcast("Expand")
+	end
 };
 
 local approachSecond = 0.2
