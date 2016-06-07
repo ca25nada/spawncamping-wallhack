@@ -307,7 +307,9 @@ local Phrases = {
     "THIS IS NOT GOOBYE", -- Beatcraft cyclone
     "REMINDER THERE IS GIRLISH CAFE FOR O!M",
     "guilmon digivolves too Guilhermeziatomon",
-
+    "timdam snackpack more like \"i got fucking carried by 4 other charters who are better than me\"", -- April
+    "coffin twins -- more like -- shitty 9th dan song -- ahha -- ahha -- ahha -- ahhaha", -- Elah
+    "it fucking took prim 8 years to implement LEFT CLICKING", -- Prim
 }
 
 --tip
