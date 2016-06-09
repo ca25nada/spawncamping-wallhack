@@ -3,27 +3,21 @@ A WIP Stepmania 5 theme aimed primarily for KB players.
 <a href="http://imgur.com/a/RpFvQ" target="_blank">Screenshots</a>
 
 Requirements: StepMania 5.1.0 Alpha 2 or later.
-* If the menu is black and white at startup with a bunch of error messages, chances are you aren't running on 5.1.
+* If the menu is black and white at startup with a bunch of error messages or outright crashes, it's not 5.1.
+
 
 ---
 ### Acknowledgements
 * The StepMania 5 devs (notably freem and Kyzentun) for making this possible in the first place.
-* people in #vsrg,#stepmania-devs and various other people for feedbacks..!
-* CDTitle Resizer, ScreenSelectMusic Backgrounds are adapted from Jousway's code.
-* Kyzentun's prefs system is used for setting various profile/theme preferences. (now available by default for 5.1)
+* People in #stepmania-devs and the Rhythm gamers discord for feedback.
+* Some of the theme elements are adapted from the default theme or this by jousway https://github.com/Jousway/Stepmania-Zpawn
+* Kyzentun's prefs system is used for setting various profile/theme preferences. (which is now available in _fallback for 5.1)
 
 ---
 ### Issues
  * PIU Scores are broken since there's no way to get the total # of checkpoints.
  * Courses are disabled.
  * plus whatever is on the issue tracker
-
----
-### TODO   
-* Adding back nonstop/course modes.
-* Ghost Data stuff. (eventually)
-* Finish Simfile/Profile tabs.
-* Korean usage guide.. maybe...?
 
 ---
 ### Usage Guide (WIP)   
@@ -33,7 +27,8 @@ This is tad outdated now. I'll start updating this over the next few days.
 * **Theme Color**  
 The main theme color can be set by entering "Color Config" from the title menu.  
 From there, you can then set the hexadecimal value to a color of your liking.   
-(For reference in case you want to revert, the default color for Main/Highlight is ```#00AEEF```)
+To completely reset to default values, delete `%appdata%\StepMania 5\Save\_fallback_config\colorConfig.lua`   
+
 
 * **Avatars**   
 You can set an avatar to a profile that is then displayed throughout the theme.
@@ -51,6 +46,7 @@ You can set an avatar to a profile that is then displayed throughout the theme.
 
 
 * **Score Types**   
+  ```Options → Theme Options → Default ScoreType```   
   Currently, the theme supports the 3 most commonly used scoring methods within the keyboard community.
   They are as follows:  
 
@@ -59,13 +55,12 @@ You can set an avatar to a profile that is then displayed throughout the theme.
   |PS/Percentage Scoring (oni EX) <sup>default</sup>|3|2|1|0|0|0|3|0|-2|   
   |DP/Dance Points (MAX2)|2|2|1|0|-4|-8|6|0|-8|   
   |MIGS|3|2|1|0|-4|-8|6|0|-8|   
-  ScoreTypes can be set from ```Options → Theme Options → Default ScoreType```.   
   Scores are calculated dynamically separate from the game engine's scoring. (aka: everything is done in lua) So any preferences set regarding score weights will have no effect.   
   DP Score will always be used for letter grade calculations regardless of the scoretype set.
   
 * **Rate Filter**   
-  This option is already enabled by default. When enabled, instead of displaying all scores (with different rate mods) in a single scoreboard, all the scores will be separated by the ratemods that have been used. 
-  ![](http://i.imgur.com/wd3T8wc.png)
+  ```Options → Theme Options → Rate Sort```   
+  This option is already enabled by default. When enabled, instead of displaying all scores (with different rate mods) in a single scoreboard, all the scores will be separated by the rate mods that have been used. 
 
 * **Clear Types**   
   The theme uses iidx-esque cleartypes because... huur durrr lr2 wannabe theme.   
@@ -97,9 +92,9 @@ You can set an avatar to a profile that is then displayed throughout the theme.
      (If the grade specific folder is empty while set to ```Grade Background Only```, the theme will revert back to grade_cleared folder for background images.)
     
 * **Tips and Quotes**   
-  The theme displays *potentially helpful* tips usually on the bottom center of the screen. 
-  Options to turn off/toggle types can be found at ```Options → Theme Options → Tip Type```.   
-  Set to ```Random Phrases``` for memes.
+  ```Options → Theme Options → Tip Type```   
+  The theme displays *potentially helpful* tips usually on the bottom center of the screen.
+  You can either turn it off or set to `Random Phrases` for memes.
 
 
 ---
@@ -115,10 +110,10 @@ Some Tabs will be disabled for 2 player modes.
   Contains slightly more detailed information of the currently selected simfile.
 
 * **Score Tab** <sup>Disabled for 2p</sup>   
-  This tab will list all the scores and their stats that are currently saved. (Separated by rate mods if Rate Filter is enabled.)   
-  The number of scores saved is capped to 3 by default in StepMania. This can be changed from ```Options → Arcade Options → Max Machine Scores``` and ```Options → Arcade Options → Max Player Scores```.   
+  This tab will list all the scores and their stats that are currently saved. (Separated by rate mods if Rate Filter is enabled.)    
   Pressing ```<EffectDown>``` and ```<EffectUp>``` will scroll through the scores.   
-  Pressing ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>``` will scroll through available rates.   
+  Pressing ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>``` will scroll through available rates.  
+  The number of scores saved is capped to 3 by default in StepMania. This can be changed from ```Options → Arcade Options → Max Machine Scores``` and ```Options → Arcade Options → Max Player Scores```.   
 
 * **Profile Tab** <sup>Unimplemented, Disabled</sup>   
   Probably a summary of the profile once I get around adding stuff to this.   
@@ -127,69 +122,99 @@ Some Tabs will be disabled for 2 player modes.
   This tab contains miscellaneous info about stepmania and the theme that... might... be helpful...?   
 
 * **Help Overlay**   
-  By default the help overlay will automatically show after 30 seconds of inactivity on the screen.
-  It currently contains information on how to use the features in ScreenSelectMusic.
-  You can turn off the overlay from showing up automatically by going to : ```Options → Theme Options → Help Menu``` and setting it to ```Off```.   
-  It is also available by pressing ```F12``` on the keyboard. 
+  ```Options → Theme Options → Help Menu```   
+  The help overlay will automatically show after 30 seconds of inactivity on the screen. It currently contains information on how to use the features in ScreenSelectMusic. It is also available by pressing ```F12``` on the keyboard. Default is `on`
 
 * **Song Preview**   
-  Select how the song's sample preview is played. It is available in ```Options → Theme Options → Song Preview```.   
+  ```Options → Theme Options → Song Preview```   
+  Select how the song's sample preview is played.
   * **SM Style** - The default mode for most (if not all) themes. Preview loops from SAMPLESTART to SAMPLESTART+SAMPLELENGTH.
   * **osu! Style (Current)** - Preview loops from SAMPLESTART to the end of the song.   
     If a person exits midway during gameplay (without going to eval) the preview will start from that point. (and then loop from SAMPLESTART afterwards)
   * **osu! Style (Old)** <sup>Default</sup> - Preview plays from SAMPLESTART to the end of the song. Then the preview loops from the start to the end of the song.   
   If a person exits midway during gameplay (without going to eval) the preview will start from that point. (and then loop from the beginning afterwards)
 
-* **Banner Wheel**
-  By default, a blended image of the simfile banner will appear on the musicwheel.
-  Settings are available in ```Options → Theme Options → Banner Wheel```
+* **Banner Wheel**   
+  ```Options → Theme Options → Banner Wheel```   
+  When enabled, a blended image of the simfile banner will appear on the musicwheel. Default is `on`
 
 ---
 #### ScreenGameplay
-* **Judge Counter**   
-  Displays a small window on the side with the amount of judgments made so far and the current letter grade based on these judgments.   
-  There are two options for Judge Counter which are available in ```Player Options → Gameplay Options → Judge Count```. Having it set as ```on``` also shows a subtle highlight for that judgment whenever the corresponding judgment is made. The other ```No Highlight``` option doesn't.   
+* **Judgment Counter**   
+  ```Player Options → Gameplay Options → Judge Count```   
+  Displays a small window on the side with the amount of judgments made so far and the current letter grade based on these judgments.
+  * **On** - Display a subtle highlight for the judgment whenever the corresponding judgment is made during gameplay.   
+  * **No Highlight** - No highlights will occur.   
+
+* **Ghost Target**   
+  ```Player Options → Gameplay Options → Ghost Target```   
+  Sets the target score (in percentage) that will be used by the Ghost Score and the Pacemaker graph. Default is 0.
 
 * **Ghost Score**   
-  When enabled, displays the score difference from the target for the scoretype selected.   
-  Available from ```Player Options → Gameplay Options → Ghost ScoreType```. The target for the ghost score can be set from ```Player Options → Gameplay Options → Ghost Target```.
+  ```Player Options → Gameplay Options → Ghost ScoreType```   
+  When enabled, displays the score difference from the Ghost Target to the player's current score for the scoretype selected.
 
 * **Average Score**   
-  When enabled, displays the average percentage score for the scoretype selected.   
-  Available from ```Player Options → Gameplay Options → Average ScoreType```.
+  ```Player Options → Gameplay Options → Average ScoreType```   
+  When enabled, displays the average percentage score for the scoretype selected in the notefield.
 
 * **Pacemaker Graph** <sup>Disabled for 2p</sup>   
-  The very same stuff from iidx and lr2. Displays a bar graph showing the current, best and the target score.   
-  It follows the ```Ghost ScoreType``` and the ```Ghost Target``` settings for the scoretype and the target graph's value respectively.   
-  Available from ```Player Options → Gameplay Options → PaceMaker Graph```.   
+   ```Player Options → Gameplay Options → Pacemaker Graph```   
+  The very same graph from iidx and lr2. Displays a bar graph showing the `Current`, `Best` and the `Target` score.   
+  It follows the `Ghost ScoreType` and the `Ghost Target` settings for the scoretype and the `Target` graph's value respectively. When `Ghost ScoreType` is not specified, the theme will use the theme's default ScoreType instead.
+  The `Best` score graph will show the current score of the best previous score at a given time when the ghost data is available.
 
 * **Error Bar** <sup>Disabled for 2p</sup>   
-  Pretty much the hit error option for the score meter in osu!. This displays the judgment offset visually in a bar that represents the timing window of StepMania. 
-  Available from ```Player Options → Gameplay Options → Error Bar```.
-  Duration for each ticks and the maximum number of ticks that can be present can be set from there as well.
+  ```Player Options → Gameplay Options → Error Bar Options → Enable Error Bar```   
+  Pretty much the hit error option for the score meter in osu!. This displays the judgment offset visually in a bar that represents the timing window.
+  * **Tick Duration**   
+    ```Player Options → Gameplay Options → Error Bar Options → Tick Duration```   
+    The amount of time for each tick to fade out (in seconds). Default is 1.
+  * **Tick Count**   
+    ```Player Options → Gameplay Options → Error Bar Options → Tick Count```   
+    The maximum number of ticks that can be displayed at a given time. When the maximum number of ticks is reached, older ticks will immediately update to a new position. Default is 100.
 
 * **Screen Filter**   
-  Displays an overlay below the notefield.   
-  Available from ```Player Options → Gameplay Options → Screen Filter```. The Values correspond to the alpha value of the filter.   
+  ```Player Options → Gameplay Options → Screen Filter```   
+  Displays an overlay below the notefield. The Values correspond to the alpha value of the filter.   
+  The color of the filter is set from ```gameplay/LaneCover``` inside Color Config.
 
 
+* **Lane Highlights**   
+  ```Player Options → Gameplay Options → CB Highlight```   
+  Highlights the lane where a combo breaking judgment has occured.  
+  The color of the highlight will correspond to the color of the judgmenht.  
 
-* **CB Lane Highlights**   
-  Highlights the lane in which a combo breaking judgment has occured.  
-  The color of the highlight will correspond to the color of the judgmenht as well.  
-  Available from ```Player Options → Gameplay Options → CB Highlight```
 
-* **Sudden+/Hidden+ Lane Cover**   
+* **Lane Cover**   
   Displays an overlay above the notefield with adjustable height.  
-  Available from ```Player Options → Gameplay Options → Lane Cover```. The height can be adjusted from the ```Lane Cover Height``` menu or during gameplay with ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>```. 
-  The draworder of the cover can also be set which allows the cover to be above/below the note explosion/combo+judgments.
+  * **Lane Cover Type**   
+    ```Player Options → Gameplay Options → Lane Cover Options → Lane Cover```   
+    Sets the type of Lane Cover to use. Hidden+ will cover notes around the receptor while Sudden+ will cover notes from the direction they appear from.
+  * **Lane Cover Height**   
+    ```Player Options → Gameplay Options → Lane Cover Options → Lane Cover Height```   
+    Sets the height of the Lane Cover. The height can also be adjusted during gameplay with ```<Select>+<EffectDown>``` and ```<Select>+<EffectUp>```. 
+  * **Lane Cover Layer**   
+    ```Player Options → Gameplay Options → Lane Cover Options → Lane Cover Layer```  
+    Sets the draw order of the Lane Cover. Objects with higher draw order are rendered higher up on the layer. Generally,  =350 ⇒ Below note explosions, >400 ⇒ Above note explosions, =450 ⇒ Above combo/judgment labels. Default is 350.
 
-* **Current/Peak NPS Display**   
-  Displays the current NPS and the peak nps value.   
-  It takes the average NPS taken from the past ```X``` seconds.   
-  Available from ```Player Options → Gameplay Options → NPS Display```. The time window for the ```X``` seconds above can be set from ```Options → Theme Options → NPS Window``` where the values correspond to seconds.   
-  A smaller window updates more quickly but with more unstable values, larger windows does the opposite. 
-  Settings for the update rate and the maximum number of vertices are also available from ```Player Options → Gameplay Options → NPS Display```
+* **NPS Display**   
+  Displays the current NPS taken from a specified amount of time.
+  * **NPS Display**   
+    ```Player Options → Gameplay Options → NPS Display Options → NPS Display```   
+    Displays the current NPS and the peak value when enabled.
+  * **NPS Graph**   
+    ```Player Options → Gameplay Options → NPS Display Options → NPS Graph```   
+    Displays a graph corresponding to the NPS values. Enabling this option will have a significant impact on performance.
+  * **NPS Graph Update Rate**   
+    ```Player Options → Gameplay Options → NPS Display Options → NPS Graph Update Rate```   
+    Sets how often the NPS graph will update (in seconds). Default is 0.1 .
+  * **NPS Graph Max Vertices**   
+    ```Player Options → Gameplay Options → NPS Display Options → NPS Graph Update Rate```   
+    Sets the max number of points/vertices that will be displayed on the graph. Default is 300.
+  * **NPS Window**   
+    ```Options → Theme Options → NPS Window```   
+    Sets the time window (in seconds) in which the average NPS will be calculated from. A smaller window updates more quickly but with more unstable values, larger windows does the opposite. Default is 2.
 
 * ~~**Mid-game Speed Change**~~ <sup>Removed temporarily</sup>   
   Allows the player to change the scroll speed ingame by pressing ```<EffectDown>``` and ```<EffectUp>```.   
