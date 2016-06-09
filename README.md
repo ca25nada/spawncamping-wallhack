@@ -69,7 +69,7 @@ You can set an avatar to a profile that is then displayed throughout the theme.
 
 * **Clear Types**   
   The theme uses iidx-esque cleartypes because... huur durrr lr2 wannabe theme.   
-  They should be self-explanatory. (e.g. PFC = ya got all perfect or higher / AAA)
+  Any life-difficulty based clear types (e.g.`Easy Hard EX-Hard`) requires a ghost data that corresponds to the score. It will default to `Clear` when not available.
 
 * **Backgrounds**   
   On ScreenSelectMusic and ScreenEvaluation, it will show the current song's background by default. It can be turned off at ```Options → Theme Options → Show Background```   
@@ -112,8 +112,7 @@ Some Tabs will be disabled for 2 player modes.
   Hovering the mouse over the letter grade shows the amount of points away from the nearest letter grade.   
 
 * **Simfile Tab** <sup>Incomplete, Disabled for 2p</sup>   
-  This tab is supposed to contain more detailed information about the simfile buuuuuut it's incomplete.   
-  Aside from the hash values for the .sm files, there's more info in the general tab as of right now mfw.   
+  Contains slightly more detailed information of the currently selected simfile.
 
 * **Score Tab** <sup>Disabled for 2p</sup>   
   This tab will list all the scores and their stats that are currently saved. (Separated by rate mods if Rate Filter is enabled.)   
@@ -129,18 +128,21 @@ Some Tabs will be disabled for 2 player modes.
 
 * **Help Overlay**   
   By default the help overlay will automatically show after 30 seconds of inactivity on the screen.
-  It currently contains information on how to use the features in screenselectmusic.
+  It currently contains information on how to use the features in ScreenSelectMusic.
   You can turn off the overlay from showing up automatically by going to : ```Options → Theme Options → Help Menu``` and setting it to ```Off```.   
   It is also available by pressing ```F12``` on the keyboard. 
 
 * **Song Preview**   
   Select how the song's sample preview is played. It is available in ```Options → Theme Options → Song Preview```.   
-  * **SM Style** <sup>Default</sup> - Default. Preview loops from SAMPLESTART to SAMPLESTART+SAMPLELENGTH.
+  * **SM Style** - The default mode for most (if not all) themes. Preview loops from SAMPLESTART to SAMPLESTART+SAMPLELENGTH.
   * **osu! Style (Current)** - Preview loops from SAMPLESTART to the end of the song.   
     If a person exits midway during gameplay (without going to eval) the preview will start from that point. (and then loop from SAMPLESTART afterwards)
-  * **osu! Style (Old)** - Preview plays from SAMPLESTART to the end of the song. Then the preview loops from the start to the end of the song.   
+  * **osu! Style (Old)** <sup>Default</sup> - Preview plays from SAMPLESTART to the end of the song. Then the preview loops from the start to the end of the song.   
   If a person exits midway during gameplay (without going to eval) the preview will start from that point. (and then loop from the beginning afterwards)
 
+* **Banner Wheel**
+  By default, a blended image of the simfile banner will appear on the musicwheel.
+  Settings are available in ```Options → Theme Options → Banner Wheel```
 
 ---
 #### ScreenGameplay
@@ -169,6 +171,8 @@ Some Tabs will be disabled for 2 player modes.
 * **Screen Filter**   
   Displays an overlay below the notefield.   
   Available from ```Player Options → Gameplay Options → Screen Filter```. The Values correspond to the alpha value of the filter.   
+
+
 
 * **CB Lane Highlights**   
   Highlights the lane in which a combo breaking judgment has occured.  
