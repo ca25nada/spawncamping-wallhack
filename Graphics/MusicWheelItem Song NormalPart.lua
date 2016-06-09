@@ -1,4 +1,8 @@
+local curFolder = ""
 local t =  Def.ActorFrame{
+	SetCommand = function(self,params)
+		self:name(tostring(params.Index))
+	end;
 }
 
 
@@ -23,6 +27,43 @@ t[#t+1] = Def.Quad{
 	end;
 	BeginCommand = function(self) self:queuecommand('Set') end;
 	OffCommand = function(self) self:visible(false) end;
+	MouseLeftClickMessageCommand = function(self)
+		if isOver(self) then
+			local newIndex = tonumber(self:GetParent():GetName())
+			local top = SCREENMAN:GetTopScreen()
+
+			if top:GetName() ~= "ScreenSelectMusic" then
+				return
+			end
+
+			local wheel = top:GetMusicWheel()
+			local size = wheel:GetNumItems()
+			local move = newIndex-wheel:GetCurrentIndex()
+
+			if math.abs(move)>math.floor(size/2) then
+				if newIndex > wheel:GetCurrentIndex() then
+					move = (move)%size-size
+				else
+					move = (move)%size
+				end
+			end
+			
+			wheel:Move(move)
+			wheel:Move(0)
+
+			-- TODO: play sounds.
+			if move == 0 and wheel:GetSelectedType() == 'WheelItemDataType_Section' then
+				if wheel:GetSelectedSection() == curFolder then
+					wheel:SetOpenSection("")
+					curFolder = ""
+				else
+					wheel:SetOpenSection(wheel:GetSelectedSection())
+					curFolder = wheel:GetSelectedSection()
+				end
+			end
+
+		end
+	end
 }
 
 

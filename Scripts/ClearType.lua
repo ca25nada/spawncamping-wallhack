@@ -1,229 +1,217 @@
 ------------------------------------------------------
 --Methods for generating IIDX-esque ClearType texts --
 ------------------------------------------------------
---EDIT: scores no longer needed since it grabs it for you
 
-local stypetable = { -- Shorthand Versions of ClearType. Not Really used anywhere yet but who knows
-	[1]="Marv F-Combo",
-	[2]="Whiteflag",
-	[3]="SDP",
-	[4]="Perf F-Combo",
-	[5]="Blackflag",
-	[6]="SDG",
-	[7]="F-Combo",
-	[8]="Missflag",
-	[9]="SDCB",
-	[10]="Clear",
-	[11]="Failed",
-	[12]="Invalid",
-	[13]="No Play",
-	[14]="-", -- song is nil
-	--[15]="Ragequit", -- can't implement unless there's a way to track playcounts by difficulty
-};
-
-local typetable = { -- ClearType texts
-	[1]="Marvelous Full Combo",
-	[2]="Whiteflag",
-	[3]="Single Digit Perfects",
-	[4]="Perfect Full Combo",
-	[5]="Blackflag",
-	[6]="Single Digit Greats",
-	[7]="Full Combo",
-	[8]="Missflag",
-	[9]="Single Digit CBs", -- unused
-	[10]="Clear",
-	[11]="Failed",
-	[12]="Invalid",
-	[13]="No Play",
-	[14]="-",
-	--[15]="Ragequit", -- can't implement unless there's a way to track playcounts by difficulty
-};
-
-local typecolors = {-- colors corresponding to cleartype
-	[1]		= color(colorConfig:get_data().clearType["MFC"]),
-	[2]		= color(colorConfig:get_data().clearType["WF"]),
-	[3] 	= color(colorConfig:get_data().clearType["SDP"]),
-	[4] 	= color(colorConfig:get_data().clearType["PFC"]),
-	[5]		= color(colorConfig:get_data().clearType["BF"]),
-	[6]		= color(colorConfig:get_data().clearType["SDG"]),
-	[7]		= color(colorConfig:get_data().clearType["FC"]),
-	[8]		= color(colorConfig:get_data().clearType["MF"]),
-	[9]		= color(colorConfig:get_data().clearType["SDCB"]),
-	[10]	= color(colorConfig:get_data().clearType["Clear"]),
-	[11]	= color(colorConfig:get_data().clearType["Failed"]),
-	[12]	= color(colorConfig:get_data().clearType["Invalid"]),
-	[13]	= color(colorConfig:get_data().clearType["NoPlay"]),
-	[14]	= color(colorConfig:get_data().clearType["None"]),
-	--[15]	= color("#e61e25"),
-};
+local clearType = {
+	[1]="ClearType_MFC",
+	[2]="ClearType_WF",
+	[3]="ClearType_SDP",
+	[4]="ClearType_PFC",
+	[5]="ClearType_BF",
+	[6]="ClearType_SDG",
+	[7]="ClearType_FC",
+	[8]="ClearType_MF",
+	[9]="ClearType_SDCB", -- unused
+	[10]="ClearType_EXHC",
+	[11]="ClearType_HClear",
+	[12]="ClearType_Clear",
+	[13]="ClearType_EClear",
+	[14]="ClearType_AClear",
+	[15]="ClearType_Failed",
+	[16]="ClearType_Invalid",
+	[17]="ClearType_Noplay",
+	[18]="ClearType_None",
+}
 
 
--- Methods for other uses (manually setting colors/text, etc.)
-local function getClearTypeText(index)
-	return typetable[index];
-end;
-
-local function getShortClearTypeText(index)
-	return stypetable[index];
-end;
-
-local function getClearTypeColor(index)
-	return typecolors[index];
-end;
-
-local function getClearTypeItem(clearlevel,ret)
-	if ret == 0 then
-		return typetable[clearlevel];
-	elseif ret == 1 then
-		return stypetable[clearlevel];
-	elseif ret == 2 then
-		return typecolors[clearlevel];
-	else
-		return clearlevel
-	end;
-end;
-
--- ClearTypes based on stage awards and grades.
--- Stageaward based cleartypes do not work if anything causes the stageaward to not show up (disqualification, score saving is off, etc.)
--- and will just result in "No Play" or "Clear". I migggggggggght just drop the SA usage and use raw values instead.
--- returntype 	=0 -> ClearType, 
---				=1 -> ShortClearType, 
--- 				=2 -> ClearTypeColor, 
--- 				=else -> ClearTypeLevel
-local function clearTypes(stageaward,grade,playcount,misscount,returntype)
-	stageaward = stageaward or 0; -- initialize everything incase some are nil
-	grade = grade or 0;
-	playcount = playcount or 0;
-	misscount = misscount or 0;
-
-	clearlevel = 13; -- no play
-
-	if grade == 0 then
-		if playcount == 0 then
-			clearlevel = 13;
-		end;
-	else
-		if grade == 'Grade_Failed' then -- failed
-			clearlevel = 11;
-		elseif stageaward == 'StageAward_SingleDigitW2'then -- SDP
-			clearlevel = 3;
-		elseif stageaward == 'StageAward_SingleDigitW3' then -- SDG
-			clearlevel = 6;
-		elseif stageaward == 'StageAward_OneW2' then -- whiteflag
-			clearlevel = 2;
-		elseif stageaward == 'StageAward_OneW3' then -- blackflag
-			clearlevel = 5;
-		elseif stageaward == 'StageAward_FullComboW1' or grade == 'Grade_Tier01' then -- MFC
-			clearlevel = 1;
-		elseif stageaward == 'StageAward_FullComboW2' or grade == 'Grade_Tier02'then -- PFC
-			clearlevel = 4;
-		elseif stageaward == 'StageAward_FullComboW3' then -- FC
-			clearlevel = 7;
-		else
-			if misscount == 1 then 
-				clearlevel = 8; -- missflag
-			else
-				clearlevel = 10; -- Clear
-			end;
-		end;
-	end;
-	return getClearTypeItem(clearlevel,returntype)
-end;
+local clearTypeReverse = { -- Reverse Lookup table for clearType
+	ClearType_MFC 		= 1,
+	ClearType_WF 		= 2,
+	ClearType_SDP 		= 3,
+	ClearType_PFC 		= 4,
+	ClearType_BF 		= 5,
+	ClearType_SDG		= 6,
+	ClearType_FC 		= 7,
+	ClearType_MF 		= 8,
+	ClearType_SDCB		= 9,
+	ClearType_EXHC		= 10,
+	ClearType_HClear 	= 11,
+	ClearType_Clear 	= 12,
+	ClearType_EClear 	= 13,
+	ClearType_AClear 	= 14,
+	ClearType_Failed 	= 15,
+	ClearType_Invalid 	= 16,
+	ClearType_Noplay 	= 17,
+	ClearType_None 		= 18,
+}
 
 
---Returns the cleartype of the top score
-function getClearType(pn,ret)
-	local song
-	local steps
-	local profile
-	local hScoreList
-	local hScore
-	local playCount = 0
-	local stageAward
-	local missCount = 0
-	local grade
-	song = GAMESTATE:GetCurrentSong()
-	steps = GAMESTATE:GetCurrentSteps(pn)
-	profile = GetPlayerOrMachineProfile(pn)
-	if song ~= nil and steps ~= nil then
-		hScoreList = profile:GetHighScoreList(song,steps):GetHighScores()
-		hScore = hScoreList[1]
-	end;
-	if hScore ~= nil then
-		-- 00 Utility.lua
-		if not isScoreValid(pn,steps,hScore) then
-			return getClearTypeItem(12,ret)
-		end
-		playCount = profile:GetSongNumTimesPlayed(song)
-		missCount = hScore:GetTapNoteScore('TapNoteScore_Miss')+hScore:GetTapNoteScore('TapNoteScore_W5')+hScore:GetTapNoteScore('TapNoteScore_W4');
-		grade = hScore:GetGrade()
-		stageAward = hScore:GetStageAward()
-	end;
-	return clearTypes(stageAward,grade,playCount,missCount,ret); 
-end;
+-- TODO: Move these to en.ini
+-- ClearType texts
+local clearTypeText = {
+	ClearType_MFC 		= "Marvelous Full Combo",
+	ClearType_WF 		= "Whiteflag",
+	ClearType_SDP 		= "Single Digit Perfects",
+	ClearType_PFC 		= "Perfect Full Combo",
+	ClearType_BF 		= "Blackflag",
+	ClearType_SDG		= "Single Digit Greats",
+	ClearType_FC 		= "Full Combo",
+	ClearType_MF 		= "Missflag",
+	ClearType_SDCB		= "Single Digit CBs",
+	ClearType_EXHC		= "EX-Hard Clear",
+	ClearType_HClear 	= "Hard Clear",
+	ClearType_Clear 	= "Clear",
+	ClearType_EClear 	= "Easy Clear",
+	ClearType_AClear 	= "Assist Clear",
+	ClearType_Failed 	= "Failed",
+	ClearType_Invalid 	= "Invalid",
+	ClearType_Noplay 	= "No Play",
+	ClearType_None 		= "",
+}
 
--- Returns the cleartype given the score
-function getClearTypeFromScore(pn,score,ret)
-	local song
-	local steps
-	local profile
-	local playCount = 0
-	local stageAward
-	local missCount = 0
-	local grade
+
+ -- Shorter ClearType texts
+local clearTypeTextShort = {
+	ClearType_MFC 		= "Marv F-Combo",
+	ClearType_WF 		= "Whiteflag",
+	ClearType_SDP 		= "SDP",
+	ClearType_PFC 		= "Perf F-Combo",
+	ClearType_BF 		= "Blackflag",
+	ClearType_SDG		= "SDG",
+	ClearType_FC 		= "F-Combo",
+	ClearType_MF 		= "Missflag",
+	ClearType_SDCB		= "SDCB",
+	ClearType_EXHC		= "EXH-Clear",
+	ClearType_HClear 	= "H-Clear",
+	ClearType_Clear 	= "Clear",
+	ClearType_EClear 	= "E-Clear",
+	ClearType_AClear 	= "A-Clear",
+	ClearType_Failed 	= "Failed",
+	ClearType_Invalid 	= "Invalid",
+	ClearType_Noplay 	= "No Play",
+	ClearType_None 		= "",
+}
+
+	
+-- Returns an integer corresponding to the clear level of the score.
+local function getClearLevel (pn,steps,score)
+
+	-- Return no play if score doesn't exist.
 	if score == nil then
-		return getClearTypeItem(13,ret)
-	end;
-	song = GAMESTATE:GetCurrentSong()
-	steps = GAMESTATE:GetCurrentSteps(pn)
-	profile = GetPlayerOrMachineProfile(pn)
-	if not isScoreValid(pn,steps,score) then
-		return getClearTypeItem(12,ret)
+		return 17
 	end
-	if score ~= nil and song ~= nil and steps ~= nil then
-		playCount = profile:GetSongNumTimesPlayed(song)
-		stageAward = score:GetStageAward();
-		grade = score:GetGrade();
-		missCount = score:GetTapNoteScore('TapNoteScore_Miss')+score:GetTapNoteScore('TapNoteScore_W5')+score:GetTapNoteScore('TapNoteScore_W4');
-	end;
 
-	return clearTypes(stageAward,grade,playCount,missCount,ret) or typetable[12]; 
-end;
+	-- Return invalid if the score isn't uhh valid.
+	if not isScoreValid(pn,steps,score) then
+		return 16
+	end
 
--- Returns the highest cleartype
-function getHighestClearType(pn,ignore,ret)
-	local song
-	local steps
-	local profile
-	local hScoreList
+	local grade = score:GetGrade()
+	local missCount = score:GetTapNoteScore('TapNoteScore_Miss')+score:GetTapNoteScore('TapNoteScore_W5')+score:GetTapNoteScore('TapNoteScore_W4')
+	local stageAward = score:GetStageAward()
+	local clearLevel = 18
+	local lifeDiff = 4 -- default to 4
+
+	if grade == nil then
+		-- Return no play if there's no grade for the score. (which shoudn't happen anyway)
+		clearLevel = 17
+	else
+		-- Go through all the Stage award based cleartypes
+		if grade == 'Grade_Failed' then -- failed
+			clearLevel = 15
+
+		elseif stageAward == 'StageAward_SingleDigitW2' then -- SDP
+			clearLevel = 3
+		elseif stageAward == 'StageAward_SingleDigitW3' then -- SDG
+			clearLevel = 6
+		elseif stageAward == 'StageAward_OneW2' then -- whiteflag
+			clearLevel = 2
+		elseif stageAward == 'StageAward_OneW3' then -- blackflag
+			clearLevel = 5
+		elseif stageAward == 'StageAward_FullComboW1' or grade == 'Grade_Tier01' then -- MFC
+			clearLevel = 1
+		elseif stageAward == 'StageAward_FullComboW2' or grade == 'Grade_Tier02'then -- PFC
+			clearLevel = 4
+		elseif stageAward == 'StageAward_FullComboW3' then -- FC
+			clearLevel = 7
+		else
+			-- Missflag
+			if missCount == 1 then 
+				clearLevel = 8;
+			else
+				-- Everything else are clears.
+				-- Load life difficulty off of ghost data.
+				local ghostLifeDiff = getGhostDataParameter(pn,score,'lifeDifficulty')
+				if ghostLifeDiff ~= nil then
+					lifeDiff = ghostLifeDiff
+				end;
+
+				if lifeDiff == 4 then
+					clearLevel = 12 -- Clear
+				elseif lifeDiff < 4 then
+					clearLevel = 13 -- Easy Clear
+				elseif lifeDiff == 5 or lifeDiff == 6 then
+					clearLevel = 11 -- Hard Clear
+				else
+					clearLevel = 10 -- EXHC
+				end
+			end
+		end
+	end
+
+	return clearLevel
+end
+
+
+-- Returns the ClearType level integer given the ClearType string.
+function getClearTypeLevel(clearType)
+	return clearTypeReverse[clearType]
+end
+
+
+-- Returns the full text given the ClearType.
+function getClearTypeText(clearType)
+	return clearTypeText[clearType]
+end
+
+
+-- Returns the shortened text given the ClearType.
+function getClearTypeShortText(clearType)
+	return clearTypeTextShort[clearType]
+end
+
+
+-- Returns the ClearType from the given HighScore
+function getClearType(pn,steps,score)
+	return clearType[getClearLevel(pn,steps,score)]
+end
+
+
+-- Returns the highest ClearType from the given HighScoreList.
+-- Optional parameter ignore will ignore the specified index in the HighScoreList when provided.
+function getHighestClearType(pn,steps,scoreList,ignore)
+
+	if steps == nil then
+		return clearType[18]
+	end
+
+	local profile = GetPlayerOrMachineProfile(pn)
 	local hScore
 	local i = 1
-	local highest = 13
+	local highest = 17
 
-	song = GAMESTATE:GetCurrentSong()
-	steps = GAMESTATE:GetCurrentSteps(pn)
-	profile = GetPlayerOrMachineProfile(pn)
-	if song ~= nil and steps ~= nil then
-		hScoreList = profile:GetHighScoreList(song,steps):GetHighScores()
-	end;
-	if hScoreList ~= nil then
-		while i <= #hScoreList do
+	if scoreList ~= nil then
+		while i <= #scoreList do
 			if i ~= ignore then
-				hScore = hScoreList[i]
+				hScore = scoreList[i]
 				if hScore ~= nil then
-					highest = math.min(highest,getClearTypeFromScore(pn,hScore,3))
+					highest = math.min(highest,getClearLevel(pn,steps,hScore))
 				end;
 			end;
 			i = i+1
-		end;
-	end;
-	if ret == 0 then
-		return getClearTypeText(highest)
-	elseif ret == 1 then
-		return getShortClearTypeText(highest)
-	elseif ret == 2 then
-		return getClearTypeColor(highest)
-	else
-		return highest
-	end;
-end;
+		end
+	end
+
+	return clearType[highest]
+end
+

@@ -9,37 +9,20 @@ t[#t+1] = LoadActor("other");
 
 
 t[#t+1] = Def.ActorFrame {
-	InitCommand=cmd(rotationz,-90);
+	InitCommand=cmd(rotationz,-90;xy,SCREEN_CENTER_X/2-WideScale(get43size(150),150),SCREEN_HEIGHT-50;diffusealpha,0);
 	OffCommand=function(self)
-		self:bouncebegin(0.2)
-		self:zoomx(0)
+		self:stoptweening()
+		self:bouncy(0.3)
+		self:y(SCREEN_HEIGHT-50)
+		self:diffusealpha(0)
 	end;
 
 	OnCommand=function(self)
-		self:bouncebegin(0.2)
+		self:stoptweening()
+		self:bouncy(0.3)
 		self:xy(SCREEN_CENTER_X/2-WideScale(get43size(150),150),270)
-		self:zoomx(1)
-		--self:playcommand("PositionSet")
+		self:diffusealpha(1)
 	end;
-	--[[Position bugs out with charts with steps not available with the current player count.
-	PositionSetCommand=function(self)
-		local song = GAMESTATE:GetCurrentSong()
-		local count = 1
-		if song then
-			if GAMESTATE:GetNumPlayersEnabled() == 1 then
-				count = #(song:GetAllSteps())
-			else
-				local stype
-				local steps = GAMESTATE:GetCurrentSteps(GAMESTATE:GetEnabledPlayers()[1])
-				if steps ~= nil then
-					stype = steps:GetStepsType()
-					count = #(song:GetStepsByStepsType(stype))
-				end
-			end
-			self:x(SCREEN_CENTER_X/2-50*(math.min(3,count-1)))
-		end;
-	end;
-	--]]
 	TabChangedMessageCommand=function(self)
 		self:finishtweening()
 		if getTabIndex() == 1 then

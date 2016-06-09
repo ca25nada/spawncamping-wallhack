@@ -292,6 +292,8 @@ function saveGhostData(pn,score)
 	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentData = judgmentDataString
 	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].timingDifficulty = GetTimingDifficulty()
 	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].lifeDifficulty = GetLifeDifficulty()
+	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].version = getThemeVersion()
+	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].assist = false
 	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentHash = getJudgmentDataHash(score,judgmentDataString,GetTimingDifficulty(),GetLifeDifficulty())
 	ghostTable:set_dirty(pn)
 	ghostTable:save(pn)

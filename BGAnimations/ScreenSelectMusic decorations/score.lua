@@ -16,9 +16,10 @@ else
 end;
 
 local t = Def.ActorFrame{
-	BeginCommand = cmd(queuecommand,"Set";visible,false);
-	OffCommand = cmd(bouncebegin,0.2;xy,-500,0;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
-	OnCommand = cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
+	InitCommand = function(self) self:xy(0,-100):diffusealpha(0):visible(false) end;
+	BeginCommand = cmd(queuecommand,"Set");
+	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,-100):diffusealpha(0) end;
+	OnCommand = function(self) self:bouncy(0.3) self:xy(0,0):diffusealpha(1) end;
 	SetCommand = function(self)
 		self:finishtweening()
 		if getTabIndex() == 3 then
@@ -186,8 +187,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(0)
 	end;
 	SetCommand = function(self)
-		self:settext(getClearTypeFromScore(pn,score,0))
-		self:diffuse(getClearTypeFromScore(pn,score,2))
+		local steps = GAMESTATE:GetCurrentSteps(pn)
+		local clearType = getClearType(pn,steps,score)
+		self:settext(getClearTypeText(clearType))
+		self:diffuse(getClearTypeColor(clearType))
 	end;
 	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
@@ -271,9 +274,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
 };
+--]]
 
 t[#t+1] = LoadFont("Common Normal")..{
-	Name = "Mods";
 	InitCommand = cmd(xy,frameX+offsetX,frameY+frameHeight-10;zoom,0.4;halign,0);
 	SetCommand = function(self)
 		if update then
@@ -292,7 +295,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		end
 	end;
 	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
-};--]]
+};
 
 t[#t+1] = LoadFont("Common Normal")..{
 	Name = "StepsAndMeter";

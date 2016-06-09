@@ -1,14 +1,21 @@
 local t = Def.ActorFrame{
-	OffCommand=cmd(bouncebegin,0.2;xy,0,500;diffusealpha,0;); -- visible(false) doesn't seem to work with sleep
-	OnCommand=cmd(bouncebegin,0.2;xy,0,0;diffusealpha,1;);
-	TabChangedMessageCommand=function(self)
+	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
+	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,100):diffusealpha(0) end;
+	OnCommand = function(self) self:bouncy(0.3) self:xy(0,0):diffusealpha(1) end;
+	TabChangedMessageCommand = function(self)
+		self:finishtweening()
 		if getTabIndex() == 1 then
+			self:finishtweening()
 			MESSAGEMAN:Broadcast("Expand")
 		else 
+			self:finishtweening()
 			MESSAGEMAN:Broadcast("Contract")
-		end;
+		end
 	end;
-	PlayerJoinedMessageCommand=cmd(queuecommand,"TabChangedMessage");
+	PlayerJoinedMessageCommand = function(self)
+		self:queuecommand("TabChangedMessage")
+		MESSAGEMAN:Broadcast("Expand")
+	end
 };
 
 local approachSecond = 0.2
@@ -49,7 +56,6 @@ local hsTable = {
 }
 
 local function generalFrame(pn)
-
 	local t = Def.ActorFrame{
 		SetCommand = function(self)
 			self:xy(frameX,frameY)
@@ -63,12 +69,12 @@ local function generalFrame(pn)
 		PlayerUnjoinedMessageCommand = function(self) self:playcommand('Set') end;
 		ContractMessageCommand = function(self)
 			self:stoptweening()
-			self:smooth(0.1)
+			self:bouncy(0.3)
 			self:y(frameY+frameHeight-frameHeightShort)
 		end;
 		ExpandMessageCommand = function(self)
 			self:stoptweening()
-			self:smooth(0.1)
+			self:bouncy(0.3)
 			self:y(frameY)
 		end;
 	}
@@ -104,7 +110,12 @@ local function generalFrame(pn)
 		SetCommand = function(self)
 			self:stoptweening()
 			self:smooth(0.5)
-			self:diffuse(getHighestClearType(pn,0,2))
+			local scoreList
+			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
+				scoreList = profile[pn]:GetHighScoreList(song,steps[pn]):GetHighScores()
+			end
+			local clearType = getHighestClearType(pn,steps[pn],scoreList,0)
+			self:diffuse(getClearTypeColor(clearType))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -118,7 +129,7 @@ local function generalFrame(pn)
 			self:zoomto(56,56)
 			self:diffusealpha(0.8)
 		end;
-		BeginCommand=function(self)
+		BeginCommand = function(self)
 			self:diffuseramp()
 			self:effectcolor2(color("1,1,1,0.6"))
 			self:effectcolor1(color("1,1,1,0"))
@@ -128,15 +139,20 @@ local function generalFrame(pn)
 
 	-- Avatar
 	t[#t+1] = Def.Sprite {
-		InitCommand=function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
+		InitCommand = function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
 		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		PlayerUnjoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
-		ModifyAvatarCommand=function(self)
+		ModifyAvatarCommand = function(self)
 			self:visible(true)
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(pn)));
 			self:zoomto(50,50)
 		end;
+		MouseLeftClickMessageCommand = function(self)
+			if isOver(self) and GAMESTATE:IsPlayerEnabled(pn) then
+				SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch")
+			end
+		end
 	}
 
 	-- Player name
@@ -391,7 +407,6 @@ local function generalFrame(pn)
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
-
 	--ClearType
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self)
@@ -400,8 +415,14 @@ local function generalFrame(pn)
 			self:maxwidth(110/0.4)
 		end;
 		SetCommand = function(self)
-			self:settext(getHighestClearType(pn,0,0))
-			self:diffuse(getHighestClearType(pn,0,2))
+			self:stoptweening()
+			local scoreList
+			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
+				scoreList = profile[pn]:GetHighScoreList(song,steps[pn]):GetHighScores()
+			end
+			local clearType = getHighestClearType(pn,steps[pn],scoreList,0)
+			self:settext(getClearTypeText(clearType))
+			self:diffuse(getClearTypeColor(clearType))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -410,7 +431,6 @@ local function generalFrame(pn)
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
-
 
 	-- Percentage Score
 	t[#t+1] = Def.RollingNumbers{
@@ -550,7 +570,7 @@ end
 -- TODO: course mode stuff
 t[#t+1] = Def.Actor{
 	BeginCommand=cmd(playcommand,"Set");
-	SetCommand=function(self)
+	SetCommand = function(self)
 		if GAMESTATE:IsCourseMode() then
 			course = GAMESTATE:GetCurrentCourse()
 			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
