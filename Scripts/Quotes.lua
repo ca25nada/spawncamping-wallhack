@@ -300,16 +300,21 @@ local Phrases = {
     "i bet you memorized the notes",
     "I'm used to another mania style game called osu!mania where the notes come from above and are clicked at the bottom, in stepmania it seems to be the opposite.",
     "i had an AAA on scorpion fire but my keyboard turned into a fucking cake", -- CAKE MANIAAAAAAAAAA
-    "when's the brazilian p90 rush theme coming out?",
-    "when you already pine nutted but she keep on gengaozo_succin", -- ritkoi
+    "when's the brazilian p90 rush theme coming out?", -- kommisar
+    "when you already pine nutted but she keep on gengaozo_succin", -- riktoi
     "wow -- this map -- is very -- ssibal", --jakads https://osu.ppy.sh/b/823842?m=3
     "The only mark you will leave on this world is your utterly insignificant carbon footprint. Your entire life will be obsoleted by a handful of cattle in wyoming and undone by a few fucking square meters of shrubbery in scotland.", -- mina
     "THIS IS NOT GOOBYE", -- Beatcraft cyclone
-    "REMINDER THERE IS GIRLISH CAFE FOR O!M",
+    "REMINDER THERE IS GIRLISH CAFE FOR O!M", -- ggsnipes
     "guilmon digivolves too Guilhermeziatomon",
     "timdam snackpack more like \"i got fucking carried by 4 other charters who are better than me\"", -- April
     "coffin twins -- more like -- shitty 9th dan song -- ahha -- ahha -- ahha -- ahhaha", -- Elah
-    "it fucking took prim 8 years to implement LEFT CLICKING", -- Prim
+    "it fucking took prim 8 years to implement LEFT CLICKING", -- lurker
+    "tbh look at the brazilian ultralight mods and default+ and tell me stepmania players give a shit about \"real estate\"", -- lurker
+    "7k is just iidx withount scratch", -- riktoi
+    "the best way to improve at stepmania is bitching at people who get higher than 5:1 MA ratios", -- lurker
+    "the best way to improve at stepmania is shouting \"MY DILDO\" into your mic", -- lurker
+    "i sexually identify as staiain's heyboard. ever since i was a kid i wanted to get pounded by staiain fingers"
 }
 
 --tip
