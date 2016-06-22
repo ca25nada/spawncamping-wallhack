@@ -1,6 +1,4 @@
 
-
--- Tabs are 0 indexed
 local tabIndex = 1
 
 local tabData = { -- Name, Available in singleplayer, Available in multiplayer.
@@ -25,11 +23,12 @@ function setTabIndex(index)
 		if tabData[index][2] then
 			tabIndex = index
 			MESSAGEMAN:Broadcast("TabChanged")
+			SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
 		end
 	else
 		if tabData[index][3] then
 			tabIndex = index
-			MESSAGEMAN:Broadcast("TabChanged")
+			SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
 		end
 	end
 end
