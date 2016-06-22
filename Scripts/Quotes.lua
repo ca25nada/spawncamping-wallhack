@@ -314,7 +314,13 @@ local Phrases = {
     "7k is just iidx withount scratch", -- riktoi
     "the best way to improve at stepmania is bitching at people who get higher than 5:1 MA ratios", -- lurker
     "the best way to improve at stepmania is shouting \"MY DILDO\" into your mic", -- lurker
-    "i sexually identify as staiain's heyboard. ever since i was a kid i wanted to get pounded by staiain fingers"
+    "i sexually identify as staiain's heyboard. ever since i was a kid i wanted to get pounded by staiain fingers",
+    "UNCLE BEN'S RICE SMOOTHIE", -- stai's stream
+    "it's basically impossible to have played stepmania and not heard of osu", -- lurker
+    "go play your stupid d7 hyper ultra stamina death killer files -- and get cts", -- Tim
+    "I grind the LR2 now I am the Insane of the kaiden dan and come to score on you prepare for anus shrekktering :) :) :)", -- RoFAIL 
+    "After having been diagnosed with carpal tunnel 2 days ago, I pushed as hard as I could on osu and saw insane results",
+    "youll be good at sm again if you quit quitting every 3 hours", -- Walrusizer
 }
 
 --tip
