@@ -43,9 +43,16 @@ t[#t+1] = LoadFont("Common Normal")..{
 	BeginCommand = cmd(settext,THEME:GetString("ScreenSelectMusic","SimfileInfoHeader"))
 };
 
+t[#t+1] = Def.Quad{
+	InitCommand = function(self) 
+		self:y(frameY+5+offsetY+150*3/8)
+		self:x(frameX+75+5)
+		self:diffuse(color("#000000")):diffusealpha(0.6)
+		self:zoomto(150,150*3/4)
+	end
+}
 
 t[#t+1] = Def.Sprite {
-	InitCommand = cmd(xy,frameX,frameY+offsetY-75;diffusealpha,0.8;);
 	Name = "BG";
 	SetCommand = function(self)
 		if update then
