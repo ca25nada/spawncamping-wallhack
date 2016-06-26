@@ -143,7 +143,7 @@ local function GraphDisplay( pn )
 		Def.RollingNumbers{
 			Font= "Common Normal", 
 			InitCommand= function(self)
-				self:y(55):zoom(0.6)
+				self:y(50):zoom(0.6)
 			    self:set_chars_wide(5):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
 			end;
 			BeginCommand=function(self) 
@@ -151,11 +151,28 @@ local function GraphDisplay( pn )
 				local maxScore = getMaxScoreST(pn,0)
 				self:halign(0)
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8,70/0.8))*0.6)
+					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 				else
-					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8,70/0.8))*0.6)
+					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 				end
 				self:target_number(math.floor((score/maxScore)*10000)/100)
+			end;
+		};
+
+		LoadFont("Common Normal")..{
+			InitCommand= function(self)
+				self:y(63):zoom(0.4)
+				self:halign(0)
+			end;
+			BeginCommand=function(self) 
+				local grade,diff = getNearbyGrade(pn,getCurScoreST(pn,1),pss:GetGrade())
+				diff = diff >= 0 and "+"..diff or tostring(diff)
+				self:settextf("%s %s",THEME:GetString("Grade",ToEnumShortString(grade)),diff)
+				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
+					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
+				else
+					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
+				end
 			end;
 		};
 
