@@ -1,6 +1,6 @@
 local curSong = nil
 local start = math.max(0,getLastSecond())
-local delay = 0.5
+local delay = 0.7
 local startFromPreview = true
 local loop = themeConfig:get_data().global.SongPreview == 2
 local curPath = ""
@@ -56,9 +56,9 @@ local t = Def.ActorFrame{
 		end
 	end;
 	CurrentSongChangedMessageCommand = function(self)
+		SOUND:StopMusic()
 		deltaSum = 0
 		curSong = GAMESTATE:GetCurrentSong()
-
 		if curSong ~= nil then
 			curPath = curSong:GetMusicPath()
 			if not curPath then
