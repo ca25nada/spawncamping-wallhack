@@ -43,6 +43,8 @@ local function LaneHighlight()
 				local colWidth = width/cols
 				local enabled = playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlight
 				if not enabled then
+					self:visible(false)
+					self:hibernate(math.huge)
 					return
 				end
 				if i > cols then
@@ -57,6 +59,13 @@ local function LaneHighlight()
 				self:visible(false)
 			end;
 			JudgmentMessageCommand=function(self,params)
+				local enabled = playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlight
+				if not enabled then
+					self:visible(false)
+					self:hibernate(math.huge)
+					return
+				end
+
 				local notes = params.Notes
 				if params.Player == pn and 
 					params.TapNoteScore and
