@@ -17,7 +17,7 @@ local t = Def.ActorFrame{
 	end;
 	SongStartingMessageCommand = function(self)
 		self:stoptweening()
-		self:bouncyOut(1)
+		self:bouncyOut(0.7)
 		self:zoomy(0.5):zoomx(0.5)
 		self:diffusealpha(0)
 	end
