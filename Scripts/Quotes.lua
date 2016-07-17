@@ -321,6 +321,9 @@ local Phrases = {
     "I grind the LR2 now I am the Insane of the kaiden dan and come to score on you prepare for anus shrekktering :) :) :)", -- RoFAIL 
     "After having been diagnosed with carpal tunnel 2 days ago, I pushed as hard as I could on osu and saw insane results",
     "youll be good at sm again if you quit quitting every 3 hours", -- Walrusizer
+    "I have really bad RSI so I have to play with my hands pretty much limp -- right hand even had carpool tunnel in the past", -- KirasCat
+    "I'm not an o2jam player or anything", -- KirasCat
+    "grey notes? that's what people who can't step guitar solos worth shit use right?"
 }
 
 --tip
