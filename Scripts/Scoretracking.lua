@@ -194,9 +194,9 @@ end
 
 --Adds the tapnotescore offset value (in seconds) for the specified player. 
 --This should be only be called if the tapnotescore is for actual tap notes, not mines or checkpoints.
-function addOffsetST(pn,offset)
+function addOffsetST(pn,offset,timestamp)
 	if GAMESTATE:IsHumanPlayer(pn) then
-		offsetTable[pn][#(offsetTable[pn])+1] = offset 
+		offsetTable[pn][#(offsetTable[pn])+1] = {timestamp, offset}
 	end
 end
 
@@ -364,25 +364,39 @@ function isFullCombo(pn)
 	return misscount == 0
 end
 
--- Literally what ossu has.
--- At least according to what the wiki says heh.
--- x10 of Std.Dev from all of the judgment offsets.
-function getUnstableRateST(pn)
+function getOffsetMin(pn)
+
+end
+
+function getOffsetMax(pn)
+
+end
+
+function getOffsetMeanST(pn)
+	local sum = 0
+	local offset = getOffsetTableST(pn)
+	for i=1,#offset do
+		sum = sum+(offset[i][2])
+	end
+	return sum/#offset
+end
+
+function getOffsetStdDevST(pn)
 	local sum1 = 0
 	local mean = 0
 	local offset = getOffsetTableST(pn)
 	for i=1,#offset do
-		sum1 = sum1+(offset[i]*1000)
+		sum1 = sum1+(offset[i][2])
 	end
 	mean = sum1/#offset
 
 	local sum2 = 0
 	local sum3 = 0
 	for i=1,#offset do
-		sum2 = sum2 + math.pow(((offset[i]*1000)-mean),2)
-		sum3 = sum3 + ((offset[i]*1000)-mean)
+		sum2 = sum2 + math.pow(((offset[i][2])-mean),2)
+		sum3 = sum3 + ((offset[i][2])-mean)
 	end
-	return math.sqrt((sum2 - math.pow(sum3,2)/#offset)/(#offset-1))*10
+	return math.sqrt((sum2 - math.pow(sum3,2)/#offset)/(#offset-1))
 end
 
 function setLastSecond(t)

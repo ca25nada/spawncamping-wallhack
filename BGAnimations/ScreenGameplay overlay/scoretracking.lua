@@ -83,16 +83,16 @@ t[#t+1] = Def.Actor{
 
 		local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
 		if params.HoldNoteScore then -- Hold/Rolls
-			addJudgeST(params.Player,params.HoldNoteScore,true)
-			addJudgeGD(params.Player,params.HoldNoteScore,true)
+			addJudgeST(params.Player, params.HoldNoteScore,true)
+			addJudgeGD(params.Player, params.HoldNoteScore,true)
 		elseif params.TapNoteScore == 'TapNoteScore_HitMine' or params.TapNoteScore == 'TapNoteScore_AvoidMine' then -- Mines
-			addJudgeST(params.Player,params.TapNoteScore,false)
-			addJudgeGD(params.Player,params.TapNoteScore,false)
+			addJudgeST(params.Player, params.TapNoteScore,false)
+			addJudgeGD(params.Player, params.TapNoteScore,false)
 		else -- Rest should be taps.
-			addJudgeST(params.Player,params.TapNoteScore,false)
-			addJudgeGD(params.Player,params.TapNoteScore,false)
+			addJudgeST(params.Player, params.TapNoteScore,false)
+			addJudgeGD(params.Player, params.TapNoteScore,false)
 			if params.TapNoteScore ~= 'TapNoteScore_Miss' then -- Add timing offset if it's not a miss
-				addOffsetST(params.Player,params.TapNoteOffset)
+				addOffsetST(params.Player, params.TapNoteOffset, GAMESTATE:GetSongPosition():GetMusicSeconds())
 			end
 		end;
 	end;

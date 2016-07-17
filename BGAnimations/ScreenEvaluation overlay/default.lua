@@ -1,6 +1,21 @@
 local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("../_frame");
 
+local function input(event)
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_left mouse button" then
+			MESSAGEMAN:Broadcast("MouseLeftClick")
+		end
+
+		if event.DeviceInput.button == "DeviceButton_right mouse button" then
+			MESSAGEMAN:Broadcast("MouseRightClick")
+		end
+	end
+return false
+
+end
+
+
 --Group folder name
 local frameWidth = 280
 local frameHeight = 20
@@ -12,6 +27,7 @@ t[#t+1] = Def.ActorFrame{
 		self:xy(frameX,frameY)
 	end;
 	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(input)
 		self:y(-frameHeight/2)
 		self:smooth(0.5)
 		self:y(frameY)

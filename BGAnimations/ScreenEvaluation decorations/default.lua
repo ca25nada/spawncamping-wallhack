@@ -14,7 +14,7 @@ setLastSecond(0)
 local approachSecond = 0.5
 
 if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
-	t[#t+1] = LoadActor("scoreboard")
+	--t[#t+1] = LoadActor("scoreboard")
 end;
 
 
@@ -918,18 +918,6 @@ local function scoreBoard(pn)
 		end
 	}
 
-
-
-	--[[
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,0,230;zoom,0.35;halign,0);
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self) 
-			self:settextf("Unstable Rate: %0.1f",getUnstableRateST(pn))
-		end;
-	};
-	--]]
-
 	return t
 end;
 
@@ -940,5 +928,10 @@ end
 if themeConfig:get_data().eval.JudgmentBarEnabled then
 	t[#t+1] = LoadActor("adefaultmoreripoff")
 end;
+
+if themeConfig:get_data().eval.JudgmentBarEnabled then
+	t[#t+1] = LoadActor("offsetvisual")
+end;
+
 
 return t
