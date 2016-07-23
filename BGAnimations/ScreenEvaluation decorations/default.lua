@@ -155,7 +155,11 @@ local function GraphDisplay( pn )
 				else
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8,70/0.8))*0.6)
 				end
-				self:target_number(math.floor((score/maxScore)*10000)/100)
+				if maxScore > 0 then
+					self:target_number(math.floor((score/maxScore)*10000)/100)
+				else
+					self:target_number(0)
+				end
 			end;
 		};
 
