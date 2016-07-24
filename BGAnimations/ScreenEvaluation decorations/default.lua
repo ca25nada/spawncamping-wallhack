@@ -767,7 +767,7 @@ local function scoreBoard(pn)
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
-				if tostring(percent) == "-nan(ind)" then
+				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
 				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4))}
@@ -785,7 +785,7 @@ local function scoreBoard(pn)
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
-				if tostring(percent) == "-nan(ind)" then
+				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
 				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4))}
@@ -823,7 +823,7 @@ local function scoreBoard(pn)
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
-				if tostring(percent) == "-nan(ind)" then
+				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
 				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
@@ -847,7 +847,7 @@ local function scoreBoard(pn)
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
-				if tostring(percent) == "-nan(ind)" then
+				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
 				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
@@ -877,7 +877,7 @@ local function scoreBoard(pn)
 		end;
 		BeginCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
-			if tostring(percent) == "-nan(ind)" then
+			if tostring(percent) == tostring(0/0) then
 				percent = 0
 			end
 			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
@@ -897,7 +897,7 @@ local function scoreBoard(pn)
 		end;
 		BeginCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
-			if tostring(percent) == "-nan(ind)" then
+			if tostring(percent) == tostring(0/0) then
 				percent = 0
 			end
 			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
