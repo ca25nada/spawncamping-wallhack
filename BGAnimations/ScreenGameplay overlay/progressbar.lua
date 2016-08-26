@@ -22,26 +22,26 @@ end
 local t = Def.ActorFrame {
     Def.Quad{
     	Name="ProgressBG";
-    	InitCommand=cmd(xy,SCREEN_CENTER_X-(width/2),frameY;zoomto,width,height;halign,0;diffuse,color("#666666");diffusealpha,0.7;);
+    	InitCommand=cmd(xy,frameX-(width/2),frameY;zoomto,width,height;halign,0;diffuse,color("#666666");diffusealpha,0.7;);
     };
     Def.Quad{
     	Name="ProgressFG";
-    	InitCommand=cmd(xy,SCREEN_CENTER_X-(width/2),frameY;zoomto,0,height;halign,0;diffuse,getMainColor('highlight'));
+    	InitCommand=cmd(xy,frameX-(width/2),frameY;zoomto,0,height;halign,0;diffuse,getMainColor('highlight'));
     };
     LoadFont("Common Normal") .. {
         Name="Song Name";
-        InitCommand=cmd(xy,SCREEN_CENTER_X,frameY-1;zoom,0.35;maxwidth,(width-50)/0.35;);
+        InitCommand=cmd(xy,frameX,frameY-1;zoom,0.35;maxwidth,(width-65)/0.35;);
         SetCommand=cmd(settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist());
         BeginCommand = function(self) self:playcommand('Set') end;
         CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
     };
     LoadFont("Common Normal") .. {
         Name="CurrentTime";
-        InitCommand=cmd(xy,SCREEN_CENTER_X-(width/2),frameY-1;halign,0;zoom,0.35;settext,"0:00";)
+        InitCommand=cmd(xy,frameX-(width/2),frameY-1;halign,0;zoom,0.35;settext,"0:00";)
     };
     LoadFont("Common Normal") .. {
         Name="TotalTime";
-        InitCommand=cmd(xy,SCREEN_CENTER_X+(width/2),frameY-1;halign,1;zoom,0.35;);
+        InitCommand=cmd(xy,frameX+(width/2),frameY-1;halign,1;zoom,0.35;);
         SetCommand=cmd(settext,SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()));
         BeginCommand = function(self) self:playcommand('Set') end;
         CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
