@@ -53,6 +53,8 @@ local Tips = {
 
 }
 
+
+
 local Phrases = {
     "That guy is saltier than the dead sea.",
     "not even kaiden yet",
@@ -323,7 +325,17 @@ local Phrases = {
     "youll be good at sm again if you quit quitting every 3 hours", -- Walrusizer
     "I have really bad RSI so I have to play with my hands pretty much limp -- right hand even had carpool tunnel in the past", -- KirasCat
     "I'm not an o2jam player or anything", -- KirasCat
-    "grey notes? that's what people who can't step guitar solos worth shit use right?"
+    "grey notes? that's what people who can't step guitar solos worth shit use right?",
+    "not a fan of \"singer will lose his voice in like 2 years\" metal", -- Pixl
+    "my jumpstream style is a lot more jumpy based", -- Fantasy
+    "ANNOUNCEMENT: 2 Stepmania 5 Themes Should FAKE Because I have create my new Account, I'm apologize for making 2 FAKE Stepmania 5 Theme, and Then I am done for this.", -- TopitoomayStepmania
+    "There may be more files on step mania than osu!mania, but there ain't a wider variety of charts. There's no barusa of mikosu, mekadesu, or c18h27no3: and that's inexcusable for a modern rhythm game. And those are only a few examples of songs that aren't on step mania.",
+    "like i'm definitely not ashamed to tell people i listen to denpa bullshit (or practically any of the genres of music I listen to) but I wouldn't Bump Dat Mosiac.Wav In The Whip", -- Choof
+    "All in all this place is really something huh, and i came here hoping i'd meet people who don't judge on someone so much, it's a fucking rhythm game not a court room jesus christ", -- Soul Evans
+    "I just get a random anime image and slap text on it, its the only proper way to make gfx <;0)", -- jousway
+    "i'm not even sure what's classified as ''hard'' in the packs as i may be one of the best solo players for this site (maybe) so i specifically want somewhat hard maps maybe by mina's scale for difficulty 23-27? so long it's 15+ more in average NPS", -- Soul Evans
+    "why can't i just download the songs you're playing? is this that stepmania elitism i keep hearing about",
+    "but are your wristjacks so powerful they cure cancer",
 }
 
 --tip
