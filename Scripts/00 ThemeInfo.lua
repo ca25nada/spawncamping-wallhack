@@ -2,8 +2,8 @@
 
 themeInfo = {
 	Name = "spawncamping-wallhack",
-	Version = "2.0.1", -- a.b.c, a for complete overhauls, b for major releases, c for minor additions/bugfix.
-	Date = "20160607",
+	Version = "2.0.2", -- a.b.c, a for complete overhauls, b for major releases, c for minor additions/bugfix.
+	Date = "20160827",
 };
 
 function getThemeName()
