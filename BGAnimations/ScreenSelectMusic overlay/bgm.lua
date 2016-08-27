@@ -1,6 +1,6 @@
 local curSong = nil
 local start = math.max(0,getLastSecond())
-local delay = 0.7
+local delay = 1
 local startFromPreview = true
 local loop = themeConfig:get_data().global.SongPreview == 2
 local curPath = ""
@@ -36,7 +36,7 @@ local function playMusic(self, delta)
 				end
 
 			else -- When starting from start of from exit point.
-				SOUND:PlayMusicPart(curPath,start,musicLength-start,2,2,true,true,false)
+				SOUND:PlayMusicPart(curPath,start,musicLength-start,2,2,false,true,false)
 				start = 0
 
 				if themeConfig:get_data().global.SongPreview == 2 then
