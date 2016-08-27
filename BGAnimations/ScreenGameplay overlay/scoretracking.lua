@@ -10,6 +10,9 @@ local fcFlagDelay = 0.5
 local firstSecond
 local lastSecond
 
+local ghostDataUpdateDelay = 0.01
+local ghostDataLastUpdate = 0
+
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	setCurExp(pn)
 	if GAMESTATE:IsCourseMode() then
@@ -69,9 +72,20 @@ local t = Def.ActorFrame{
 
 t[#t+1] = Def.Actor{
 	JudgmentMessageCommand=function(self,params)
-
+		
 		popGhostData(params.Player)
-		MESSAGEMAN:Broadcast('GhostScore')
+
+		 -- Apparently sending out too many messages in a extremely short amount of time causes performance issues.
+		 -- e.g. mine walls
+		if not params.HoldNoteScore then -- No issues with holds
+			if GetTimeSinceStart() - ghostDataLastUpdate > ghostDataUpdateDelay then
+				MESSAGEMAN:Broadcast('GhostScore')
+				ghostDataLastUpdate = GetTimeSinceStart()
+			end
+		else
+			MESSAGEMAN:Broadcast('GhostScore')
+		end
+
 		if getAutoplay() == 1 then
 			if params.HoldNoteScore then
 				addJudgeGD(params.Player,'HoldNoteScore_None',true)
@@ -95,6 +109,7 @@ t[#t+1] = Def.Actor{
 				addOffsetST(params.Player, params.TapNoteOffset, GAMESTATE:GetSongPosition():GetMusicSeconds())
 			end
 		end;
+
 	end;
 }
 
