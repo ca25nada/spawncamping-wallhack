@@ -1,5 +1,3 @@
-local t = Def.ActorFrame{}
-
 -- A somewhat naive implementation of the osu's error bar.
 -- Single Player only until I figure out where to put everything
 -- Hopefully I can change it so I don't have to initialize like 300 quads beforehand.
@@ -22,25 +20,33 @@ local tickWidth = 2 -- Width of the ticks
 local tickDuration = playerConfig:get_data(pn).ErrorBarDuration -- Time duration in seconds before the ticks fade out
 --=======================================
 
+local t = Def.ActorFrame{
+	InitCommand = function(self)
+		self:xy(frameX,frameY)
+	end
+}
+
 
 local currentbar = 1 -- Index to be updated
-local offset = 0 -- offset of the last note hit
 
-function proTimingTicks(pn,index)
+local function proTimingTicks(pn,index)
 	return Def.Quad{
-		InitCommand=cmd(xy,frameX,frameY;zoomto,tickWidth,frameHeight;diffusealpha,0;);
-		JudgmentMessageCommand=function(self,params)
-			if currentbar == index and  params.Player == pn then
+		Name = tostring(index);
+		InitCommand = function(self)
+			self:zoomto(tickWidth,frameHeight):diffusealpha(0)
+		end;
+		UpdateTickCommand = function(self,params)
+			if params.Player == pn then
 
 				if params.TapNoteScore and not params.HoldNoteScore and
 				Enum.Reverse(TapNoteScore)[params.TapNoteScore] >= 5 and
 				Enum.Reverse(TapNoteScore)[params.TapNoteScore] < 10 then
 
-					if math.abs(offset) <= maxOffsetRange then
+					if math.abs(params.TapNoteOffset) <= maxOffsetRange then
 						self:stoptweening()
 						self:diffusealpha(1)
-						self:diffuse(offsetToJudgeColor(offset))
-						self:x(frameX+(((offset)/maxOffsetRange)*(frameWidth/2)))
+						self:diffuse(offsetToJudgeColor(params.TapNoteOffset))
+						self:x(((params.TapNoteOffset)/maxOffsetRange)*(frameWidth/2))
 						self:linear(tickDuration)
 						self:diffusealpha(0)
 					end
@@ -51,44 +57,39 @@ function proTimingTicks(pn,index)
 end
 
 if enabled then
+		-- Initialize a bunch of bars
+	t[#t+1] = Def.Quad{
+		InitCommand=cmd(zoomto,frameWidth,frameHeight;diffuse,color("#666666");diffusealpha,0.7);
+	}
+
+	for i=1,barcount do
+		t[#t+1] = proTimingTicks(pn,i)
+	end
+
 	t[#t+1] = Def.Actor{
 		JudgmentMessageCommand=function(self,params)
-			if params.Player == pn then
-				
+			if params.Player == pn then	
 				if params.TapNoteScore and not params.HoldNoteScore and
 				Enum.Reverse(TapNoteScore)[params.TapNoteScore] >= 5 and
 				Enum.Reverse(TapNoteScore)[params.TapNoteScore] < 10 then
 					currentbar = ((currentbar)%barcount)+1
-					if params.Early then
-						offset = params.TapNoteOffset
-					else
-						offset = params.TapNoteOffset
-					end
+					self:GetParent():GetChild(tostring(currentbar)):playcommand("UpdateTick",params)
 				end
 			end
 		end
 	}
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX,frameY;zoomto,frameWidth,frameHeight;diffuse,color("#666666");diffusealpha,0.7);
-	}
-
-	-- Initialize a bunch of bars
-	for i=1,barcount do
-		t[#t+1] = proTimingTicks(pn,i)
-	end
-
-	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,frameX,frameY;zoomto,2,frameHeight;diffuse,color("#FFFFFF");diffusealpha,0.5);
+		InitCommand=cmd(zoomto,2,frameHeight;diffuse,color("#FFFFFF");diffusealpha,0.5);
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
-        InitCommand=cmd(xy,frameX+frameWidth/4,frameY;zoom,0.35;);
+        InitCommand=cmd(x,frameWidth/4;zoom,0.35;);
         BeginCommand=cmd(settext,"Late";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
     }
 
     t[#t+1] = LoadFont("Common Normal") .. {
-        InitCommand=cmd(xy,frameX-frameWidth/4,frameY;zoom,0.35;);
+        InitCommand=cmd(x,-frameWidth/4;zoom,0.35;);
         BeginCommand=cmd(settext,"Early";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
     }
 
