@@ -6,15 +6,17 @@ resetGhostData() -- Reset ghostscore data.
 
 local startFlag = false
 local fcFlag = false
-local fcFlagDelay = 0.5
-local firstSecond
-local lastSecond
+local fcFlagDelay = 0.5 -- Minimum delay after lastSecond before broadcasting FC message.
+local firstSecond -- First Second of a song.
+local lastSecond -- Last Second of a song.
 
 local ghostDataUpdateDelay = 0.01
 local ghostDataLastUpdate = 0
 
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-	setCurExp(pn)
+	setCurExp(pn) -- Save current exp for each player for comparison after gameplay.
+
+	-- Ignore ghostdata stuff for course mode.
 	if GAMESTATE:IsCourseMode() then
 		break
 	end
@@ -37,8 +39,7 @@ end
 local function Update(self)
 	self.InitCommand=cmd(SetUpdateFunction,Update)
 	local curSecond = GAMESTATE:GetSongPosition():GetMusicSeconds()
-
-	setLastSecond(curSecond)
+	setLastSecond(curSecond) -- For preview music when exiting midway.
 
 	if not startFlag and (firstSecond-curSecond < 2 or curSecond > 1) then
         MESSAGEMAN:Broadcast("SongStarting")
@@ -61,6 +62,7 @@ local t = Def.ActorFrame{
 	InitCommand = function(self)
 		self:SetUpdateFunction(Update)
 	end;
+	-- Reset flags and first/last second at the beginning of each song.
 	CurrentSongChangedMessageCommand = function(self)
 		firstSecond = GAMESTATE:GetCurrentSong():GetFirstSecond()
 		lastSecond = GAMESTATE:GetCurrentSong():GetLastSecond()

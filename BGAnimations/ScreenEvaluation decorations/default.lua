@@ -10,9 +10,14 @@ local frameY = 150
 local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
 local frameHeight = 300
 
+-- Reset preview music starting point since song was finished.
 setLastSecond(0)
+
+-- ApproachSecond time for all rolling numbers in this file.
 local approachSecond = 0.5
 
+
+-- Timing/Judge Difficulty
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
 		self:xy(10,40)
@@ -23,7 +28,8 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end
 }
 
-t[#t+1] = 	LoadFont("Common Normal")..{
+-- Life Difficulty
+t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
 		self:xy(10,55)
 		self:zoom(0.4)
@@ -33,6 +39,7 @@ t[#t+1] = 	LoadFont("Common Normal")..{
 	end
 }
 
+-- Music Rate/Haste
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
 		self:xy(10,70)
@@ -43,6 +50,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end
 }
 
+-- Background Quad for Song banner
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:zoomto(256+10,80+10)
@@ -51,6 +59,7 @@ t[#t+1] = Def.Quad{
 	end
 }
 
+-- Song banner
 t[#t+1] = Def.Banner{
 	BeginCommand = function(self)
 		if song and not course then
@@ -64,7 +73,7 @@ t[#t+1] = Def.Banner{
 }
 
 
-
+-- Song title
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X+5+(266/2),50)
@@ -82,6 +91,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 };
 
+-- Artist and subtitles
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X+5+(266/2),65)

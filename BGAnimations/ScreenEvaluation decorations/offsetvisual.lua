@@ -1,24 +1,26 @@
-local song = GAMESTATE:GetCurrentSong()
-local songLength = song:GetLastSecond()
-local timingWindowScale = PREFSMAN:GetPreference("TimingWindowScale")
-local W5Window = PREFSMAN:GetPreference("TimingWindowSecondsW5")
-local maxTicks = 500
-local maxTicksZoomed = 500
+--==== Only edit these ====--
+local maxTicks = 500 -- "Soft cap" on the number of ticks to display. Actual count displayed == math.floor(#offsetTable/math.floor(#offsetTable/maxTicks))
+local maxTicksZoomed = 500 -- Number of ticks to display when after drilling down/zoomed in.
 local maxMissTicks = 100 -- unused for now. To be used to limit the number of miss ticks displayed.
 
+-- Positoning
 local frameX = SCREEN_CENTER_X*3/2
 local frameY = 150+250/2
 local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
 local frameHeight = 250
-
 local frame2Height = 40
 
+--Tick dimensions
 local tickWidth = 2
 local tickHeight = 2
+--=========================--
 
-local pn = PLAYER_1
-
-local offsetTable = getOffsetTableST(pn)
+local song = GAMESTATE:GetCurrentSong()
+local songLength = song:GetLastSecond()
+local timingWindowScale = PREFSMAN:GetPreference("TimingWindowScale")
+local W5Window = PREFSMAN:GetPreference("TimingWindowSecondsW5") -- Timing window for Bads
+local pn = GAMESTATE:GetEnabledPlayers()[1]
+local offsetTable = getOffsetTableST(pn) -- Table containing offsets
 local mean = getOffsetMeanST(pn)
 local stddev = getOffsetStdDevST(pn)
 
@@ -52,6 +54,7 @@ local t = Def.ActorFrame{
 	end
 }
 
+-- Do binary search to find the table index for the timestamp of when the offset occured given the time.
 local function binSearchTimeStamp(offsetTable,time)
 	local min = 1
 	local max = #offsetTable
@@ -70,6 +73,8 @@ local function binSearchTimeStamp(offsetTable,time)
 	return mid
 end
 
+-- Converts mouse position to range of notes to drill down to.
+-- Returns table containing the min/max values.
 local function XtoNoteRange(mouseX)
 	if maxTicksZoomed >= #offsetTable then
 		return {1,#offsetTable}
@@ -88,6 +93,7 @@ local function XtoNoteRange(mouseX)
 	end
 end
 
+-- Top background quad
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:zoomto(frameWidth,frameHeight)
@@ -110,6 +116,7 @@ t[#t+1] = Def.Quad{
 	end;
 }
 
+-- Top Masking quad
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:zoomto(frameWidth,frameHeight)
@@ -117,6 +124,7 @@ t[#t+1] = Def.Quad{
 	end;
 }
 
+-- Bottom Background quad
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:y(frameHeight/2+frame2Height/2+10):zoomto(frameWidth,frame2Height)
@@ -124,6 +132,7 @@ t[#t+1] = Def.Quad{
 	end;
 }
 
+-- Standard deviation
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:y(mean/W5Window*frameHeight/2):zoomto(frameWidth,stddev/W5Window*timingWindowScale*frameHeight)
@@ -131,6 +140,7 @@ t[#t+1] = Def.Quad{
 	end;
 }
 
+-- Center line
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:zoomto(frameWidth,2)
@@ -138,6 +148,7 @@ t[#t+1] = Def.Quad{
 	end;
 }
 
+-- Parent actorframe for ticks
 local ticks = Def.ActorFrame{
 	InitCommand = function(self)
 		self:x(-frameWidth/2)
@@ -194,6 +205,7 @@ for k,v in pairs(offsetTable) do
 end
 t[#t+1] = ticks
 
+-- Mean line
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:y(mean/W5Window*frameHeight/2):zoomto(frameWidth,1)
@@ -239,6 +251,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 }
 
+-- Text for bottom quad
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
 		self:xy(-frameWidth/2+3,frameHeight/2+10+frame2Height/3):halign(0):zoom(0.35)

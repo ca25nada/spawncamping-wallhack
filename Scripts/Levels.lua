@@ -5,6 +5,8 @@ local curExp = {
 	PlayerNumber_P2
 }
 
+
+-- Returns the total Exp given a PlayerNumber
 function getProfileExp(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	if profile ~= nil then
@@ -14,14 +16,17 @@ function getProfileExp(pn)
 	end
 end
 
+-- Returns the level given the Exp
 function getLevel(exp)
 	return math.floor(math.sqrt(math.sqrt(exp+441)-20))
 end
 
+-- Returns the Exp required for a level
 function getLvExp(level)
 	return math.pow(level,4) + 40*math.pow(level,2) - 41
 end
 
+-- Returns the Exp difference from the given level and the next.
 function getNextLvExp(level)
 	return getLvExp(level+1) - getLvExp(level)
 end
@@ -39,6 +44,7 @@ function getExpDiff(pn)
 	return getProfileExp(pn) - curExp[pn]
 end
 
+-- Returns true if a player leveled up between setting the exp and now.
 function playerLeveled(pn)
 	if curExp[pn] == nil then
 		return false
