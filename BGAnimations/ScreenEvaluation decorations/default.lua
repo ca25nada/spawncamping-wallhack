@@ -13,12 +13,6 @@ local frameHeight = 300
 setLastSecond(0)
 local approachSecond = 0.5
 
-if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
-	--t[#t+1] = LoadActor("scoreboard")
-end;
-
-
-
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
 		self:xy(10,40)
@@ -784,7 +778,7 @@ local function scoreBoard(pn)
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
-				if tostring(percent) == "-nan(ind)" then
+				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
 				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4))}
@@ -802,7 +796,7 @@ local function scoreBoard(pn)
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
-				if tostring(percent) == "-nan(ind)" then
+				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
 				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4))}
@@ -840,16 +834,11 @@ local function scoreBoard(pn)
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
-				if tostring(percent) == "-nan(ind)" then
+				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
 				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
-				
-
-
 				self:target_number(pss:GetHoldNoteScores(v))
-
-
 			end
 		}
 
@@ -864,7 +853,7 @@ local function scoreBoard(pn)
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
-				if tostring(percent) == "-nan(ind)" then
+				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
 				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
@@ -894,7 +883,7 @@ local function scoreBoard(pn)
 		end;
 		BeginCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
-			if tostring(percent) == "-nan(ind)" then
+			if tostring(percent) == tostring(0/0) then
 				percent = 0
 			end
 			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
@@ -914,7 +903,7 @@ local function scoreBoard(pn)
 		end;
 		BeginCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
-			if tostring(percent) == "-nan(ind)" then
+			if tostring(percent) == tostring(0/0) then
 				percent = 0
 			end
 			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
@@ -933,9 +922,11 @@ if themeConfig:get_data().eval.JudgmentBarEnabled then
 	t[#t+1] = LoadActor("adefaultmoreripoff")
 end;
 
-if themeConfig:get_data().eval.JudgmentBarEnabled then
+if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
+	t[#t+1] = LoadActor("scoreboard")
 	t[#t+1] = LoadActor("offsetvisual")
 end;
+
 
 
 return t

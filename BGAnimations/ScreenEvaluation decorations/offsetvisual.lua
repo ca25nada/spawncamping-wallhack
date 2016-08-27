@@ -2,14 +2,14 @@ local song = GAMESTATE:GetCurrentSong()
 local songLength = song:GetLastSecond()
 local timingWindowScale = PREFSMAN:GetPreference("TimingWindowScale")
 local W5Window = PREFSMAN:GetPreference("TimingWindowSecondsW5")
-local maxTicks = 1000
+local maxTicks = 500
 local maxTicksZoomed = 500
-local maxMissTicks = 100
+local maxMissTicks = 100 -- unused for now. To be used to limit the number of miss ticks displayed.
 
 local frameX = SCREEN_CENTER_X*3/2
-local frameY = SCREEN_CENTER_Y+50
-local frameWidth = SCREEN_WIDTH/2-50
-local frameHeight = 200
+local frameY = 150+250/2
+local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
+local frameHeight = 250
 
 local frame2Height = 40
 
@@ -22,10 +22,33 @@ local offsetTable = getOffsetTableST(pn)
 local mean = getOffsetMeanST(pn)
 local stddev = getOffsetStdDevST(pn)
 
+local hidden = true
 
 local t = Def.ActorFrame{
 	InitCommand = function(self)
+		self:xy(frameX+100,frameY)
+		self:diffusealpha(0)
+	end;
+	ShowCommand = function(self)
+		self:stoptweening()
+		self:bouncy(0.3)
 		self:xy(frameX,frameY)
+		self:diffusealpha(1)
+		hidden = false
+	end;
+	OffCommand = function(self)
+		self:stoptweening()
+		self:bouncy(0.3)
+		self:x(frameX+100)
+		self:diffusealpha(0)
+		hidden = true
+	end;
+	TabChangedMessageCommand = function(self, params)
+		if params.index == 2 then
+			self:playcommand("Show")
+		else
+			self:playcommand("Off")
+		end
 	end
 }
 
@@ -71,14 +94,18 @@ t[#t+1] = Def.Quad{
 		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 	end;
 	MouseLeftClickMessageCommand=function(self)
-		if isOver(self) and #offsetTable > maxTicksZoomed then
-			local params = XtoNoteRange(INPUTFILTER:GetMouseX())
-			MESSAGEMAN:Broadcast("GraphLeftClick",{start = params[1], last = params[2]})
+		if not hidden then
+			if isOver(self) and #offsetTable > maxTicksZoomed then
+				local params = XtoNoteRange(INPUTFILTER:GetMouseX())
+				MESSAGEMAN:Broadcast("GraphLeftClick",{start = params[1], last = params[2]})
+			end
 		end
 	end;
 	MouseRightClickMessageCommand=function(self)
-		if isOver(self) then
-			MESSAGEMAN:Broadcast("GraphRightClick")
+		if not hidden then
+			if isOver(self) then
+				MESSAGEMAN:Broadcast("GraphRightClick")
+			end
 		end
 	end;
 }

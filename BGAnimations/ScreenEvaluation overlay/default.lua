@@ -1,6 +1,7 @@
 local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("../_frame");
 
+local curTab = 1
 local function input(event)
 	if event.type == "InputEventType_FirstPress" then
 		if event.DeviceInput.button == "DeviceButton_left mouse button" then
@@ -10,9 +11,20 @@ local function input(event)
 		if event.DeviceInput.button == "DeviceButton_right mouse button" then
 			MESSAGEMAN:Broadcast("MouseRightClick")
 		end
-	end
-return false
 
+		-- For swapping back and forth between scoreboard and offset display.
+		for i=1,2 do
+			if event.DeviceInput.button == "DeviceButton_"..i then
+				if i ~= curTab then
+					curTab = i
+					MESSAGEMAN:Broadcast("TabChanged",{index = i})
+					SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
+				end
+			end
+		end
+
+	end
+	return false
 end
 
 

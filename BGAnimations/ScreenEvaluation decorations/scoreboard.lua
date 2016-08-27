@@ -1,9 +1,9 @@
 
 
 local lines = math.min(8,math.min(themeConfig:get_data().eval.ScoreBoardMaxEntry,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer"))) -- number of scores to display
-local framex = SCREEN_WIDTH-capWideScale(get43size(270),270)
-local framey = 153
-local frameWidth = capWideScale(get43size(260),260)
+local frameWidth = 260
+local frameX = SCREEN_WIDTH-frameWidth-WideScale(get43size(40),40)/2
+local frameY = 154
 local spacing = 34
 
 
@@ -33,28 +33,11 @@ if GAMESTATE:IsPlayerEnabled(player) then
 	scoreIndex = getHighScoreIndex(hsTable,score)
 end;
 
---Input event for mouse clicks
-local function input(event)
-	local scoreBoard = SCREENMAN:GetTopScreen():GetChildren().scoreBoard
-	if event.DeviceInput.button == 'DeviceButton_left mouse button' then
-		if event.type == "InputEventType_Release" then
-			for i=0,math.min(lines,#hsTable)-1 do
-				if isOver(scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver")) then
-					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("grade"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("grade"):GetVisible())
-					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("judge"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("judge"):GetVisible())
-					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("date"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("date"):GetVisible())
-					scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("option"):visible(not scoreBoard:GetChild("scoreItem"..tostring(i)):GetChild("option"):GetVisible())
-				end
-			end
-		end
-	end
-return false
-end
 
 
 local t = Def.ActorFrame{
 	Name="scoreBoard";
-	OnCommand=function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end
+	InitCommand=function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end;
 }
 
 local function scoreitem(pn,index,scoreIndex,drawindex)
@@ -73,14 +56,30 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 		InitCommand = function(self)
 			self:diffusealpha(0)
 			self:x(100)
+		end;
+		OnCommand = function(self)
+			self:stoptweening()
 			self:bouncy(0.2+index*0.05)
 			self:x(0)
 			self:diffusealpha(1)
 		end;
+		OffCommand = function(self)
+			self:stoptweening()
+			self:bouncy(0.2+index*0.05)
+			self:x(100)
+			self:diffusealpha(0)
+		end;
+		TabChangedMessageCommand = function(self, params)
+			if params.index == 1 then
+				self:playcommand("On")
+			else
+				self:playcommand("Off")
+			end
+		end;
 
 		--The main quad
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8);
+			InitCommand=cmd(xy,frameX,frameY+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8);
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn))
 			end
@@ -88,16 +87,24 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--Highlight quad for the current score
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor("highlight");diffusealpha,0.3);
+			InitCommand=cmd(xy,frameX,frameY+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor("highlight");diffusealpha,0.3);
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn) and equals)
+			end;
+			MouseLeftClickMessageCommand = function(self)
+				if isOver(self) then
+					self:GetParent():GetChild("grade"):visible(not self:GetParent():GetChild("grade"):GetVisible())
+					self:GetParent():GetChild("judge"):visible(not self:GetParent():GetChild("judge"):GetVisible())
+					self:GetParent():GetChild("date"):visible(not self:GetParent():GetChild("date"):GetVisible())
+					self:GetParent():GetChild("option"):visible(not self:GetParent():GetChild("option"):GetVisible())
+				end
 			end
 		};
 
 		--Quad that will act as the bounding box for mouse rollover/click stuff.
 		Def.Quad{
 			Name="mouseOver";
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor('highlight');diffusealpha,0.05;);
+			InitCommand=cmd(xy,frameX,frameY+(drawindex*spacing)-4;zoomto,frameWidth,30;halign,0;valign,0;diffuse,getMainColor('highlight');diffusealpha,0.05;);
 			BeginCommand=function(self)
 				self:visible(false)
 			end
@@ -105,7 +112,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--ClearType lamps
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffuse,getClearTypeColor(getClearType(pn,steps,hsTable[index])));
+			InitCommand=cmd(xy,frameX,frameY+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffuse,getClearTypeColor(getClearType(pn,steps,hsTable[index])));
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn))
 			end
@@ -113,7 +120,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--Animation(?) for ClearType lamps
 		Def.Quad{
-			InitCommand=cmd(xy,framex,framey+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffusealpha,0.3;diffuse,getClearTypeColor(getClearType(pn,steps,hsTable[index])));
+			InitCommand=cmd(xy,frameX,frameY+(drawindex*spacing)-4;zoomto,8,30;halign,0;valign,0;diffusealpha,0.3;diffuse,getClearTypeColor(getClearType(pn,steps,hsTable[index])));
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn));
 				self:diffuseramp()
@@ -127,7 +134,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--rank
 		LoadFont("Common normal")..{
-			InitCommand=cmd(xy,framex-8,framey+12+(drawindex*spacing);zoom,0.35;);
+			InitCommand=cmd(xy,frameX-8,frameY+12+(drawindex*spacing);zoom,0.35;);
 			BeginCommand=function(self)
 				if #hsTable >= 1 then
 					self:settext(index)
@@ -147,7 +154,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 		--grade and %score
 		LoadFont("Common normal")..{
 			Name="grade";
-			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
+			InitCommand=cmd(xy,frameX+10,frameY+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				local curscore = getScore(hsTable[index])
 				local maxscore = getMaxScore(pn,0)
@@ -163,7 +170,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 		--mods
 		LoadFont("Common normal")..{
 			Name="option";
-			InitCommand=cmd(xy,framex+10,framey+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
+			InitCommand=cmd(xy,frameX+10,frameY+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 				self:settext(hsTable[index]:GetModifiers()); 
@@ -173,7 +180,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--cleartype text
 		LoadFont("Common normal")..{
-			InitCommand=cmd(xy,framex+10,framey+2+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
+			InitCommand=cmd(xy,frameX+10,frameY+2+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				if #hsTable >= 1 and index>= 1 then
 					self:settext(getClearTypeText(getClearType(pn,steps,hsTable[index])))
@@ -185,7 +192,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 		--judgment
 		LoadFont("Common normal")..{
 			Name="judge";
-			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
+			InitCommand=cmd(xy,frameX+10,frameY+20+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				if #hsTable >= 1 and index>= 1 then
 					self:settextf("%d / %d / %d / %d / %d / %d",
@@ -203,7 +210,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 		--date
 		LoadFont("Common normal")..{
 			Name="date";
-			InitCommand=cmd(xy,framex+10,framey+20+(drawindex*spacing);zoom,0.35;halign,0);
+			InitCommand=cmd(xy,frameX+10,frameY+20+(drawindex*spacing);zoom,0.35;halign,0);
 			BeginCommand=function(self)
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 				if #hsTable >= 1 and index>= 1 then
@@ -215,7 +222,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		LoadFont("Common normal")..{
 			Name="ghostData";
-			InitCommand=cmd(xy,framex+frameWidth-5,framey+2+(drawindex*spacing);zoom,0.35;halign,1;maxwidth,(frameWidth-15)/0.35);
+			InitCommand=cmd(xy,frameX+frameWidth-5,frameY+2+(drawindex*spacing);zoom,0.35;halign,1;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
 				if ghostDataExists(pn,hsTable[index]) then
 					if isGhostDataValid(pn,hsTable[index]) then
@@ -267,7 +274,7 @@ end
 
 --Text that sits above the scoreboard with some info
 t[#t+1] = LoadFont("Common normal")..{
-	InitCommand=cmd(xy,framex,framey-15;zoom,0.35;halign,0;);
+	InitCommand=cmd(xy,frameX,frameY-15;zoom,0.35;halign,0;);
 	BeginCommand=function(self)
 		local text = ""
 		if scoreIndex ~= 0 then
@@ -285,15 +292,37 @@ t[#t+1] = LoadFont("Common normal")..{
 		end
 		self:settext(text)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-	end
+	end;
+	TabChangedMessageCommand = function(self, params)
+		if params.index == 1 then
+			self:stoptweening()
+			self:bouncy(0.3)
+			self:diffusealpha(1)
+		else
+			self:stoptweening()
+			self:bouncy(0.3)
+			self:diffusealpha(0)
+		end
+	end;
 };
 
 t[#t+1] = LoadFont("Common normal")..{
-	InitCommand=cmd(xy,framex+frameWidth,framey+drawindex*spacing;zoom,0.35;halign,1;diffusealpha,0.8);
+	InitCommand=cmd(xy,frameX+frameWidth,frameY+drawindex*spacing;zoom,0.35;halign,1;diffusealpha,0.8);
 	BeginCommand=function(self)
 		self:settextf("%d/%s Scores saved",(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-	end
+	end;
+	TabChangedMessageCommand = function(self, params)
+		if params.index == 1 then
+			self:stoptweening()
+			self:bouncy(0.3)
+			self:diffusealpha(1)
+		else
+			self:stoptweening()
+			self:bouncy(0.3)
+			self:diffusealpha(0)
+		end
+	end;
 }
 
 if tonumber(PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")) ~= 3 then
@@ -304,7 +333,7 @@ end
 
 if themeConfig:get_data().global.ScoreBoardNag and #origTable == tonumber(PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")) then
 	t[#t+1] = LoadFont("Common normal")..{
-		InitCommand=cmd(xy,framex+frameWidth/2,framey+4*spacing;zoom,0.30;valign,0;diffusealpha,0.8;maxwidth,frameWidth/0.30);
+		InitCommand=cmd(xy,frameX+frameWidth/2,frameY+4*spacing;zoom,0.30;valign,0;diffusealpha,0.8;maxwidth,frameWidth/0.30;diffuse,color(colorConfig:get_data().evaluation.BackgroundText));
 		BeginCommand=function(self)
 			local text = string.format("You have reached the maximum number of saved scores for this chart."..
 							" \n Lower ranked scores will be removed as you save more scores.\n\n"..
@@ -313,7 +342,18 @@ if themeConfig:get_data().global.ScoreBoardNag and #origTable == tonumber(PREFSM
 							"This will no longer appear once the limit is set to any non-default value.\n(You may change back afterwards if you want)\n\n"..
 							"The current limit is %s. (Default is 3)",PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
 			self:settext(text)
+		end;
+	TabChangedMessageCommand = function(self, params)
+		if params.index == 1 then
+			self:stoptweening()
+			self:bouncy(0.3)
+			self:diffusealpha(1)
+		else
+			self:stoptweening()
+			self:bouncy(0.3)
+			self:diffusealpha(0)
 		end
+	end;
 	}
 end
 
