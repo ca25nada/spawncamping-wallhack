@@ -88,23 +88,25 @@ local function judgeCounter(pn)
 	
 
 	for k,v in pairs(judges) do
-		
-		t[#t+1] = Def.Quad{ --JudgeHighlight
-			InitCommand = function(self)
-				self:xy(0,5+((k-1)*spacing)):zoomto(frameWidth,5):halign(0):valign(0)
-				self:diffuse(color(colorConfig:get_data().judgment[v])):diffusealpha(0)
-			end;
-			JudgmentMessageCommand=function(self,params)
-				if (params.TapNoteScore == v or params.HoldNoteScore == v) and params.Player == pn then
-					self:stoptweening()
-					self:linear(0.1)
-					self:diffusealpha(highlightOpacity)
-					self:linear(0.5)
-					self:diffusealpha(0)
+
+		if playerConfig:get_data(pn_to_profile_slot(pn)).JudgeType == 2 then
+			t[#t+1] = Def.Quad{ --JudgeHighlight
+				InitCommand = function(self)
+					self:xy(0,5+((k-1)*spacing)):zoomto(frameWidth,5):halign(0):valign(0)
+					self:diffuse(color(colorConfig:get_data().judgment[v])):diffusealpha(0)
+				end;
+				JudgmentMessageCommand=function(self,params)
+					if (params.TapNoteScore == v or params.HoldNoteScore == v) and params.Player == pn then
+						self:stoptweening()
+						self:linear(0.1)
+						self:diffusealpha(highlightOpacity)
+						self:linear(0.5)
+						self:diffusealpha(0)
+					end
 				end
-			end
-		}
-		
+			}
+		end
+
 		t[#t+1] = LoadFont("Common normal")..{
 			InitCommand = function(self)
 				self:xy(5,7+((k-1)*spacing)):zoom(judgeFontSize):halign(0)
