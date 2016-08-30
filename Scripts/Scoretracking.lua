@@ -117,6 +117,11 @@ local offsetTable = {
 	PlayerNumber_P2 = {}
 }
 
+local curScore = {
+	PlayerNumber_P1 = {0,0,0}, -- DP/PS/MIGS
+	PlayerNumber_P2 = {0,0,0}, -- DP/PS/MIGS
+}
+
 local curMaxNotes = {
 	PlayerNumber_P1 = 0,
 	PlayerNumber_P2 = 0
@@ -153,6 +158,7 @@ function resetJudgeST()
 		curMaxNotes[pn] = 0
 		curMaxHolds[pn] = 0
 		curMaxMines[pn] = 0
+		curScore[pn] = {0,0,0}
 	end
 	pauseCount = 0
 	lastSecond = 0
@@ -165,27 +171,24 @@ function addJudgeST(pn,judge,isHold)
 
 		if isFailingST(pn) == false then
 			judgeStats[pn][judge] = judgeStats[pn][judge]+1
+			curScore[pn][1] = curScore[pn][1] + scoreWeight[judge]
+			curScore[pn][2] = curScore[pn][2] + psWeight[judge]
+			curScore[pn][3] = curScore[pn][3] + migsWeight[judge]
 		end
 		curMaxHolds[pn] = curMaxHolds[pn]+1
 
 	else -- Everyyyyyyyyyyything elseeeeeeee
 
 		if isFailingST(pn) == false then
-			if (judge =="TapNoteScore_W1") or
-				(judge =="TapNoteScore_W2") or
-				(judge =="TapNoteScore_W3") or
-				(judge =="TapNoteScore_W4") or
-				(judge =="TapNoteScore_W5") or
-				(judge =="TapNoteScore_Miss") or
-				(judge =="TapNoteScore_CheckpointHit") or
-				(judge =="TapNoteScore_CheckpointMiss") then
-				judgeTable[pn][#(judgeTable[pn])+1] = judge -- add to judgetable
-			end
 			judgeStats[pn][judge] = judgeStats[pn][judge]+1
+			curScore[pn][1] = curScore[pn][1] + scoreWeight[judge]
+			curScore[pn][2] = curScore[pn][2] + psWeight[judge]
+			curScore[pn][3] = curScore[pn][3] + migsWeight[judge]
 		end
 
 		if (judge ~= 'TapNoteScore_HitMine') and (judge ~= 'TapNoteScore_AvoidMine') then
 			curMaxNotes[pn] = curMaxNotes[pn]+1
+			judgeTable[pn][#(judgeTable[pn])+1] = judge -- add to judgetable
 		else
 			curMaxMines[pn] = curMaxMines[pn]+1
 		end
@@ -319,26 +322,13 @@ function getCurScoreST(pn,scoreType)
 	if scoreType == 0 then
 		scoreType = defaultScoreType
 	end
-
-	if scoreType == 1 then
-		return (judgeStats[pn]["TapNoteScore_W1"]*scoreWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*scoreWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*scoreWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*scoreWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*scoreWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*scoreWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_CheckpointHit"]*scoreWeight["TapNoteScore_CheckpointHit"]+judgeStats[pn]["TapNoteScore_CheckpointMiss"]*scoreWeight["TapNoteScore_CheckpointMiss"]+judgeStats[pn]["TapNoteScore_HitMine"]*scoreWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*scoreWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*scoreWeight["HoldNoteScore_LetGo"]) or 0-- maximum DP
-	elseif scoreType == 2 then
-		return (judgeStats[pn]["TapNoteScore_W1"]*psWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*psWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*psWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*psWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*psWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*psWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_CheckpointHit"]*psWeight["TapNoteScore_CheckpointHit"]+judgeStats[pn]["TapNoteScore_CheckpointMiss"]*psWeight["TapNoteScore_CheckpointMiss"]+judgeStats[pn]["TapNoteScore_HitMine"]*psWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*psWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*psWeight["HoldNoteScore_LetGo"]) or 0  -- maximum %score DP
-	elseif scoreType == 3 then
-		return (judgeStats[pn]["TapNoteScore_W1"]*migsWeight["TapNoteScore_W1"]+judgeStats[pn]["TapNoteScore_W2"]*migsWeight["TapNoteScore_W2"]+judgeStats[pn]["TapNoteScore_W3"]*migsWeight["TapNoteScore_W3"]+judgeStats[pn]["TapNoteScore_W4"]*migsWeight["TapNoteScore_W4"]+judgeStats[pn]["TapNoteScore_W5"]*migsWeight["TapNoteScore_W5"]+judgeStats[pn]["TapNoteScore_Miss"]*migsWeight["TapNoteScore_Miss"]+judgeStats[pn]["TapNoteScore_CheckpointHit"]*migsWeight["TapNoteScore_CheckpointHit"]+judgeStats[pn]["TapNoteScore_CheckpointMiss"]*migsWeight["TapNoteScore_CheckpointMiss"]+judgeStats[pn]["TapNoteScore_HitMine"]*migsWeight["TapNoteScore_HitMine"]+judgeStats[pn]["HoldNoteScore_Held"]*migsWeight["HoldNoteScore_Held"]+judgeStats[pn]["HoldNoteScore_LetGo"]*migsWeight["HoldNoteScore_LetGo"]) or 0
-	end
-
-	return 0
+	SCREENMAN:SystemMessage(curScore[pn][scoreType])
+	return curScore[pn][scoreType]
 end
 
 --Returns the current grade of the player.
 --This is based on the current "average" score a player has rather than the total score.
 function getGradeST(pn)
-	local curDPScore =getCurScoreST(pn,1)
-	local curPSScore = getCurScoreST(pn,2)
-	local curMaxDPScore = getCurMaxScoreST(pn,1)
-	local curMaxPSScore = getCurMaxScoreST(pn,2)
-
 	local failing = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetFailed()
 	if GAMESTATE:IsBattleMode() then
 		failing = false
@@ -346,17 +336,21 @@ function getGradeST(pn)
 
 	if failing then
 		return 'Grade_Failed'
-	elseif curDPScore <= 0 and curPSScore <= 0 then
-		return GetGradeFromPercent(0)
-	elseif curPSScore == curMaxPSScore then
-		return 'Grade_Tier01'
-	elseif curDPScore == curMaxDPScore then
-		return 'Grade_Tier02'
-	else
-		return GetGradeFromPercent(curDPScore/curMaxDPScore)
 	end
 
-	return 
+	local curDPScore =getCurScoreST(pn,1)
+	local curMaxDPScore = getCurMaxScoreST(pn,1)
+
+	if curDPScore <= 0 then
+		-- D rank
+		return GetGradeFromPercent(0)
+	elseif curDPScore == curMaxDPScore then
+		-- Only need to check tap judgments as AAA implies no NG
+		return (getCurMaxNotesST(pn) == getJudgeST(pn,"TapNoteScore_W1")) and 'Grade_Tier01' or 'Grade_Tier02'
+	else
+		-- Everything else
+		return GetGradeFromPercent(curDPScore/curMaxDPScore)
+	end
 end
 
 function isFullCombo(pn)
