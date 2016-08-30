@@ -5,6 +5,7 @@ local function PLife(pn)
 end;
 
 local t = Def.ActorFrame {}
+local bareBone = isBareBone()
 
 local function lifeBar(pn)
 	local t = Def.ActorFrame {
@@ -12,7 +13,7 @@ local function lifeBar(pn)
 		JudgmentMessageCommand = function(self) self:queuecommand("Set") end;
 		SetCommand = function(self)
 			self:GetChild(pn.."LifeBG"):faderight(0.5+((1-PLife(pn))*0.5))
-	        self:GetChild(pn.."LifeBG"):zoomx(70+(PLife(PLAYER_1)*200))
+	        self:GetChild(pn.."LifeBG"):zoomx(70+(PLife(pn)*200))
 	        self:GetChild(pn.."LifeVal"):target_number(PLife(pn)*100)
         	if PLife(pn)*100 < 30 and PLife(pn)*100 ~= 0 then -- replace with lifemeter danger later
 				self:diffuseshift()
@@ -52,7 +53,6 @@ local function lifeBar(pn)
 					self:xy(SCREEN_WIDTH-35,9):zoom(0.45):halign(0)
 				end
 			    self:set_chars_wide(2):set_text_format("%.0f%%"):set_approach_seconds(0.1)
-			    self:queuecommand("Set")
 			end;
 		};
 	}

@@ -4,18 +4,13 @@ local t = Def.ActorFrame{
 	Name="Avatars";
 };
 
+local bareBone = isBareBone()
+
 local profileP1
 local profileP2
 
 local profileNameP1 = "No Profile"
-local playCountP1 = 0
-local playTimeP1 = 0
-local noteCountP1 = 0
-
 local profileNameP2 = "No Profile"
-local playCountP2 = 0
-local playTimeP2 = 0
-local noteCountP2 = 0
 
 
 local AvatarXP1 = 0
@@ -23,215 +18,191 @@ local AvatarYP1 = SCREEN_HEIGHT-50
 local AvatarXP2 = SCREEN_WIDTH-50
 local AvatarYP2 = SCREEN_HEIGHT-50
 
--- P1 Avatar
-t[#t+1] = Def.Actor{
-	BeginCommand=cmd(playcommand,"Set");
-	SetCommand=function(self)
-		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
-			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
-			if profileP1 ~= nil then
-				profileNameP1 = profileP1:GetDisplayName()
-				playCountP1 = profileP1:GetTotalNumSongsPlayed()
-				playTimeP1 = profileP1:GetTotalSessionSeconds()
-				noteCountP1 = profileP1:GetTotalTapsAndHolds()
-			else 
-				profileNameP1 = "Machine Profile"
-				playCountP1 = 0
-				playTimeP1 = 0
-				noteCountP1 = 0
-			end; 
-			if profileNameP1 == "" then 
-				profileNameP1 = "Machine Profile"
-			end;
-		else
-			profileNameP1 = "No Player"
-			playCountP1 = 0
-			playTimeP1 = 0
-			noteCountP1 = 0
-		end;
-	end;
+local avatarPosition = {
+	PlayerNumber_P1 = {
+		X = 0,
+		Y = SCREEN_HEIGHT-50
+	},
+	PlayerNumber_P2 = {
+		X = SCREEN_WIDTH-50,
+		Y = SCREEN_HEIGHT-50
+	}
 }
 
--- P2 Avatar
-t[#t+1] = Def.Actor{
-	BeginCommand=cmd(playcommand,"Set");
-	SetCommand=function(self)
-		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-			profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
-			if profileP2 ~= nil then
-				profileNameP2 = profileP2:GetDisplayName()
-				playCountP2 = profileP2:GetTotalNumSongsPlayed()
-				playTimeP2 = profileP2:GetTotalSessionSeconds()
-				noteCountP2 = profileP2:GetTotalTapsAndHolds()
-			else 
-				profileNameP2 = "Machine Profile"
-				playCountP2 = 0
-				playTimeP2 = 0
-				noteCountP2 = 0
-			end;
-			if profileNameP2 == "" then 
-				profileNameP2 = "Machine Profile"
-			end;
-		else
-			profileNameP2 = "No Player"
-			playCountP2 = 0
-			playTimeP2 = 0
-			noteCountP2 = 0
+local function avatarFrame(pn)
+	local t = Def.ActorFrame{
+		InitCommand = function(self)
+			self:xy(avatarPosition[pn].X,avatarPosition[pn].Y)
 		end;
-	end;
-}
+	}
+	local profile = GetPlayerOrMachineProfile(pn)
 
--- P1
-if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
-	t[#t+1] = Def.ActorFrame{
-		Name="P1Avatar";
-		BeginCommand=cmd(queuecommand,"Set");
-		SetCommand=function(self)
-			if profileP1 == nil then
-				self:visible(false)
+	t[#t+1] = Def.Quad {
+		InitCommand = function(self)
+			if pn == PLAYER_1 then
+				self:zoomto(200,50):faderight(0.7)
+				self:halign(0):valign(0)
 			else
-				self:visible(true)
-			end;
+				self:x(50):zoomto(200,50):fadeleft(0.7)
+				self:halign(1):valign(0)
+			end
+			self:queuecommand('Set')
 		end;
-		Def.Quad {
-			InitCommand = cmd(halign,0;valign,0;xy,AvatarXP1,AvatarYP1;zoomto,200,50;faderight,0.7;);
-			BeginCommand=function(self)
-				local steps = GAMESTATE:GetCurrentSteps(PLAYER_1);
-				local diff = steps:GetDifficulty()
-				self:diffuse(getDifficultyColor(diff))
-				self:diffusealpha(0.7)
-			end;
-			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		};
-		Def.Sprite {
-			InitCommand=cmd(visible,true;halign,0;valign,0;xy,AvatarXP1,AvatarYP1;);
-			BeginCommand=cmd(queuecommand,"ModifyAvatar");
-			ModifyAvatarCommand=function(self)
-				self:finishtweening();
-				self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_1)));
-				self:zoomto(50,50)
-			end;	
-		};
-
-		Def.RollingNumbers{
-			Font= "Common Normal", 
-			InitCommand= function(self)
-				self:xy(AvatarXP1+53,AvatarYP1+7):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
-			    self:set_approach_seconds(0.1)
-			end;
-			OnCommand=function(self)
-				self:set_text_format(profileNameP1.." %.2f%%")
-			end;
-			SetCommand=function(self)
-				local temp1 = getCurScoreST(PLAYER_1,0)
-				local temp2 = getMaxScoreST(PLAYER_1,0)
-				temp2 = math.max(temp2,1)
-				self:target_number(math.floor((temp1/temp2)*10000)/100)
-			end;
-			JudgmentMessageCommand=cmd(queuecommand,"Set");
-		};
-
-
-
-		LoadFont("Common Normal") .. {
-			InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+20;halign,0;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self)
-				local steps = GAMESTATE:GetCurrentSteps(PLAYER_1);
-				local diff = getDifficulty(steps:GetDifficulty())
-				local meter = steps:GetMeter()
-				local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-				self:settext(stype.." "..diff.." "..meter)
-			end;
-			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		};
-
-		LoadFont("Common Normal") .. {
-			Name="P1AvatarOption";
-			InitCommand=cmd(xy,AvatarXP1+53,AvatarYP1+32;halign,0;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self)
-				self:settext(GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString('ModsLevel_Current'))
-			end;
-		};
-
-	};
-end;
-
-
-
--- P2 Avatar
-if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-	t[#t+1] = Def.ActorFrame{
-		Name="P2Avatar";
-		BeginCommand=cmd(queuecommand,"Set");
 		SetCommand=function(self)
-			if profileP2 == nil then
-				self:visible(false)
-			else
-				self:visible(true)
-			end;
+			local steps = GAMESTATE:GetCurrentSteps(pn);
+			local diff = steps:GetDifficulty()
+			self:diffuse(getDifficultyColor(diff))
+			self:diffusealpha(0.7)
 		end;
-		Def.Quad {
-			InitCommand = cmd(halign,1;valign,0;xy,AvatarXP2+50,AvatarYP2;zoomto,200,50;fadeleft,0.7;);
-			BeginCommand=function(self)
-				local steps = GAMESTATE:GetCurrentSteps(PLAYER_2);
-				local diff = steps:GetDifficulty()
-				self:diffuse(getDifficultyColor(diff))
-				self:diffusealpha(0.7)
-			end;
-			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		};
-		Def.Sprite {
-			InitCommand=cmd(visible,true;halign,0;valign,0;xy,AvatarXP2,AvatarYP2);
-			BeginCommand=cmd(queuecommand,"ModifyAvatar");
-			ModifyAvatarCommand=function(self)
-				self:finishtweening();
-				self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_2)));
-				self:zoomto(50,50)
-			end;	
-		};
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
+	}
 
-		Def.RollingNumbers{
-			Font= "Common Normal", 
-			InitCommand= function(self)
-				self:xy(AvatarXP2-3,AvatarYP2+7):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
-			    self:set_approach_seconds(0.1)
-			end;
-			OnCommand=function(self)
-				self:set_text_format("%.2f%% "..profileNameP2)
-			end;
-			SetCommand=function(self)
-				local temp1 = getCurScoreST(PLAYER_2,0)
-				local temp2 = getMaxScoreST(PLAYER_2,0)
-				temp2 = math.max(temp2,1)
-				self:target_number(math.floor((temp1/temp2)*10000)/100)
-			end;
-			JudgmentMessageCommand=cmd(queuecommand,"Set");
-		};
-
-		LoadFont("Common Normal") .. {
-			InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+20;halign,1;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self)
-				local steps = GAMESTATE:GetCurrentSteps(PLAYER_2);
-				local diff = getDifficulty(steps:GetDifficulty())
-				local meter = steps:GetMeter()
-				local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-				self:settext(stype.." "..diff.." "..meter)
-			end;
-			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		};
-
-		LoadFont("Common Normal") .. {
-			Name="P2AvatarOption";
-			InitCommand=cmd(xy,AvatarXP2-3,AvatarYP2+32;halign,1;zoom,0.4;shadowlength,1;maxwidth,180/0.4);
-			BeginCommand=cmd(queuecommand,"Set");
-			SetCommand=function(self)
-				self:settext(GAMESTATE:GetPlayerState(PLAYER_2):GetPlayerOptionsString('ModsLevel_Current'))
-			end;
-		};
+	t[#t+1] = Def.Sprite {
+		InitCommand = function(self)
+			self:halign(0):valign(0)
+		end;
+		BeginCommand = function(self) self:queuecommand('ModifyAvatar') end;
+		ModifyAvatarCommand=function(self)
+			self:finishtweening();
+			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_1)));
+			self:zoomto(50,50)
+		end;	
 	};
-end;
+
+	t[#t+1] = Def.RollingNumbers{
+		Font= "Common Normal", 
+		InitCommand= function(self)
+			local name = profile:GetDisplayName()
+			if pn == PLAYER_1 then
+				self:xy(53,7):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
+			else
+				self:xy(-3,7):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
+			end
+		    self:set_approach_seconds(0.1)
+		    self:set_text_format(name.." %.2f%%")
+		end;
+		SetCommand=function(self)
+			local temp1 = getCurScoreST(pn,0)
+			local temp2 = getMaxScoreST(pn,0)
+			temp2 = math.max(temp2,1)
+			self:target_number(math.floor((temp1/temp2)*10000)/100)
+		end;
+		JudgmentMessageCommand = function(self) self:queuecommand('Set') end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			if pn == PLAYER_1 then
+				self:xy(53,20):zoom(0.4):halign(0):maxwidth(180/0.4)
+				self:shadowlength(1)
+			else
+				self:xy(-3,20):zoom(0.4):halign(1):maxwidth(180/0.4)
+				self:shadowlength(1)
+			end
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		SetCommand=function(self)
+			local steps = GAMESTATE:GetCurrentSteps(pn);
+			local diff = getDifficulty(steps:GetDifficulty())
+			local meter = steps:GetMeter()
+			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
+			self:settext(stype.." "..diff.." "..meter)
+		end;
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			if pn == PLAYER_1 then
+				self:xy(53,32):zoom(0.4):halign(0):maxwidth(180/0.4)
+				self:shadowlength(1)
+			else
+				self:xy(-3,32):zoom(0.4):halign(1):maxwidth(180/0.4)
+				self:shadowlength(1)
+			end
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		SetCommand=function(self)
+			self:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
+		end;
+	};
+
+	return t
+end
+
+local function bareBoneFrame(pn)
+	local profile = GetPlayerOrMachineProfile(pn)
+	local name = profile:GetDisplayName()
+
+	local t = Def.ActorFrame{
+		InitCommand = function(self)
+			self:xy(avatarPosition[pn].X,avatarPosition[pn].Y)
+		end;
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			if pn == PLAYER_1 then
+				self:xy(3,7):halign(0)
+			else
+				self:xy(-3,7):halign(1)
+			end
+			self:zoom(0.6):maxwidth(180/0.4)
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		SetCommand=function(self)
+			local temp1 = getCurScoreST(pn,0)
+			local temp2 = getMaxScoreST(pn,0)
+			temp2 = math.max(temp2,1)
+			self:settextf("%s %.2f%%",name,math.floor((temp1/temp2)*10000)/100)
+		end;
+		JudgmentMessageCommand = function(self) self:queuecommand('Set') end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			if pn == PLAYER_1 then
+				self:xy(3,20):halign(0)
+			else
+				self:xy(-3,20):halign(1)
+			end
+			self:zoom(0.4):maxwidth(180/0.4)
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		SetCommand=function(self)
+			local steps = GAMESTATE:GetCurrentSteps(pn);
+			local diff = getDifficulty(steps:GetDifficulty())
+			local meter = steps:GetMeter()
+			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
+			self:settext(stype.." "..diff.." "..meter)
+		end;
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			if pn == PLAYER_1 then
+				self:xy(3,32):halign(0)
+			else
+				self:xy(-3,32):halign(1)
+			end
+			self:zoom(0.4):maxwidth(180/0.4)
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		SetCommand=function(self)
+			self:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
+		end;
+	};
+
+	return t
+end
+
+for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+	if bareBone then
+		t[#t+1] = bareBoneFrame(pn)
+	else
+		t[#t+1] = avatarFrame(pn)
+	end
+end
 
 return t;

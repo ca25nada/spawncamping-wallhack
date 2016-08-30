@@ -1,4 +1,3 @@
--- Dependencies: Scoretracking.lua
 -- Simple Judgecounter that tracks #of occurences for each judgment and the current grade from the average DP score.
 
 local judges = { -- do not edit
@@ -12,7 +11,7 @@ local judges = { -- do not edit
 	"HoldNoteScore_LetGo",
 }
 
-
+local bareBone = isBareBone()
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer(); -- For relocating graph/judgecount frame
 local center1P = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")); -- For relocating graph/judgecount frame
 
@@ -26,6 +25,7 @@ local judgeFontSize = 0.40 -- Font sizes for different text elements
 local countFontSize = 0.35
 local gradeFontSize = 0.45
 local highlightOpacity = 0.4
+local backgroundOpacity = bareBone and 1 or 0.6
 
 local position = {
 	PlayerNumber_P1 = {
@@ -66,7 +66,7 @@ local function judgeCounter(pn)
 	t[#t+1] = Def.Quad{ -- Judgecount Background
 		InitCommand = function(self)
 			self:zoomto(frameWidth,frameHeight):halign(0):valign(0)
-			self:diffuse(getMainColor("frame")):diffusealpha(0.4)
+			self:diffuse(getMainColor("frame")):diffusealpha(backgroundOpacity)
 		end
 	}
 
@@ -89,7 +89,7 @@ local function judgeCounter(pn)
 
 	for k,v in pairs(judges) do
 
-		if playerConfig:get_data(pn_to_profile_slot(pn)).JudgeType == 2 then
+		if playerConfig:get_data(pn_to_profile_slot(pn)).JudgeType == 2 and not bareBone then
 			t[#t+1] = Def.Quad{ --JudgeHighlight
 				InitCommand = function(self)
 					self:xy(0,5+((k-1)*spacing)):zoomto(frameWidth,5):halign(0):valign(0)
@@ -110,8 +110,12 @@ local function judgeCounter(pn)
 		t[#t+1] = LoadFont("Common normal")..{
 			InitCommand = function(self)
 				self:xy(5,7+((k-1)*spacing)):zoom(judgeFontSize):halign(0)
-				self:settext(getJudgeStrings(v))
-				self:diffuse(color(colorConfig:get_data().judgment[v]))
+				if not bareBone then
+					self:settext(getJudgeStrings(v))
+					self:diffuse(color(colorConfig:get_data().judgment[v]))
+				else
+					self:settext(getShortJudgeStrings(v))
+				end
 			end;
 		}
 

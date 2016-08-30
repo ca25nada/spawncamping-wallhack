@@ -1,6 +1,6 @@
 local c;
 local player = Var "Player";
-
+local bareBone = isBareBone()
 local ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType -- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 local avgScoreType = playerConfig:get_data(pn_to_profile_slot(player)).AvgScoreType-- 0 = off, 1 = DP, 2 = PS, 3 = MIGS
 local target  = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
@@ -77,6 +77,7 @@ local t = Def.ActorFrame {
 			targetDiff = getCurScoreST(player,ghostType)-(math.ceil(getCurMaxScoreST(player,ghostType)*target))
 			if targetDiff > 0 then
 				c.GhostScore:settext('+'..targetDiff)
+
 				c.GhostScore:diffuse(getMainColor('positive'))
 			elseif targetDiff == 0 then
 				c.GhostScore:settext('+'..targetDiff)
@@ -96,7 +97,6 @@ local t = Def.ActorFrame {
 		end;
 
 		c.Label:settext( labeltext );
-		c.Label:visible(false);
 
 		param.Zoom = scale( iCombo, 0, NumberMaxZoomAt, NumberMinZoom, NumberMaxZoom );
 		param.Zoom = clamp( param.Zoom, NumberMinZoom, NumberMaxZoom );
@@ -108,46 +108,54 @@ local t = Def.ActorFrame {
 		c.Label:visible(true);
 		if ghostType ~= 0 and ghostType ~= nil then 
 			c.GhostScore:visible(true)
-			c.GhostScore:finishtweening()
-			c.GhostScore:diffusealpha(1)
-			c.GhostScore:sleep(0.25)
-			c.GhostScore:smooth(0.75)
-			c.GhostScore:diffusealpha(0)
+
+			if not bareBone then
+				c.GhostScore:finishtweening()
+				c.GhostScore:diffusealpha(1)
+				c.GhostScore:sleep(0.25)
+				c.GhostScore:smooth(0.75)
+				c.GhostScore:diffusealpha(0)
+			end
 		end
 
 		if avgScoreType ~= 0 and avgScoreType ~= nil then 
 			c.AvgScore:visible(true)
-			c.AvgScore:finishtweening()
-			c.AvgScore:diffusealpha(1)
-			c.AvgScore:sleep(0.25)
-			c.AvgScore:smooth(0.75)
-			c.AvgScore:diffusealpha(0)
+
+			if not bareBone then
+				c.AvgScore:finishtweening()
+				c.AvgScore:diffusealpha(1)
+				c.AvgScore:sleep(0.25)
+				c.AvgScore:smooth(0.75)
+				c.AvgScore:diffusealpha(0)
+			end
 		end
 
 		c.Number:settext( string.format("%i", iCombo) );
 		-- FullCombo Rewards
-		if param.FullComboW1 then
-			c.Number:diffuse(color("#00aeef"));
-			c.Number:glowshift();
-		elseif param.FullComboW2 then
-			c.Number:diffuse(color("#fff568"));
-			c.Number:glowshift();
-		elseif param.FullComboW3 then
-			c.Number:diffuse(color("#a4ff00"));
-			c.Number:stopeffect();
-		elseif param.Combo then
-			c.Number:diffuse(Color("White"));
-			c.Number:stopeffect();
-			(cmd(diffuse,Color("White");diffusebottomedge,color("0.5,0.5,0.5,1")))(c.Label);
-		else
-			c.Number:diffuse(color("#ff0000"));
-			c.Number:stopeffect();
-			(cmd(diffuse,Color("Red");diffusebottomedge,color("0.5,0,0,1")))(c.Label);
+		if not bareBone then
+			if param.FullComboW1 then
+				c.Number:diffuse(color("#00aeef"));
+				c.Number:glowshift();
+			elseif param.FullComboW2 then
+				c.Number:diffuse(color("#fff568"));
+				c.Number:glowshift();
+			elseif param.FullComboW3 then
+				c.Number:diffuse(color("#a4ff00"));
+				c.Number:stopeffect();
+			elseif param.Combo then
+				c.Number:diffuse(Color("White"));
+				c.Number:stopeffect();
+				(cmd(diffuse,Color("White");diffusebottomedge,color("0.5,0.5,0.5,1")))(c.Label);
+			else
+				c.Number:diffuse(color("#ff0000"));
+				c.Number:stopeffect();
+				(cmd(diffuse,Color("Red");diffusebottomedge,color("0.5,0,0,1")))(c.Label);
+			end
+			-- Pulse
+			Pulse( c.Number, param );
+			PulseLabel( c.Label, param );
+			-- Milestone Logic
 		end
-		-- Pulse
-		Pulse( c.Number, param );
-		PulseLabel( c.Label, param );
-		-- Milestone Logic
 	end;
 };
 

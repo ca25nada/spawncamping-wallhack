@@ -5,7 +5,7 @@ local enabled = (((playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar 
 				((playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).ErrorBar == true) and GAMESTATE:IsHumanPlayer(PLAYER_2))) and 
 				GAMESTATE:GetNumPlayersEnabled() == 1
 local pn = GAMESTATE:GetEnabledPlayers()[1]
-
+local bareBone = isBareBone()
 --=======================================
 --ONLY EDIT THESE VALUES
 --=======================================
@@ -18,6 +18,7 @@ local frameHeight = 10 -- Height of the bar
 local frameWidth = capWideScale(get43size(300),300) -- Width of the bar
 local tickWidth = 2 -- Width of the ticks
 local tickDuration = playerConfig:get_data(pn).ErrorBarDuration -- Time duration in seconds before the ticks fade out
+local backgroundOpacity = bareBone and 1 or 0.6
 --=======================================
 
 local t = Def.ActorFrame{
@@ -36,11 +37,12 @@ local function proTimingTicks(pn,index)
 			self:zoomto(tickWidth,frameHeight):diffusealpha(0)
 		end;
 		UpdateTickCommand = function(self,params)
+			local enumVal = Enum.Reverse(TapNoteScore)[params.TapNoteScore]
+
 			if params.Player == pn then
 
 				if params.TapNoteScore and not params.HoldNoteScore and
-				Enum.Reverse(TapNoteScore)[params.TapNoteScore] >= 5 and
-				Enum.Reverse(TapNoteScore)[params.TapNoteScore] < 10 then
+				enumVal >= 5 and enumVal < 10 then
 
 					if math.abs(params.TapNoteOffset) <= maxOffsetRange then
 						self:stoptweening()
@@ -59,7 +61,7 @@ end
 if enabled then
 		-- Initialize a bunch of bars
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(zoomto,frameWidth,frameHeight;diffuse,color("#666666");diffusealpha,0.7);
+		InitCommand=cmd(zoomto,frameWidth,frameHeight;diffuse,color("#666666");diffusealpha,backgroundOpacity);
 	}
 
 	for i=1,barcount do
@@ -83,15 +85,17 @@ if enabled then
 		InitCommand=cmd(zoomto,2,frameHeight;diffuse,color("#FFFFFF");diffusealpha,0.5);
 	}
 
-	t[#t+1] = LoadFont("Common Normal") .. {
-        InitCommand=cmd(x,frameWidth/4;zoom,0.35;);
-        BeginCommand=cmd(settext,"Late";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
-    }
+	if not bareBone then
+		t[#t+1] = LoadFont("Common Normal") .. {
+	        InitCommand=cmd(x,frameWidth/4;zoom,0.35;);
+	        BeginCommand=cmd(settext,"Late";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
+	    }
 
-    t[#t+1] = LoadFont("Common Normal") .. {
-        InitCommand=cmd(x,-frameWidth/4;zoom,0.35;);
-        BeginCommand=cmd(settext,"Early";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
-    }
+	    t[#t+1] = LoadFont("Common Normal") .. {
+	        InitCommand=cmd(x,-frameWidth/4;zoom,0.35;);
+	        BeginCommand=cmd(settext,"Early";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
+	    }
+	end
 
 end;
 

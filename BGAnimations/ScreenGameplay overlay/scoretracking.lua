@@ -3,7 +3,7 @@
 
 resetJudgeST() -- Reset scoretracking data.
 resetGhostData() -- Reset ghostscore data.
-
+local bareBone = isBareBone()
 local startFlag = false
 local fcFlag = false
 local fcFlagDelay = 0.5 -- Minimum delay after lastSecond before broadcasting FC message.
@@ -75,17 +75,19 @@ local t = Def.ActorFrame{
 t[#t+1] = Def.Actor{
 	JudgmentMessageCommand=function(self,params)
 		
-		popGhostData(params.Player)
+		if not bareBone then
+			popGhostData(params.Player)
 
-		 -- Apparently sending out too many messages in a extremely short amount of time causes performance issues.
-		 -- e.g. mine walls
-		if not params.HoldNoteScore then -- No issues with holds
-			if GetTimeSinceStart() - ghostDataLastUpdate > ghostDataUpdateDelay then
+			 -- Apparently sending out too many messages in a extremely short amount of time causes performance issues.
+			 -- e.g. mine walls
+			if not params.HoldNoteScore then -- No issues with holds
+				if GetTimeSinceStart() - ghostDataLastUpdate > ghostDataUpdateDelay then
+					MESSAGEMAN:Broadcast('GhostScore')
+					ghostDataLastUpdate = GetTimeSinceStart()
+				end
+			else
 				MESSAGEMAN:Broadcast('GhostScore')
-				ghostDataLastUpdate = GetTimeSinceStart()
 			end
-		else
-			MESSAGEMAN:Broadcast('GhostScore')
 		end
 
 		if getAutoplay() == 1 then
