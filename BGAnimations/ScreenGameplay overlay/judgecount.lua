@@ -70,18 +70,16 @@ local function judgeCounter(pn)
 		JudgmentMessageCommand = function(self, params)
 			if params.Player == pn then
 				self:GetChild(pn.."Grade"):queuecommand("Set")
-				if judges2[params.TapNoteScore] or judges2[params.HoldNoteScore] then
-					if params.HoldNoteScore then
-						if highlight then
-							self:GetChild(pn..params.HoldNoteScore.."Highlight"):playcommand("Set")
-						end
-						self:GetChild(pn..params.HoldNoteScore.."Count"):queuecommand("Set")
-					elseif params.TapNoteScore then
-						if highlight then
-							self:GetChild(pn..params.TapNoteScore.."Highlight"):playcommand("Set")
-						end
-						self:GetChild(pn..params.TapNoteScore.."Count"):queuecommand("Set")
+				if judges2[params.HoldNoteScore] then
+					if highlight then
+						self:GetChild(pn..params.HoldNoteScore.."Highlight"):playcommand("Set")
 					end
+					self:GetChild(pn..params.HoldNoteScore.."Count"):queuecommand("Set")
+				elseif judges2[params.TapNoteScore] then
+					if highlight then
+						self:GetChild(pn..params.TapNoteScore.."Highlight"):playcommand("Set")
+					end
+					self:GetChild(pn..params.TapNoteScore.."Count"):queuecommand("Set")
 				end
 			end
 		end;
