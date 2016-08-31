@@ -40,7 +40,7 @@ function getSongPreviewMode()
 end
 
 function isBareBone()
-	return true
+	return false
 end
 
 --[[ Unused, to be used after a future overhaul.

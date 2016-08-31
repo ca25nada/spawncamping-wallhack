@@ -322,7 +322,6 @@ function getCurScoreST(pn,scoreType)
 	if scoreType == 0 then
 		scoreType = defaultScoreType
 	end
-	SCREENMAN:SystemMessage(curScore[pn][scoreType])
 	return curScore[pn][scoreType]
 end
 

@@ -5,15 +5,6 @@
 -- Also (hopefully helpful) tips regarding the game/theme,etc.
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
-local function contains(table, value)
-  for _, v in pairs(table) do
-    if v == value then
-      return true
-    end
-  end
-  return false
-end
-
 local Tips = {
     --SM Tips
     "Pressing Scroll Lock immediately allows you to go to options",
