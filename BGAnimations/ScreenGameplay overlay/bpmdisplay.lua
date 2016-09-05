@@ -1,15 +1,6 @@
 --Displays the current BPM taking rate/haste mods into account.
 local bareBone = isBareBone()
 
-for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-	local steps = GAMESTATE:GetCurrentSteps(pn)
-	if steps then
-		if steps:GetTimingData():HasBPMChanges() then
-			bpmChange = true
-		end
-	end
-end
-
 local function getPlayerBPM(pn)
 	local ts = SCREENMAN:GetTopScreen()
 	if ts:GetScreenType() == 'ScreenType_Gameplay' then

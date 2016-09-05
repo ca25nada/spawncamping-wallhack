@@ -1,6 +1,6 @@
 --==== Only edit these ====--
-local maxTicks = 500 -- "Soft cap" on the number of ticks to display. Actual count displayed == math.floor(#offsetTable/math.floor(#offsetTable/maxTicks))
-local maxTicksZoomed = 500 -- Number of ticks to display when after drilling down/zoomed in.
+local maxTicks = 400 -- "Soft cap" on the number of ticks to display. Actual count displayed == math.floor(#offsetTable/math.floor(#offsetTable/maxTicks))
+local maxTicksZoomed = 200 -- Number of ticks to display when after drilling down/zoomed in.
 local maxMissTicks = 100 -- unused for now. To be used to limit the number of miss ticks displayed.
 
 -- Positoning
