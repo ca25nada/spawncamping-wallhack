@@ -6,11 +6,12 @@ return Def.ActorFrame{
 		SetCommand=function(self)
 			self:diffuseramp();
 			self:effectperiod(1)
-			self:effectcolor1(color("#FFFFFF11"));
-			self:effectcolor2(Alpha(getMainColor("highlight"),0.3));
+			self:effectcolor1(color("#FFFFFF00"));
+			self:effectcolor2(Alpha(getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()),0.2));
 		end;
-		BeginCommand=cmd(queuecommand,"Set");
-		OffCommand=cmd(visible,false);
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 };
