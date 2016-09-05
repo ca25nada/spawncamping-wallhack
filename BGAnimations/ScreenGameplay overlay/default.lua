@@ -1,8 +1,6 @@
 local t = Def.ActorFrame{}
 local bareBone = isBareBone()
 
-t[#t+1] = use_newfield_actor()
-
 t[#t+1] = LoadActor("scoretracking")
 
 t[#t+1] = LoadActor("judgecount")

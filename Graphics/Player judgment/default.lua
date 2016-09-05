@@ -1,6 +1,6 @@
 local c;
 local player = Var "Player";
-local bareBone = isBareBone
+local bareBone = isBareBone()
 
 local JudgeCmds = {
 	TapNoteScore_W1 = THEME:GetMetric( "Judgment", "JudgmentW1Command" );
@@ -21,7 +21,7 @@ local TNSFrames = {
 };
 local t = Def.ActorFrame {
 	InitCommand = function(self)
-		self:draworder(newfield_draw_order.over_field)
+		self:draworder(notefield_draw_order.over_field)
 	end;
 };
 t[#t+1] = Def.ActorFrame {

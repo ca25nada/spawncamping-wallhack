@@ -12,7 +12,7 @@ local defaultConfig = {
 	PaceMaker = false,
 	LaneCover = 0, -- soon to be changed to: 0=off, 1=sudden, 2=hidden
 	LaneCoverHeight = 0,
-	LaneCoverLayer = 350, -- newfield_draw_order.under_explosions
+	LaneCoverLayer = 350, -- notefield_draw_order.under_explosions
 	NPSDisplay = false,
 	NPSGraph = false,
 	NPSUpdateRate = 0.1,
