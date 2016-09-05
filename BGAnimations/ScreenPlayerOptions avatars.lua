@@ -117,7 +117,7 @@ t[#t+1] = Def.ActorFrame{
 		ConfigValueChangedMessageCommand= function(self, param)
 			if param.pn == PLAYER_1 then
 				if param.field_name == "speed_mod" or param.field_name == "speed_type" then
-					local prefs= newfield_prefs_config:get_data(param.pn)
+					local prefs= notefield_prefs_config:get_data(param.pn)
 					local mode_conversion= {maximum= "m", multiple= "x", constant= "C"}
 					local speed= prefs.speed_mod
 					local mode= mode_conversion[prefs.speed_type]
@@ -206,7 +206,7 @@ t[#t+1] = Def.ActorFrame{
 		ConfigValueChangedMessageCommand= function(self, param)
 			if param.pn == PLAYER_2 then
 				if param.field_name == "speed_mod" or param.field_name == "speed_type" then
-					local prefs= newfield_prefs_config:get_data(param.pn)
+					local prefs= notefield_prefs_config:get_data(param.pn)
 					local mode_conversion= {maximum= "m", multiple= "x", constant= "C"}
 					local speed= prefs.speed_mod
 					local mode= mode_conversion[prefs.speed_type]
