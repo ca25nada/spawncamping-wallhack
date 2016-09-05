@@ -1,9 +1,168 @@
+
 local menu_height= 300
 local menu_width= 250
 local menu_x= {
 	[PLAYER_1]= _screen.w * .25,
 	[PLAYER_2]= _screen.w * .75,
 }
+
+--[[
+local NPSDisplayOptions= {
+	nesty_options.bool_config_val(playerConfig, "NPSDisplay"),
+	nesty_options.bool_config_val(playerConfig, "NPSGraph"),
+	nesty_options.float_config_val(playerConfig, "NPSUpdateRate", -2, -1, -1, 0.01, 1),
+	nesty_options.float_config_val(playerConfig, "NPSMaxVerts", 0, 1, 2, 10, 1000),
+}
+
+local ErrorBarOptions= {
+	nesty_options.bool_config_val(playerConfig, "ErrorBar"),
+	nesty_options.float_config_val(playerConfig, "ErrorBarDuration", -2, -1, 1, 0.1, 10),
+	nesty_options.float_config_val(playerConfig, "ErrorBarMaxCount", 0, 1, 2, 1, 1000),
+}
+
+local LaneCoverOptions= {
+	{name= "LaneCover", menu= nesty_option_menus.enum_option,
+	 translatable= true,
+	 args= {
+		 name= "LaneCover", enum= {"Off", "Sudden+", "Hidden+"}, fake_enum= true,
+		 obj_get= function(pn) return playerConfig:get_data(pn) end,
+		 get= function(pn, obj) 
+		 	local t = {"Off", "Sudden+", "Hidden+"}
+		 	return t[obj.LaneCover+1] end,
+		 set= function(pn, obj, value)
+			if value == "Hidden+" then
+				obj.LaneCover = 2
+			elseif value == "Sudden+" then
+				obj.LaneCover = 1
+			else
+				obj.LaneCover = 0
+			end
+		 end,
+	}},
+	nesty_options.float_config_val(playerConfig, "LaneCoverHeight", 0, 1, 2, -SCREEN_HEIGHT*2, SCREEN_HEIGHT*2),
+	nesty_options.float_config_val(playerConfig, "LaneCoverLayer", 1, 1, 2, newfield_draw_order.under_explosions,newfield_draw_order.over_field),
+}
+
+local ghostscore_options= {
+	nesty_options.bool_config_val(playerConfig, "SaveGhostScore"),
+}
+
+local gameplay_options= {
+	nesty_options.float_config_val(playerConfig, "ScreenFilter", -2, -1, 0, 0, 1),
+	nesty_options.bool_config_val(playerConfig, "CBHighlight"),
+	nesty_options.bool_config_val(playerConfig, "PaceMaker"),
+
+	{name= "ErrorBarOptions", translatable= true, menu= nesty_option_menus.menu, args= ErrorBarOptions},
+	{name= "LaneCoverOptions", translatable= true, menu= nesty_option_menus.menu, args= LaneCoverOptions},
+
+
+	{name= "JudgeType", menu= nesty_option_menus.enum_option,
+	 translatable= true,
+	 args= {
+		 name= "JudgeType", enum= {"Off", "No Highlights", "On"}, fake_enum= true,
+		 obj_get= function(pn) return playerConfig:get_data(pn) end,
+		 get= function(pn, obj) 
+		 	local t = {"Off", "No Highlights", "On"}
+		 	return t[obj.JudgeType+1] end,
+		 set= function(pn, obj, value)
+			if value == "Off" then
+				obj.JudgeType = 0
+			elseif value == "No Highlights" then
+				obj.JudgeType = 1
+			else
+				obj.JudgeType = 2
+			end
+		 end,
+	}},
+
+	{name= "AvgScoreType", menu= nesty_option_menus.enum_option,
+	 translatable= true,
+	 args= {
+		 name= "AvgScoreType", enum= {THEME:GetString('OptionNames','Off'), 'DP', '%Score', 'MIGS'}, fake_enum= true,
+		 obj_get= function(pn) return playerConfig:get_data(pn) end,
+		 get= function(pn, obj) 
+		 	local t = {THEME:GetString('OptionNames','Off'), 'DP', '%Score', 'MIGS'}
+		 	return t[obj.AvgScoreType+1] end,
+		 set= function(pn, obj, value)
+			if value == "DP" then
+				obj.AvgScoreType = 1
+			elseif value == "%Score" then
+				obj.AvgScoreType = 2
+			elseif value == "MIGS" then
+				obj.AvgScoreType = 3
+			else
+				obj.AvgScoreType = 0
+			end;
+		 end,
+	}},
+
+	{name= "GhostScoreType", menu= nesty_option_menus.enum_option,
+	 translatable= true,
+	 args= {
+		 name= "GhostScoreType", enum= {THEME:GetString('OptionNames','Off'), 'DP', '%Score', 'MIGS'}, fake_enum= true,
+		 obj_get= function(pn) return playerConfig:get_data(pn) end,
+		 get= function(pn, obj) 
+		 	local t = {THEME:GetString('OptionNames','Off'), 'DP', '%Score', 'MIGS'}
+		 	return t[obj.GhostScoreType+1] end,
+		 set= function(pn, obj, value)
+			if value == "DP" then
+				obj.GhostScoreType = 1
+			elseif value == "%Score" then
+				obj.GhostScoreType = 2
+			elseif value == "MIGS" then
+				obj.GhostScoreType = 3
+			else
+				obj.GhostScoreType = 0
+			end;
+		 end,
+	}},
+
+	nesty_options.float_config_val(playerConfig, "GhostTarget", -2, 1, 1, 0, 100),
+	{name= "NPSDisplayOptions", translatable= true, menu= nesty_option_menus.menu, args= NPSDisplayOptions},
+	
+}
+
+local base_options= {
+	{name= "speed_mod", menu= nesty_option_menus.adjustable_float,
+	 translatable= true, args= gen_speed_menu, exec_args= true},
+	{name= "speed_type", menu= nesty_option_menus.enum_option,
+	 translatable= true,
+	 args= {
+		 name= "speed_type", enum= newfield_speed_types, fake_enum= true,
+		 obj_get= function(pn) return newfield_prefs_config:get_data(pn) end,
+		 get= function(pn, obj) return obj.speed_type end,
+		 set= function(pn, obj, value)
+			 if obj.speed_type == "multiple" and value ~= "multiple" then
+				 obj.speed_mod= math.round(obj.speed_mod * 100)
+			 elseif obj.speed_type ~= "multiple" and value == "multiple" then
+				 obj.speed_mod= obj.speed_mod / 100
+			 end
+			 obj.speed_type= value
+			 newfield_prefs_config:set_dirty(pn)
+			 MESSAGEMAN:Broadcast("ConfigValueChanged", {
+				config_name= newfield_prefs_config.name, field_name= "speed_type", value= value, pn= pn})
+		 end,
+	}},
+	nesty_options.float_song_mod_val("MusicRate", -2, -1, -1, .5, 2, 1),
+	nesty_options.float_song_mod_toggle_val("Haste", 1, 0),
+	{name= "perspective", translatable= true, menu= nesty_option_menus.menu, args= perspective_mods},
+	nesty_options.float_config_toggle_val(newfield_prefs_config, "reverse", -1, 1),
+	nesty_options.float_config_val(newfield_prefs_config, "zoom", -2, -1, 1),
+	{name= "chart_mods", translatable= true, menu= nesty_option_menus.menu, args= chart_mods},
+	{name= "newskin", translatable= true, menu= nesty_option_menus.newskins},
+	{name= "newskin_params", translatable= true, menu= nesty_option_menus.menu,
+	 args= gen_noteskin_param_menu, req_func= show_noteskin_param_menu},
+	nesty_options.bool_config_val(newfield_prefs_config, "hidden"),
+	nesty_options.bool_config_val(newfield_prefs_config, "sudden"),
+	{name= "advanced_notefield_config", translatable= true, menu= nesty_option_menus.menu, args= notefield_config},
+	{name= "gameplay_options", translatable= true, menu= nesty_option_menus.menu, args= gameplay_options},
+	{name= "ghostscore_options", translatable= true, menu= nesty_option_menus.menu, args= ghostscore_options},
+	{name= "reload_newskins", translatable= true, menu= "execute",
+	 execute= function() NEWSKIN:reload_skins() end},
+}
+
+--]]
+
 local menus= {}
 for i, pn in ipairs(GAMESTATE:GetHumanPlayers()) do
 	menus[pn]= setmetatable({}, nesty_menu_stack_mt)
@@ -37,7 +196,7 @@ local function gen_speed_menu(pn)
 	if prefs.speed_type == "multiple" then
 		return nesty_options.float_config_val_args(newfield_prefs_config, "speed_mod", -2, -1, 1)
 	else
-		return nesty_options.float_config_val_args(newfield_prefs_config, "speed_mod", -2, 1, 3)
+		return nesty_options.float_config_val_args(newfield_prefs_config, "speed_mod", 0, 1, 3)
 	end
 end
 
@@ -52,8 +211,7 @@ local pn_skew_mult= {[PLAYER_1]= 1, [PLAYER_2]= -1}
 
 local function perspective_entry(name, skew_mult, rot_mult)
 	return {
-		name= name, meta= "execute", translatable= true,
-		execute= function(pn)
+		name= name, translatable= true, type= "choice", execute= function(pn)
 			local conf_data= newfield_prefs_config:get_data(pn)
 			local old_rot= get_element_by_path(conf_data, "rotation_x")
 			local old_skew= get_element_by_path(conf_data, "vanish_x")
@@ -73,7 +231,7 @@ local function perspective_entry(name, skew_mult, rot_mult)
 			MESSAGEMAN:Broadcast("ConfigValueChanged", {
 				config_name= newfield_prefs_config.name, field_name= "rotation_x", value= new_rot, pn= pn})
 		end,
-		underline= function(pn)
+		value= function(pn)
 			local conf_data= newfield_prefs_config:get_data(pn)
 			local old_rot= get_element_by_path(conf_data, "rotation_x")
 			local old_skew= get_element_by_path(conf_data, "vanish_x")
@@ -133,12 +291,28 @@ local insertion_chart_mods= {
 }
 
 local chart_mods= {
-	{name= "turn_chart_mods", meta= nesty_option_menus.menu,
+	{name= "turn_chart_mods", menu= nesty_option_menus.menu,
 	 translatable= true, args= turn_chart_mods},
-	{name= "removal_chart_mods", meta= nesty_option_menus.menu,
+	{name= "removal_chart_mods", menu= nesty_option_menus.menu,
 	 translatable= true, args= removal_chart_mods},
-	{name= "insertion_chart_mods", meta= nesty_option_menus.menu,
+	{name= "insertion_chart_mods", menu= nesty_option_menus.menu,
 	 translatable= true, args= insertion_chart_mods},
+}
+
+-- The time life bar doesn't work sensibly outside the survival courses, so
+-- keep it out of the menu.
+local life_type_enum= {"LifeType_Bar", "LifeType_Battery"}
+local life_options= {
+	nesty_options.enum_player_mod_single_val("bar_type", "LifeType_Bar", "LifeSetting"),
+	nesty_options.enum_player_mod_single_val("battery_type", "LifeType_Battery", "LifeSetting"),
+	nesty_options.enum_player_mod_single_val("normal_drain", "DrainType_Normal", "DrainSetting"),
+	nesty_options.enum_player_mod_single_val("no_recover", "DrainType_NoRecover", "DrainSetting"),
+	nesty_options.enum_player_mod_single_val("sudden_death", "DrainType_SuddenDeath", "DrainSetting"),
+	nesty_options.enum_player_mod_single_val("fail_immediate", "FailType_Immediate", "FailSetting"),
+	nesty_options.enum_player_mod_single_val("fail_immediate_continue", "FailType_ImmediateContinue", "FailSetting"),
+	nesty_options.enum_player_mod_single_val("fail_end_of_song", "FailType_EndOfSong", "FailSetting"),
+	nesty_options.enum_player_mod_single_val("fail_off", "FailType_Off", "FailSetting"),
+	nesty_options.float_player_mod_val("BatteryLives", 0, 0, 0, 1, 10, 4),
 }
 
 local NPSDisplayOptions= {
@@ -155,7 +329,7 @@ local ErrorBarOptions= {
 }
 
 local LaneCoverOptions= {
-	{name= "LaneCover", meta= nesty_option_menus.enum_option,
+	{name= "LaneCover", menu= nesty_option_menus.enum_option,
 	 translatable= true,
 	 args= {
 		 name= "LaneCover", enum= {"Off", "Sudden+", "Hidden+"}, fake_enum= true,
@@ -181,17 +355,17 @@ local ghostscore_options= {
 	nesty_options.bool_config_val(playerConfig, "SaveGhostScore"),
 }
 
+
 local gameplay_options= {
-	--nesty_options.bool_config_val(player_config, "ComboUnderField"),
 	nesty_options.float_config_val(playerConfig, "ScreenFilter", -2, -1, 0, 0, 1),
 	nesty_options.bool_config_val(playerConfig, "CBHighlight"),
 	nesty_options.bool_config_val(playerConfig, "PaceMaker"),
 
-	{name= "ErrorBarOptions", translatable= true, meta= nesty_option_menus.menu, args= ErrorBarOptions},
-	{name= "LaneCoverOptions", translatable= true, meta= nesty_option_menus.menu, args= LaneCoverOptions},
+	{name= "ErrorBarOptions", translatable= true, menu= nesty_option_menus.menu, args= ErrorBarOptions},
+	{name= "LaneCoverOptions", translatable= true, menu= nesty_option_menus.menu, args= LaneCoverOptions},
 
 
-	{name= "JudgeType", meta= nesty_option_menus.enum_option,
+	{name= "JudgeType", menu= nesty_option_menus.enum_option,
 	 translatable= true,
 	 args= {
 		 name= "JudgeType", enum= {"Off", "No Highlights", "On"}, fake_enum= true,
@@ -210,7 +384,7 @@ local gameplay_options= {
 		 end,
 	}},
 
-	{name= "AvgScoreType", meta= nesty_option_menus.enum_option,
+	{name= "AvgScoreType", menu= nesty_option_menus.enum_option,
 	 translatable= true,
 	 args= {
 		 name= "AvgScoreType", enum= {THEME:GetString('OptionNames','Off'), 'DP', '%Score', 'MIGS'}, fake_enum= true,
@@ -231,7 +405,7 @@ local gameplay_options= {
 		 end,
 	}},
 
-	{name= "GhostScoreType", meta= nesty_option_menus.enum_option,
+	{name= "GhostScoreType", menu= nesty_option_menus.enum_option,
 	 translatable= true,
 	 args= {
 		 name= "GhostScoreType", enum= {THEME:GetString('OptionNames','Off'), 'DP', '%Score', 'MIGS'}, fake_enum= true,
@@ -253,15 +427,20 @@ local gameplay_options= {
 	}},
 
 	nesty_options.float_config_val(playerConfig, "GhostTarget", -2, 1, 1, 0, 100),
-	{name= "NPSDisplayOptions", translatable= true, meta= nesty_option_menus.menu, args= NPSDisplayOptions},
+	{name= "NPSDisplayOptions", translatable= true, menu= nesty_option_menus.menu, args= NPSDisplayOptions},
 	
 }
 
 local base_options= {
-	{name= "speed_mod", meta= nesty_option_menus.adjustable_float,
-	 translatable= true, args= gen_speed_menu, exec_args= true},
-	{name= "speed_type", meta= nesty_option_menus.enum_option,
-	 translatable= true,
+	{name= "speed_mod", menu= nesty_option_menus.adjustable_float,
+	 translatable= true, args= gen_speed_menu, exec_args= true,
+	 value= function(pn)
+		 return newfield_prefs_config:get_data(pn).speed_mod
+	 end},
+	{name= "speed_type", menu= nesty_option_menus.enum_option,
+	 translatable= true, value= function(pn)
+		 return newfield_prefs_config:get_data(pn).speed_type
+	 end,
 	 args= {
 		 name= "speed_type", enum= newfield_speed_types, fake_enum= true,
 		 obj_get= function(pn) return newfield_prefs_config:get_data(pn) end,
@@ -280,19 +459,25 @@ local base_options= {
 	}},
 	nesty_options.float_song_mod_val("MusicRate", -2, -1, -1, .5, 2, 1),
 	nesty_options.float_song_mod_toggle_val("Haste", 1, 0),
-	{name= "perspective", translatable= true, meta= nesty_option_menus.menu, args= perspective_mods},
+	{name= "perspective", translatable= true, menu= nesty_option_menus.menu, args= perspective_mods},
 	nesty_options.float_config_toggle_val(newfield_prefs_config, "reverse", -1, 1),
-	nesty_options.float_config_val(newfield_prefs_config, "zoom", -2, -1, 1),
-	{name= "chart_mods", translatable= true, meta= nesty_option_menus.menu, args= chart_mods},
-	{name= "newskin", translatable= true, meta= nesty_option_menus.newskins},
-	{name= "newskin_params", translatable= true, meta= nesty_option_menus.menu,
+	nesty_options.float_config_val(newfield_prefs_config, "zoom", -2, -1, 0),
+	{name= "chart_mods", translatable= true, menu= nesty_option_menus.menu, args= chart_mods},
+	{name= "newskin", translatable= true, menu= nesty_option_menus.newskins},
+	{name= "newskin_params", translatable= true, menu= nesty_option_menus.menu,
 	 args= gen_noteskin_param_menu, req_func= show_noteskin_param_menu},
+	{name= "shown_noteskins", translatable= true, menu= nesty_option_menus.shown_noteskins, args= {}},
 	nesty_options.bool_config_val(newfield_prefs_config, "hidden"),
 	nesty_options.bool_config_val(newfield_prefs_config, "sudden"),
-	{name= "advanced_notefield_config", translatable= true, meta= nesty_option_menus.menu, args= notefield_config},
-	{name= "gameplay_options", translatable= true, meta= nesty_option_menus.menu, args= gameplay_options},
-	{name= "ghostscore_options", translatable= true, meta= nesty_option_menus.menu, args= ghostscore_options},
-	{name= "reload_newskins", translatable= true, meta= "execute",
+	{name= "advanced_notefield_config", translatable= true, menu= nesty_option_menus.menu, args= notefield_config},
+	{name= "gameplay_options", translatable= true, menu= nesty_option_menus.menu, args= gameplay_options},
+	{name= "life_options", translatable= true, menu= nesty_option_menus.menu,
+	 args= life_options},
+	nesty_options.bool_song_mod_val("AssistClap"),
+	nesty_options.bool_song_mod_val("AssistMetronome"),
+	nesty_options.bool_song_mod_val("StaticBackground"),
+	nesty_options.bool_song_mod_val("RandomBGOnly"),
+	{name= "reload_newskins", translatable= true, type= "action",
 	 execute= function() NEWSKIN:reload_skins() end},
 }
 
@@ -325,35 +510,54 @@ end
 local function input(event)
 	local pn= event.PlayerNumber
 	if not pn then return end
-	if menu_stack_generic_input(menus, event) then
-		player_ready[pn]= true
-		ready_indicators[pn]:playcommand("show_ready")
-		exit_if_both_ready()
+	if not menus[pn] then return end
+	if menu_stack_generic_input(menus, event)
+	and event.type == "InputEventType_FirstPress" then
+		if event.GameButton == "Back" then
+			SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToPrevScreen")
+		else
+			player_ready[pn]= true
+			ready_indicators[pn]:playcommand("show_ready")
+			exit_if_both_ready()
+		end
 	else
 		if player_ready[pn] and not menus[pn]:can_exit_screen() then
 			player_ready[pn]= false
 			ready_indicators[pn]:playcommand("hide_ready")
-		elseif event.GameButton == "Back" and GAMESTATE:IsHumanPlayer(pn) then
-			SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToPrevScreen")
 		end
 	end
 	update_explanation(pn)
-end
-
-local menu_item_mt= DeepCopy(option_item_underlinable_mt)
-menu_item_mt.__index.text_style_init= function(text_actor)
-	text_actor:shadowlength(1)
 end
 
 local frame= Def.ActorFrame{
 	OnCommand= function(self)
 		SCREENMAN:GetTopScreen():AddInputCallback(input)
 		for pn, menu in pairs(menus) do
-			menu:push_options_set_stack(nesty_option_menus.menu, base_options, "play_song")
+			menu:push_menu_stack(nesty_option_menus.menu, base_options, "play_song")
 			menu:update_cursor_pos()
 			update_explanation(pn)
 		end
 	end,
+}
+local item_params= {
+	text_font= "Common Normal",
+	text_on= function(self)
+		self:diffusealpha(0):smooth(1):diffusealpha(1)
+	end,
+	text_width= .7,
+	value_font= "Common Normal",
+	value_text_on= function(self)
+		self:diffusealpha(0):smooth(1):diffusealpha(1)
+	end,
+	value_image_on= function(self)
+		self:diffusealpha(0):smooth(1):diffusealpha(1)
+	end,
+	value_width= .25,
+	type_images= {
+		bool= THEME:GetPathG("", "menu_icons/bool"),
+		choice= THEME:GetPathG("", "menu_icons/bool"),
+		menu= THEME:GetPathG("", "menu_icons/next"),
+	},
 }
 for pn, menu in pairs(menus) do
 	frame[#frame+1]= LoadActor(
@@ -364,10 +568,24 @@ for pn, menu in pairs(menus) do
 	}
 	frame[#frame+1]= menu:create_actors{
 		x= menu_x[pn], y= 96, width= menu_width, height= menu_height,
-		num_displays= 1, pn= pn, item_mt= menu_item_mt,
-		el_height= 20, zoom= .55,
+		translation_section= "newfield_options",
+		num_displays= 1, pn= pn, el_height= 20,
+		menu_sounds= {
+			pop= THEME:GetPathS("Common", "Cancel"),
+			push= THEME:GetPathS("_common", "row"),
+			act= THEME:GetPathS("Common", "value"),
+			move= THEME:GetPathS("_switch", "down"),
+			move_up= THEME:GetPathS("_switch", "up"),
+			move_down= THEME:GetPathS("_switch", "down"),
+			inc= THEME:GetPathS("_switch", "up"),
+			dec= THEME:GetPathS("_switch", "down"),
+		},
+		display_params= {
+			el_zoom= .55, item_params= item_params, item_mt= nesty_items.value,
+			on= function(self)
+				self:diffusealpha(0):smooth(1):diffusealpha(1)
+			end},
 	}
-	menu:set_translation_section("newfield_options")
 	frame[#frame+1]= Def.BitmapText{
 		Font= "Common Normal", InitCommand= function(self)
 			explanations[pn]= self
@@ -399,11 +617,9 @@ for pn, menu in pairs(menus) do
 			self:stoptweening():accelerate(.5):diffusealpha(0)
 		end,
 	}
-
 end
 
+
 frame[#frame+1] = LoadActor("ScreenPlayerOptions avatars")
-
-
 
 return frame
