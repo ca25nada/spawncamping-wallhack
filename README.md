@@ -2,7 +2,7 @@
 A WIP Stepmania 5 theme aimed primarily for KB players.  
 <a href="http://imgur.com/a/RpFvQ" target="_blank">Screenshots</a>
 
-Requirements: StepMania 5.1.0 Alpha 2 or later.
+Requirements: StepMania 5.1.-3 or later.
 * If the menu is black and white at startup with a bunch of error messages or outright crashes, it's not 5.1.
 
 
