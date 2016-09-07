@@ -4,9 +4,9 @@ local debug = false
 -- Generally, a smaller window will adapt faster, but a larger window will have a more stable value.
 local maxWindow = themeConfig:get_data().NPSDisplay.MaxWindow -- this will be the maximum size of the "window" in seconds. 
 local minWindow = themeConfig:get_data().NPSDisplay.MinWindow -- this will be the minimum size of the "window" in seconds. Unused for now.
-local dynamicWindow = themeConfig:get_data().NPSDisplay.DynamicWindow -- set to false for now.
 
 --Graph related stuff
+local graphLastUpdate = 0
 local initialPeak = 10 -- Initial height of the NPS graph.
 local graphWidth = capWideScale(50,90)
 local graphHeight = 50
@@ -42,20 +42,6 @@ local graphPrefs = {
 		graphFreq = playerConfig:get_data(PLAYER_2).NPSUpdateRate
 	}
 }
-
---These should be moved to 02 colors.lua
-local judgeColor = { -- Colors of each Judgment types
-	TapNoteScore_W1 = color("#99ccff"),
-	TapNoteScore_W2	= HSV(48,0.8,0.95),
-	TapNoteScore_W3	 = HSV(160,0.9,0.8),
-	TapNoteScore_W4	= HSV(200,0.9,1),
-	TapNoteScore_W5	= HSV(320,0.9,1),
-	TapNoteScore_Miss = HSV(0,0.8,0.8),			
-	HoldNoteScore_Held = HSV(48,0.8,0.95),	
-	HoldNoteScore_LetGo = HSV(0,0.8,0.8),
-	TapNoteScore_None = Color.White
-}
-
 
 local enabled = {
 	NPSDisplay = {
@@ -165,19 +151,13 @@ local function Update(self)
 			-- every time this function is called.
 			-- We don't display the decimal values due to lack of precision from having a relatively small time window.
 			if enabled.NPSDisplay[pn] then
-				if debug then
-					self:GetChild("npsDisplay"..pn):GetChild("Text"):
-					settextf("%0.1f NPS (Peak %0.1f)\n%0.1fs Window\n%d notes in table\nDynamic Window:%s",
-						curNPS,peakNPS[pn],npsWindow[pn],noteSum[pn],tostring(dynamicWindow))
-				else
-					self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.0f NPS (Peak %0.0f)",curNPS,peakNPS[pn])
-				end
+				self:GetChild("npsDisplay"..pn):GetChild("Text"):settextf("%0.0f NPS (Peak %0.0f)",curNPS,peakNPS[pn])
 			end
-			-- update the window size. 
-			-- This isn't needed at all but it helps the counter
-			-- adapt quickly to high-nps bursts.
-			if dynamicWindow then
-				npsWindow[pn] = clamp(15/math.sqrt(getCurNPS(pn)),1,maxWindow )
+
+			-- Update the graph
+			if enabled.NPSGraph[pn] and GetTimeSinceStart() - graphLastUpdate > graphPrefs[pn].graphFreq then
+				graphLastUpdate = GetTimeSinceStart()
+				self:GetChild("npsGraph"..pn):playcommand("GraphUpdate")
 			end
 		end
 	end
@@ -251,6 +231,7 @@ end;
 
 local function npsGraph(pn)
 	local t = Def.ActorFrame{
+		Name = "npsGraph"..pn;
 		InitCommand=function(self)
 			self:xy(graphPos[pn].X,graphPos[pn].Y)
 		end
@@ -304,9 +285,9 @@ local function npsGraph(pn)
 		BeginCommand=function(self)
 			self:SetDrawState{First= 1, Num= -1}
 			self:SetVertices(verts)
-			self:queuecommand("GraphUpdate")
 		end,
 		GraphUpdateCommand=function(self)
+			self:finishtweening()
 			total = total+1
 			curNPS = getCurNPS(pn)
 			curJudgment = lastJudgment[pn]
@@ -325,8 +306,6 @@ local function npsGraph(pn)
 			self:SetVertices(verts)
 			self:addx(-graphWidth/maxVerts)
 			self:SetDrawState{First = math.max(1,#verts-maxVerts), Num=math.min(maxVerts,#verts)}
-			self:sleep(graphFreq)
-			self:queuecommand("GraphUpdate")
 		end,
 	}
 	return t
@@ -341,7 +320,7 @@ local t = Def.ActorFrame{
 	end
 }
 
-for _,pn in pairs({PLAYER_1,PLAYER_2}) do
+for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	if enabled.NPSDisplay[pn] then
 		t[#t+1] = npsDisplay(pn)
 	end
