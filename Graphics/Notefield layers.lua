@@ -146,10 +146,12 @@ end
 
 --returns 0 if top, 1 if bottom
 local function getNoteCoverDirection(coverType,reverse)
-	if reverse then
-		return coverType-1
-	else
-		return 2-coverType
+	if coverType then 
+		if reverse then
+			return coverType-1
+		else
+			return 2-coverType
+		end
 	end
 end
 

@@ -6,7 +6,6 @@ local defaultConfig = {
 		SongBGMouseEnabled = true,
 		Particles = true,
 		RateSort = true,
-		HelpMenu = true,
 		ScoreBoardNag = true,
 		MeasureLines = true,
 		ProgressBar = 1, -- 0 = off, 1 bottom , 2 top
