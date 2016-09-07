@@ -163,21 +163,6 @@ local function bareBoneFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
-	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand = function(self)
-			if pn == PLAYER_1 then
-				self:xy(3,32):halign(0)
-			else
-				self:xy(-3,32):halign(1)
-			end
-			self:zoom(0.4):maxwidth(180/0.4)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		SetCommand=function(self)
-			self:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
-		end;
-	};
-
 	return t
 end
 
