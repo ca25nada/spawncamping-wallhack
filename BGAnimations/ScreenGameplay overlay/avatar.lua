@@ -111,22 +111,6 @@ local function avatarFrame(pn)
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
-	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand = function(self)
-			if pn == PLAYER_1 then
-				self:xy(53,32):zoom(0.4):halign(0):maxwidth(180/0.4)
-				self:shadowlength(1)
-			else
-				self:xy(-3,32):zoom(0.4):halign(1):maxwidth(180/0.4)
-				self:shadowlength(1)
-			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		SetCommand=function(self)
-			self:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
-		end;
-	};
-
 	return t
 end
 
