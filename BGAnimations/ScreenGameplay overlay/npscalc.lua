@@ -7,6 +7,8 @@ local minWindow = themeConfig:get_data().NPSDisplay.MinWindow -- this will be th
 
 --Graph related stuff
 local graphLastUpdate = 0
+local maxVerts = 300
+local graphUpdateRate = 0.1
 local initialPeak = 10 -- Initial height of the NPS graph.
 local graphWidth = capWideScale(50,90)
 local graphHeight = 50
@@ -32,25 +34,14 @@ local textPos = { -- Position of the NPS text
 	}
 }
 
-local graphPrefs = {
-	PlayerNumber_P1 = {
-		maxVerts = capWideScale(math.floor(playerConfig:get_data(PLAYER_1).NPSMaxVerts*(5/9)),playerConfig:get_data(PLAYER_1).NPSMaxVerts),
-		graphFreq = playerConfig:get_data(PLAYER_1).NPSUpdateRate
-	},
-	PlayerNumber_P2 = {
-		maxVerts = capWideScale(math.floor(playerConfig:get_data(PLAYER_2).NPSMaxVerts*(5/9)),playerConfig:get_data(PLAYER_2).NPSMaxVerts),
-		graphFreq = playerConfig:get_data(PLAYER_2).NPSUpdateRate
-	}
-}
-
 local enabled = {
 	NPSDisplay = {
-		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(PLAYER_1).NPSDisplay,
-		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(PLAYER_2).NPSDisplay
+		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSDisplay,
+		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSDisplay
 	},
 	NPSGraph = {
-		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(PLAYER_1).NPSGraph,
-		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(PLAYER_2).NPSGraph
+		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSGraph,
+		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSGraph
 	}
 }
 
@@ -155,7 +146,7 @@ local function Update(self)
 			end
 
 			-- Update the graph
-			if enabled.NPSGraph[pn] and GetTimeSinceStart() - graphLastUpdate > graphPrefs[pn].graphFreq then
+			if enabled.NPSGraph[pn] and GetTimeSinceStart() - graphLastUpdate > graphUpdateRate then
 				graphLastUpdate = GetTimeSinceStart()
 				self:GetChild("npsGraph"..pn):playcommand("GraphUpdate")
 			end
@@ -245,8 +236,7 @@ local function npsGraph(pn)
 	local total = 1
 	local peakNPS = initialPeak
 	local curNPS = 0
-	local graphFreq = graphPrefs[pn].graphFreq
-	local maxVerts = graphPrefs[pn].maxVerts
+
 	t[#t+1] = Def.Quad{
 		InitCommand=function(self)
 			self:zoomto(graphWidth,graphHeight)
