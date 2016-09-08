@@ -3,9 +3,9 @@ Branch.PlayerOptions= function()
 	local restricted = { PlayMode_Oni= true, PlayMode_Rave= true,
 		--"PlayMode_Battle" -- ??
 	}
-	local optionsScreen = "ScreenNestyPlayerOptions"
+	local optionsScreen = "ScreenPlayerOptions"
 	if restricted[pm] then
-		optionsScreen = "ScreenNestyPlayerOptionsRestricted"
+		optionsScreen = "ScreenPlayerOptionsRestricted"
 	end
 	if SCREENMAN:GetTopScreen():GetGoToOptions() then
 		return optionsScreen
