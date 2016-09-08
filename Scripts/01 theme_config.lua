@@ -11,7 +11,7 @@ local defaultConfig = {
 		ProgressBar = 1, -- 0 = off, 1 bottom , 2 top
 		SongPreview = 3, -- 1 = SM style, 2 = osu! Style (new), 3 = osu! style (old)
 		BannerWheel = true,
-		BareBone = 0,
+		BareBone = false, -- Still can't beat jousway lel
 	},
 	NPSDisplay = {
 		DynamicWindow = false, -- unused
@@ -39,7 +39,7 @@ function getSongPreviewMode()
 end
 
 function isBareBone()
-	return false
+	return themeConfig:get_data().global.BareBone
 end
 
 --[[ Unused, to be used after a future overhaul.
