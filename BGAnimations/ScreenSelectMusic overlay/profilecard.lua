@@ -360,14 +360,10 @@ local function generalFrame(pn)
 		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
-	t[#t+1] = Def.RollingNumbers{
-		Font = "Common Normal";
+	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self)
-			self:y(50)
-			self:zoom(0.3)
-		    self:set_chars_wide(1):set_approach_seconds(approachSecond)
-		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
-		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
+			self:y(50):zoom(0.3)
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self) 
 			self:stoptweening()
@@ -376,10 +372,10 @@ local function generalFrame(pn)
 			local enabled = GAMESTATE:IsPlayerEnabled(pn)
 			if enabled and steps[pn] ~= nil then
 				meter = steps[pn]:GetMeter() or 0
-				self:target_number(meter)
+				self:settext(meter)
 				self:x((math.min(1,meter/maxMeter))*(frameWidth-10)-frameWidth/2-3)
 			else
-				self:target_number(0)
+				self:settext(0)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
@@ -433,14 +429,11 @@ local function generalFrame(pn)
 	}
 
 	-- Percentage Score
-	t[#t+1] = Def.RollingNumbers{
-		Font= "Common Large";
+	t[#t+1] = LoadFont("Common Large")..{
 		InitCommand= function(self)
 			self:xy(190-frameWidth/2,frameHeight-36)
 			self:zoom(0.45):halign(1):maxwidth(75/0.45)
-		    self:set_chars_wide(6):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
-		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
-		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
 			local score = getBestScore(pn,0,0)
@@ -449,7 +442,7 @@ local function generalFrame(pn)
 				maxscore = 1
 			end
 			local pscore = (score/maxscore)
-			self:target_number(math.floor((pscore)*10000)/100)
+			self:settextf("%.2f%%",math.floor((pscore)*10000)/100)
 
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
@@ -462,18 +455,15 @@ local function generalFrame(pn)
 
 
 	--Player DP/Exscore / Max DP/Exscore
-	t[#t+1] = Def.RollingNumbers{
-		Font = "Common Normal";
+	t[#t+1] = LoadFont("Common Normal")..{
 		Name = "score"; 
 		InitCommand= function(self)
 			self:xy(177-frameWidth/2,frameHeight-18)
 			self:zoom(0.5):halign(1):maxwidth(26/0.5)
-		    self:set_chars_wide(4):set_approach_seconds(approachSecond)
-		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
-		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self) 
-			self:target_number(getMaxScore(pn,0))
+			self:settext(getMaxScore(pn,0))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -483,18 +473,15 @@ local function generalFrame(pn)
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
-	t[#t+1] = Def.RollingNumbers{
-		Font = "Common Normal";
+	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand= function(self)
 			self:xy(177-frameWidth/2,frameHeight-18)
 			self:zoom(0.5):halign(1):maxwidth(34/0.5)
-		    self:set_chars_wide(5):set_text_format("%.0f/"):set_approach_seconds(approachSecond)
-		    self:set_leading_attribute{Diffuse= getMainColor('disabled')}
-		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().selectMusic.ProfileCardText)}
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self) 
 			self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
-			self:target_number(getBestScore(pn,0,0))
+			self:settextf("%.0f/",getBestScore(pn,0,0))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
