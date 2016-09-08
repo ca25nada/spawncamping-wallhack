@@ -144,11 +144,10 @@ local function GraphDisplay( pn )
 			end;
 		};
 
-		Def.RollingNumbers{
+		LoadFont("Common Normal")..{
 			Font= "Common Normal", 
 			InitCommand= function(self)
 				self:y(50):zoom(0.6)
-			    self:set_chars_wide(5):set_text_format("%.2f%%"):set_approach_seconds(approachSecond)
 			end;
 			BeginCommand=function(self) 
 				local score = getCurScoreST(pn,0)
@@ -160,9 +159,9 @@ local function GraphDisplay( pn )
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 				end
 				if maxScore > 0 then
-					self:target_number(math.floor((score/maxScore)*10000)/100)
+					self:settextf("%.2f%%",math.floor((score/maxScore)*10000)/100)
 				else
-					self:target_number(0)
+					self:settextf("%.2f%%",0)
 				end
 			end;
 		};
@@ -778,39 +777,35 @@ local function scoreBoard(pn)
 			end;
 		};
 
-		t[#t+1] = Def.RollingNumbers{
+		t[#t+1] = LoadFont("Common Normal")..{
 			Font= "Common Normal";
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),225)
 				self:zoom(0.35)
-			    self:set_chars_wide(1):set_approach_seconds(approachSecond)
-			    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
 				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
-				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4))}
-				self:target_number(pss:GetTapNoteScores(v))
+				self:diffuse(lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4)))
+				self:settext(pss:GetTapNoteScores(v))
 			end
 		}
 
-		t[#t+1] = Def.RollingNumbers{
+		t[#t+1] = LoadFont("Common Normal")..{
 			Font= "Common Normal";
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),235)
 				self:zoom(0.30)
-			    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
-			    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
 				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
-				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4))}
-				self:target_number(percent*100)
+				self:diffuse(lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4)))
+				self:settextf("(%.2f%%)",percent*100)
 			end
 		}
 	end
@@ -833,41 +828,37 @@ local function scoreBoard(pn)
 			end;
 		};
 
-		t[#t+1] = Def.RollingNumbers{
+		t[#t+1] = LoadFont("Common Normal")..{
 			Font= "Common Normal";
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),275)
 				self:zoom(0.35)
-			    self:set_chars_wide(1):set_approach_seconds(approachSecond)
-			    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
-		    	self:set_number_attribute{Diffuse =color(colorConfig:get_data().evaluation.ScoreCardText)}
+		    	self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
 				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
-				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
-				self:target_number(pss:GetHoldNoteScores(v))
+				self:diffuse(lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4)))
+				self:settext(pss:GetHoldNoteScores(v))
 			end
 		}
 
-		t[#t+1] = Def.RollingNumbers{
+		t[#t+1] = LoadFont("Common Normal")..{
 			Font= "Common Normal";
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),285)
 				self:zoom(0.30)
-			    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
-			    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
-		    	self:set_number_attribute{Diffuse =color(colorConfig:get_data().evaluation.ScoreCardText)}
+		    	self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end;
 			BeginCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
 				if tostring(percent) == tostring(0/0) then
 					percent = 0
 				end
-				self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
-				self:target_number(percent*100)
+				self:diffuse(lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4)))
+				self:settextf("(%.2f%%)",percent*100)
 			end
 		}
 	end
@@ -882,42 +873,37 @@ local function scoreBoard(pn)
 		end;
 	};
 
-	t[#t+1] = Def.RollingNumbers{
+	t[#t+1] = LoadFont("Common Normal")..{
 		Font= "Common Normal";
 		InitCommand= function(self)
 			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),275)
 			self:zoom(0.35)
-		    self:set_chars_wide(1):set_approach_seconds(approachSecond)
-		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
-		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().evaluation.ScoreCardText)}
+		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
 			if tostring(percent) == tostring(0/0) then
 				percent = 0
 			end
-			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
-			
-			self:target_number(pss:GetTapNoteScores('TapNoteScore_HitMine'))
+			self:diffuse(lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4)))
+			self:settext(pss:GetTapNoteScores('TapNoteScore_HitMine'))
 		end
 	}
 
-	t[#t+1] = Def.RollingNumbers{
+	t[#t+1] = LoadFont("Common Normal")..{
 		Font= "Common Normal";
 		InitCommand= function(self)
 			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),285)
 			self:zoom(0.30)
-		    self:set_chars_wide(3):set_text_format("(%.2f%%)"):set_approach_seconds(approachSecond)
-		    self:set_leading_attribute{Diffuse = getMainColor("disabled")}
-		    self:set_number_attribute{Diffuse =color(colorConfig:get_data().evaluation.ScoreCardText)}
+		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
 			if tostring(percent) == tostring(0/0) then
 				percent = 0
 			end
-			self:set_number_attribute{Diffuse = lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))}
-			self:target_number(percent)
+			self:diffuse(lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4)))
+			self:settextf("(%.2f%%)",percent)
 		end
 	}
 
