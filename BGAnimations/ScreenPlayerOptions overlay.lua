@@ -22,9 +22,9 @@ local playTimeP2 = 0
 local noteCountP2 = 0
 
 
-local AvatarXP1 = 10
+local AvatarXP1 = 100
 local AvatarYP1 = 50
-local AvatarXP2 = SCREEN_WIDTH-40
+local AvatarXP2 = SCREEN_WIDTH-130
 local AvatarYP2 = 50
 
 local bpms = {}
@@ -244,18 +244,5 @@ t[#t+1] = Def.ActorFrame{
 	}
 }
 
-
---Frames
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,0,0;halign,0;valign,0;zoomto,SCREEN_WIDTH,topFrameHeight;diffuse,color("#FFFFFF"););
-};
-t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,0,topFrameHeight;halign,0;valign,1;zoomto,SCREEN_WIDTH,borderWidth;diffuse,getMainColor('highlight'));
-};
-
---t[#t+1] = LoadActor("_frame");
-t[#t+1] = LoadFont("Common Large")..{
-	InitCommand=cmd(xy,5,32;halign,0;valign,1;zoom,0.55;diffuse,getMainColor('highlight');settext,"Player Options:";);
-}
-
+t[#t+1] = LoadActor("_frame")
 return t
