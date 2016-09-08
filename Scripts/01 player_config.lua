@@ -1,3 +1,10 @@
+local slot_conversion= {
+	[PLAYER_1]= "ProfileSlot_Player1", [PLAYER_2]= "ProfileSlot_Player2",}
+	
+function pn_to_profile_slot(pn)
+	return slot_conversion[pn] or "ProfileSlot_Invalid"
+end
+
 
 local defaultConfig = {
 	--Avatar = "_fallback.png",

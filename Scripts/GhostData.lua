@@ -170,10 +170,10 @@ function ghostDataExists(pn,score)
 
 	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
 	local ghostTableSHA1 = getGhostDataHash(score)
-	local ghostData = ghostTable:get_data(pn)[ghostTableSHA1]
+	local ghostData = ghostTable:get_data(pn_to_profile_slot(pn))[ghostTableSHA1]
 
-	if ghostTable:get_data(pn)[simfileSHA1] ~= nil then
-		return ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1] ~= nil 
+	if ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1] ~= nil then
+		return ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1] ~= nil 
 	end
 	return false
 end
@@ -192,10 +192,10 @@ function isGhostDataValid(pn,score)
 	local ghostTableSHA1 = getGhostDataHash(score)
 
 	if ghostDataExists(pn,score) then
-		local judgmentHash = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentHash
-		local judgmentDataString = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentData
-		local timingDifficulty = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].timingDifficulty
-		local lifeDifficulty = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].lifeDifficulty
+		local judgmentHash = ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].judgmentHash
+		local judgmentDataString = ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].judgmentData
+		local timingDifficulty = ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].timingDifficulty
+		local lifeDifficulty = ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].lifeDifficulty
 		return judgmentHash == getJudgmentDataHash(score,judgmentDataString,timingDifficulty,lifeDifficulty)
 	end
 
@@ -219,7 +219,7 @@ function readGhostData(pn,score)
 
 
 	if isGhostDataValid(pn,score) then
-		local judgmentDataString = ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentData
+		local judgmentDataString = ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].judgmentData
 		-- Check if the hash of the data string match the hash saved in the ghostdata.
 
 		for i = 1 , #judgmentDataString do
@@ -252,7 +252,7 @@ function getGhostDataParameter(pn,score,parameter)
 	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
 	local ghostTableSHA1 = getGhostDataHash(score)
 	if ghostDataExists(pn,score) then
-		return ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1][parameter]
+		return ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1][parameter]
 	end
 end
 
@@ -283,19 +283,19 @@ function saveGhostData(pn,score)
 	end
 
 	-- If there's no previous ghostscore entry for a song, make a new table.
-	if ghostTable:get_data(pn)[simfileSHA1] == nil then
-		ghostTable:get_data(pn)[simfileSHA1] = {}
+	if ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1] == nil then
+		ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1] = {}
 	end
 
 	-- Make and save all the table parameters
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1] = {}
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentData = judgmentDataString
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].timingDifficulty = GetTimingDifficulty()
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].lifeDifficulty = GetLifeDifficulty()
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].version = getThemeVersion()
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].assist = false
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1].judgmentHash = getJudgmentDataHash(score,judgmentDataString,GetTimingDifficulty(),GetLifeDifficulty())
-	ghostTable:set_dirty(pn)
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1] = {}
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].judgmentData = judgmentDataString
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].timingDifficulty = GetTimingDifficulty()
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].lifeDifficulty = GetLifeDifficulty()
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].version = getThemeVersion()
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].assist = false
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1].judgmentHash = getJudgmentDataHash(score,judgmentDataString,GetTimingDifficulty(),GetLifeDifficulty())
+	ghostTable:set_dirty(pn_to_profile_slot(pn))
 	ghostTable:save(pn)
 
 	SCREENMAN:SystemMessage("Ghost data saved.")
@@ -313,11 +313,11 @@ function deleteGhostData(pn,score)
 
 	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
 	local ghostTableSHA1 = getGhostDataHash(score)
-	local ghostData = ghostTable:get_data(pn)[ghostTableSHA1]
+	local ghostData = ghostTable:get_data(pn_to_profile_slot(pn))[ghostTableSHA1]
 
-	ghostTable:get_data(pn)[simfileSHA1][ghostTableSHA1] = nil
-	ghostTable:set_dirty(pn)
-	ghostTable:save(pn)
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1][ghostTableSHA1] = nil
+	ghostTable:set_dirty(pn_to_profile_slot(pn))
+	ghostTable:save(pn_to_profile_slot(pn))
 	SCREENMAN:SystemMessage("Ghost data deleted.")
 
 end
@@ -333,9 +333,9 @@ function deleteGhostDataForSong(pn)
 
 	local simfileSHA1 = getSimfileHash(GAMESTATE:GetCurrentSteps(pn))
 
-	ghostTable:get_data(pn)[simfileSHA1] = nil
-	ghostTable:set_dirty(pn)
-	ghostTable:save(pn)
+	ghostTable:get_data(pn_to_profile_slot(pn))[simfileSHA1] = nil
+	ghostTable:set_dirty(pn_to_profile_slot(pn))
+	ghostTable:save(pn_to_profile_slot(pn))
 	SCREENMAN:SystemMessage("All Ghost data for this song deleted.")
 	
 end
