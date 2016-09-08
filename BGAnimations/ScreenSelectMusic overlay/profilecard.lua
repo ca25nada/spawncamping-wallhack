@@ -1,22 +1,6 @@
-local t = Def.ActorFrame{
-	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
-	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,100):diffusealpha(0) end;
-	OnCommand = function(self) self:bouncy(0.3) self:xy(0,0):diffusealpha(1) end;
-	TabChangedMessageCommand = function(self)
-		self:finishtweening()
-		if getTabIndex() == 1 then
-			self:finishtweening()
-			MESSAGEMAN:Broadcast("Expand")
-		else 
-			self:finishtweening()
-			MESSAGEMAN:Broadcast("Contract")
-		end
-	end;
-	PlayerJoinedMessageCommand = function(self)
-		self:queuecommand("TabChangedMessage")
-		MESSAGEMAN:Broadcast("Expand")
-	end
-};
+local function doUpdate()
+	return getTabIndex() == 1
+end
 
 local approachSecond = 0.2
 
@@ -55,18 +39,87 @@ local hsTable = {
 	PlayerNumber_P2
 }
 
+local t = Def.ActorFrame{
+	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
+	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,100):diffusealpha(0) end;
+	OnCommand = function(self)
+		for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+			profile[pn] = GetPlayerOrMachineProfile(pn)
+		end
+		song = GAMESTATE:GetCurrentSong()
+		course = GAMESTATE:GetCurrentCourse()
+		--MESSAGEMAN:Broadcast("SongUpdated") -- Nothing uses this atm
+		self:playcommand("UpdatePlayerInfo")
+		self:bouncy(0.3) 
+		self:xy(0,0):diffusealpha(1) 
+	end;
+	TabChangedMessageCommand = function(self)
+		if doUpdate() then
+			self:playcommand("On")
+			MESSAGEMAN:Broadcast("Expand")
+		else
+			self:playcommand("Off")
+			MESSAGEMAN:Broadcast("Contract")
+		end
+	end;
+	UpdatePlayerInfoCommand = function(self)
+		if doUpdate() then
+			if GAMESTATE:IsCourseMode() then
+				for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+					trail[pn] = GAMESTATE:GetCurrentTrail(pn)
+					hsTable[pn] = getScoreList(pn)
+					if hsTable[pn] ~= nil then
+						topScore[pn] = getScoreFromTable(hsTable[pn],1)
+					end
+				end
+			else
+				for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+					steps[pn] = GAMESTATE:GetCurrentSteps(pn)
+					hsTable[pn] = getScoreList(pn)
+					if hsTable[pn] ~= nil then
+						topScore[pn] = getScoreFromTable(hsTable[pn],1)
+					end
+				end
+			end
+			MESSAGEMAN:Broadcast("PlayerInfoUpdated")
+		end
+	end;
+	PlayerJoinedMessageCommand = function(self)
+		for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+			profile[pn] = GetPlayerOrMachineProfile(pn)
+		end
+		self:playcommand("UpdatePlayerInfo")
+		self:queuecommand("TabChangedMessage")
+	end;
+	PlayerUnjoinedMessageCommand = function(self) 
+		for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+			profile[pn] = GetPlayerOrMachineProfile(pn)
+		end
+		self:playcommand("UpdatePlayerInfo")
+		self:queuecommand("TabChangedMessage") 
+	end;
+	CurrentSongChangedMessageCommand = function(self)
+		if doUpdate() then
+			song = GAMESTATE:GetCurrentSong()
+			course = GAMESTATE:GetCurrentCourse()
+			self:playcommand("UpdatePlayerInfo")
+			--MESSAGEMAN:Broadcast("SongUpdated")
+		end
+	end;
+	CurrentStepsP1ChangedMessageCommand = function(self) self:playcommand("UpdatePlayerInfo") end;
+	CurrentStepsP2ChangedMessageCommand = function(self) self:playcommand("UpdatePlayerInfo") end;
+
+};
+
 local function generalFrame(pn)
 	local t = Def.ActorFrame{
-		SetCommand = function(self)
+		InitCommand = function(self)
 			self:xy(frameX,frameY)
 			if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 				self:x(SCREEN_WIDTH-frameX)
 			end
 			self:visible(GAMESTATE:IsPlayerEnabled(pn))
 		end;
-		BeginCommand = function(self) self:playcommand('Set') end;
-		PlayerJoinedMessageCommand = function(self) self:playcommand('Set') end;
-		PlayerUnjoinedMessageCommand = function(self) self:playcommand('Set') end;
 		ContractMessageCommand = function(self)
 			self:stoptweening()
 			self:bouncy(0.3)
@@ -118,9 +171,6 @@ local function generalFrame(pn)
 			self:diffuse(getClearTypeColor(clearType))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = Def.Quad{
@@ -140,9 +190,8 @@ local function generalFrame(pn)
 	-- Avatar
 	t[#t+1] = Def.Sprite {
 		InitCommand = function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
-		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
-		PlayerUnjoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(pn)));
@@ -212,10 +261,7 @@ local function generalFrame(pn)
 				self:settext("Date Achieved: "..getScoreDate(topScore[pn]))
 			end
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	-- Steps info
@@ -265,10 +311,7 @@ local function generalFrame(pn)
 				end
 			end
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -300,9 +343,7 @@ local function generalFrame(pn)
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
 			end
 		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	t[#t+1] = Def.Quad{
@@ -329,9 +370,7 @@ local function generalFrame(pn)
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
 			end
 		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	t[#t+1] = Def.Quad{
@@ -354,10 +393,7 @@ local function generalFrame(pn)
 				self:zoomx(0)
 			end
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = Def.RollingNumbers{
@@ -382,10 +418,7 @@ local function generalFrame(pn)
 				self:target_number(0)
 			end
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	--Grades
@@ -399,12 +432,9 @@ local function generalFrame(pn)
 			self:settext(THEME:GetString("Grade",ToEnumShortString(getBestGrade(pn,0))))
 			self:diffuse(getGradeColor(getBestGrade(pn,0)))
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	--ClearType
@@ -424,12 +454,9 @@ local function generalFrame(pn)
 			self:settext(getClearTypeText(clearType))
 			self:diffuse(getClearTypeColor(clearType))
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	-- Percentage Score
@@ -452,12 +479,9 @@ local function generalFrame(pn)
 			self:target_number(math.floor((pscore)*10000)/100)
 
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 
@@ -475,12 +499,9 @@ local function generalFrame(pn)
 		SetCommand = function(self) 
 			self:target_number(getMaxScore(pn,0))
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = Def.RollingNumbers{
@@ -496,12 +517,9 @@ local function generalFrame(pn)
 			self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
 			self:target_number(getBestScore(pn,0,0))
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	--ScoreType superscript(?)
@@ -511,9 +529,7 @@ local function generalFrame(pn)
 			self:zoom(0.3)
 		    self:halign(0)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
-		BeginCommand = function(self)
-			self:settext(getScoreTypeText(0))
+		    self:settext(getScoreTypeText(0))
 		end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
@@ -531,12 +547,9 @@ local function generalFrame(pn)
 			local maxCombo = getBestMaxCombo(pn,0)
 			self:settextf("Max Combo: %d",maxCombo)
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 
@@ -556,47 +569,13 @@ local function generalFrame(pn)
 				self:settext("Miss Count: -")
 			end
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
+		PlayerInfoUpdatedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	return t
 end
-
--- TODO: course mode stuff
-t[#t+1] = Def.Actor{
-	BeginCommand=cmd(playcommand,"Set");
-	SetCommand = function(self)
-		if GAMESTATE:IsCourseMode() then
-			course = GAMESTATE:GetCurrentCourse()
-			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-				profile[pn] = GetPlayerOrMachineProfile(pn)
-				trail[pn] = GAMESTATE:GetCurrentTrail(pn)
-				hsTable[pn] = getScoreList(pn)
-				if hsTable[pn] ~= nil then
-					topScore[pn] = getScoreFromTable(hsTable[pn],1)
-				end
-			end
-		else
-			song = GAMESTATE:GetCurrentSong()
-			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-				profile[pn] = GetPlayerOrMachineProfile(pn)
-				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
-				hsTable[pn] = getScoreList(pn)
-				if hsTable[pn] ~= nil then
-					topScore[pn] = getScoreFromTable(hsTable[pn],1)
-				end
-			end
-		end
-	end;
-	CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
-	CurrentStepsP1ChangedMessageCommand=cmd(playcommand,"Set");
-	CurrentStepsP2ChangedMessageCommand=cmd(playcommand,"Set");
-}
 
 t[#t+1] = generalFrame(PLAYER_1)
 t[#t+1] = generalFrame(PLAYER_2)
