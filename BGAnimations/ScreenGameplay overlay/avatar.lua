@@ -69,8 +69,7 @@ local function avatarFrame(pn)
 		end;	
 	};
 
-	t[#t+1] = Def.RollingNumbers{
-		Font= "Common Normal", 
+	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand= function(self)
 			local name = profile:GetDisplayName()
 			if pn == PLAYER_1 then
@@ -78,14 +77,13 @@ local function avatarFrame(pn)
 			else
 				self:xy(-3,7):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
 			end
-		    self:set_approach_seconds(0.1)
-		    self:set_text_format(name.." %.2f%%")
+		    self:settext(name.." 0.00%")
 		end;
 		SetCommand=function(self)
 			local temp1 = getCurScoreST(pn,0)
 			local temp2 = getMaxScoreST(pn,0)
 			temp2 = math.max(temp2,1)
-			self:target_number(math.floor((temp1/temp2)*10000)/100)
+			self:settextf("%s %.2f%%",profile:GetDisplayName(),math.floor((temp1/temp2)*10000)/100)
 		end;
 		JudgmentMessageCommand = function(self) self:queuecommand('Set') end;
 	};

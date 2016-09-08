@@ -52,7 +52,7 @@ local t = Def.ActorFrame {
 		c.GhostScore:visible(false)
 		c.AvgScore:visible(false)
 		self:valign(1)
-		self:draworder(notefield_draw_order.over_field)
+		self:draworder(350)
 	end;
 
 	ComboCommand=function(self, param)

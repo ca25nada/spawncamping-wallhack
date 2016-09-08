@@ -21,7 +21,7 @@ local TNSFrames = {
 };
 local t = Def.ActorFrame {
 	InitCommand = function(self)
-		self:draworder(notefield_draw_order.over_field)
+		self:draworder(350)
 	end;
 };
 t[#t+1] = Def.ActorFrame {

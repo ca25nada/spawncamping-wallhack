@@ -14,7 +14,7 @@ local function lifeBar(pn)
 		SetCommand = function(self)
 			self:GetChild(pn.."LifeBG"):faderight(0.5+((1-PLife(pn))*0.5))
 	        self:GetChild(pn.."LifeBG"):zoomx(70+(PLife(pn)*200))
-	        self:GetChild(pn.."LifeVal"):target_number(PLife(pn)*100)
+	        self:GetChild(pn.."LifeVal"):settextf("%0.0f%%",PLife(pn)*100)
         	if PLife(pn)*100 < 30 and PLife(pn)*100 ~= 0 then -- replace with lifemeter danger later
 				self:diffuseshift()
 				self:effectcolor1(1,1,1,1)
@@ -43,7 +43,7 @@ local function lifeBar(pn)
 				self:queuecommand("Set")
 			end;
 		};
-		Def.RollingNumbers{
+		LoadFont("Common Normal") .. {
 			Name = pn.."LifeVal";
 			Font = "Common Normal", 
 			InitCommand = function(self)
@@ -52,7 +52,6 @@ local function lifeBar(pn)
 				else
 					self:xy(SCREEN_WIDTH-35,9):zoom(0.45):halign(0)
 				end
-			    self:set_chars_wide(2):set_text_format("%.0f%%"):set_approach_seconds(0.1)
 			end;
 		};
 	}
