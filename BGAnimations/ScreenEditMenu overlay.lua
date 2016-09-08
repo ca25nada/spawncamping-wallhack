@@ -200,4 +200,6 @@ local frame= Def.ActorFrame{
 	steps_display:create_actors("steps_display", steps_display_items, stype_item_mt, steps_display_x, steps_display_y),
 }
 
+frame[#frame+1] = LoadActor("_frame")
+
 return frame
