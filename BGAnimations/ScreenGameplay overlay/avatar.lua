@@ -74,9 +74,9 @@ local function avatarFrame(pn)
 		InitCommand= function(self)
 			local name = profile:GetDisplayName()
 			if pn == PLAYER_1 then
-				self:xy(53,7):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
+				self:xy(53,17):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
 			else
-				self:xy(-3,7):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
+				self:xy(-3,17):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
 			end
 		    self:set_approach_seconds(0.1)
 		    self:set_text_format(name.." %.2f%%")
@@ -93,10 +93,10 @@ local function avatarFrame(pn)
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
 			if pn == PLAYER_1 then
-				self:xy(53,20):zoom(0.4):halign(0):maxwidth(180/0.4)
+				self:xy(53,30):zoom(0.4):halign(0):maxwidth(180/0.4)
 				self:shadowlength(1)
 			else
-				self:xy(-3,20):zoom(0.4):halign(1):maxwidth(180/0.4)
+				self:xy(-3,30):zoom(0.4):halign(1):maxwidth(180/0.4)
 				self:shadowlength(1)
 			end
 		end;
@@ -127,9 +127,9 @@ local function bareBoneFrame(pn)
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
 			if pn == PLAYER_1 then
-				self:xy(3,7):halign(0)
+				self:xy(3,17):halign(0)
 			else
-				self:xy(-3,7):halign(1)
+				self:xy(-3,17):halign(1)
 			end
 			self:zoom(0.6):maxwidth(180/0.4)
 		end;
@@ -146,9 +146,9 @@ local function bareBoneFrame(pn)
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
 			if pn == PLAYER_1 then
-				self:xy(3,20):halign(0)
+				self:xy(3,30):halign(0)
 			else
-				self:xy(-3,20):halign(1)
+				self:xy(-3,30):halign(1)
 			end
 			self:zoom(0.4):maxwidth(180/0.4)
 		end;
