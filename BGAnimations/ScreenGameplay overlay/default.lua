@@ -14,6 +14,10 @@ t[#t+1] = LoadActor("errorbar")
 t[#t+1] = LoadActor("avatar")
 t[#t+1] = LoadActor("BPMDisplay")
 t[#t+1] = LoadActor("title")
+t[#t+1] = LoadActor("lanecover")
+
+t[#t+1] = LoadActor("fullcombo")
+
 
 
 t[#t+1] = LoadFont("Common Normal")..{
