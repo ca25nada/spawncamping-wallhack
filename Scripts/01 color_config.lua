@@ -127,7 +127,7 @@ local defaultConfig = {
 
 }
 
-colorConfig = create_lua_config({name = "colorConfig", file = "colorConfig.lua", default = defaultConfig, match_depth = -1})
+colorConfig =  create_setting("colorConfig", "colorConfig.lua", defaultConfig,-1)
 colorConfig:load()
 
 --keys to current table. Assumes a depth of 2.
