@@ -312,7 +312,7 @@ local Phrases = {
     "it's basically impossible to have played stepmania and not heard of osu", -- lurker
     "go play your stupid d7 hyper ultra stamina death killer files -- and get cts", -- Tim
     "I grind the LR2 now I am the Insane of the kaiden dan and come to score on you prepare for anus shrekktering :) :) :)", -- RoFAIL 
-    "After having been diagnosed with carpal tunnel 2 days ago, I pushed as hard as I could on osu and saw insane results",
+    "After having been diagnosed with carpal tunnel 2 days ago, I pushed as hard as I could on osu and saw insane results", -- mlr_tachyon
     "youll be good at sm again if you quit quitting every 3 hours", -- Walrusizer
     "I have really bad RSI so I have to play with my hands pretty much limp -- right hand even had carpool tunnel in the past", -- KirasCat
     "I'm not an o2jam player or anything", -- KirasCat
@@ -326,7 +326,10 @@ local Phrases = {
     "I just get a random anime image and slap text on it, its the only proper way to make gfx <;0)", -- jousway
     "i'm not even sure what's classified as ''hard'' in the packs as i may be one of the best solo players for this site (maybe) so i specifically want somewhat hard maps maybe by mina's scale for difficulty 23-27? so long it's 15+ more in average NPS", -- Soul Evans
     "why can't i just download the songs you're playing? is this that stepmania elitism i keep hearing about",
-    "but are your wristjacks so powerful they cure cancer",
+    "but are your wristjacks so powerful they cure cancer", -- Soul Evans
+    "being an asshole and being someone entirely as dense as the chinese wall itself are two different things but to me belong into the same cup", -- Xay
+    "I'm 100% this is not about being a wolf I think this is clearly about a fucking hippo truck just rolling over all of ffr", -- Xay
+    "uh what pack is the others from" -- Soul Evans
 }
 
 --tip
