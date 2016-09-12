@@ -125,6 +125,27 @@ t[#t+1] = Def.Sprite {
 	end
 };
 
+t[#t+1] = LoadFont("Common Normal") .. {
+	Name="curStage";
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2+5,120-12-capWideScale(get43size(60),60))
+		self:halign(0)
+		self:zoom(0.45)
+		self:maxwidth(capWideScale(get43size(340),340)/0.45)
+		self:diffuse(color(colorConfig:get_data().selectMusic.BannerText))
+	end;
+	SetCommand = function(self)
+		if GAMESTATE:IsEventMode() then
+			self:settextf("%s Stage",FormatNumberAndSuffix(GAMESTATE:GetCurrentStageIndex()+1))
+		else
+			if topScreen then
+				self:settextf("%s Stage",StageToLocalizedString(GAMESTATE:GetCurrentStage()))
+				self:diffuse(StageToColor(GAMESTATE:GetCurrentStage()))
+			end
+		end
+	end
+};
+
 -- Song title // Artist on top of the banner
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songTitle";
@@ -145,7 +166,9 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			end
 		end
 	end
-};
+}
+
+
 
 -- Song length (todo: take rates into account..?)
 t[#t+1] = LoadFont("Common Normal") .. {
