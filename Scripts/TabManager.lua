@@ -9,8 +9,6 @@ local tabData = { -- Name, Available in singleplayer, Available in multiplayer.
 	{"Other",true,true}
 }
 
-local availableTabs1P = {true,true,true,false,true,true}
-local availableTabs2P = {true,false,false,false,true,true}
 local tabSize = #tabData
 
 -- Resets the index of the tabs to 1
@@ -28,6 +26,7 @@ function setTabIndex(index)
 	else
 		if tabData[index][3] then
 			tabIndex = index
+			MESSAGEMAN:Broadcast("TabChanged")
 			SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
 		end
 	end
