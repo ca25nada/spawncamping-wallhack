@@ -329,7 +329,9 @@ local Phrases = {
     "but are your wristjacks so powerful they cure cancer", -- Soul Evans
     "being an asshole and being someone entirely as dense as the chinese wall itself are two different things but to me belong into the same cup", -- Xay
     "I'm 100% this is not about being a wolf I think this is clearly about a fucking hippo truck just rolling over all of ffr", -- Xay
-    "uh what pack is the others from" -- Soul Evans
+    "uh what pack is the others from", -- Soul Evans
+    "DO YOU NOT UNDERSTAND THE PLEASURE OF PLAYING WITH ONE HAND",
+    "p*light took inspiration from halogen's trigger happy moderation" -- Tim
 }
 
 --tip
