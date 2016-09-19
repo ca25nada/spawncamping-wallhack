@@ -2,6 +2,14 @@ local topActor
 local topActorZ = 0
 local topActorName
 
+-- To check the Z axis for getting the topmost actor upon clicking:
+-- Give an actor a Z value and call addPressedActors(self) inside any command.
+-- (e.g. MouseLeftClickMessageCommand)
+-- If the actor is supposed to react to the click (e.g. button), add a TopPressedCommand to the actor.
+-- TopPressedCommand will be called for a single actor with the highest Z value.
+
+
+
 -- Call this when left/right click event occurs and isOver() is true.
 -- Sets the actor calling this as the top actor if it has the highest Z value.
 -- (There's probably a potential for race conditons but we'll see)
@@ -57,11 +65,6 @@ end;
 
 --Button Rollovers
 function isOver(actor)
-	--[[
-	if actor:GetVisible() == false then
-		return false
-	end;
-	--]]
 	local x = getTrueX(actor)
 	local y = getTrueY(actor)
 	local hAlign = actor:GetHAlign()

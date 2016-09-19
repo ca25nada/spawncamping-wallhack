@@ -82,6 +82,7 @@ local function generalFrame(pn)
 	--Upper Bar
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
+			self:z(2)
 			self:zoomto(frameWidth,frameHeight)
 			self:valign(0)
 			self:diffuse(getMainColor("frame"))
@@ -97,6 +98,11 @@ local function generalFrame(pn)
 			self:smooth(0.1)
 			self:zoomy(frameHeight)
 		end;
+		MouseLeftClickMessageCommand = function(self)
+			if isOver(self) and GAMESTATE:IsPlayerEnabled(pn) then
+				addPressedActors(self)
+			end
+		end
 	}
 
 	-- Avatar background frame
@@ -139,7 +145,7 @@ local function generalFrame(pn)
 
 	-- Avatar
 	t[#t+1] = Def.Sprite {
-		InitCommand = function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
+		InitCommand = function (self) self:xy(25+10-(frameWidth/2),5):z(3):playcommand("ModifyAvatar") end;
 		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		PlayerUnjoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
@@ -150,9 +156,12 @@ local function generalFrame(pn)
 		end;
 		MouseLeftClickMessageCommand = function(self)
 			if isOver(self) and GAMESTATE:IsPlayerEnabled(pn) then
-				SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch")
+				addPressedActors(self)
 			end
-		end
+		end;
+		TopPressedCommand = function(self)
+			SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch")
+		end;
 	}
 
 	-- Player name
