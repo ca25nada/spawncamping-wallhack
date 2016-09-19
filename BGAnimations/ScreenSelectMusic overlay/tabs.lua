@@ -11,6 +11,7 @@ local function input(event)
 		if event.DeviceInput.button == "DeviceButton_left mouse button" then
 			MESSAGEMAN:Broadcast("MouseLeftClick")
 		end
+
 	end
 
 return false
@@ -30,6 +31,13 @@ local t = Def.ActorFrame{
 	OffCommand = function(self)
 		self:smooth(0.5)
 		self:diffusealpha(0)
+	end;
+	MouseLeftClickMessageCommand = function(self)
+		self:queuecommand("PlayTopPressedActor")
+	end;
+	PlayTopPressedActorCommand = function(self)
+		playTopPressedActor()
+		resetPressedActors()
 	end;
 }
 

@@ -3,7 +3,7 @@ local height = 20
 
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X,SCREEN_HEIGHT)
+		self:xy(SCREEN_CENTER_X,SCREEN_HEIGHT):z(2)
 		self:valign(1)
 		self:zoomto(SCREEN_WIDTH,height)
 		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
@@ -16,6 +16,11 @@ t[#t+1] = Def.Quad{
 	OffCommand = function(self)
 		self:smooth(0.5)
 		self:zoomy(0)
+	end;
+	MouseLeftClickMessageCommand = function(self)
+		if isOver(self) then
+			addPressedActors(self)
+		end
 	end;
 }
 
