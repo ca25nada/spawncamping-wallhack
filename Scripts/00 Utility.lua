@@ -24,53 +24,6 @@ function isWindowed()
 	return PREFSMAN:GetPreference("Windowed")
 end;
 
---Gets the true X/Y Position by recursively grabbing the parents' position.
---Does not take zoom into account.
-function getTrueX(actor)
-	if actor == nil then
-		return 0
-	end;
-	if actor:GetParent() == nil then
-		return actor:GetX() or 0
-	else
-		return actor:GetX()+getTrueX(actor:GetParent())
-	end;
-end;
-
-function getTrueY(actor)
-	if actor == nil then
-		return 0
-	end;
-	if actor:GetParent() == nil then
-		return actor:GetY() or 0
-	else
-		return actor:GetY()+getTrueY(actor:GetParent())
-	end;
-end;
-
---Button Rollovers
-function isOver(actor)
-	--[[
-	if actor:GetVisible() == false then
-		return false
-	end;
-	--]]
-	local x = getTrueX(actor)
-	local y = getTrueY(actor)
-	local hAlign = actor:GetHAlign()
-	local vAlign = actor:GetVAlign()
-	local w = actor:GetZoomedWidth()
-	local h = actor:GetZoomedHeight()
-
-	local mouseX = INPUTFILTER:GetMouseX()
-	local mouseY = INPUTFILTER:GetMouseY()
-
-	local withinX = (mouseX >= (x-(hAlign*w))) and (mouseX <= ((x+w)-(hAlign*w)))
-	local withinY = (mouseY >= (y-(vAlign*h))) and (mouseY <= ((y+h)-(vAlign*h)))
-
-	return (withinX and withinY)
-end;
-
 --returns if the table contains the key.
 function tableContains(table,key)
 	return (table[key] ~= nil)
