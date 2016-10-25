@@ -331,7 +331,30 @@ local Phrases = {
     "I'm 100% this is not about being a wolf I think this is clearly about a fucking hippo truck just rolling over all of ffr", -- Xay
     "uh what pack is the others from", -- Soul Evans
     "DO YOU NOT UNDERSTAND THE PLEASURE OF PLAYING WITH ONE HAND",
-    "p*light took inspiration from halogen's trigger happy moderation" -- Tim
+    "p*light took inspiration from halogen's trigger happy moderation", -- Tim
+    "cb rushing is the stepmania equivalent of \"i've fallen and i can't get up\"", --Fullerene
+    "is it good to make it all jumptrills since it follows the emusic?", -- ilikecatsalotihatedogs
+    "Can you add anime girls to the theme design? Just simply so we can get a nice market share of the hentai fan market.", -- Dinglesberry
+    "i am shitposting in this thread to increase traffic", -- http://www.flashflashrevolution.com/vbz/showthread.php?t=145636
+    "To insert beats, first press TAB (or go into Sync Mode) to disable the notes.", -- PRESS B TO PAY RESPECTS
+    "WE WILL BUILD AN LN WALL AND MAKE VSRG GREAT AGAIN", -- syaro-
+    "BP just mad because an O2 figure would be a bald guy", -- Aqo
+    "My logic is that the brain processes in 60 FPS so I play 60 FPS.", -- Rapta
+    "map everything as nonstop quadjacks, then bitch at people for daring to question your interpretation of the music", -- TyroneSama
+    "\"Awkward to hit\" so by your logic, every file should be buttery smooth to play, otherwise it's bad -_-", -- KcHecKa
+    "Play! Play! Play! Practice makes perfect. I used to be able to only play easy/beginner songs, now I can play literally anything you throw at me.", -- https://www.reddit.com/r/Stepmania/comments/585v17/
+    "hc maniera to see the lewd", -- Vraiksen
+    "If I play nekopara will I get more overjoy clears", -- Lokovodo
+    "once i tripped over a cable at hydro quebec and half the windmills in the entire province turned off ",-- Drace
+    "would u teach a little girl to play bms and become kaiden someday", -- Syaro
+    "but i cant play if i dont know the keybinds",
+    "You can keep your Stepmania. I prefer the osu.", -- Etienne copypasta
+    "Rice bullets can't melt oxygen noodles", -- Roman
+    "Guys, does lr2 have some weeb charts/files? like vocaloid/anime in general, etc,etc,etc", -- FelipeLink
+    "can't you mush together a 128 and 192 to get something higher bitrate than a 192", -- 4yn
+    "what does bms mean? \"by myself\"?", -- chakratos
+    "it's only 180bpm jacks", -- shiki
+    "How's J1 cheating", -- etienne
 }
 
 --tip
