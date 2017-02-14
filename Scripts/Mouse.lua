@@ -9,10 +9,8 @@ local topActorName
 -- TopPressedCommand will be called for a single actor with the highest Z value.
 
 
-
 -- Call this when left/right click event occurs and isOver() is true.
 -- Sets the actor calling this as the top actor if it has the highest Z value.
--- (There's probably a potential for race conditons but we'll see)
 function addPressedActors(actor)
 	local z = actor:GetZ()
 	if z > topActorZ then
@@ -23,16 +21,14 @@ function addPressedActors(actor)
 end
 
 -- Resets the variables back to original values.
--- Call this command 
 function resetPressedActors()
 	topActor = nil
 	topActorZ = 0
 	topActorName = nil
 end
 
--- Returns 
+-- Plays the TopPressed Command on the current top actor.
 function playTopPressedActor()
-	--SCREENMAN:SystemMessage(string.format("Broadcasting TopPressedCommand with name = %s z = %d",tostring(topActorName),topActorZ))
 	if topActor ~= nil then 
 		topActor:playcommand("TopPressed")
 	end
@@ -80,3 +76,21 @@ function isOver(actor)
 
 	return (withinX and withinY)
 end;
+
+
+function quadButton(z)
+	local t = Def.Quad{
+		InitCommand= function(self) 
+			self:z(z)
+		end;
+		MouseLeftClickMessageCommand = function(self)
+			if isOver(self) then
+				addPressedActors(self)
+			end
+		end;
+		TopPressedCommand = function(self)
+		end;
+	}
+
+	return t
+end

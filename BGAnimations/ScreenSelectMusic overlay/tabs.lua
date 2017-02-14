@@ -66,15 +66,13 @@ function tabs(index)
 		PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
 	}
 
-	t[#t+1] = Def.Quad{
+	t[#t+1] = quadButton(3)..{
 		Name="TabBG";
 		InitCommand=cmd(valign,1;zoomto,frameWidth,20;diffusealpha,0.5);
-		MouseLeftClickMessageCommand=function(self)
-			if isOver(self) then
+		TopPressedCommand = function(self)
 				setTabIndex(index)
-			end;
 		end;
-		SetCommand=function(self)
+		SetCommand = function(self)
 			self:finishtweening()
 			self:linear(0.1)
 			--show tab if it's the currently selected one
