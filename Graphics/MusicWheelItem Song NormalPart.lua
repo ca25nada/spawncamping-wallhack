@@ -19,28 +19,12 @@ t[#t+1] = Def.Quad{
 	end;
 }
 
-t[#t+1] = Def.Quad{
+t[#t+1] = quadButton(1) .. {
 	InitCommand= function(self) 
-		self:x(0):z(1)
+		self:x(0)
 		self:zoomto(capWideScale(get43size(340),340),44)
 		self:halign(0)
-	end;
-	SetCommand = function(self)
-		self:name("Wheel"..tostring(self:GetParent():GetName()))
-		self:diffuse(ColorLightTone(getMainColor("frame")))
-		self:diffusealpha(0.8)
-	end;
-	BeginCommand = function(self) self:queuecommand('Set') end;
-	OffCommand = function(self) self:visible(false) end;
-	MouseLeftClickMessageCommand = function(self)
-		if isOver(self) then
-
-			if top:GetName() ~= "ScreenSelectMusic" then
-				return
-			end
-
-			addPressedActors(self)
-		end
+		self:visible(false)
 	end;
 	TopPressedCommand = function(self)
 
@@ -72,6 +56,21 @@ t[#t+1] = Def.Quad{
 		end
 
 	end;
+}
+
+t[#t+1] = Def.Quad{
+	InitCommand= function(self) 
+		self:x(0)
+		self:zoomto(capWideScale(get43size(340),340),44)
+		self:halign(0)
+	end;
+	SetCommand = function(self)
+		self:name("Wheel"..tostring(self:GetParent():GetName()))
+		self:diffuse(ColorLightTone(getMainColor("frame")))
+		self:diffusealpha(0.8)
+	end;
+	BeginCommand = function(self) self:queuecommand('Set') end;
+	OffCommand = function(self) self:visible(false) end;
 }
 
 
