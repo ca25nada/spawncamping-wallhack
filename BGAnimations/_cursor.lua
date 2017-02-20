@@ -5,22 +5,11 @@
 local maxChild = 20
 local curIndex = 0
 
-local function input(event)
-	local top = SCREENMAN:GetTopScreen():GetChildren().Overlay
-	if event.DeviceInput.button == 'DeviceButton_left mouse button' then
-		if event.type == "InputEventType_Release" then
-			curIndex = (curIndex+1)%20
-			MESSAGEMAN:Broadcast("Click")
-		end;
-	end;
-return false;
-end;
-
 function cursorClick(index)
 	return LoadActor(THEME:GetPathG("","_circle")) .. {
 		Name="CursorClick";
 		InitCommand=cmd(diffusealpha,0);
-		ClickMessageCommand=function(self)
+		MouseLeftClickMessageCommand=function(self)
 			if index == curIndex then
 				self:finishtweening()
 				self:xy(INPUTFILTER:GetMouseX(),INPUTFILTER:GetMouseY())
@@ -36,7 +25,6 @@ end
 
 local t = Def.ActorFrame{
 	Name="Cursor";
-	OnCommand=function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end;
 }
 
 for i=0,maxChild do
@@ -46,6 +34,9 @@ end
 t[#t+1] = Def.Quad{
 	Name="Cursor";
 	InitCommand=cmd(xy,0,0;zoomto,4,4;rotationz,45;);
+	MouseLeftClickMessageCommand=function(self)
+		curIndex = (curIndex+1)%20
+	end
 };
 
 local function Update(self)
