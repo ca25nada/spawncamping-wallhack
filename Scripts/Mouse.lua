@@ -94,3 +94,15 @@ function quadButton(z)
 
 	return t
 end
+
+function mouseInputCallback(event)
+
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_left mouse button" then
+			MESSAGEMAN:Broadcast("MouseLeftClick")
+		end
+	end
+
+return false
+
+end

@@ -1,14 +1,22 @@
-function GetLocalProfiles()
+function GetLocalProfiles(pn)
 	local t = {};
 
 	for p = 0,PROFILEMAN:GetNumLocalProfiles()-1 do
 		local profileID = PROFILEMAN:GetLocalProfileIDFromIndex(p)
 		local profile=PROFILEMAN:GetLocalProfileFromIndex(p);
 		local ProfileCard = Def.ActorFrame {
---[[ 			Def.Quad {
-				InitCommand=cmd(zoomto,200,1;y,40/2);
-				OnCommand=cmd(diffuse,Color('Outline'););
-			}; --]]
+
+			quadButton(1) ..{
+				InitCommand = function(self)
+					self:y(-2)
+					self:zoomto(200,40)
+					self:visible(false)
+					self:name(tostring(p))
+				end;
+				TopPressedCommand = function(self)
+					MESSAGEMAN:Broadcast("ProfileLeftClick",{pn = pn,index = tonumber(self:GetName())})
+				end;
+			};
 			LoadFont("Common Large") .. {
 				Text=profile:GetDisplayName();
 				InitCommand=cmd(xy,34/2,-10;zoom,0.4;ztest,true,maxwidth,(200-34-4)/0.4);
@@ -42,11 +50,6 @@ end;
 
 function LoadCard(cColor)
 	local t = Def.ActorFrame {
-		--LoadActor( THEME:GetPathG("ScreenSelectProfile","CardBackground") ) .. {
-		--	InitCommand=cmd(diffuse,cColor);
-		--};
-		--LoadActor( THEME:GetPathG("ScreenSelectProfile","CardFrame") );
-
 		Def.Quad {
 			InitCommand=cmd(zoomto,200+10,230+10);
 			OnCommand=cmd(diffuse,getMainColor("frame");diffusealpha,0.8);
@@ -63,20 +66,9 @@ function LoadPlayerStuff(Player)
 
 	local pn = (Player == PLAYER_1) and 1 or 2;
 
---[[ 	local t = LoadActor(THEME:GetPathB('', '_frame 3x3'), 'metal', 200, 230) .. {
-		Name = 'BigFrame';
-	}; --]]
 	t[#t+1] = Def.ActorFrame {
 		Name = 'JoinFrame';
 		LoadCard(Color('Orange'));
---[[ 		Def.Quad {
-			InitCommand=cmd(zoomto,200+4,230+4);
-			OnCommand=cmd(shadowlength,1;diffuse,color("0,0,0,0.5"));
-		};
-		Def.Quad {
-			InitCommand=cmd(zoomto,200,230);
-			OnCommand=cmd(diffuse,Color('Orange');diffusealpha,0.5);
-		}; --]]
 		LoadFont("Common Normal") .. {
 			Text="Press &START; to join.";
 			InitCommand=cmd(shadowlength,1);
@@ -100,17 +92,13 @@ function LoadPlayerStuff(Player)
 	t[#t+1] = Def.ActorScroller{
 		Name = 'Scroller';
 		NumItemsToDraw=6;
--- 		InitCommand=cmd(y,-230/2+20;);
 		OnCommand=cmd(y,1;SetFastCatchup,true;SetMask,200,58;SetSecondsPerItem,0.15);
 		TransformFunction=function(self, offset, itemIndex, numItems)
 			local focus = scale(math.abs(offset),0,2,1,0);
 			self:visible(false);
 			self:y(math.floor( offset*40 ));
--- 			self:zoomy( focus );
--- 			self:z(-math.abs(offset));
--- 			self:zoom(focus);
 		end;
-		children = GetLocalProfiles();
+		children = GetLocalProfiles(Player);
 	};
 	
 	t[#t+1] = Def.ActorFrame {
@@ -174,7 +162,20 @@ function UpdateInternal3(self, Player)
 	end;
 end;
 
-local t = Def.ActorFrame {}
+local t = Def.ActorFrame{
+	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(mouseInputCallback)
+	end;
+	MouseLeftClickMessageCommand = function(self)
+		self:queuecommand("PlayTopPressedActor")
+	end;
+	PlayTopPressedActorCommand = function(self)
+		playTopPressedActor()
+		resetPressedActors()
+	end;
+}
+
+
 
 t[#t+1] = Def.ActorFrame{
 	StorageDevicesChangedMessageCommand=function(self, params)
@@ -218,6 +219,21 @@ t[#t+1] = Def.ActorFrame{
 			else
 				MESSAGEMAN:Broadcast("BackButton");
 				SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, -2);
+			end;
+		end;
+	end;
+
+	ProfileLeftClickMessageCommand = function(self, params)
+		if GAMESTATE:IsHumanPlayer(params.pn) then
+			local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.pn);
+
+			if (params.index+1) - ind == 0 then
+				MESSAGEMAN:Broadcast("StartButton");
+				SCREENMAN:GetTopScreen():Finish();
+			else
+				SCREENMAN:GetTopScreen():SetProfileIndex(params.pn, ind + (params.index+1) - ind )
+				MESSAGEMAN:Broadcast("DirectionButton");
+				self:queuecommand('UpdateInternal2');
 			end;
 		end;
 	end;
@@ -278,5 +294,6 @@ t[#t+1] = Def.ActorFrame{
 };
 
 t[#t+1] = LoadActor("_frame");
+t[#t+1] = LoadActor("_cursor");
 
 return t;
