@@ -355,6 +355,9 @@ local Phrases = {
     "what does bms mean? \"by myself\"?", -- chakratos
     "it's only 180bpm jacks", -- shiki
     "How's J1 cheating", -- etienne
+    "i am shitposting in this thread to increase traffic",
+    "Simply loves theme scoring is actually designed more around pad play, plus S's are filthy osu grades",
+    "Admit it you're just mad because jhlee has more fans than any shitty players you watch and you think its cool to hate who's on top :( you wont go very far in life son :D"
 }
 
 --tip
