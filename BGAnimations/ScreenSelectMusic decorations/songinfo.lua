@@ -1,5 +1,4 @@
 local topScreen
-local course
 local song
 local group
 local wheel
@@ -18,7 +17,6 @@ local t = Def.ActorFrame{
 		self:xy(0,0):diffusealpha(1)
 		topScreen = SCREENMAN:GetTopScreen()
 		song = GAMESTATE:GetCurrentSong()
-		course = GAMESTATE:GetCurrentCourse()
 		if topScreen then
 			wheel = topScreen:GetMusicWheel()
 		end
@@ -26,7 +24,6 @@ local t = Def.ActorFrame{
 	SetCommand = function(self)
 		if doUpdate() then
 			song = GAMESTATE:GetCurrentSong()
-			course = GAMESTATE:GetCurrentCourse()
 			group = topScreen:GetMusicWheel():GetSelectedSection()
 
 			self:GetChild("Banner"):queuecommand("Set")
@@ -67,8 +64,6 @@ t[#t+1] = Def.Banner{
 		if topScreen:GetName() == "ScreenSelectMusic" or topScreen:GetName() == "ScreenNetSelectMusic" then
 			if song then
 				self:LoadFromSong(song)
-			elseif course then
-				self:LoadFromCourse(song)
 			elseif group then
 				self:LoadFromSongGroup(group)
 			end

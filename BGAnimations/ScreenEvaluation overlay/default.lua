@@ -56,12 +56,8 @@ t[#t+1] = Def.ActorFrame{
 		BeginCommand=function(self)
 			self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 			local song = GAMESTATE:GetCurrentSong()
-			local course = GAMESTATE:GetCurrentCourse()
-			if song ~= nil and (not GAMESTATE:IsCourseMode()) then
+			if song ~= nil then
 				self:settext(song:GetGroupName())
-			end;
-			if course ~= nil and GAMESTATE:IsCourseMode() then
-				self:settext(course:GetGroupName())
 			end;
 		end;
 	};

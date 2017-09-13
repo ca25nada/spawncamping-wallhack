@@ -1,6 +1,6 @@
 
 
-local lines = math.min(8,math.min(themeConfig:get_data().eval.ScoreBoardMaxEntry,PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer"))) -- number of scores to display
+local lines = 8 -- number of scores to display
 local frameWidth = 260
 local frameX = SCREEN_WIDTH-frameWidth-WideScale(get43size(40),40)/2
 local frameY = 154
@@ -309,7 +309,7 @@ t[#t+1] = LoadFont("Common normal")..{
 t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(xy,frameX+frameWidth,frameY+drawindex*spacing;zoom,0.35;halign,1;diffusealpha,0.8);
 	BeginCommand=function(self)
-		self:settextf("%d/%s Scores saved",(#origTable),PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
+		self:settextf("%d Scores saved",(#origTable))
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 	end;
 	TabChangedMessageCommand = function(self, params)
@@ -324,12 +324,6 @@ t[#t+1] = LoadFont("Common normal")..{
 		end
 	end;
 }
-
-if tonumber(PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")) ~= 3 then
-	themeConfig:get_data().global.ScoreBoardNag = false
-	themeConfig:set_dirty()
-	themeConfig:save()
-end
 
 if themeConfig:get_data().global.ScoreBoardNag and #origTable == tonumber(PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")) then
 	t[#t+1] = LoadFont("Common normal")..{

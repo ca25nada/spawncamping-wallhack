@@ -34,12 +34,9 @@ local stringList = {
 	{THEME:GetString("ScreenSelectMusic","OtherInfoSMBuildDate")..":",				VersionDate().." "..VersionTime()},
 	{THEME:GetString("ScreenSelectMusic","OtherInfoThemeVersion")..":",			getThemeName().." "..getThemeVersion()},
 	{THEME:GetString("ScreenSelectMusic","OtherInfoTotalSongs")..":",			SONGMAN:GetNumSongs().." Songs in "..SONGMAN:GetNumSongGroups().." Groups"},
-	{THEME:GetString("ScreenSelectMusic","OtherInfoTotalCourses")..":",			SONGMAN:GetNumCourses().." Courses in "..SONGMAN:GetNumCourseGroups().." Groups"},
 	{THEME:GetString("ScreenSelectMusic","OtherInfoGlobalOffset")..":",			string.format("%2.4f",(PREFSMAN:GetPreference("GlobalOffsetSeconds") or 0)*1000).." ms"},
 	{THEME:GetString("ScreenSelectMusic","OtherInfoLifeDifficulty")..":",			GetLifeDifficulty()},
 	{THEME:GetString("ScreenSelectMusic","OtherInfoTimingDifficulty")..":",		GetTimingDifficulty()},
-	{THEME:GetString("ScreenSelectMusic","OtherInfoMaxMachineScores")..":",		PREFSMAN:GetPreference("MaxHighScoresPerListForMachine") or 0},
-	{THEME:GetString("ScreenSelectMusic","OtherInfoMaxPersonalScores")..":",		PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0}
 }
 
 t[#t+1] = Def.Quad{

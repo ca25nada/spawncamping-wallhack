@@ -1,9 +1,9 @@
 -- theme identification file
 
 themeInfo = {
-	Name = "spawncamping-wallhack (SM5)",
-	Version = "2.0.2", -- a.b.c, a for complete overhauls, b for major releases, c for minor additions/bugfix.
-	Date = "20160908",
+	Name = "spawncamping-wallhack (etterna .54)",
+	Version = "2.1.0", -- a.b.c, a for complete overhauls, b for major releases, c for minor additions/bugfix.
+	Date = "20170912",
 };
 
 function getThemeName()
