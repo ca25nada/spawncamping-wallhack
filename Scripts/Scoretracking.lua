@@ -221,26 +221,8 @@ end
 --Returns the number of "taps" for the steps that the specified player has selected.
 --Note that this isn't the number of actual notes since jumps/hands count as 1 judgment or "taps".
 function getMaxNotesST(pn)
-	if GAMESTATE:IsCourseMode() then
-		local trail = GAMESTATE:GetCurrentTrail(pn)
-		local notes = 0
-
-		for _,v in pairs(trail:GetTrailEntries()) do
-			if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
-				notes = notes + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Notes")
-			else
-				notes = notes + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds")-- Radarvalue, maximum number of notes
-			end
-		end
-		return notes
-	else
-		local steps  = GAMESTATE:GetCurrentSteps(pn)
-		if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
-			return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-		else
-			return steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") -- Radarvalue, maximum number of notes
-		end
-	end
+	local steps  = GAMESTATE:GetCurrentSteps(pn)
+	return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 end
 
 --Returns the current number of "taps" that have been played so far for the specified player.
@@ -251,19 +233,8 @@ end
 --Returns the number of holds for the steps that the specified player has selected.
 --This includes any notes that has a OK/NG judgment. (holds and rolls)
 function getMaxHoldsST(pn)
-	if GAMESTATE:IsCourseMode() then
-		local trail = GAMESTATE:GetCurrentTrail(pn)
-		local holds = 0
-
-		for _,v in pairs(trail:GetTrailEntries()) do
-			holds = holds + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Holds") + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-		end
-
-		return holds 
-	else
-		local steps  = GAMESTATE:GetCurrentSteps(pn)
-		return steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-	end
+	local steps  = GAMESTATE:GetCurrentSteps(pn)
+	return steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
 end
 
 --Returns the current number of holds that have been played so far for the specified player.
@@ -329,9 +300,6 @@ end
 --This is based on the current "average" score a player has rather than the total score.
 function getGradeST(pn)
 	local failing = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetFailed()
-	if GAMESTATE:IsBattleMode() then
-		failing = false
-	end
 
 	if failing then
 		return 'Grade_Failed'
