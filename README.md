@@ -2,7 +2,7 @@
 A WIP Stepmania 5 theme aimed primarily for KB players.  
 <a href="http://imgur.com/a/RpFvQ" target="_blank">Screenshots</a>
 
-Requirements: StepMania 5.0.12 or later.
+Requirements: See releases page.
 
 ---
 ### Acknowledgements
