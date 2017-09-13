@@ -55,7 +55,26 @@ local t = Def.ActorFrame {
 		self:draworder(350)
 	end;
 
-	ComboCommand=function(self, param)
+	JudgmentMessageCommand = function(self, param)
+		local diff = param.WifeDifferential
+		if diff > 0 then
+			c.GhostScore:settextf('+%.2f', diff)
+			c.GhostScore:diffuse(getMainColor('positive'))
+		elseif diff == 0 then
+			c.GhostScore:settextf('+%.2f', diff)
+			c.GhostScore:diffuse(color("#FFFFFF"))
+		else
+			c.GhostScore:settextf('-%.2f', (math.abs(diff)))
+			c.GhostScore:diffuse(getMainColor('negative'))
+		end;
+
+		local wifePercent = param.WifePercent
+		if avgScoreType ~= 0 and avgScoreType ~= nil then 
+			c.AvgScore:settextf("%.2f%%", wifePercent)
+		end
+	end;
+
+	ComboCommand = function(self, param)
 		local iCombo = param.Misses or param.Combo;
 		if not iCombo or iCombo < ShowComboAt then
 			c.Number:visible(false);
@@ -71,30 +90,6 @@ local t = Def.ActorFrame {
 		else
 			labeltext = "MISSES";
 		end
-
-		local targerDiff = 0
-		if ghostType ~= 0 or ghostType ~= nil then
-			targetDiff = getCurScoreST(player,ghostType)-(math.ceil(getCurMaxScoreST(player,ghostType)*target))
-			if targetDiff > 0 then
-				c.GhostScore:settext('+'..targetDiff)
-
-				c.GhostScore:diffuse(getMainColor('positive'))
-			elseif targetDiff == 0 then
-				c.GhostScore:settext('+'..targetDiff)
-				c.GhostScore:diffuse(color("#FFFFFF"))
-			else
-				c.GhostScore:settext('-'..(math.abs(targetDiff)))
-				c.GhostScore:diffuse(getMainColor('negative'))
-			end;
-		end;
-
-		if avgScoreType ~= 0 or avgScore ~= nil then
-			if getCurMaxScoreST(player,avgScoreType) ~= 0 then
-				c.AvgScore:settextf("%.2f%%",(math.floor(getCurScoreST(player,avgScoreType)/getCurMaxScoreST(player,avgScoreType)*10000))/100); 
-			else
-				c.AvgScore:settext('0.00%')
-			end;
-		end;
 
 		c.Label:settext( labeltext );
 
