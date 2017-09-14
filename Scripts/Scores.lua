@@ -1,70 +1,39 @@
-local scoreWeight =  { -- Score Weights for DP score (MAX2)
-	TapNoteScore_W1				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW1"),					--  2
-	TapNoteScore_W2				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW2"),					--  2
-	TapNoteScore_W3				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW3"),					--  1
-	TapNoteScore_W4				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW4"),					--  0
-	TapNoteScore_W5				= THEME:GetMetric("ScoreKeeperNormal","GradeWeightW5"),					-- -4
-	TapNoteScore_Miss			= THEME:GetMetric("ScoreKeeperNormal","GradeWeightMiss"),				-- -8
-	HoldNoteScore_Held			= THEME:GetMetric("ScoreKeeperNormal","GradeWeightHeld"),				--  6
-	TapNoteScore_HitMine		= THEME:GetMetric("ScoreKeeperNormal","GradeWeightHitMine"),				-- -8
-	HoldNoteScore_LetGo			= THEME:GetMetric("ScoreKeeperNormal","GradeWeightLetGo"),				--  0
-	HoldNoteScore_MissedHold	 = THEME:GetMetric("ScoreKeeperNormal","GradeWeightMissedHold"),
-	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit	= THEME:GetMetric("ScoreKeeperNormal","GradeWeightCheckpointHit"),		--  0
-	TapNoteScore_CheckpointMiss = THEME:GetMetric("ScoreKeeperNormal","GradeWeightCheckpointMiss"),		--  0
-}
 
-local psWeight =  { -- Score Weights for percentage scores (EX oni)
-	TapNoteScore_W1			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW1"),
-	TapNoteScore_W2			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW2"),
-	TapNoteScore_W3			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW3"),
-	TapNoteScore_W4			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW4"),
-	TapNoteScore_W5			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightW5"),
-	TapNoteScore_Miss			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightMiss"),
-	HoldNoteScore_Held			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightHeld"),
-	TapNoteScore_HitMine			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightHitMine"),
-	HoldNoteScore_LetGo			= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightLetGo"),
-	HoldNoteScore_MissedHold	 = THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightMissedHold"),
-	TapNoteScore_AvoidMine		= 0,
-	TapNoteScore_CheckpointHit		= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightCheckpointHit"),
-	TapNoteScore_CheckpointMiss 	= THEME:GetMetric("ScoreKeeperNormal","PercentScoreWeightCheckpointMiss"),
+WifeTiers = {
+	Grade_Tier01 = 0.9998, 
+	Grade_Tier02 = 0.9975, 
+	Grade_Tier03 = 0.93, 
+	Grade_Tier04 = 0.8, 
+	Grade_Tier05 = 0.7, 
+	Grade_Tier06 = 0.6,
+	Grade_Tier07 = 0.6
 }
-
-local migsWeight =  { -- Score Weights for MIGS score
-	TapNoteScore_W1					= 3,
-	TapNoteScore_W2					= 2,
-	TapNoteScore_W3					= 1,
-	TapNoteScore_W4					= 0,
-	TapNoteScore_W5					= -4,
-	TapNoteScore_Miss				= -8,
-	HoldNoteScore_Held				= IsGame("pump") and 0 or 6,
-	TapNoteScore_HitMine			= -8,
-	HoldNoteScore_LetGo				= 0,
-	HoldNoteScore_MissedHold 			= 0,
-	TapNoteScore_AvoidMine			= 0,
-	TapNoteScore_CheckpointHit		= 2,
-	TapNoteScore_CheckpointMiss 	= -8,
-}
-
 function getScoreList(pn)
-
-	local profile = GetPlayerOrMachineProfile(pn)
-
+	local song = GAMESTATE:GetCurrentSong()
+	local profile
+	local steps
 	if GAMESTATE:IsPlayerEnabled(pn) then
-		if GAMESTATE:IsCourseMode() then
-			local course = GAMESTATE:GetCurrentCourse()
-			local trail = GAMESTATE:GetCurrentTrail(pn)
-			if profile ~= nil and trail ~= nil and course ~= nil then
-				return profile:GetHighScoreList(course,trail):GetHighScores()
-			end
-		else
-			local song = GAMESTATE:GetCurrentSong()
-			local steps = GAMESTATE:GetCurrentSteps(pn)
-			if profile ~= nil and steps ~= nil and song ~= nil then
-				return profile:GetHighScoreList(song,steps):GetHighScores()
-			end
+		profile = GetPlayerOrMachineProfile(pn)
+		steps = GAMESTATE:GetCurrentSteps(pn)
+		if profile ~= nil and steps ~= nil and song ~= nil then
+			return profile:GetHighScoreList(song,steps):GetHighScores()
 		end
 	end
+	return nil
+end
+
+function getScoresByKey(pn)
+	local song = GAMESTATE:GetCurrentSong()
+	local profile
+	local steps
+	if GAMESTATE:IsPlayerEnabled(pn) then
+		profile = GetPlayerOrMachineProfile(pn)
+		steps = GAMESTATE:GetCurrentSteps(pn)
+		if profile ~= nil and steps ~= nil and song ~= nil then
+			return SCOREMAN:GetScoresByKey(steps:GetChartKey())
+		end
+	end
+	return nil
 end
 
 function getScoreFromTable(hsTable,index)
@@ -81,29 +50,15 @@ function getMaxNotes(pn)
 		return 0
 	end
 
-	if GAMESTATE:IsCourseMode() then
-		local trail = GAMESTATE:GetCurrentTrail(pn)
-		local notes = 0
-
-		for _,v in pairs(trail:GetTrailEntries()) do
-			if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
-				notes = notes + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Notes")
-			else
-				notes = notes + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds")-- Radarvalue, maximum number of notes
-			end
-		end
-		return notes
-	else
-		local steps = GAMESTATE:GetCurrentSteps(pn)
-		if steps ~= nil then 
-			if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
-				return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes") or 0
-			else
-				return steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0
-			end
+	local steps = GAMESTATE:GetCurrentSteps(pn)
+	if steps ~= nil then 
+		if GAMESTATE:CountNotesSeparately() then
+			return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes") or 0
 		else
-			return 0
+			return steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0
 		end
+	else
+		return 0
 	end
 end
 
@@ -111,42 +66,19 @@ function getMaxHolds(pn)
 	if not GAMESTATE:IsPlayerEnabled(pn) then
 		return 0
 	end
-	if GAMESTATE:IsCourseMode() then
-		local trail = GAMESTATE:GetCurrentTrail(pn)
-		local holds = 0
 
-		for _,v in pairs(trail:GetTrailEntries()) do
-			holds = holds + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Holds") + v:GetSteps():GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-		end
-
-		return holds 
+	local steps = GAMESTATE:GetCurrentSteps(pn)
+	if steps ~= nil then 
+		return  (steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")) or 0
 	else
-		local steps = GAMESTATE:GetCurrentSteps(pn)
-		if steps ~= nil then 
-			return  (steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls")) or 0
-		else
-			return 0
-		end
+		return 0
 	end
 end
 
 --Gets the highest score possible for the scoretype
-function getMaxScore(pn,scoreType) -- dp, ps, migs = 1,2,3 respectively, 0 reverts to default
+function getMaxScore(pn,scoreType) -- WIFE
 	local maxNotes = getMaxNotes(pn)
-	local maxHolds = getMaxHolds(pn)
-	if scoreType == 0 or scoreType == nil then
-		scoreType = themeConfig:get_data().global.DefaultScoreType
-	end;
-
-	if scoreType == 1 then
-		return (maxNotes*scoreWeight["TapNoteScore_W1"]+maxHolds*scoreWeight["HoldNoteScore_Held"])-- maximum DP
-	elseif scoreType == 2 then
-		return (maxNotes*psWeight["TapNoteScore_W1"]+maxHolds*psWeight["HoldNoteScore_Held"]) -- maximum %score DP
-	elseif scoreType == 3 then
-		return (maxNotes*migsWeight["TapNoteScore_W1"]+maxHolds*migsWeight["HoldNoteScore_Held"])
-	else
-		return "????"
-	end
+	return maxNotes*2
 end
 
 function getGradeThreshold(pn,grade)
@@ -154,27 +86,27 @@ function getGradeThreshold(pn,grade)
 	if grade == "Grade_Failed" then
 		return 0
 	else
-		return math.ceil(maxScore*THEME:GetMetric("PlayerStageStats",grade:gsub("Grade_","GradePercent")))
+		return math.ceil(maxScore*WifeTiers[grade])
 	end
 end
 
-function getNearbyGrade(pn,DPScore,grade)
+function getNearbyGrade(pn,wifeScore,grade)
 	local nextGrade
 	local gradeScore = 0
 	local nextGradeScore = 0
-	if grade == "Grade_Tier01" or grade == "Grade_Tier02" then
+	if grade == "Grade_Tier01" then
 		return grade,0
 	elseif grade == "Grade_Failed" then
-		return "Grade_Tier07",DPScore
+		return "Grade_Tier07", wifeScore
 	elseif grade == "Grade_None" then
-		return "Grade_Tier07",0
+		return "Grade_Tier07", 0
 	else
 		nextGrade = string.format("Grade_Tier%02d",(tonumber(grade:sub(-2))-1))
 		gradeScore = getGradeThreshold(pn,grade)
 		nextGradeScore = getGradeThreshold(pn,nextGrade)
 
-		curGradeDiff = DPScore - gradeScore
-		nextGradeDiff = DPScore - nextGradeScore
+		curGradeDiff = wifeScore - gradeScore
+		nextGradeDiff = wifeScore - nextGradeScore
 
 		if math.abs(curGradeDiff) < math.abs(nextGradeDiff) then
 			return grade,curGradeDiff
@@ -187,7 +119,7 @@ end
 
 function getScoreGrade(score)
 	if score ~= nil then
-		return score:GetGrade()
+		return score:GetWifeGrade()
 	else
 		return "Grade_None"
 	end
@@ -229,60 +161,18 @@ function getScoreMissCount(score)
 	return getScoreTapNoteScore(score,"TapNoteScore_Miss") + getScoreTapNoteScore(score,"TapNoteScore_W5") + getScoreTapNoteScore(score,"TapNoteScore_W4")
 end
 
-function getScore(score,scoreType)
-	if scoreType == 0 or scoreType == nil then
-		scoreType = themeConfig:get_data().global.DefaultScoreType
+-- Do this until the raw wife score is exposed to lua.
+function getScore(score, steps, percent)
+	if percent == nil then percent = true end
+	if score ~= nil and steps ~= nil then
+		local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+		if percent == true then
+			return score:GetWifeScore()
+		else
+			return score:GetWifeScore() * notes * 2
+		end
 	end
-
-	if scoreType == 1 then
-		return 
-		getScoreTapNoteScore(score,"TapNoteScore_W1")*scoreWeight["TapNoteScore_W1"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W2")*scoreWeight["TapNoteScore_W2"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W3")*scoreWeight["TapNoteScore_W3"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W4")*scoreWeight["TapNoteScore_W4"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W5")*scoreWeight["TapNoteScore_W5"]+
-		getScoreTapNoteScore(score,"TapNoteScore_Miss")*scoreWeight["TapNoteScore_Miss"]+
-		getScoreTapNoteScore(score,"TapNoteScore_CheckpointHit")*scoreWeight["TapNoteScore_CheckpointHit"]+
-		getScoreTapNoteScore(score,"TapNoteScore_CheckpointMiss")*scoreWeight["TapNoteScore_CheckpointMiss"]+
-		getScoreTapNoteScore(score,"TapNoteScore_HitMine")*scoreWeight["TapNoteScore_HitMine"]+
-		getScoreTapNoteScore(score,"TapNoteScore_AvoidMine")*scoreWeight["TapNoteScore_AvoidMine"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_LetGo")*scoreWeight["HoldNoteScore_LetGo"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_Held")*scoreWeight["HoldNoteScore_Held"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_MissedHold")*scoreWeight["HoldNoteScore_MissedHold"]
-
-	elseif scoreType == 2 then
-		return 
-		getScoreTapNoteScore(score,"TapNoteScore_W1")*psWeight["TapNoteScore_W1"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W2")*psWeight["TapNoteScore_W2"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W3")*psWeight["TapNoteScore_W3"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W4")*psWeight["TapNoteScore_W4"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W5")*psWeight["TapNoteScore_W5"]+
-		getScoreTapNoteScore(score,"TapNoteScore_Miss")*psWeight["TapNoteScore_Miss"]+
-		getScoreTapNoteScore(score,"TapNoteScore_CheckpointHit")*psWeight["TapNoteScore_CheckpointHit"]+
-		getScoreTapNoteScore(score,"TapNoteScore_CheckpointMiss")*psWeight["TapNoteScore_CheckpointMiss"]+
-		getScoreTapNoteScore(score,"TapNoteScore_HitMine")*psWeight["TapNoteScore_HitMine"]+
-		getScoreTapNoteScore(score,"TapNoteScore_AvoidMine")*psWeight["TapNoteScore_AvoidMine"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_LetGo")*psWeight["HoldNoteScore_LetGo"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_Held")*psWeight["HoldNoteScore_Held"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_MissedHold")*psWeight["HoldNoteScore_MissedHold"]
-	elseif scoreType == 3 then
-		return
-		getScoreTapNoteScore(score,"TapNoteScore_W1")*migsWeight["TapNoteScore_W1"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W2")*migsWeight["TapNoteScore_W2"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W3")*migsWeight["TapNoteScore_W3"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W4")*migsWeight["TapNoteScore_W4"]+
-		getScoreTapNoteScore(score,"TapNoteScore_W5")*migsWeight["TapNoteScore_W5"]+
-		getScoreTapNoteScore(score,"TapNoteScore_Miss")*migsWeight["TapNoteScore_Miss"]+
-		getScoreTapNoteScore(score,"TapNoteScore_CheckpointHit")*migsWeight["TapNoteScore_CheckpointHit"]+
-		getScoreTapNoteScore(score,"TapNoteScore_CheckpointMiss")*migsWeight["TapNoteScore_CheckpointMiss"]+
-		getScoreTapNoteScore(score,"TapNoteScore_HitMine")*migsWeight["TapNoteScore_HitMine"]+
-		getScoreTapNoteScore(score,"TapNoteScore_AvoidMine")*migsWeight["TapNoteScore_AvoidMine"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_LetGo")*migsWeight["HoldNoteScore_LetGo"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_Held")*migsWeight["HoldNoteScore_Held"]+
-		getScoreHoldNoteScore(score,"HoldNoteScore_MissedHold")*migsWeight["HoldNoteScore_MissedHold"]
-	else
-		return 0
-	end
+	return 0
 end
 
 ------------------------------------------------
@@ -290,13 +180,12 @@ end
 
 local sortScoreType = 0
 local function scoreComparator(scoreA,scoreB)
-	return  getScore(scoreA,sortScoreType) > getScore(scoreB,sortScoreType)
+	return  getScore(scoreA) > getScore(scoreB)
 end
 
 -- returns a sorted table based on the criteria given by the
 -- scoreComparator() function.
-function sortScore(hsTable,scoreType)
-	sortScoreType = scoreType
+function sortScore(hsTable)
 	table.sort(hsTable,scoreComparator)
 	return hsTable
 end
@@ -336,32 +225,15 @@ function getHighScoreIndex(hsTable,score)
 end
 
 -- Returns a table containing tables containing scores for each ratemod used. 
-function getRateTable(hsTable)
-	local rtTable = {}
-	local rate
-	if hsTable ~= nil then
-		for k,v in ipairs(hsTable) do
-
-			if themeConfig:get_data().global.RateSort then
-				rate = getRate(v)
-			else
-				rate = "All"
-			end
-
-			if tableContains(rtTable,rate) then
-				rtTable[rate][#rtTable[rate]+1] = v
-			else
-				rtTable[rate] = {}
-				rtTable[rate][#rtTable[rate]+1] = v
-			end
-		end
-		for k,v in pairs(rtTable) do
-			rtTable[k] = sortScore(rtTable[k],0)
-		end
-		return rtTable
-	else
-		return nil 
+function getRateTable(pn)
+	local o = getScoresByKey(pn)
+	if not o then return nil end
+	
+	for k,v in pairs(o) do
+		o[k] = o[k]:GetScores()
 	end
+	
+	return o
 end
 
 function getUsedRates(rtTable)
@@ -385,21 +257,26 @@ end
 
 -- Grabs the highest grade available from all currently saved scores.
 -- Ignore parameter will ignore the score at that index.
-function getBestGrade(pn,ignore)
+function getBestGrade(pn, ignore, rate)
+	if not rate then rate = "1.0x" end
+
 	local highest = 21
 	local indexScore
 	local grade = "Grade_None"
 	local temp = 0
 	local i = 0
 	local steps = GAMESTATE:GetCurrentSteps(pn)
-	local hsTable = getScoreList(pn)
+
+	local rtTable = getRateTable(pn)
+	if not rtTable then return grade end
+	local hsTable = rtTable[rate]
 
 	if hsTable ~= nil and #hsTable >= 1 then
 		while i <= #hsTable do
 			if i ~= ignore then
 				indexScore = hsTable[i]
 				if indexScore ~= nil then
-					temp = Enum.Reverse(Grade)[indexScore:GetGrade()] or 21
+					temp = Enum.Reverse(Grade)[indexScore:GetWifeGrade()] or 21
 					if temp <= highest and isScoreValid(pn,steps,indexScore) then
 						grade = getScoreGrade(indexScore)
 						highest = temp
@@ -414,12 +291,17 @@ end
 
 -- Grabs the highest max combo from all currently saved scores.
 -- Ignore parameter will ignore the score at that index.
-function getBestMaxCombo(pn,ignore)
+function getBestMaxCombo(pn,ignore, rate)
+	if not rate then rate = "1.0x" end
+
 	local highest = 0
 	local indexScore
 	local i = 0
 
-	local hsTable = getScoreList(pn)
+	local rtTable = getRateTable(pn)
+	if not rtTable then return highest end
+	local hsTable = rtTable[rate]
+
 	local steps = GAMESTATE:GetCurrentSteps(pn)
 
 	if hsTable ~= nil and #hsTable >= 1 then
@@ -442,13 +324,17 @@ end
 
 -- Grabs the lowest misscount from all currently saved scores.
 -- Ignore parameter will ignore the score at that index.
-function getBestMissCount(pn,ignore)
+function getBestMissCount(pn,ignore, rate)
+	if not rate then rate = "1.0x" end
 	local lowest = math.huge
 	local temp
 	local indexScore
 	local i = 0
 
-	local hsTable = getScoreList(pn)
+	local rtTable = getRateTable(pn)
+	if not rtTable then return 0 end
+	local hsTable = rtTable[rate]
+
 	local steps = GAMESTATE:GetCurrentSteps(pn)
 
 	if hsTable ~= nil and #hsTable >= 1 then
@@ -473,14 +359,15 @@ function getBestMissCount(pn,ignore)
 	return lowest 
 end;
 
-function getBestScore(pn,ignore,scoreType)
+function getBestScore(pn, ignore, percent, rate)
+	if not rate then rate = "1.0x" end
 	local highest = 0
-	if scoreType == 0 or scoreType == nil then
-		scoreType = themeConfig:get_data().global.DefaultScoreType
-	end
+
 	local indexScore
 
-	local hsTable = getScoreList(pn)
+	local rtTable = getRateTable(pn)
+	if not rtTable then return highest end
+	local hsTable = rtTable[rate]
 	local steps = GAMESTATE:GetCurrentSteps(pn)
 
 	if hsTable ~= nil and #hsTable >= 1 then
@@ -489,7 +376,7 @@ function getBestScore(pn,ignore,scoreType)
 				indexScore = hsTable[k]
 				if indexScore ~= nil then
 					if isScoreValid(pn,steps,indexScore) then
-						highest = math.max(highest,getScore(indexScore,scoreType))
+						highest = math.max(highest,getScore(indexScore, steps, percent))
 					end
 				end
 			end

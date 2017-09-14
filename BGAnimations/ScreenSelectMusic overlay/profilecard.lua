@@ -112,7 +112,7 @@ local function generalFrame(pn)
 			self:smooth(0.5)
 			local scoreList
 			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
-				scoreList = profile[pn]:GetHighScoreList(song,steps[pn]):GetHighScores()
+				scoreList = getScoreList(pn)
 			end
 			local clearType = getHighestClearType(pn,steps[pn],scoreList,0)
 			self:diffuse(getClearTypeColor(clearType))
@@ -293,7 +293,11 @@ local function generalFrame(pn)
 
 				local diff = steps[pn]:GetDifficulty()
 				local stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-				local meter = steps[pn]:GetMeter()
+				local meter = math.floor(steps[pn]:GetMSD(getCurRateValue(),1))
+				if meter == 0 then
+					meter = steps[pn]:GetMeter()
+				end
+
 				local difftext
 				if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
 					difftext = steps[pn]:GetDescription()
@@ -307,6 +311,32 @@ local function generalFrame(pn)
 					self:settext(difftext.." "..meter)
 				end
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
+			end
+		end;
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
+	};
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		Name="MSDAvailability";
+		InitCommand = function(self)
+			self:xy(frameWidth/2-5,27)
+			self:zoom(0.3)
+			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+		end;
+		SetCommand = function(self)
+			if steps[pn] ~= nil then
+
+				local meter = math.floor(steps[pn]:GetMSD(getCurRateValue(),1))
+				if meter == 0 then
+					self:settext("Default")
+					self:diffuse(color(colorConfig:get_data().main.disabled))
+				else
+					self:settext("MSD")
+					self:diffuse(color(colorConfig:get_data().main.enabled))
+				end
 			end
 		end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -356,7 +386,10 @@ local function generalFrame(pn)
 			local meter = 0
 			local enabled = GAMESTATE:IsPlayerEnabled(pn)
 			if enabled and steps[pn] ~= nil then
-				meter = steps[pn]:GetMeter() or 0
+				meter = steps[pn]:GetMSD(getCurRateValue(),1)
+				if meter == 0 then
+					meter = steps[pn]:GetMeter()
+				end
 				self:zoomx((math.min(1,meter/maxMeter))*(frameWidth-10))
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
 			else
@@ -380,8 +413,11 @@ local function generalFrame(pn)
 			local meter = 0
 			local enabled = GAMESTATE:IsPlayerEnabled(pn)
 			if enabled and steps[pn] ~= nil then
-				meter = steps[pn]:GetMeter() or 0
-				self:settext(meter)
+				meter = steps[pn]:GetMSD(getCurRateValue(),1)
+				if meter == 0 then
+					meter = steps[pn]:GetMeter()
+				end
+				self:settext(math.floor(meter))
 				self:x((math.min(1,meter/maxMeter))*(frameWidth-10)-frameWidth/2-3)
 			else
 				self:settext(0)
@@ -423,7 +459,7 @@ local function generalFrame(pn)
 			self:stoptweening()
 			local scoreList
 			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
-				scoreList = profile[pn]:GetHighScoreList(song,steps[pn]):GetHighScores()
+				scoreList = getScoreList(pn)
 			end
 			local clearType = getHighestClearType(pn,steps[pn],scoreList,0)
 			self:settext(getClearTypeText(clearType))
@@ -445,13 +481,8 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
-			local score = getBestScore(pn,0,0)
-			local maxscore = getMaxScore(pn,0)
-			if maxscore == 0 or maxscore == nil then
-				maxscore = 1
-			end
-			local pscore = (score/maxscore)
-			self:settextf("%.2f%%",math.floor((pscore)*10000)/100)
+			local score = getBestScore(pn,0)
+			self:settextf("%.2f%%",math.floor((score)*10000)/100)
 
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
@@ -485,12 +516,12 @@ local function generalFrame(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand= function(self)
 			self:xy(177-frameWidth/2,frameHeight-18)
-			self:zoom(0.5):halign(1):maxwidth(34/0.5)
+			self:zoom(0.5):halign(1):maxwidth(50/0.5)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self) 
 			self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
-			self:settextf("%.0f/",getBestScore(pn,0,0))
+			self:settextf("%.0f/",getBestScore(pn, 0, false))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -509,7 +540,7 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		BeginCommand = function(self)
-			self:settext(getScoreTypeText(0))
+			self:settext(getScoreTypeText(1))
 		end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
@@ -563,29 +594,16 @@ local function generalFrame(pn)
 	return t
 end
 
--- TODO: course mode stuff
 t[#t+1] = Def.Actor{
 	BeginCommand=cmd(playcommand,"Set");
 	SetCommand = function(self)
-		if GAMESTATE:IsCourseMode() then
-			course = GAMESTATE:GetCurrentCourse()
-			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-				profile[pn] = GetPlayerOrMachineProfile(pn)
-				trail[pn] = GAMESTATE:GetCurrentTrail(pn)
-				hsTable[pn] = getScoreList(pn)
-				if hsTable[pn] ~= nil then
-					topScore[pn] = getScoreFromTable(hsTable[pn],1)
-				end
-			end
-		else
-			song = GAMESTATE:GetCurrentSong()
-			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-				profile[pn] = GetPlayerOrMachineProfile(pn)
-				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
-				hsTable[pn] = getScoreList(pn)
-				if hsTable[pn] ~= nil then
-					topScore[pn] = getScoreFromTable(hsTable[pn],1)
-				end
+		song = GAMESTATE:GetCurrentSong()
+		for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+			profile[pn] = GetPlayerOrMachineProfile(pn)
+			steps[pn] = GAMESTATE:GetCurrentSteps(pn)
+			hsTable[pn] = getScoreList(pn)
+			if hsTable[pn] ~= nil then
+				topScore[pn] = getScoreFromTable(hsTable[pn],1)
 			end
 		end
 	end;

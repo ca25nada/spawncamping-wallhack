@@ -171,6 +171,8 @@ local function npsDisplay(pn)
 				params.TapNoteScore ~= 'TapNoteScore_AvoidMine' and
 				params.TapNoteScore ~= "TapNoteScore_CheckpointMiss" then
 
+
+
 				-- The notes parameter contains a table where the table indices
 				-- correspond to the columns in game.
 				-- The items in the table either contains a TapNote object (if there is a note)
@@ -179,8 +181,8 @@ local function npsDisplay(pn)
 				-- Since we only want to count the number of notes in a chord,
 				-- we just iterate over the table and count the ones that aren't nil. 
 				-- Set chordsize to 1 if notes are counted separately.
-				--[[
-				if GAMESTATE:GetCurrentGame():CountNotesSeparately() then
+				
+				if GAMESTATE:CountNotesSeparately() then
 					chordsize = 1
 				else
 					for i=1,GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() do
@@ -192,8 +194,7 @@ local function npsDisplay(pn)
 						end
 					end
 				end 
-				--]]
-				chordsize = 1
+
 				-- add the note to noteTable
 				addNote(pn,GetTimeSinceStart(),chordsize)
 				lastJudgment[pn] = params.TapNoteScore

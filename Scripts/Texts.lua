@@ -64,9 +64,7 @@ local judgeString = { -- Text strings for each Judgment types
 }
 
 local scoreTypeText = {
-	[1] = "DP",
-	[2] = "PS",
-	[3] = "MIGS"
+	[1] = "Wife"
 }
 
 function getShortDifficulty(diff)

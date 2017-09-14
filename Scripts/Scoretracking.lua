@@ -219,7 +219,6 @@ function getJudgeST(pn,judge)
 end
 
 --Returns the number of "taps" for the steps that the specified player has selected.
---Note that this isn't the number of actual notes since jumps/hands count as 1 judgment or "taps".
 function getMaxNotesST(pn)
 	local steps  = GAMESTATE:GetCurrentSteps(pn)
 	return steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")

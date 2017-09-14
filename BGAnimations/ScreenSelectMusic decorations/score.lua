@@ -141,7 +141,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 			local pscore = (curscore/maxscore)
 			self:settextf("%05.2f%% (%s)",math.floor((pscore)*10000)/100,getScoreTypeText(0))
 		else
-			self:settextf("00.00%% (%s)",getScoreTypeText(0))
+			self:settextf("00.00%% (%s)",getScoreTypeText(1))
 		end;
 	end;
 	ScoreUpdateMessageCommand = cmd(queuecommand,"Set");
