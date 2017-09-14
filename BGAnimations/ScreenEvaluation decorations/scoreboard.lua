@@ -16,21 +16,17 @@ local hsTable
 local rtTable
 local scoreIndex
 local score
+local pss
 
 local player = GAMESTATE:GetEnabledPlayers()[1]
 
 if GAMESTATE:IsPlayerEnabled(player) then
+	pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 	profile = GetPlayerOrMachineProfile(player)
 	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
-	origTable = getScoreList(player)
-	score = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetHighScore()
-	rtTable = getRateTable(origTable)
-	if themeConfig:get_data().global.RateSort then
-		hsTable = sortScore(rtTable[getRate(score)] or {},0)
-	else
-		hsTable = sortScore(rtTable["All"] or {},0)
-	end;
-	scoreIndex = getHighScoreIndex(hsTable,score)
+	hsTable = getScoreTable(player, getCurRate())
+	score = pss:GetHighScore()
+	scoreIndex = getHighScoreIndex(hsTable, score)
 end;
 
 
@@ -156,14 +152,9 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			Name="grade";
 			InitCommand=cmd(xy,frameX+10,frameY+11+(drawindex*spacing);zoom,0.35;halign,0;maxwidth,(frameWidth-15)/0.35);
 			BeginCommand=function(self)
-				local curscore = getScore(hsTable[index])
-				local maxscore = getMaxScore(pn,0)
-				if maxscore == 0 or maxscore == nil then
-					maxscore = 1
-				end;
-				local pscore = (curscore/maxscore)
+				local pscore = hsTable[index]:GetWifeScore()
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
-				self:settextf("%s %.2f%% (x%d)",(getGradeStrings(hsTable[index]:GetGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()); 
+				self:settextf("%s %.2f%% (x%d)",(getGradeStrings(hsTable[index]:GetWifeGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()); 
 			end
 		};
 
@@ -219,26 +210,6 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:visible(false)
 			end
 		};
-
-		LoadFont("Common normal")..{
-			Name="ghostData";
-			InitCommand=cmd(xy,frameX+frameWidth-5,frameY+2+(drawindex*spacing);zoom,0.35;halign,1;maxwidth,(frameWidth-15)/0.35);
-			BeginCommand=function(self)
-				if ghostDataExists(pn,hsTable[index]) then
-					if isGhostDataValid(pn,hsTable[index]) then
-						self:settext("GD Available")
-						self:diffuse(getMainColor('enabled'))
-					else
-						self:settext("GD Invalid")
-						self:diffuse(getMainColor('negative'))
-					end
-				else
-					self:settext("GD Unavailable")
-					self:diffuse(getMainColor('disabled'))
-				end
-				self:diffusealpha(0.8)
-			end
-		}
 
 	}
 	return t
@@ -305,51 +276,6 @@ t[#t+1] = LoadFont("Common normal")..{
 		end
 	end;
 };
-
-t[#t+1] = LoadFont("Common normal")..{
-	InitCommand=cmd(xy,frameX+frameWidth,frameY+drawindex*spacing;zoom,0.35;halign,1;diffusealpha,0.8);
-	BeginCommand=function(self)
-		self:settextf("%d Scores saved",(#origTable))
-		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-	end;
-	TabChangedMessageCommand = function(self, params)
-		if params.index == 1 then
-			self:stoptweening()
-			self:bouncy(0.3)
-			self:diffusealpha(1)
-		else
-			self:stoptweening()
-			self:bouncy(0.3)
-			self:diffusealpha(0)
-		end
-	end;
-}
-
-if themeConfig:get_data().global.ScoreBoardNag and #origTable == tonumber(PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer")) then
-	t[#t+1] = LoadFont("Common normal")..{
-		InitCommand=cmd(xy,frameX+frameWidth/2,frameY+4*spacing;zoom,0.30;valign,0;diffusealpha,0.8;maxwidth,frameWidth/0.30;diffuse,color(colorConfig:get_data().evaluation.BackgroundText));
-		BeginCommand=function(self)
-			local text = string.format("You have reached the maximum number of saved scores for this chart."..
-							" \n Lower ranked scores will be removed as you save more scores.\n\n"..
-							" Please increase the values for 'Max Machine Scores' and \n'Max Player Scores'"..
-							" from the Arcade Options to raise this limit.\n\n\n"..
-							"This will no longer appear once the limit is set to any non-default value.\n(You may change back afterwards if you want)\n\n"..
-							"The current limit is %s. (Default is 3)",PREFSMAN:GetPreference("MaxHighScoresPerListForPlayer") or 0)
-			self:settext(text)
-		end;
-	TabChangedMessageCommand = function(self, params)
-		if params.index == 1 then
-			self:stoptweening()
-			self:bouncy(0.3)
-			self:diffusealpha(1)
-		else
-			self:stoptweening()
-			self:bouncy(0.3)
-			self:diffusealpha(0)
-		end
-	end;
-	}
-end
 
 --Update function for showing mouse rollovers
 local function Update(self)

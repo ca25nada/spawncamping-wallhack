@@ -898,7 +898,7 @@ if themeConfig:get_data().eval.JudgmentBarEnabled then
 end;
 
 if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
-	--t[#t+1] = LoadActor("scoreboard")
+	t[#t+1] = LoadActor("scoreboard")
 	t[#t+1] = LoadActor("offsetvisual")
 end;
 
