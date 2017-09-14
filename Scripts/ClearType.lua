@@ -97,69 +97,90 @@ local clearTypeTextShort = {
 local function getClearLevel (pn,steps,score)
 
 	-- Return no play if score doesn't exist.
-	if score == nil then
+	if score == nil or steps == nil then
 		return 17
 	end
 
-	-- Return invalid if the score isn't uhh valid.
+	-- Return invalid if the score isn't valid.
 	if not isScoreValid(pn,steps,score) then
 		return 16
 	end
 
-	local grade = score:GetGrade()
-	local missCount = score:GetTapNoteScore('TapNoteScore_Miss')+score:GetTapNoteScore('TapNoteScore_W5')+score:GetTapNoteScore('TapNoteScore_W4')
-	local stageAward = score:GetStageAward()
+	local grade = score:GetWifeGrade()
 	local clearLevel = 18
 	local lifeDiff = 4 -- default to 4
 
+	local maxNotes
+	local maxHolds
+
+	local tapNoteScore = {
+		TapNoteScore_W1 = score:GetTapNoteScore('TapNoteScore_W1'),
+		TapNoteScore_W2 = score:GetTapNoteScore('TapNoteScore_W2'),
+		TapNoteScore_W3 = score:GetTapNoteScore('TapNoteScore_W3'),
+		TapNoteScore_W4 = score:GetTapNoteScore('TapNoteScore_W4'),
+		TapNoteScore_W5 = score:GetTapNoteScore('TapNoteScore_W5'),
+		TapNoteScore_Miss = score:GetTapNoteScore('TapNoteScore_Miss'),
+		TapNoteScore_HitMine = score:GetTapNoteScore('TapNoteScore_HitMine'),
+		TapNoteScore_AvoidMine = score:GetTapNoteScore('TapNoteScore_AvoidMine')
+	}
+
+	local holdNoteScore = {
+		HoldNoteScore_LetGo = score:GetHoldNoteScore('HoldNoteScore_LetGo'),
+		HoldNoteScore_Held = score:GetHoldNoteScore('HoldNoteScore_Held'),
+		HoldNoteScore_MissedHold = score:GetHoldNoteScore('HoldNoteScore_MissedHold')
+	}
+
+	if steps ~= nil then 
+		if GAMESTATE:CountNotesSeparately() then
+			maxNotes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes") or 0
+		else
+			maxNotes = steps:GetRadarValues(pn):GetValue("RadarCategory_TapsAndHolds") or 0
+		end
+		maxHolds = (steps:GetRadarValues(pn):GetValue("RadarCategory_Holds") + steps:GetRadarValues(pn):GetValue("RadarCategory_Rolls"))
+	end
+
 	if grade == nil then
 		-- Return no play if there's no grade for the score. (which shoudn't happen anyway)
-		clearLevel = 17
-	else
-		-- Go through all the Stage award based cleartypes
-		if grade == 'Grade_Failed' then -- failed
-			clearLevel = 15
+		return 17
+	elseif grade == 'Grade_Failed' then -- failed
+		return 15
+	end
 
-		elseif stageAward == 'StageAward_SingleDigitW2' then -- SDP
-			clearLevel = 3
-		elseif stageAward == 'StageAward_SingleDigitW3' then -- SDG
-			clearLevel = 6
-		elseif stageAward == 'StageAward_OneW2' then -- whiteflag
-			clearLevel = 2
-		elseif stageAward == 'StageAward_OneW3' then -- blackflag
-			clearLevel = 5
-		elseif stageAward == 'StageAward_FullComboW1' or grade == 'Grade_Tier01' then -- MFC
-			clearLevel = 1
-		elseif stageAward == 'StageAward_FullComboW2' or grade == 'Grade_Tier02'then -- PFC
-			clearLevel = 4
-		elseif stageAward == 'StageAward_FullComboW3' then -- FC
-			clearLevel = 7
+	-- MFC
+	if tapNoteScore['TapNoteScore_W1'] == maxNotes and
+		holdNoteScore['HoldNoteScore_Held'] == maxHolds then
+		return 1
+	end
+
+	-- PFC
+	if tapNoteScore['TapNoteScore_W1'] + tapNoteScore['TapNoteScore_W2'] == maxNotes and
+		holdNoteScore['HoldNoteScore_Held'] == maxHolds then
+
+		if tapNoteScore['TapNoteScore_W2'] == 1 then
+			return 2 -- WF
+		elseif tapNoteScore['TapNoteScore_W2'] < 10 then
+			return 3 -- SDP
 		else
-			-- Missflag
-			if missCount == 1 then 
-				clearLevel = 8;
-			else
-				-- Everything else are clears.
-				-- Load life difficulty off of ghost data.
-				local ghostLifeDiff = getGhostDataParameter(pn,score,'lifeDifficulty')
-				if ghostLifeDiff ~= nil then
-					lifeDiff = ghostLifeDiff
-				end;
-
-				if lifeDiff == 4 then
-					clearLevel = 12 -- Clear
-				elseif lifeDiff < 4 then
-					clearLevel = 13 -- Easy Clear
-				elseif lifeDiff == 5 or lifeDiff == 6 then
-					clearLevel = 11 -- Hard Clear
-				else
-					clearLevel = 10 -- EXHC
-				end
-			end
+			return 4 -- PFC
 		end
 	end
 
-	return clearLevel
+	-- FC
+	local missCount = tapNoteScore['TapNoteScore_W4'] + tapNoteScore['TapNoteScore_W5'] + tapNoteScore['TapNoteScore_Miss']
+	if missCount == 0 then
+
+		if tapNoteScore['TapNoteScore_W3'] == 1 then
+			return 5 -- BF
+		elseif tapNoteScore['TapNoteScore_W2'] < 10 then
+			return 6 -- SDG
+		else
+			return 7 -- FC
+		end
+	elseif missCount == 1 then
+		return 8 -- MF
+	end
+
+	return 12 -- Clear
 end
 
 

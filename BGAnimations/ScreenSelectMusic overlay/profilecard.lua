@@ -111,11 +111,12 @@ local function generalFrame(pn)
 			self:stoptweening()
 			self:smooth(0.5)
 			local scoreList
+			local clearType
 			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
-				scoreList = getScoreList(pn)
+				scoreList = getScoreTable(pn, getCurRate())
+				clearType = getHighestClearType(pn,steps[pn],scoreList,0)
+				self:diffuse(getClearTypeColor(clearType))
 			end
-			local clearType = getHighestClearType(pn,steps[pn],scoreList,0)
-			self:diffuse(getClearTypeColor(clearType))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -457,13 +458,15 @@ local function generalFrame(pn)
 		end;
 		SetCommand = function(self)
 			self:stoptweening()
+
 			local scoreList
+			local clearType
 			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
-				scoreList = getScoreList(pn)
+				scoreList = getScoreTable(pn, getCurRate())
+				clearType = getHighestClearType(pn,steps[pn],scoreList,0)
+				self:settext(getClearTypeText(clearType))
+				self:diffuse(getClearTypeColor(clearType))
 			end
-			local clearType = getHighestClearType(pn,steps[pn],scoreList,0)
-			self:settext(getClearTypeText(clearType))
-			self:diffuse(getClearTypeColor(clearType))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -481,9 +484,11 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
-			local score = getBestScore(pn,0)
-			self:settextf("%.2f%%",math.floor((score)*10000)/100)
-
+			local scorevalue = 0
+			if topScore[pn] ~= nil then
+				scorevalue = getScore(topScore[pn], steps[pn], true)
+			end
+			self:settextf("%.2f%%",math.floor((scorevalue)*10000)/100)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -521,7 +526,12 @@ local function generalFrame(pn)
 		end;
 		SetCommand = function(self) 
 			self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
-			self:settextf("%.0f/",getBestScore(pn, 0, false))
+
+			local scoreValue = 0
+			if topScore[pn] ~= nil then
+				scoreValue = getScore(topScore[pn], steps[pn], false)
+			end
+			self:settextf("%.0f/",scoreValue)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
@@ -555,7 +565,9 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
-			local maxCombo = getBestMaxCombo(pn,0)
+			local score = getBestMaxCombo(pn,0, getCurRate())
+			local maxCombo = 0
+			maxCombo = getScoreMaxCombo(score)
 			self:settextf("Max Combo: %d",maxCombo)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
@@ -576,9 +588,9 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
-			local missCount = getBestMissCount(pn,0)
-			if missCount ~= nil then
-				self:settext("Miss Count: "..missCount)
+			local score = getBestMissCount(pn, 0, getCurRate())
+			if score ~= nil then
+				self:settext("Miss Count: "..getScoreMissCount(score))
 			else
 				self:settext("Miss Count: -")
 			end
@@ -601,10 +613,7 @@ t[#t+1] = Def.Actor{
 		for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 			profile[pn] = GetPlayerOrMachineProfile(pn)
 			steps[pn] = GAMESTATE:GetCurrentSteps(pn)
-			hsTable[pn] = getScoreList(pn)
-			if hsTable[pn] ~= nil then
-				topScore[pn] = getScoreFromTable(hsTable[pn],1)
-			end
+			topScore[pn] = getBestScore(pn, 0, getCurRate())
 		end
 	end;
 	CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
