@@ -133,4 +133,22 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	end;
 };
 
+t[#t+1] = LoadActor("round_star") .. {
+	InitCommand = function(self)
+		self:xy(3,-19)
+		self:zoom(0.25)
+		self:wag()
+		self:diffuse(Color.Yellow)
+	end;
+	SetMessageCommand = function(self,params)
+		local song = params.Song
+		self:visible(false)
+		if song then
+			if song:IsFavorited() then
+				self:visible(true)
+			end
+		end
+	end;
+}
+
 return t
