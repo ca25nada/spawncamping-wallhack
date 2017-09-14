@@ -3,6 +3,12 @@ local frameHeight = 20
 local frameX = SCREEN_WIDTH-10
 local frameY = 10
 
+local searchstring = ""
+local lastsearchstring = ""
+local englishes = {"a", "b", "c", "d", "e","f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",";"}
+local active = false
+local wheel
+
 local sortTable = {
 	SortOrder_Preferred 			= 'Preferred',
 	SortOrder_Group 				= 'Group',
@@ -31,11 +37,48 @@ local sortTable = {
 	SortOrder_Recent 				= 'Recently Played'
 };
 
+local function searchInput(event)
+	if event.type ~= "InputEventType_Release" and active == true then
+		if event.button == "Back" then
+			searchstring = ""
+			wheel:SongSearch(searchstring)
+			MESSAGEMAN:Broadcast("EndSearch")
+		elseif event.button == "Start" then
+			MESSAGEMAN:Broadcast("EndSearch")
+		elseif event.DeviceInput.button == "DeviceButton_space" then					-- add space to the string
+			searchstring = searchstring.." "
+		elseif event.DeviceInput.button == "DeviceButton_backspace" then
+			if searchstring == "" then
+				MESSAGEMAN:Broadcast("EndSearch")
+			else
+				searchstring = searchstring:sub(1, -2)
+			end					-- remove the last element of the string
+		elseif event.DeviceInput.button == "DeviceButton_delete"  then
+			searchstring = ""
+		elseif event.DeviceInput.button == "DeviceButton_="  then
+			searchstring = searchstring.."="
+		else
+			for i=1,#englishes do														-- add standard characters to string
+				if event.DeviceInput.button == "DeviceButton_"..englishes[i] then
+					searchstring = searchstring..englishes[i]
+				end
+			end
+		end
+		if lastsearchstring ~= searchstring then
+			wheel:SongSearch(searchstring)
+			lastsearchstring = searchstring
+		end
+	end
+end
+
 local t = Def.ActorFrame{
 	InitCommand = function(self)
 		self:xy(frameX,frameY)
+		SCREENMAN:set_input_redirected(PLAYER_1, false)
 	end;
 	OnCommand = function(self)
+		wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
+		SCREENMAN:GetTopScreen():AddInputCallback(searchInput)
 		self:y(-frameHeight/2)
 		self:smooth(0.5)
 		self:y(frameY)
@@ -44,33 +87,84 @@ local t = Def.ActorFrame{
 		self:smooth(0.5)
 		self:y(-frameHeight/2)
 	end;
+	StartSearchMessageCommand = function(self)
+		active = true
+		if searchstring == "" then
+			self:GetChild("SortBar"):settext("Type to Search..")
+			self:GetChild("SortBar"):diffusealpha(0.5)
+		else
+			self:GetChild("SortBar"):diffusealpha(1)
+		end
+		SCREENMAN:set_input_redirected(PLAYER_1, true)
+	end;
+	EndSearchMessageCommand = function(self)
+		SCREENMAN:set_input_redirected(PLAYER_1, false)
+		active = false
+		if searchstring == "" then
+			self:GetChild("SortBar"):playcommand("SetSortOrder")
+		else
+			self:GetChild("SortBar"):diffusealpha(0.8)
+		end
+	end;
 };
 
 
-t[#t+1] = Def.Quad{
+t[#t+1] = quadButton(3) .. {
 	Name="CurrentSort";
-	InitCommand=cmd(halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor('highlight');diffusealpha,0.8);
-
+	InitCommand = function(self)
+		self:halign(1)
+		self:zoomto(frameWidth,frameHeight)
+		self:diffuse(getMainColor('highlight')):diffusealpha(0.8);
+	end;
+	TopPressedCommand = function(self)
+		MESSAGEMAN:Broadcast("StartSearch")
+	end;
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(x,5-frameWidth;halign,0;zoom,0.45;maxwidth,(frameWidth-40)/0.45);
-	BeginCommand=cmd(queuecommand,"Set");
-	SetCommand=function(self)
+	Name="SortBar";
+	InitCommand = function (self)
+		self:x(5-frameWidth)
+		self:halign(0)
+		self:zoom(0.45)
 		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
-		local sort = GAMESTATE:GetSortOrder()
-		local song = GAMESTATE:GetCurrentSong()
-		if sort == nil then
-			self:settext("Sort: ")
-		elseif sort == "SortOrder_Group" and song ~= nil then
-			self:settext(song:GetGroupName())
-		else
-			self:settext("Sort: "..sortTable[sort])
-		end
-
+		self:maxwidth((frameWidth-40)/0.45)
 	end;
-	SortOrderChangedMessageCommand=cmd(queuecommand,"Set");
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	SortOrderChangedMessageCommand = function(self)
+		self:queuecommand("SetSortOrder")
+	end;
+	SetSortOrderCommand = function(self)
+		if searchstring == "" then
+			if not active then
+				local sort = GAMESTATE:GetSortOrder()
+				local song = GAMESTATE:GetCurrentSong()
+				if sort == nil then
+					self:settext("Sort: ")
+				elseif sort == "SortOrder_Group" and song ~= nil then
+					self:settext(song:GetGroupName())
+				else
+					self:settext("Sort: "..sortTable[sort])
+				end
+				self:diffusealpha(1)
+			else
+				self:settext("Type to Search..")
+				self:diffusealpha(0.8)
+			end
+		else
+			if active then
+				self:settext(searchstring)
+				self:diffusealpha(1)
+			else
+				self:diffusealpha(0.8)
+			end
+		end
+	end;
+	SortOrderChangedMessageCommand = function(self)
+		self:queuecommand("SetSortOrder")
+	end;
+	CurrentSongChangedMessageCommand = function(self)
+		self:queuecommand("SetSortOrder")
+	end;
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
@@ -84,8 +178,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			self:settextf("%d/%d",wheel:GetCurrentIndex()+1,wheel:GetNumItems())
 		end;
 	end;
-	SortOrderChangedMessageCommand=cmd(queuecommand,"Set");
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	SortOrderChangedMessageCommand = function(self)
+		self:queuecommand("Set")
+	end;
+	CurrentSongChangedMessageCommand = function(self)
+		self:queuecommand("Set")
+	end;
 };
 
 return t
