@@ -5,7 +5,7 @@ t[#t+1] = LoadActor("scoretracking")
 
 t[#t+1] = LoadActor("judgecount")
 if not bareBone then
-	t[#t+1] = LoadActor("pacemaker")
+	--t[#t+1] = LoadActor("pacemaker")
 	t[#t+1] = LoadActor("npscalc")
 	t[#t+1] = LoadActor("lifepercent")
 end

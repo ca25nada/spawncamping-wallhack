@@ -13,6 +13,7 @@ local lastSecond -- Last Second of a song.
 local ghostDataUpdateDelay = 0.01
 local ghostDataLastUpdate = 0
 
+--[[
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	setCurExp(pn) -- Save current exp for each player for comparison after gameplay.
 
@@ -34,7 +35,7 @@ for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	end
 	readGhostData(pn,hsTable[1]) -- Read ghost data.
 end
-
+--]]
 
 local function Update(self)
 	self.InitCommand=cmd(SetUpdateFunction,Update)
