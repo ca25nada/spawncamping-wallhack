@@ -8,6 +8,7 @@ local frameX = SCREEN_CENTER_X/2
 local frameY = 150
 local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
 local frameHeight = 300
+local rate = getCurRate()
 
 -- Reset preview music starting point since song was finished.
 setLastSecond(0)
@@ -45,7 +46,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:zoom(0.4)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-		self:settextf("Music Rate: %s",getCurRate())
+		self:settextf("Music Rate: %s", rate)
 	end
 }
 
@@ -117,11 +118,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 local function GraphDisplay( pn )
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 
-	if (PROFILEMAN:GetProfile(pn):GetDisplayName() ~= PROFILEMAN:GetMachineProfile():GetDisplayName()) and playerConfig:get_data(pn).SaveGhostScore then
-		saveGhostData(pn,pss:GetHighScore())
-	end
-
-
 	local t = Def.ActorFrame {
 
 		Def.GraphDisplay {
@@ -139,7 +135,7 @@ local function GraphDisplay( pn )
 			Name = "Grade";
 			InitCommand=cmd(xy,-frameWidth/2+35,55;zoom,0.7;maxwidth,70/0.8;);
 			BeginCommand=function(self) 
-				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetGrade()))) 
+				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetHighScore():GetWifeGrade()))) 
 			end;
 		};
 
@@ -147,21 +143,17 @@ local function GraphDisplay( pn )
 			Font= "Common Normal", 
 			InitCommand= function(self)
 				self:y(50):zoom(0.6)
+				self:halign(0)
 			end;
 			BeginCommand=function(self) 
-				local score = getCurScoreST(pn,0)
-				local maxScore = getMaxScoreST(pn,0)
-				self:halign(0)
+				local wifeScore = pss:GetHighScore():GetWifeScore()
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 				else
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 				end
-				if maxScore > 0 then
-					self:settextf("%.2f%%",math.floor((score/maxScore)*10000)/100)
-				else
-					self:settextf("%.2f%%",0)
-				end
+
+				self:settextf("%.2f%%",math.floor((wifeScore)*10000)/100)
 			end;
 		};
 
@@ -171,8 +163,9 @@ local function GraphDisplay( pn )
 				self:halign(0)
 			end;
 			BeginCommand=function(self) 
-				local grade,diff = getNearbyGrade(pn,getCurScoreST(pn,1),pss:GetGrade())
-				diff = diff >= 0 and "+"..diff or tostring(diff)
+				-- Fix when maxwife is available to lua
+				local grade,diff = getNearbyGrade(pn,pss:GetWifeScore()*getMaxNotes(pn)*2,pss:GetGrade())
+				diff = diff >= 0 and string.format("+%0.2f", diff) or string.format("%0.2f", diff)
 				self:settextf("%s %s",THEME:GetString("Grade",ToEnumShortString(grade)),diff)
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
@@ -216,10 +209,13 @@ local function ComboGraph( pn )
 end; 
 
 local function scoreBoard(pn)
-	local hsTable = getScoreList(pn)
+	local hsTable = getScoreTable(pn, rate)
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 	local steps = GAMESTATE:GetCurrentSteps(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
+	local index = getHighScoreIndex(hsTable, pss:GetHighScore())
+	local recScore = getBestScore(pn, index, rate, true)
+	local curScore = pss:GetHighScore()
 
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
@@ -509,7 +505,7 @@ local function scoreBoard(pn)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
-			self:settextf("%s - %s",THEME:GetString("ScreenEvaluation","CategoryScore"),getScoreTypeText(0))
+			self:settextf("%s - %s",THEME:GetString("ScreenEvaluation","CategoryScore"),getScoreTypeText(1))
 		end;
 	}
 
@@ -530,10 +526,12 @@ local function scoreBoard(pn)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand = function(self)
-			local score = getCurScoreST(pn,0)
-			local maxScore = getMaxScoreST(pn,0)
-			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
-			self:settextf("%s (%d/%d)",percentText,score,maxScore)
+			local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+			local curScoreValue = getScore(curScore, steps, false)
+			local curScorePercent = getScore(curScore, steps, true)
+			local maxScoreValue = notes * 2
+			local percentText = string.format("%05.2f%%",math.floor(curScorePercent*10000)/100)
+			self:settextf("%s (%d/%d)",percentText,curScoreValue,maxScoreValue)
 		end;
 	}
 
@@ -545,16 +543,11 @@ local function scoreBoard(pn)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText)):diffusealpha(0.3)
 		end;
 		BeginCommand = function(self)
-			local index
-			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
-				index = pss:GetMachineHighScoreIndex()+2
-			else
-				index = pss:GetPersonalHighScoreIndex()+1
-			end
-			local score = getBestScore(pn,index,0)
-			local maxScore = getMaxScoreST(pn,0)
-			local percentText = string.format("%05.2f%%",math.floor((score/maxScore)*10000)/100)
-			self:settextf("%s (%d/%d)",percentText,score,maxScore)
+			local recScoreValue = getScore(recScore, steps, true)
+
+			local maxScore = getMaxScoreST(pn,1)
+			local percentText = string.format("%05.2f%%",recScoreValue*100)
+			self:settextf("%s (%0.0f/%d)",percentText,recScoreValue*maxScore,maxScore)
 		end;
 	}
 
@@ -565,17 +558,9 @@ local function scoreBoard(pn)
 			self:valign(1)
 		end;
 		BeginCommand = function(self) 
-			local index
-
-			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
-				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
-			else
-				index = pss:GetPersonalHighScoreIndex()+1
-			end
-
-			local recScore = getBestScore(pn,index,0)
-			local curScore = getCurScoreST(pn,0)
-			local diff = curScore - recScore
+			local curScoreValue = getScore(curScore, steps, false)
+			local recScoreValue = getScore(recScore, steps, false)
+			local diff = curScoreValue - recScoreValue
 
 			if diff > 0 then
 				self:settext("▲")
@@ -598,15 +583,10 @@ local function scoreBoard(pn)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand = function(self) 
-			local index
-			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
-				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
-			else
-				index = pss:GetPersonalHighScoreIndex()+1
-			end
-			local recScore = getBestScore(pn,index,0)
-			local curScore = getCurScoreST(pn,0)
-			local diff = curScore - recScore
+			local curScoreValue = getScore(curScore, steps, false)
+			local recScoreValue = getScore(recScore, steps, false)
+			local diff = curScoreValue - recScoreValue
+
 			local extra = ""
 			if diff >= 0 then
 				extra = "+"
@@ -658,13 +638,9 @@ local function scoreBoard(pn)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText)):diffusealpha(0.3)
 		end;
 		BeginCommand = function(self)
-			local index
-			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
-				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
-			else
-				index = pss:GetPersonalHighScoreIndex()+1
-			end
-			local missCount = getBestMissCount(pn,index)
+			local score = getBestMissCount(pn,index, rate)
+			local missCount = getScoreMissCount(score)
+
 			if missCount ~= nil then
 				self:settext(missCount)
 			else
@@ -680,19 +656,13 @@ local function scoreBoard(pn)
 			self:valign(1)
 		end;
 		BeginCommand = function(self) 
-			local index
-			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
-				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
-			else
-				index = pss:GetPersonalHighScoreIndex()+1
-			end
-			local score = pss:GetHighScore();
-			
-			local recMissCount = (getBestMissCount(pn,index))
-			local curMissCount = getScoreMissCount(score)
+
+			local score = getBestMissCount(pn,index, rate)
+			local recMissCount = getScoreMissCount(score)
+			local curMissCount = getScoreMissCount(curScore)
 			local diff = 0
 
-			if recMissCount ~= nil then
+			if score ~= nil then
 				diff = curMissCount - recMissCount
 				if diff > 0 then
 					self:settext("▼")
@@ -719,19 +689,13 @@ local function scoreBoard(pn)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		BeginCommand = function(self) 
-			local index
-			if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
-				index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
-			else
-				index = pss:GetPersonalHighScoreIndex()+1
-			end
-			local score = pss:GetHighScore();
-			
-			local recMissCount = (getBestMissCount(pn,index))
-			local curMissCount = getScoreMissCount(score)
+			local score = getBestMissCount(pn,index, rate)
+			local recMissCount = getScoreMissCount(score)
+			local curMissCount = getScoreMissCount(curScore)
 			local diff = 0
+
 			local extra = ""
-			if recMissCount ~= nil then
+			if score ~= nil then
 				diff = curMissCount - recMissCount
 				if diff >= 0 then
 					extra = "+"
@@ -918,7 +882,7 @@ if themeConfig:get_data().eval.JudgmentBarEnabled then
 end;
 
 if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
-	t[#t+1] = LoadActor("scoreboard")
+	--t[#t+1] = LoadActor("scoreboard")
 	t[#t+1] = LoadActor("offsetvisual")
 end;
 
