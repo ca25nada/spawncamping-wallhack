@@ -297,7 +297,7 @@ local function scoreBoard(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name = "DisplayName";
 		InitCommand  = function(self)
-			self:xy(69-frameWidth/2,10)
+			self:xy(69-frameWidth/2,9)
 			self:zoom(0.6)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
@@ -315,7 +315,7 @@ local function scoreBoard(pn)
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(69-frameWidth/2,23)
+			self:xy(69-frameWidth/2,20)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
@@ -336,6 +336,22 @@ local function scoreBoard(pn)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end
 	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(69-frameWidth/2,28)
+			self:zoom(0.3)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+		end;
+		SetCommand = function(self)
+			if profile ~= nil then
+				self:settextf("Rating: %0.2f",profile:GetPlayerRating())
+			end
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+	}
+
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)

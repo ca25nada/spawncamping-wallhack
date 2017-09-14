@@ -168,7 +168,7 @@ local function generalFrame(pn)
 	-- Player name
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(69-frameWidth/2,10)
+			self:xy(69-frameWidth/2,9)
 			self:zoom(0.6)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
@@ -190,7 +190,7 @@ local function generalFrame(pn)
 	-- Level and exp
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(69-frameWidth/2,23)
+			self:xy(69-frameWidth/2,20)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
@@ -201,6 +201,22 @@ local function generalFrame(pn)
 				local currentExp = getProfileExp(pn) - getLvExp(level)
 				local nextExp = getNextLvExp(level)
 				self:settextf("Lv.%d (%d/%d)",level, currentExp, nextExp)
+			end
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(69-frameWidth/2,28)
+			self:zoom(0.3)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+		end;
+		SetCommand = function(self)
+			if profile[pn] ~= nil then
+				self:settextf("Rating: %0.2f",profile[pn]:GetPlayerRating())
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
