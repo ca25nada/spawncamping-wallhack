@@ -454,8 +454,12 @@ local function generalFrame(pn)
 		    self:maxwidth(110/0.6)
 		end;
 		SetCommand = function(self)
-			self:settext(THEME:GetString("Grade",ToEnumShortString(getBestGrade(pn,0))))
-			self:diffuse(getGradeColor(getBestGrade(pn,0)))
+			local grade = 'Grade_None'
+			if topScore[pn] ~= nil then
+				grade = topScore[pn]:GetWifeGrade()
+			end
+			self:settext(THEME:GetString("Grade",ToEnumShortString(grade)))
+			self:diffuse(getGradeColor(grade))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
