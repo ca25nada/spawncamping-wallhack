@@ -1,3 +1,5 @@
+local alphaInactive = 0.7
+
 local frameWidth = 280
 local frameHeight = 20
 local frameX = SCREEN_WIDTH-10
@@ -38,30 +40,36 @@ local sortTable = {
 };
 
 local function searchInput(event)
-	if event.type ~= "InputEventType_Release" and active == true then
+	local buttonEnum = Enum.Reverse(DeviceButton)[event.DeviceInput.button]
+
+	if event.type ~= "InputEventType_Release" and active then
 		if event.button == "Back" then
 			searchstring = ""
 			wheel:SongSearch(searchstring)
 			MESSAGEMAN:Broadcast("EndSearch")
+
 		elseif event.button == "Start" then
 			MESSAGEMAN:Broadcast("EndSearch")
+
 		elseif event.DeviceInput.button == "DeviceButton_space" then					-- add space to the string
 			searchstring = searchstring.." "
+
 		elseif event.DeviceInput.button == "DeviceButton_backspace" then
 			if searchstring == "" then
 				MESSAGEMAN:Broadcast("EndSearch")
 			else
 				searchstring = searchstring:sub(1, -2)
 			end					-- remove the last element of the string
+
 		elseif event.DeviceInput.button == "DeviceButton_delete"  then
 			searchstring = ""
+
 		elseif event.DeviceInput.button == "DeviceButton_="  then
 			searchstring = searchstring.."="
+
 		else
-			for i=1,#englishes do														-- add standard characters to string
-				if event.DeviceInput.button == "DeviceButton_"..englishes[i] then
-					searchstring = searchstring..englishes[i]
-				end
+			if buttonEnum > 96 and buttonEnum < 123 then
+				searchstring = searchstring..event.DeviceInput.button:sub(-1)
 			end
 		end
 		if lastsearchstring ~= searchstring then
@@ -91,7 +99,7 @@ local t = Def.ActorFrame{
 		active = true
 		if searchstring == "" then
 			self:GetChild("SortBar"):settext("Type to Search..")
-			self:GetChild("SortBar"):diffusealpha(0.5)
+			self:GetChild("SortBar"):diffusealpha(alphaInactive)
 		else
 			self:GetChild("SortBar"):diffusealpha(1)
 		end
@@ -103,7 +111,7 @@ local t = Def.ActorFrame{
 		if searchstring == "" then
 			self:GetChild("SortBar"):playcommand("SetSortOrder")
 		else
-			self:GetChild("SortBar"):diffusealpha(0.8)
+			self:GetChild("SortBar"):diffusealpha(alphaInactive)
 		end
 	end;
 };
@@ -148,14 +156,14 @@ t[#t+1] = LoadFont("Common Normal") .. {
 				self:diffusealpha(1)
 			else
 				self:settext("Type to Search..")
-				self:diffusealpha(0.8)
+				self:diffusealpha(alphaInactive)
 			end
 		else
 			if active then
 				self:settext(searchstring)
 				self:diffusealpha(1)
 			else
-				self:diffusealpha(0.8)
+				self:diffusealpha(alphaInactive)
 			end
 		end
 	end;
