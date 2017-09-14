@@ -41,19 +41,25 @@ t[#t+1] = quadButton(1) .. {
 			end
 		end
 		
-		wheel:Move(move)
+		local wheelType = wheel:MoveAndCheckType(move)
 		wheel:Move(0)
 
 		-- TODO: play sounds.
-		if move == 0 and wheel:GetSelectedType() == 'WheelItemDataType_Section' then
-			if wheel:GetSelectedSection() == curFolder then
-				wheel:SetOpenSection("")
-				curFolder = ""
+		if move == 0 then
+			if wheelType == 'WheelItemDataType_Section' then
+				if wheel:GetSelectedSection() == curFolder then
+					wheel:SetOpenSection("")
+					curFolder = ""
+				else
+					wheel:SetOpenSection(wheel:GetSelectedSection())
+					curFolder = wheel:GetSelectedSection()
+				end
 			else
-				wheel:SetOpenSection(wheel:GetSelectedSection())
-				curFolder = wheel:GetSelectedSection()
+				top:SelectCurrent(0)
 			end
 		end
+
+
 
 	end;
 }
