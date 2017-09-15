@@ -5,7 +5,6 @@ t[#t+1] = LoadActor("score");
 t[#t+1] = LoadActor("profile");
 t[#t+1] = LoadActor("other");
 
-
 t[#t+1] = Def.ActorFrame {
 	InitCommand=cmd(rotationz,-90;xy,SCREEN_CENTER_X/2-WideScale(get43size(150),150),SCREEN_HEIGHT-50;diffusealpha,0);
 	OffCommand=function(self)
@@ -20,6 +19,7 @@ t[#t+1] = Def.ActorFrame {
 		self:bouncy(0.3)
 		self:xy(SCREEN_CENTER_X/2-WideScale(get43size(150),150),270)
 		self:diffusealpha(1)
+		wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
 	end;
 	TabChangedMessageCommand=function(self)
 		self:finishtweening()

@@ -10,6 +10,7 @@ local lastsearchstring = ""
 local englishes = {"a", "b", "c", "d", "e","f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",";"}
 local active = false
 local wheel
+local song
 
 local sortTable = {
 	SortOrder_Preferred 			= 'Preferred',
@@ -113,6 +114,15 @@ local t = Def.ActorFrame{
 		else
 			self:GetChild("SortBar"):diffusealpha(alphaInactive)
 		end
+	end;
+	
+	-- THIS IS DUMB
+	MoveMusicWheelToSongMessageCommand = function(self, param)
+		song = param.song
+		self:queuecommand("MoveWheel")
+	end;
+	MoveWheelCommand = function(self)
+		wheel:SelectSong(song)
 	end;
 };
 

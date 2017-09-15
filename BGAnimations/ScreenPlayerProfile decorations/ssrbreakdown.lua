@@ -53,6 +53,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 
 local sepAngle = 360/#SkillSets-1
 local verts = {}
+local scoreVerts = {}
 local maxVerts = {}
 local x,y
 local ssr
@@ -84,15 +85,6 @@ local function makeSSRPoints(i)
 		end;
 	}
 
-	t[#t+1] = Def.Quad{
-		InitCommand  = function(self)
-			self:easeOut(1)
-			self:xy(x*math.min(1,ssr/maxValue),y*math.min(1,ssr/maxValue))
-			self:zoomto(2,2)
-			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
-	}
-
 	return t
 end
 
@@ -115,6 +107,38 @@ t[#t+1] = Def.ActorMultiVertex{
 }
 
 t[#t+1] = Def.ActorMultiVertex{
+	Name= "SSR_Score_Graph";
+	InitCommand = function(self)
+		self:SetDrawState{Mode="DrawMode_QuadStrip"}
+	end;
+	SetCommand = function(self)
+		self:diffusealpha(0.3)
+		self:easeOut(1)
+		self:SetVertices(scoreVerts)
+		self:SetDrawState{First= 1, Num= -1}
+	end;
+	DisplaySongMessageCommand = function(self, param)
+		local ths = param.score
+		scoreVerts = {}
+		self:playcommand("Set")
+		for i=1, #SkillSets do
+			local x,y = getPointOffset(circleRadius,sepAngle*(i-1)-90)
+			local ssr = ths:GetSkillsetSSR(SkillSets[i])
+
+			scoreVerts[#scoreVerts+1] = {{x*math.min(1,ssr/maxValue),y*math.min(1,ssr/maxValue),0},color("#fc89ac")}
+			scoreVerts[#scoreVerts+1] = {{0,0,0},color("#fc89ac")}
+
+			if i == #SkillSets then
+				scoreVerts[#scoreVerts+1] = scoreVerts[1]
+				scoreVerts[#scoreVerts+1] = {{0,0,0},color("#FFFFFF")}
+			end
+
+		end
+		self:queuecommand("Set")
+	end;
+}
+
+t[#t+1] = Def.ActorMultiVertex{
 	Name= "SSR_Graph";
 	InitCommand = function(self)
 		self:SetDrawState{Mode="DrawMode_QuadStrip"}
@@ -127,5 +151,6 @@ t[#t+1] = Def.ActorMultiVertex{
 		self:SetDrawState{First= 1, Num= -1}
 	end;
 }
+
 
 return t
