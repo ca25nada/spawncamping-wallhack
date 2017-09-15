@@ -9,6 +9,7 @@ local searchstring = ""
 local lastsearchstring = ""
 local englishes = {"a", "b", "c", "d", "e","f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",";"}
 local active = false
+local top
 local wheel
 local song
 
@@ -86,7 +87,9 @@ local t = Def.ActorFrame{
 		SCREENMAN:set_input_redirected(PLAYER_1, false)
 	end;
 	OnCommand = function(self)
-		wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
+		
+		top = SCREENMAN:GetTopScreen()
+		wheel = top:GetMusicWheel()
 		SCREENMAN:GetTopScreen():AddInputCallback(searchInput)
 		self:y(-frameHeight/2)
 		self:smooth(0.5)
@@ -115,14 +118,16 @@ local t = Def.ActorFrame{
 			self:GetChild("SortBar"):diffusealpha(alphaInactive)
 		end
 	end;
-	
-	-- THIS IS DUMB
+
 	MoveMusicWheelToSongMessageCommand = function(self, param)
-		song = param.song
-		self:queuecommand("MoveWheel")
-	end;
-	MoveWheelCommand = function(self)
-		wheel:SelectSong(song)
+		if #searchstring > 0 then
+			searchstring = ""
+			wheel:SongSearch("searchstring")
+		end
+		wheel:SelectSong(param.song)
+		-- The Message sent from ChangeMusic() in the musicwheel goes to the wrong screen (ScreenPlayerProfiles). 
+		-- So Send one manually to ScreenSelectMusic.
+		top:PostScreenMessage('SM_SongChanged', 0)
 	end;
 };
 

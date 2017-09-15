@@ -287,8 +287,8 @@ local function songDisplay()
 			self:diffusealpha(0.4)
 			self:smooth(0.5)
 			self:diffusealpha(0.2)
-			MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
 			SCREENMAN:GetTopScreen():Cancel()
+			MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
 		end;
 		SetCommand = function(self)
 		end;
@@ -440,7 +440,6 @@ local function songDisplay()
 				self:y(13)
 			end
 		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand("Set") end;
 	}
 
 	t[#t+1] = LoadActor(THEME:GetPathG("", "round_star")) .. {
