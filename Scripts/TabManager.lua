@@ -3,10 +3,10 @@ local tabIndex = 1
 
 local tabData = { -- Name, Available in singleplayer, Available in multiplayer.
 	{"General",true,true},
-	{"Simfile",true,false},
-	{"Score",true,false},
+	{"Simfile",false,false},
+	{"Score",false,false},
 	{"Profile",false,false},
-	{"Other",true,true}
+	{"Other",false,false}
 }
 
 local tabSize = #tabData

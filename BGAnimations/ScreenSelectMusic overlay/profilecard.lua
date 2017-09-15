@@ -145,7 +145,7 @@ local function generalFrame(pn)
 			self:visible(false)
 		end;
 		TopPressedCommand = function(self)
-			SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch")
+			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 		end;
 	}
 
@@ -159,9 +159,6 @@ local function generalFrame(pn)
 			self:visible(true)
 			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(pn)));
 			self:zoomto(50,50)
-		end;
-		TopPressedCommand = function(self)
-			SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch")
 		end;
 	}
 

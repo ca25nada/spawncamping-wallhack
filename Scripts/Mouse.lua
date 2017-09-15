@@ -103,6 +103,6 @@ function mouseInputCallback(event)
 		end
 	end
 
-return false
+return true
 
 end
