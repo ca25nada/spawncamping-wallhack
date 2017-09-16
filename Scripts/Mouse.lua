@@ -11,7 +11,21 @@ local topActorName
 
 -- Call this when left/right click event occurs and isOver() is true.
 -- Sets the actor calling this as the top actor if it has the highest Z value.
-function addPressedActors(actor)
+function addPressedActors(actor, screenName)
+	local top = SCREENMAN:GetTopScreen()
+	local topName
+	if top == nil then
+		return
+	else
+		topName = top:GetName()
+	end
+
+	SCREENMAN:SystemMessage(string.format("%s %s",screenName, topName))
+
+	if topName ~= screenName then
+		return
+	end
+
 	local z = actor:GetZ()
 	if z > topActorZ then
 		topActorZ = z
@@ -79,13 +93,21 @@ end;
 
 
 function quadButton(z)
+	local topName 
+
 	local t = Def.Quad{
 		InitCommand= function(self) 
 			self:z(z)
 		end;
+
+		OnCommand = function(self)
+			local top = SCREENMAN:GetTopScreen()
+			topName = top:GetName()
+		end;
+
 		MouseLeftClickMessageCommand = function(self)
 			if isOver(self) then
-				addPressedActors(self)
+				addPressedActors(self, topName)
 			end
 		end;
 		TopPressedCommand = function(self)
