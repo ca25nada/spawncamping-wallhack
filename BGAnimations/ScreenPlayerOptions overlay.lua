@@ -1,4 +1,6 @@
 local t = Def.ActorFrame{}
+t[#t+1] = LoadActor("_mouse")
+
 local topFrameHeight = 35
 local bottomFrameHeight = 54
 local borderWidth = 4
@@ -36,6 +38,7 @@ end
 
 -- P1 Avatar
 t[#t+1] = Def.Actor{
+
 	BeginCommand=cmd(queuecommand,"Set");
 	SetCommand=function(self)
 		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then

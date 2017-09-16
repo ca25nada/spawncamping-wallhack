@@ -11,8 +11,6 @@ local scoreItemWidth = 350
 local scoreItemHeight = 25
 
 local maxScoreItems = 10
-
-
 local scoreSSRItemX = 50
 local scoreSSRItemY = 80
 local scoreSSRItemYSpacing = 5
@@ -84,6 +82,7 @@ local function scoreSSRTypes(i)
 		end;
 		DisplaySongMessageCommand = function(self, params)
 			self:visible(false)
+			self:y(SCREEN_HEIGHT*10)
 		end
 	}
 
@@ -224,7 +223,7 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end;
 		SetCommand = function(self)
-			self:settext(song:GetDisplayArtist())
+			self:settextf("// %s",song:GetDisplayArtist())
 		end
 	}
 

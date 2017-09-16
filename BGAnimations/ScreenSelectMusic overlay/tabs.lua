@@ -7,11 +7,6 @@ local function input(event)
 				setTabIndex(i)
 			end
 		end
-
-		if event.DeviceInput.button == "DeviceButton_left mouse button" then
-			MESSAGEMAN:Broadcast("MouseLeftClick")
-		end
-
 	end
 
 return false
@@ -23,7 +18,6 @@ local t = Def.ActorFrame{
 	BeginCommand=function(self) resetTabIndex() end;
 	PlayerJoinedMessageCommand=function(self) resetTabIndex() end;
 	OnCommand = function(self)
-		SCREENMAN:GetTopScreen():AddInputCallback(input)
 		self:diffusealpha(0)
 		self:smooth(0.5)
 		self:diffusealpha(1)
@@ -32,14 +26,9 @@ local t = Def.ActorFrame{
 		self:smooth(0.5)
 		self:diffusealpha(0)
 	end;
-	MouseLeftClickMessageCommand = function(self)
-		self:queuecommand("PlayTopPressedActor")
-	end;
-	PlayTopPressedActorCommand = function(self)
-		playTopPressedActor()
-		resetPressedActors()
-	end;
 }
+
+t[#t+1] = LoadActor("../_mouse")
 
 local frameWidth = (SCREEN_WIDTH*(403/854))/(getTabSize()-1)
 local frameX = frameWidth/2

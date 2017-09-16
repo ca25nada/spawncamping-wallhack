@@ -163,17 +163,9 @@ function UpdateInternal3(self, Player)
 end;
 
 local t = Def.ActorFrame{
-	OnCommand = function(self)
-		SCREENMAN:GetTopScreen():AddInputCallback(mouseInputCallback)
-	end;
-	MouseLeftClickMessageCommand = function(self)
-		self:queuecommand("PlayTopPressedActor")
-	end;
-	PlayTopPressedActorCommand = function(self)
-		playTopPressedActor()
-		resetPressedActors()
-	end;
 }
+
+t[#t+1] = LoadActor("_mouse")
 
 
 

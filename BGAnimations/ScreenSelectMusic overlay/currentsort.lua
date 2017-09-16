@@ -132,7 +132,7 @@ local t = Def.ActorFrame{
 };
 
 
-t[#t+1] = quadButton(3) .. {
+t[#t+1] = quadButton(4) .. {
 	Name="CurrentSort";
 	InitCommand = function(self)
 		self:halign(1)

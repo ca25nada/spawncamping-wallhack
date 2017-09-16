@@ -1,0 +1,38 @@
+local top
+
+-- Actor for handling most mouse interactions.
+local function input(event)
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_left mouse button" then
+			MESSAGEMAN:Broadcast("MouseLeftClick")
+		end
+		if event.DeviceInput.button == "DeviceButton_right mouse button" then
+			MESSAGEMAN:Broadcast("MouseRightClick")
+		end
+	end
+
+	return false
+
+end
+
+local t = Def.ActorFrame{
+	OnCommand = function(self)
+		resetPressedActors()
+		top = SCREENMAN:GetTopScreen()
+		top:AddInputCallback(input)
+	end;
+	MouseLeftClickMessageCommand = function(self)
+		self:queuecommand("PlayTopPressedActor")
+	end;
+	PlayTopPressedActorCommand = function(self)
+		playTopPressedActor()
+		resetPressedActors()
+	end;
+	ExitScreenMessageCommand = function(self, params)
+		if params.screen == top:GetName() then
+			top:StartTransitioningScreen("SM_GoToPrevScreen")
+		end
+	end
+}
+
+return t

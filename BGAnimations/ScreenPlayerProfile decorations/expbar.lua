@@ -42,7 +42,7 @@ t[#t+1] = Def.Quad{
 	end;
 	SetCommand = function (self)
 		if profile ~= nil then
-			self:easeOut(2)
+			self:easeOut(1)
 			self:zoomto((barWidth-2)*(currentExp/nextExp), barHeight-2)
 		end
 	end

@@ -45,7 +45,8 @@ t[#t+1] = Def.Quad{
 			self:visible(false)
 		end;
 		TopPressedCommand = function(self)
-			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
+			SCREENMAN:SystemMessage("A full avatar selection screen coming soon(tm)")
+			--SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 		end;
 	}
 
