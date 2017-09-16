@@ -122,7 +122,7 @@ local t = Def.ActorFrame{
 	MoveMusicWheelToSongMessageCommand = function(self, param)
 		if #searchstring > 0 then
 			searchstring = ""
-			wheel:SongSearch("searchstring")
+			wheel:SongSearch(searchstring)
 		end
 		wheel:SelectSong(param.song)
 		-- The Message sent from ChangeMusic() in the musicwheel goes to the wrong screen (ScreenPlayerProfiles). 
