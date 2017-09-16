@@ -54,6 +54,17 @@ t[#t+1] = Def.Quad{
 	end
 }
 
+t[#t+1] = quadButton(1)..{
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2,120)
+		self:zoomto(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
+		self:visible(false)
+	end;
+	TopPressedCommand = function(self)
+		SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+	end;
+}
+
 -- Song banner
 t[#t+1] = Def.Banner{
 	Name = "Banner";

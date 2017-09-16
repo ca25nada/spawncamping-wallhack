@@ -42,7 +42,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:zoom(0.4)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		self:settext("Scores")
+		self:settext("Top Scores")
 	end;
 }
 
@@ -162,7 +162,9 @@ local function scoreListItem(i)
 			self:diffusealpha(0.4)
 			self:smooth(0.5)
 			self:diffusealpha(0.2)
-			MESSAGEMAN:Broadcast("DisplaySong",{score = ths})
+			--MESSAGEMAN:Broadcast("DisplaySong",{score = ths})
+			SCREENMAN:GetTopScreen():Cancel()
+			MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
 		end;
 		SetCommand = function(self)
 			if ths:GetEtternaValid() then
@@ -470,7 +472,7 @@ for i=1, maxScoreItems do
 	t[#t+1] = scoreListItem(i)
 end
 
-t[#t+1] = songDisplay()
+-- t[#t+1] = songDisplay()
 
 
 return t
