@@ -104,6 +104,7 @@ t[#t+1] = Def.Quad{
 };
 
 t[#t+1] = LoadActor("_frame");
+t[#t+1] = LoadActor("_mouse");
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y+40;zoomto,200,30;);

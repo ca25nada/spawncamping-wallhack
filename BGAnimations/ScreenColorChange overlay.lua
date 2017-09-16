@@ -267,6 +267,7 @@ local t = Def.ActorFrame{
 }
 
 t[#t+1] = LoadActor("_frame");
+t[#t+1] = LoadActor("_mouse");
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=cmd(xy,frameX[1],frameY;halign,0;valign,1;zoom,0.6;settext,"Category:";);
