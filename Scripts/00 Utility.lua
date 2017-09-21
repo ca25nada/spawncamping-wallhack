@@ -151,7 +151,7 @@ function getCommonBPM(bpms,lastBeat)
 			maxBPM = tonumber(k)
 		end
 	end
-	return maxBPM
+	return maxBPM * GAMESTATE:GetSongOptionsObject('ModsLevel_Current'):MusicRate()
 end
 
 function getBPMChangeCount(bpms)

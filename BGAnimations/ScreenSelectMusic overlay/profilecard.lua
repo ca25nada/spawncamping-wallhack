@@ -64,7 +64,9 @@ local function generalFrame(pn)
 			end
 			self:visible(GAMESTATE:IsPlayerEnabled(pn))
 		end;
-		BeginCommand = function(self) self:playcommand('Set') end;
+		BeginCommand = function(self) 
+			self:playcommand('Set')
+		end;
 		PlayerJoinedMessageCommand = function(self) self:playcommand('Set') end;
 		PlayerUnjoinedMessageCommand = function(self) self:playcommand('Set') end;
 		ContractMessageCommand = function(self)
@@ -77,6 +79,10 @@ local function generalFrame(pn)
 			self:bouncy(0.3)
 			self:y(frameY)
 		end;
+		CurrentSongChangedMessageCommand = function(self) self:RunCommandsOnChildren(cmd(queuecommand, "Set"))  end;
+		CurrentStepsP1ChangedMessageCommand = function(self) self:RunCommandsOnChildren(cmd(queuecommand, "Set"))  end;
+		CurrentStepsP2ChangedMessageCommand = function(self) self:RunCommandsOnChildren(cmd(queuecommand, "Set"))  end;
+		CurrentRateChangedMessageCommand = function(self) self:RunCommandsOnChildren(cmd(queuecommand, "Set"))  end;
 	}
 
 	--Upper Bar
@@ -119,9 +125,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = Def.Quad{
@@ -238,9 +241,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	-- Steps info
@@ -291,9 +291,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -329,9 +326,6 @@ local function generalFrame(pn)
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
 			end
 		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -355,9 +349,6 @@ local function generalFrame(pn)
 				end
 			end
 		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	t[#t+1] = Def.Quad{
@@ -384,9 +375,6 @@ local function generalFrame(pn)
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
 			end
 		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	t[#t+1] = Def.Quad{
@@ -397,7 +385,7 @@ local function generalFrame(pn)
 			self:diffuse(getMainColor("highlight"))
 		end;
 		SetCommand = function(self)
-			self:stoptweening()
+			self:finishtweening()
 			self:decelerate(0.5)
 			local meter = 0
 			local enabled = GAMESTATE:IsPlayerEnabled(pn)
@@ -413,9 +401,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -424,7 +409,7 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self) 
-			self:stoptweening()
+			self:finishtweening()
 			self:decelerate(0.5)
 			local meter = 0
 			local enabled = GAMESTATE:IsPlayerEnabled(pn)
@@ -440,9 +425,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	--Grades
@@ -461,9 +443,6 @@ local function generalFrame(pn)
 			self:diffuse(getGradeColor(grade))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
@@ -488,9 +467,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
@@ -510,9 +486,6 @@ local function generalFrame(pn)
 			self:settextf("%.2f%%",math.floor((scorevalue)*10000)/100)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
@@ -530,9 +503,6 @@ local function generalFrame(pn)
 			self:settext(getMaxScore(pn,0))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
@@ -553,9 +523,6 @@ local function generalFrame(pn)
 			self:settextf("%.0f/",scoreValue)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
@@ -590,9 +557,6 @@ local function generalFrame(pn)
 			self:settextf("Max Combo: %d",maxCombo)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
@@ -615,9 +579,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
 		ContractMessageCommand = function(self) self:visible(false) end;
 		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
@@ -635,9 +596,10 @@ t[#t+1] = Def.Actor{
 			topScore[pn] = getBestScore(pn, 0, getCurRate())
 		end
 	end;
-	CurrentSongChangedMessageCommand=cmd(playcommand,"Set");
-	CurrentStepsP1ChangedMessageCommand=cmd(playcommand,"Set");
-	CurrentStepsP2ChangedMessageCommand=cmd(playcommand,"Set");
+	CurrentSongChangedMessageCommand = function(self)  self:queuecommand('Set') end;
+	CurrentStepsP1ChangedMessageCommand = function(self)  self:queuecommand('Set') end;
+	CurrentStepsP2ChangedMessageCommand = function(self)  self:queuecommand('Set') end;
+	CurrentRateChangedMessageCommand = function(self)  self:queuecommand('Set') end;
 }
 
 t[#t+1] = generalFrame(PLAYER_1)
