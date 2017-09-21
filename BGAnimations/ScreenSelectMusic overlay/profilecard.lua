@@ -144,8 +144,10 @@ local function generalFrame(pn)
 			self:zoomto(50,50)
 			self:visible(false)
 		end;
-		TopPressedCommand = function(self)
-			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
+		TopPressedCommand = function(self, params)
+			if params.input == "DeviceButton_left mouse button" then
+				SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
+			end
 		end;
 	}
 

@@ -42,8 +42,10 @@ t[#t+1] = quadButton(4)..{
 		self:smooth(0.5)
 		self:zoomy(0)
 	end;
-	TopPressedCommand = function(self)
-		MESSAGEMAN:Broadcast("ExitScreen",{screen = top:GetName()})
+	TopPressedCommand = function(self, params)
+		if params.input == "DeviceButton_left mouse button" then
+			MESSAGEMAN:Broadcast("ExitScreen",{screen = top:GetName()})
+		end
 	end;
 }
 

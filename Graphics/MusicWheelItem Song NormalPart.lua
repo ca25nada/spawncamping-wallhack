@@ -26,7 +26,11 @@ t[#t+1] = quadButton(1) .. {
 		self:halign(0)
 		self:visible(false)
 	end;
-	TopPressedCommand = function(self)
+	TopPressedCommand = function(self, params)
+
+		if params.input ~= "DeviceButton_left mouse button" then
+			return
+		end
 
 		local newIndex = tonumber(self:GetParent():GetName())
 		local wheel = top:GetMusicWheel()

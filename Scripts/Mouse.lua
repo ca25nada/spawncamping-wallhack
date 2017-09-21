@@ -1,6 +1,7 @@
 local topActor
 local topActorZ = 0
 local topActorName
+local topInput
 
 -- To check the Z axis for getting the topmost actor upon clicking:
 -- Give an actor a Z value and call addPressedActors(self) inside any command.
@@ -14,9 +15,9 @@ local topActorName
 
 -- Call this when left/right click event occurs and isOver() is true.
 -- Sets the actor calling this as the top actor if it has the highest Z value.
-function addPressedActors(actor, screenName)
+function addPressedActors(actor, screenName, input)
 	local top = SCREENMAN:GetTopScreen()
-	local topName
+	local topName -- top screen name
 
 	if top == nil then
 		return
@@ -25,7 +26,6 @@ function addPressedActors(actor, screenName)
 	end
 
 	-- SCREENMAN:SystemMessage(string.format("%s %s",screenName, topName))
-
 	if topName ~= screenName then
 		return
 	end
@@ -35,6 +35,7 @@ function addPressedActors(actor, screenName)
 		topActorZ = z
 		topActor = actor
 		topName = actor:GetName()
+		topInput = input
 	end
 end
 
@@ -49,7 +50,7 @@ end
 function playTopPressedActor()	
 	-- SCREENMAN:SystemMessage("PLAY PLS")
 	if topActor ~= nil then
-		topActor:playcommand("TopPressed")
+		topActor:playcommand("TopPressed", {input = topInput})
 	end
 end
 
@@ -112,7 +113,12 @@ function quadButton(z)
 
 		MouseLeftClickMessageCommand = function(self)
 			if isOver(self) then
-				addPressedActors(self, topName)
+				addPressedActors(self, topName, "DeviceButton_left mouse button")
+			end
+		end;
+		MouseRightClickMessageCommand = function(self)
+			if isOver(self) then
+				addPressedActors(self, topName, "DeviceButton_right mouse button")
 			end
 		end;
 		TopPressedCommand = function(self)

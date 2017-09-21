@@ -18,10 +18,18 @@ end
 local t = Def.ActorFrame{
 	OnCommand = function(self)
 		resetPressedActors()
+
+		for _, pn in pairs({PLAYER_1, PLAYER_2}) do
+			SCREENMAN:set_input_redirected(pn, false)
+		end
+
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
 	end;
 	MouseLeftClickMessageCommand = function(self)
+		self:queuecommand("PlayTopPressedActor")
+	end;
+	MouseRightClickMessageCommand = function(self)
 		self:queuecommand("PlayTopPressedActor")
 	end;
 	PlayTopPressedActorCommand = function(self)

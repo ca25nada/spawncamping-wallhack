@@ -58,8 +58,10 @@ function tabs(index)
 	t[#t+1] = quadButton(3)..{
 		Name="TabBG";
 		InitCommand=cmd(valign,1;zoomto,frameWidth,20;diffusealpha,0.5);
-		TopPressedCommand = function(self)
+		TopPressedCommand = function(self, params)
+			if params.input == "DeviceButton_left mouse button" then
 				setTabIndex(index)
+			end
 		end;
 		SetCommand = function(self)
 			self:finishtweening()

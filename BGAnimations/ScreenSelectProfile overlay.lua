@@ -13,8 +13,10 @@ function GetLocalProfiles(pn)
 					self:visible(false)
 					self:name(tostring(p))
 				end;
-				TopPressedCommand = function(self)
-					MESSAGEMAN:Broadcast("ProfileLeftClick",{pn = pn,index = tonumber(self:GetName())})
+				TopPressedCommand = function(self, params)
+					if params.input == "DeviceButton_left mouse button" then
+						MESSAGEMAN:Broadcast("ProfileLeftClick",{pn = pn,index = tonumber(self:GetName())})
+					end
 				end;
 			};
 			LoadFont("Common Large") .. {
