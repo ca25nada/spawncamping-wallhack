@@ -5,44 +5,7 @@
 -- Also (hopefully helpful) tips regarding the game/theme,etc.
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
-local Tips = {
-    --SM Tips
-    "Pressing Scroll Lock immediately allows you to go to options",
-    "You can mute action sounds by pressing <Pause/Break>",
-    "Holding F3 brings up the debug menu",
-    "Hold down Tab to make things go fast, ~ for making things slow, and both to make things stop.",
-    "Press Ctrl+Backspace on ScreenSelectMusic delete the song from the music wheel. Make sure Allow Song Deletion is On from Advanced Options",
-    "Press Ctrl+Shift+R on ScreenSelectMusic to reload the selected song",
-    "Pressing PrintScr/SysRq takes a screenshot of the game, pressing Shift+PrintScr/SysRq will do so in a .png format and in original size.",
-    "You can make profiles by going into Options > Profiles > Create Profile",
-    "You can map keys/inputs by going into Options > Config Key/Joy Mappings",
-    "(Windows only) typing %appdata% into your explorer bar opens the AppData folder. You can find your stepmania settings folder from there.",
-    "StepMania by default will only save the top 3 scores on your profile. This can be changed in Arcade Options",
-    "Pressing F8 Enables the autoplay. Alt+F8 will do so without displaying the autoplay text.",
-
-    --Theme Specific
-    "Please don't bug the StepMania devs regarding bugs on this theme. (bug whoever made this theme instead.!! who will likely bug the devs anyway-)",
-    "Feel free to suggest feature requests on the github issue tracker or on the forum thread.",
-    "You can change the default scoring type in Theme Options",
-    "You can change the color scheme of the theme in the Color Config menu.",
-    "Tap <Select> twice quickly in ScreenSelectMusic to bring up the avatar switch screen.",
-    "Press keys 1~5 on the keyboard to select the corresponding tabs on ScreenSelectMusic",
-    "While the Score tab is selected, press <effectUp>/<effectDown> to scroll through scores.",
-    "While the Score tab is selected, press <effectUp>/<effectDown> while <Select> is held down to scroll through rates.",
-    "You can set preferences for various theme functions in Options > Theme Options",
-    "The theme is only supported for SM 5.1 or newer.",
-    "This theme updates rather often, so make sure to check the thread/github page once every while for bugfixes and updates.",
-    "Check the Other tab for general information regarding StepMania and the theme",
-    "Rave and Course modes are disabled in this theme because it's terribly broken right now.",
-    "SMO should work without errors but do note that the theme can't display server-side scores at the moment.",
-    "You can change the speedmods ingame by pressing <EffectUp> or <EffectDown> during gameplay.",
-    "You can adjust the lanecover height by holding <Select> and then pressing <EffectUp> or <EffectDown>",
-
-    --Other SM related Tips
-    "Check http://www.flashflashrevolution.com/vbz/showthread.php?t=133223 for a huge list of simfile packs",
-    "Poke Jousway in the forums for anything noteskin related."
-
-}
+local Tips = {""}
 
 
 
