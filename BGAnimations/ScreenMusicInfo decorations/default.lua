@@ -179,8 +179,8 @@ local function topRow()
 end
 
 local function meterComparator(stepA, stepB)
-	diffA = stepA:GetDifficulty()
-	diffB = stepB:GetDifficulty()
+	local diffA = stepA:GetDifficulty()
+	local diffB = stepB:GetDifficulty()
 
 	return Enum.Reverse(Difficulty)[diffA] < Enum.Reverse(Difficulty)[diffB]
 end
@@ -313,9 +313,6 @@ end
 
 local function stepsBPMRow()
 	local t = Def.ActorFrame{
-		SetStepsTypeMessageCommand = function(self, params)
-			
-		end;
 	}
 
 	t[#t+1] = Def.Quad{
@@ -421,6 +418,12 @@ t[#t+1] = LoadActor("stepsinfo") .. {
 t[#t+1] = LoadActor("ssrbreakdown") .. {
 	InitCommand = function(self)
 		self:xy(160,315)
+	end;
+}
+
+t[#t+1] = LoadActor("infobox") .. {
+	InitCommand = function(self)
+		self:xy(370,110)
 	end;
 }
 
