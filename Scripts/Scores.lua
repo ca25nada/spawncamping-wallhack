@@ -9,13 +9,16 @@ WifeTiers = {
 	Grade_Tier07 = 0.6
 }
 
-function getScoresByKey(pn)
+function getScoresByKey(pn, steps)
 	local song = GAMESTATE:GetCurrentSong()
 	local profile
-	local steps
 	if GAMESTATE:IsPlayerEnabled(pn) then
 		profile = GetPlayerOrMachineProfile(pn)
-		steps = GAMESTATE:GetCurrentSteps(pn)
+
+		if steps == nil then
+			steps = GAMESTATE:GetCurrentSteps(pn)
+		end
+		
 		if profile ~= nil and steps ~= nil and song ~= nil then
 			return SCOREMAN:GetScoresByKey(steps:GetChartKey())
 		end
@@ -203,8 +206,8 @@ function getHighScoreIndex(hsTable,score)
 end
 
 -- Returns a table containing tables containing scores for each ratemod used. 
-function getRateTable(pn)
-	local o = getScoresByKey(pn)
+function getRateTable(pn, steps)
+	local o = getScoresByKey(pn, steps)
 	if not o then return nil end
 	
 	for k,v in pairs(o) do
@@ -236,9 +239,9 @@ end
 -- Grabs the highest grade available from all currently saved scores.
 -- Ignore parameter will ignore the score at that index.
 
-function getScoreTable(pn, rate)
+function getScoreTable(pn, rate, steps)
 	if not rate then rate = "1.0x" end
-	local rtTable = getRateTable(pn)
+	local rtTable = getRateTable(pn, steps)
 
 	if not rtTable then return nil end
 	return rtTable[rate]
