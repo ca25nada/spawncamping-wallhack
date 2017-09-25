@@ -18,6 +18,7 @@ local scoreSSRItemWidth = 80
 local scoreSSRItemHeight = 35
 
 local SkillSets = {
+	"Overall",
 	"Stream", 
 	"Jumpstream", 
 	"Handstream", 
