@@ -91,9 +91,11 @@ local defaultConfig = {
 	},
 
 	songLength = {
+		short = "#666666", -- grey
 		normal = "#FFFFFF", -- normal
 		long = "#ff9a00", --orange
-		marathon = "#da5757" -- red
+		marathon = "#da5757", -- red
+		ultramarathon = "#c97bff" -- purple
 	},
 
 	gameplay = {
@@ -158,14 +160,32 @@ function getPaceMakerColor(type)
 end
 
 function getSongLengthColor(s)
-	if s < 1 then
-		return color(colorConfig:get_data().main['disabled'])
+
+
+	if s < 60 then
+		return lerp_color(s/60, color(colorConfig:get_data().songLength["short"]),
+			color(colorConfig:get_data().songLength["normal"]))
+
 	elseif s < PREFSMAN:GetPreference("LongVerSongSeconds") then
-		return color(colorConfig:get_data().songLength["normal"])
+		return lerp_color((s-60)/(PREFSMAN:GetPreference("LongVerSongSeconds")-60),
+			color(colorConfig:get_data().songLength["normal"]),
+			color(colorConfig:get_data().songLength["long"]))
+
 	elseif s < PREFSMAN:GetPreference("MarathonVerSongSeconds") then
-		return color(colorConfig:get_data().songLength["long"])
+		return lerp_color((s-PREFSMAN:GetPreference("LongVerSongSeconds"))/
+			(PREFSMAN:GetPreference("MarathonVerSongSeconds")-PREFSMAN:GetPreference("LongVerSongSeconds")),
+			color(colorConfig:get_data().songLength["long"]), 
+			color(colorConfig:get_data().songLength["marathon"]))
+
+	elseif s < 1000 then
+		return lerp_color((s-PREFSMAN:GetPreference("MarathonVerSongSeconds"))/
+			(1000-PREFSMAN:GetPreference("MarathonVerSongSeconds")), 
+			color(colorConfig:get_data().songLength["marathon"]), 
+			color(colorConfig:get_data().songLength["ultramarathon"]))
+
 	else
-		return color(colorConfig:get_data().songLength["marathon"])
+		return color(colorConfig:get_data().songLength["ultramarathon"])
+
 	end
 end
 

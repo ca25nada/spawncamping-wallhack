@@ -61,7 +61,7 @@ t[#t+1] = quadButton(1)..{
 		self:visible(false)
 	end;
 	TopPressedCommand = function(self, params)
-		if params.input == "DeviceButton_left mouse button" then
+		if song and params.input == "DeviceButton_left mouse button" then
 			SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 		end
 	end;
@@ -188,15 +188,14 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)	
 	end;	
 	SetCommand = function(self)
-		local seconds = 0
-		if song ~= nil then
-			seconds = song:GetStepsSeconds()
-			self:settext(SecondsToMSS(seconds))
-			self:diffuse(getSongLengthColor(seconds))
-		else
-			self:settext(SecondsToMSS(0))
+		local length = 0
+		if song then
+			length = song:GetStepsSeconds()/getCurRateValue()
 		end
-	end
+		self:settextf("%s",SecondsToMSS(length))
+		self:diffuse(getSongLengthColor(length))
+	end;
+	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
 };
 
 

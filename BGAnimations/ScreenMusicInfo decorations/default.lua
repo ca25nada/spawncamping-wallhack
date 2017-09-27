@@ -51,6 +51,7 @@ local function topRow()
 	}
 
 	t[#t+1] = LoadFont("Common Large") .. {
+		Name = "SongTitle";
 		InitCommand = function(self)
 			self:xy(-frameWidth/2 + 96 +6, -9)
 			self:zoom(0.25)
@@ -61,6 +62,26 @@ local function topRow()
 			end
 		end;
 	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			local actor = self:GetParent():GetChild("SongTitle")
+			local x = actor:GetX() + actor:GetWidth()*actor:GetZoomX() + 2
+			local y = actor:GetY() - 2
+
+			self:xy(x,y)
+			self:zoom(0.3)
+			self:halign(0)
+			self:playcommand("Set")
+		end;
+		SetCommand = function(self)
+			local length = song:GetStepsSeconds()/getCurRateValue()
+			self:settextf("%s",SecondsToMSS(length))
+			self:diffuse(getSongLengthColor(length))
+		end;
+		CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
+	}
+
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
