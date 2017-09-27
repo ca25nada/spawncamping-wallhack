@@ -5,6 +5,15 @@ function input(event)
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
 		end
+
+		if event.button == "EffectUp" then
+			changeMusicRate(0.05)
+		end
+
+		if event.button == "EffectDown" then
+			changeMusicRate(-0.05)
+		end
+
 	end
 
 	return false

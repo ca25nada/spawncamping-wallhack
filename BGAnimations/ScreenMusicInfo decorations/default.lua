@@ -235,9 +235,11 @@ local function stepsListRow()
 		end;
 		TopPressedCommand = function(self, params)
 			if params.input == "DeviceButton_right mouse button" then
-				MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(-1)})
-			else
 				MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(1)})
+				self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
+			else
+				MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(-1)})
+				self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
 			end
 			self:finishtweening()
 			self:diffusealpha(0.2)
@@ -245,6 +247,38 @@ local function stepsListRow()
 			self:diffusealpha(0)
 		end;
 	}
+	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+		Name = "TriangleLeft";
+		InitCommand = function(self)
+			self:zoom(0.15)
+			self:diffusealpha(0.8)
+			self:xy(-frameWidth/2+10,frameHeight)
+			self:rotationz(-90)
+		end;
+		TweenCommand = function(self)
+			self:finishtweening()
+			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+			self:smooth(0.5)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
+		end;
+	}
+
+	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+		Name = "TriangleRight";
+		InitCommand = function(self)
+			self:zoom(0.15)
+			self:diffusealpha(0.8)
+			self:xy(-frameWidth/2+150-10,frameHeight)
+			self:rotationz(90)
+		end;
+		TweenCommand = function(self)
+			self:finishtweening()
+			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+			self:smooth(0.5)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
+		end;
+	}
+
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
@@ -354,14 +388,48 @@ local function stepsBPMRow()
 		end;
 		TopPressedCommand = function(self, params)
 			if params.input == "DeviceButton_right mouse button" then
-				changeMusicRate(-0.05)
-			else
 				changeMusicRate(0.05)
+				self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
+			else
+				changeMusicRate(-0.05)
+				self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
 			end
 			self:finishtweening()
 			self:diffusealpha(0.2)
 			self:smooth(0.3)
 			self:diffusealpha(0)
+		end;
+	}
+
+	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+		Name = "TriangleLeft";
+		InitCommand = function(self)
+			self:zoom(0.15)
+			self:diffusealpha(0.8)
+			self:xy(frameWidth/2-150+10,frameHeight)
+			self:rotationz(-90)
+		end;
+		TweenCommand = function(self)
+			self:finishtweening()
+			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+			self:smooth(0.5)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
+		end;
+	}
+
+	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+		Name = "TriangleRight";
+		InitCommand = function(self)
+			self:zoom(0.15)
+			self:diffusealpha(0.8)
+			self:xy(frameWidth/2-10,frameHeight)
+			self:rotationz(90)
+		end;
+		TweenCommand = function(self)
+			self:finishtweening()
+			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+			self:smooth(0.5)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
 		end;
 	}
 
@@ -444,7 +512,7 @@ t[#t+1] = LoadActor("ssrbreakdown") .. {
 
 t[#t+1] = LoadActor("infobox") .. {
 	InitCommand = function(self)
-		self:xy(370,110)
+		self:xy(320,110)
 	end;
 }
 

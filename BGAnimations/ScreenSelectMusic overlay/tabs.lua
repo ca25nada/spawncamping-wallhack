@@ -7,17 +7,28 @@ local function input(event)
 				setTabIndex(i)
 			end
 		end
+
+		if event.button == "EffectUp" then
+			changeMusicRate(0.05)
+		end
+
+		if event.button == "EffectDown" then
+			changeMusicRate(-0.05)
+		end
+
 	end
 
 return false
 
 end
 
-
+local top
 local t = Def.ActorFrame{
 	BeginCommand=function(self) resetTabIndex() end;
 	PlayerJoinedMessageCommand=function(self) resetTabIndex() end;
 	OnCommand = function(self)
+		top = SCREENMAN:GetTopScreen()
+		top:AddInputCallback(input)
 		self:diffusealpha(0)
 		self:smooth(0.5)
 		self:diffusealpha(1)
