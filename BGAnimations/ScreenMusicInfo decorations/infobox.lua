@@ -1,4 +1,6 @@
-local t = Def.ActorFrame{}
+local steps
+local song = GAMESTATE:GetCurrentSong()
+local scoreList
 
 local frameWidth = 475
 local frameHeight = 340
@@ -12,6 +14,22 @@ local scoreItemYSpacing = 5
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 
 local maxScoreItems = 10
+
+local t = Def.ActorFrame{
+	SetStepsMessageCommand = function(self, params)
+		steps = params.steps
+		scoreList = getScoreTable(pn, getCurRate(), steps)
+		if scoreList ~= nil then
+			self:RunCommandsOnChildren(cmd(playcommand, "UpdateList"))
+			self:GetChild("NoScore"):visible(false)
+		else
+			self:RunCommandsOnChildren(cmd(playcommand, "Hide"))
+			self:GetChild("NoScore"):visible(true):playcommand("Set")
+		end
+	end
+
+}
+
 
 
 t[#t+1] = Def.Quad{
@@ -33,10 +51,23 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 }
 
+t[#t+1] = LoadFont("Common Normal")..{
+	Name = "NoScore";
+	InitCommand  = function(self)
+		self:xy(frameWidth/2, frameHeight/2)
+		self:zoom(0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.6)
+		self:settext("No scores here!\n(* ` ω´)")
+	end;
+	SetCommand = function(self)
+		self:finishtweening()
+		self:y(frameHeight/2-5)
+		self:easeOut(0.5)
+		self:y(frameHeight/2)
+	end
+}
+
 local function scoreListItem(i)
-	local steps
-	local song = GAMESTATE:GetCurrentSong()
-	local scoreList
 
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
@@ -59,17 +90,14 @@ local function scoreListItem(i)
 			self:diffusealpha(0)
 			self:x(scoreItemX-10)
 		end;
-
-		SetStepsMessageCommand = function(self, params)
-			steps = params.steps
-			scoreList = getScoreTable(pn, getCurRate(), steps)
-			if scoreList ~= nil and scoreList[i] ~= nil then
+		UpdateListCommand = function(self)
+			if scoreList[i] ~= nil then
+				self:RunCommandsOnChildren(cmd(playcommand, "Set"))
 				self:playcommand("Show")
-				self:RunCommandsOnChildren(cmd(queuecommand, "Set"))
 			else
 				self:playcommand("Hide")
 			end
-		end
+		end;
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
