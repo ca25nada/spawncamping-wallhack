@@ -2,10 +2,10 @@ local steps
 local song = GAMESTATE:GetCurrentSong()
 local scoreList
 
-local frameWidth = 475
+local frameWidth = capWideScale(360,430)
 local frameHeight = 340
 
-local scoreItemWidth = 350
+local scoreItemWidth = frameWidth-30
 local scoreItemHeight = 25
 
 local scoreItemX = 20

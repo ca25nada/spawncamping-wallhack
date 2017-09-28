@@ -500,19 +500,19 @@ t[#t+1] = stepsBPMRow() .. {
 
 t[#t+1] = LoadActor("stepsinfo") .. {
 	InitCommand = function(self)
-		self:xy(160,140)
+		self:xy(capWideScale(135,160),140)
 	end;
 }
 
 t[#t+1] = LoadActor("ssrbreakdown") .. {
 	InitCommand = function(self)
-		self:xy(160,315)
+		self:xy(capWideScale(135,160),315)
 	end;
 }
 
 t[#t+1] = LoadActor("infobox") .. {
 	InitCommand = function(self)
-		self:xy(320,110)
+		self:xy(capWideScale(270,320),110)
 	end;
 }
 

@@ -1,7 +1,7 @@
 
 local t = Def.ActorFrame{}
 
-local frameWidth = 300
+local frameWidth = capWideScale(250,300)
 local frameHeight = 60
 
 local pn = GAMESTATE:GetEnabledPlayers()[1]
