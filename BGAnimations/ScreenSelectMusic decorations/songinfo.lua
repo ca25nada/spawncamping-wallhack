@@ -24,7 +24,7 @@ local t = Def.ActorFrame{
 	SetCommand = function(self)
 		if doUpdate() then
 			song = GAMESTATE:GetCurrentSong()
-			group = topScreen:GetMusicWheel():GetSelectedSection()
+			group = wheel:GetSelectedSection()
 
 			self:GetChild("Banner"):queuecommand("Set")
 			self:GetChild("CDTitle"):queuecommand("Set")
@@ -61,9 +61,20 @@ t[#t+1] = quadButton(1)..{
 		self:visible(false)
 	end;
 	TopPressedCommand = function(self, params)
-		if song and params.input == "DeviceButton_left mouse button" then
-			SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+		if params.input == "DeviceButton_left mouse button" then
+					
+			if song then 
+				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+
+			elseif group and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
+				GHETTOGAMESTATE.LastSelectedFolder = group
+				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
+
+			end
+
 		end
+
+
 	end;
 }
 
