@@ -310,6 +310,7 @@ local function generalFrame(pn)
 				if meter == 0 then
 					meter = steps[pn]:GetMeter()
 				end
+				meter = math.max(1,meter)
 
 				local difftext
 				if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
@@ -418,6 +419,7 @@ local function generalFrame(pn)
 				if meter == 0 then
 					meter = steps[pn]:GetMeter()
 				end
+				meter = math.max(1,meter)
 				self:settext(math.floor(meter))
 				self:x((math.min(1,meter/maxMeter))*(frameWidth-10)-frameWidth/2-3)
 			else
