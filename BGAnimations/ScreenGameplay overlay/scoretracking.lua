@@ -91,7 +91,7 @@ t[#t+1] = Def.Actor{
 			end
 		end
 
-		if getAutoplay() == 1 then
+		if GHETTOGAMESTATE:getAutoplay() == 1 then
 			if params.HoldNoteScore then
 				addJudgeGD(params.Player,'HoldNoteScore_None',true)
 			else

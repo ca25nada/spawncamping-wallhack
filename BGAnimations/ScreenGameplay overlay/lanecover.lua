@@ -10,8 +10,8 @@ local laneColor = color(colorConfig:get_data().gameplay.LaneCover)
 
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer()
 
-local isCentered = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")) and GAMESTATE:GetNumPlayersEnabled() == 1-- load from prefs later
-local width = 64*cols
+
+local width = GHETTOGAMESTATE:getNoteFieldWidth(PLAYER_1)
 local padding = 8
 local styleType = ToEnumShortString(GAMESTATE:GetCurrentStyle():GetStyleType())
 
@@ -33,15 +33,12 @@ end;
 local heightP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCoverHeight
 local heightP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).LaneCoverHeight
 
-local P1X = SCREEN_CENTER_X
-local P2X = SCREEN_CENTER_X
-if not isCentered then
-	P1X = THEME:GetMetric("ScreenGameplay",string.format("PlayerP1%sX",styleType))
-	P2X = THEME:GetMetric("ScreenGameplay",string.format("PlayerP2%sX",styleType))
-end;
+
+local P1X = GHETTOGAMESTATE.getNoteFieldPos(PLAYER_1)
+local P2X = GHETTOGAMESTATE.getNoteFieldPos(PLAYER_2)
+
 
 local function getPlayerBPM(pn)
-	local pn = GAMESTATE:GetMasterPlayerNumber()
 	local songPosition = GAMESTATE:GetPlayerState(pn):GetSongPosition()
 	local ts = SCREENMAN:GetTopScreen()
 	local bpm = 0
@@ -52,7 +49,6 @@ local function getPlayerBPM(pn)
 end;
 
 local function getMaxDisplayBPM(pn)
-	local pn = GAMESTATE:GetMasterPlayerNumber()
 	local song = GAMESTATE:GetCurrentSong()
 	local steps = GAMESTATE:GetCurrentSteps(pn)
 	if steps:GetDisplayBPMType() ~= 'DisplayBPM_Random' then
@@ -140,7 +136,7 @@ local t = Def.ActorFrame{
 if enabledP1 then
 	t[#t+1] = Def.Quad{
 		Name="CoverP1";
-		InitCommand=cmd(xy,P1X,SCREEN_TOP;zoomto,(width+padding)*getNoteFieldScale(PLAYER_1),heightP1;valign,0;diffuse,laneColor);
+		InitCommand=cmd(xy,P1X,SCREEN_TOP;zoomto,(width+padding)*GHETTOGAMESTATE:getNoteFieldScale(PLAYER_1),heightP1;valign,0;diffuse,laneColor);
 		BeginCommand=function(self)
 			if isReverseP1 then
 				self:y(SCREEN_TOP)
@@ -154,7 +150,7 @@ if enabledP1 then
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="CoverTextP1White";
-		InitCommand=cmd(x,P1X-(width*getNoteFieldScale(PLAYER_1)/8);settext,0;valign,1;zoom,0.5;);
+		InitCommand=cmd(x,P1X-(width*GHETTOGAMESTATE:getNoteFieldScale(PLAYER_1)/8);settext,0;valign,1;zoom,0.5;);
 		BeginCommand=function(self)
 			self:settext(0)
 			if isReverseP1 then
@@ -173,7 +169,7 @@ if enabledP1 then
 	};
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="CoverTextP1Green";
-		InitCommand=cmd(x,P1X+(width*getNoteFieldScale(PLAYER_1)/8);settext,0;valign,1;zoom,0.5;diffuse,color("#4CBB17"));
+		InitCommand=cmd(x,P1X+(width*GHETTOGAMESTATE:getNoteFieldScale(PLAYER_1)/8);settext,0;valign,1;zoom,0.5;diffuse,color("#4CBB17"));
 		BeginCommand=function(self)
 			self:settext(math.floor(getSpeed(PLAYER_1)))
 			if isReverseP1 then
@@ -195,7 +191,7 @@ end;
 if enabledP2 then
 	t[#t+1] = Def.Quad{
 		Name="CoverP2";
-		InitCommand=cmd(xy,P2X,SCREEN_TOP;zoomto,(width+padding)*getNoteFieldScale(PLAYER_2),heightP2;valign,0;diffuse,laneColor);
+		InitCommand=cmd(xy,P2X,SCREEN_TOP;zoomto,(width+padding)*GHETTOGAMESTATE:getNoteFieldScale(PLAYER_2),heightP2;valign,0;diffuse,laneColor);
 		BeginCommand=function(self)
 			if isReverseP2 then
 				self:y(SCREEN_TOP)
@@ -209,7 +205,7 @@ if enabledP2 then
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="CoverTextP2White";
-		InitCommand=cmd(x,P2X-(width*getNoteFieldScale(PLAYER_2)/8);settext,0;valign,1;zoom,0.5;);
+		InitCommand=cmd(x,P2X-(width*GHETTOGAMESTATE:getNoteFieldScale(PLAYER_2)/8);settext,0;valign,1;zoom,0.5;);
 		BeginCommand=function(self)
 			self:settext(0)
 			if isReverseP2 then
@@ -229,7 +225,7 @@ if enabledP2 then
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="CoverTextP2Green";
-		InitCommand=cmd(x,P2X+(width*getNoteFieldScale(PLAYER_2)/8);settext,0;valign,1;zoom,0.5;diffuse,color("#4CBB17"));
+		InitCommand=cmd(x,P2X+(width*GHETTOGAMESTATE:getNoteFieldScale(PLAYER_2)/8);settext,0;valign,1;zoom,0.5;diffuse,color("#4CBB17"));
 		BeginCommand=function(self)
 			self:settext(math.floor(getSpeed(PLAYER_1)))
 			if isReverseP2 then

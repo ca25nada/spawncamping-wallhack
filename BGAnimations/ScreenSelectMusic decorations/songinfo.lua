@@ -67,9 +67,8 @@ t[#t+1] = quadButton(1)..{
 				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 
 			elseif group and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
-				GHETTOGAMESTATE.LastSelectedFolder = group
+				GHETTOGAMESTATE:setLastSelectedFolder(group)
 				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
-
 			end
 
 		end

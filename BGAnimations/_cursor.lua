@@ -42,7 +42,7 @@ t[#t+1] = Def.Quad{
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update);
     
-    if not PREFSMAN:GetPreference("Windowed") then
+    if not GHETTOGAMESTATE:isWindowed() then
    		self:GetChild("Cursor"):xy(INPUTFILTER:GetMouseX(),INPUTFILTER:GetMouseY())
    		self:GetChild("Cursor"):visible(true)
    	else
