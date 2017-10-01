@@ -88,7 +88,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:visible(GAMESTATE:IsHumanPlayer(pn) and equals)
 			end;
 			MouseLeftClickMessageCommand = function(self)
-				if isOver(self) then
+				if self:isOver() then
 					self:GetParent():GetChild("grade"):visible(not self:GetParent():GetChild("grade"):GetVisible())
 					self:GetParent():GetChild("judge"):visible(not self:GetParent():GetChild("judge"):GetVisible())
 					self:GetParent():GetChild("date"):visible(not self:GetParent():GetChild("date"):GetVisible())
@@ -281,7 +281,7 @@ t[#t+1] = LoadFont("Common normal")..{
 local function Update(self)
 	t.InitCommand=cmd(SetUpdateFunction,Update)
 	for i=0,drawindex-1 do
-		if isOver(self:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver")) then
+		if self:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver"):isOver() then
 			self:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver"):visible(true)
 		else
 			self:GetChild("scoreItem"..tostring(i)):GetChild("mouseOver"):visible(false)

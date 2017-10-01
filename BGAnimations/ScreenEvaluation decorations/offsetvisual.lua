@@ -101,7 +101,7 @@ t[#t+1] = Def.Quad{
 	end;
 	MouseLeftClickMessageCommand=function(self)
 		if not hidden then
-			if isOver(self) and #offsetTable > maxTicksZoomed then
+			if self:isOver() and #offsetTable > maxTicksZoomed then
 				local params = XtoNoteRange(INPUTFILTER:GetMouseX())
 				MESSAGEMAN:Broadcast("GraphLeftClick",{start = params[1], last = params[2]})
 			end
@@ -109,7 +109,7 @@ t[#t+1] = Def.Quad{
 	end;
 	MouseRightClickMessageCommand=function(self)
 		if not hidden then
-			if isOver(self) then
+			if self:isOver() then
 				MESSAGEMAN:Broadcast("GraphRightClick")
 			end
 		end

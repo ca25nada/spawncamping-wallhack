@@ -1,7 +1,10 @@
-local topActor
-local topActorZ = 0
-local topActorName
-local topInput
+MOUSE = {
+	topActor = false,
+	topActorZ = 0,
+	topActorName = false,
+	topInput = false,
+}
+
 
 -- To check the Z axis for getting the topmost actor upon clicking:
 -- Give an actor a Z value and call addPressedActors(self) inside any command.
@@ -15,7 +18,7 @@ local topInput
 
 -- Call this when left/right click event occurs and isOver() is true.
 -- Sets the actor calling this as the top actor if it has the highest Z value.
-function addPressedActors(actor, screenName, input)
+function MOUSE.addPressedActors(self, actor, screenName, input)
 	local top = SCREENMAN:GetTopScreen()
 	local topName -- top screen name
 
@@ -31,62 +34,68 @@ function addPressedActors(actor, screenName, input)
 	end
 
 	local z = actor:GetZ()
-	if z > topActorZ then
-		topActorZ = z
-		topActor = actor
+	if z > self.topActorZ then
+		self.topActorZ = z
+		self.topActor = actor
 		topName = actor:GetName()
-		topInput = input
+		self.topInput = input
 	end
 end
 
 -- Resets the variables back to original values.
-function resetPressedActors()
-	topActor = nil
-	topActorZ = 0
-	topActorName = nil
+function MOUSE.resetPressedActors(self)
+	self.topActor = false
+	self.topActorZ = 0
+	self.topActorName = false
 end
 
 -- Plays the TopPressed Command on the current top actor.
-function playTopPressedActor()	
+function MOUSE.playTopPressedActor(self)	
 	-- SCREENMAN:SystemMessage("PLAY PLS")
-	if topActor ~= nil then
-		topActor:playcommand("TopPressed", {input = topInput})
+	if self.topActor then
+		self.topActor:playcommand("TopPressed", {input = MOUSE.topInput})
 	end
 end
 
 
 --Gets the true X/Y Position by recursively grabbing the parents' position.
 --Does not take zoom into account.
-function getTrueX(actor)
-	if actor == nil then
+function Actor.getTrueX(self)
+	if self == nil then
 		return 0
 	end;
-	if actor:GetParent() == nil then
-		return actor:GetX() or 0
+
+	local parent = self:GetParent()
+
+	if parent == nil then
+		return self:GetX() or 0
 	else
-		return actor:GetX()+getTrueX(actor:GetParent())
+		return self:GetX() + parent:getTrueX()
 	end;
 end;
 
-function getTrueY(actor)
-	if actor == nil then
+function Actor.getTrueY(self)
+	if self == nil then
 		return 0
 	end;
-	if actor:GetParent() == nil then
-		return actor:GetY() or 0
+
+	local parent = self:GetParent()
+
+	if parent == nil then
+		return self:GetY() or 0
 	else
-		return actor:GetY()+getTrueY(actor:GetParent())
+		return self:GetY() + parent:getTrueY()
 	end;
 end;
 
 --Button Rollovers
-function isOver(actor)
-	local x = getTrueX(actor)
-	local y = getTrueY(actor)
-	local hAlign = actor:GetHAlign()
-	local vAlign = actor:GetVAlign()
-	local w = actor:GetZoomedWidth()
-	local h = actor:GetZoomedHeight()
+function Actor.isOver(self)
+	local x = self:getTrueX()
+	local y = self:getTrueY()
+	local hAlign = self:GetHAlign()
+	local vAlign = self:GetVAlign()
+	local w = self:GetZoomedWidth()
+	local h = self:GetZoomedHeight()
 
 	local mouseX = INPUTFILTER:GetMouseX()
 	local mouseY = INPUTFILTER:GetMouseY()
@@ -112,13 +121,13 @@ function quadButton(z)
 		end;
 
 		MouseLeftClickMessageCommand = function(self)
-			if isOver(self) then
-				addPressedActors(self, topName, "DeviceButton_left mouse button")
+			if self:isOver() then
+				MOUSE:addPressedActors(self, topName, "DeviceButton_left mouse button")
 			end
 		end;
 		MouseRightClickMessageCommand = function(self)
-			if isOver(self) then
-				addPressedActors(self, topName, "DeviceButton_right mouse button")
+			if self:isOver() then
+				MOUSE:addPressedActors(self, topName, "DeviceButton_right mouse button")
 			end
 		end;
 		TopPressedCommand = function(self)
