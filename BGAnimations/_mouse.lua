@@ -17,7 +17,7 @@ end
 
 local t = Def.ActorFrame{
 	OnCommand = function(self)
-		MOUSE:resetPressedActors()
+		BUTTON:resetPressedActors()
 
 		for _, pn in pairs({PLAYER_1, PLAYER_2}) do
 			SCREENMAN:set_input_redirected(pn, false)
@@ -33,8 +33,8 @@ local t = Def.ActorFrame{
 		self:queuecommand("PlayTopPressedActor")
 	end;
 	PlayTopPressedActorCommand = function(self)
-		MOUSE:playTopPressedActor()
-		MOUSE:resetPressedActors()
+		BUTTON:playTopPressedActor()
+		BUTTON:resetPressedActors()
 	end;
 	ExitScreenMessageCommand = function(self, params)
 		if params.screen == top:GetName() then

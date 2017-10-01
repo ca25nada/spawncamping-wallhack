@@ -1,4 +1,4 @@
-MOUSE = {
+BUTTON = {
 	topActor = false,
 	topActorZ = 0,
 	topActorName = false,
@@ -18,7 +18,7 @@ MOUSE = {
 
 -- Call this when left/right click event occurs and isOver() is true.
 -- Sets the actor calling this as the top actor if it has the highest Z value.
-function MOUSE.addPressedActors(self, actor, screenName, input)
+function BUTTON.addPressedActors(self, actor, screenName, input)
 	local top = SCREENMAN:GetTopScreen()
 	local topName -- top screen name
 
@@ -43,17 +43,17 @@ function MOUSE.addPressedActors(self, actor, screenName, input)
 end
 
 -- Resets the variables back to original values.
-function MOUSE.resetPressedActors(self)
+function BUTTON.resetPressedActors(self)
 	self.topActor = false
 	self.topActorZ = 0
 	self.topActorName = false
 end
 
 -- Plays the TopPressed Command on the current top actor.
-function MOUSE.playTopPressedActor(self)	
+function BUTTON.playTopPressedActor(self)	
 	-- SCREENMAN:SystemMessage("PLAY PLS")
 	if self.topActor then
-		self.topActor:playcommand("TopPressed", {input = MOUSE.topInput})
+		self.topActor:playcommand("TopPressed", {input = self.topInput})
 	end
 end
 
@@ -122,12 +122,12 @@ function quadButton(z)
 
 		MouseLeftClickMessageCommand = function(self)
 			if self:isOver() then
-				MOUSE:addPressedActors(self, topName, "DeviceButton_left mouse button")
+				BUTTON:addPressedActors(self, topName, "DeviceButton_left mouse button")
 			end
 		end;
 		MouseRightClickMessageCommand = function(self)
 			if self:isOver() then
-				MOUSE:addPressedActors(self, topName, "DeviceButton_right mouse button")
+				BUTTON:addPressedActors(self, topName, "DeviceButton_right mouse button")
 			end
 		end;
 		TopPressedCommand = function(self)
