@@ -22,6 +22,7 @@ local center1P = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")); -- Fo
 local judgeTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType
 local judgeTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType
 
+
 local spacing = 12 -- Spacing between the judgetypes
 local frameWidth = 80 -- Width of the Frame
 local frameHeight = ((#judges+1)*spacing)+8 -- Height of the Frame
@@ -62,6 +63,7 @@ local t = Def.ActorFrame{}
 -- The Judgment text itself (MA for marvelous, etc.)
 local function judgeCounter(pn)
 	local highlight = playerConfig:get_data(pn_to_profile_slot(pn)).JudgeType == 2 and not bareBone
+	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
@@ -97,17 +99,17 @@ local function judgeCounter(pn)
 		InitCommand = function(self)
 			self:xy(5,8+(#judges*spacing)):halign(0)
 			self:zoom(gradeFontSize)
-			self:settext(getGradeStrings(getGradeST(pn)))
+			self:playcommand("Set")
 		end;
 		SetCommand=function(self)
-			local grade = getGradeST(pn)
+			local grade = pss:GetWifeGrade(pn)
 			if grade then
 				self:settext(getGradeStrings(grade))
 			end
 		end;
 	}
 
-	for k,v in pairs(judges) do
+	for k,v in ipairs(judges) do
 
 		if highlight then
 			t[#t+1] = Def.Quad{ --JudgeHighlight
@@ -145,7 +147,11 @@ local function judgeCounter(pn)
 				self:settext(0)
 			end;
 			SetCommand=function(self)
-				self:settext(getJudgeST(pn,v))
+				if k > 6 then -- HoldNoteScores
+					self:settext(pss:GetHoldNoteScores(v))
+				else
+					self:settext(pss:GetTapNoteScores(v))
+				end
 			end;
 		}
 

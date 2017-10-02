@@ -30,6 +30,8 @@ local avatarPosition = {
 }
 
 local function avatarFrame(pn)
+	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:xy(avatarPosition[pn].X,avatarPosition[pn].Y)
@@ -79,13 +81,9 @@ local function avatarFrame(pn)
 			end
 		    self:settext(name.." 0.00%")
 		end;
-		SetCommand=function(self)
-			local temp1 = getCurScoreST(pn,0)
-			local temp2 = getMaxScoreST(pn,0)
-			temp2 = math.max(temp2,1)
-			self:settextf("%s %.2f%%",profile:GetDisplayName(),math.floor((temp1/temp2)*10000)/100)
+		JudgmentMessageCommand = function(self, params) 
+			self:settextf("%s %.2f%%", profile:GetDisplayName(), math.floor(params.TotalPercent*10000)/100)
 		end;
-		JudgmentMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
 	t[#t+1] = LoadFont("Common Normal") .. {

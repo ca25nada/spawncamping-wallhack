@@ -19,7 +19,6 @@ local defaultConfig = {
 	--NPSMaxVerts = 300,
 	CBHighlight = false,
 	FCEffect = true,
-	SaveGhostScore = true,
 }
 
 playerConfig = create_setting("playerConfig", "playerConfig.lua", defaultConfig, -1)
@@ -37,7 +36,6 @@ function LoadProfileCustom(profile, dir)
 
 	if pn then
 		playerConfig:load(pn_to_profile_slot(pn))
-		ghostTable:load(pn_to_profile_slot(pn))
 	end
 end
 
@@ -55,7 +53,5 @@ function SaveProfileCustom(profile, dir)
 	if pn then
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
-		ghostTable:set_dirty(pn_to_profile_slot(pn))
-		ghostTable:save(pn_to_profile_slot(pn))
 	end
 end

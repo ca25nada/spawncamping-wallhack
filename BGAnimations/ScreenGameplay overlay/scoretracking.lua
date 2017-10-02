@@ -1,8 +1,5 @@
 -- Most of the scoretracking function calls and message broadcasting are done here.
 
-
-resetJudgeST() -- Reset scoretracking data.
-resetGhostData() -- Reset ghostscore data.
 local bareBone = isBareBone()
 local startFlag = false
 local fcFlag = false
@@ -76,46 +73,7 @@ local t = Def.ActorFrame{
 t[#t+1] = Def.Actor{
 	JudgmentMessageCommand=function(self,params)
 		
-		if not bareBone then
-			popGhostData(params.Player)
-
-			 -- Apparently sending out too many messages in a extremely short amount of time causes performance issues.
-			 -- e.g. mine walls
-			if not params.HoldNoteScore then -- No issues with holds
-				if GetTimeSinceStart() - ghostDataLastUpdate > ghostDataUpdateDelay then
-					MESSAGEMAN:Broadcast('GhostScore')
-					ghostDataLastUpdate = GetTimeSinceStart()
-				end
-			else
-				MESSAGEMAN:Broadcast('GhostScore')
-			end
-		end
-
-		if GHETTOGAMESTATE:getAutoplay() == 1 then
-			if params.HoldNoteScore then
-				addJudgeGD(params.Player,'HoldNoteScore_None',true)
-			else
-				addJudgeGD(params.Player,'TapNoteScore_None',false)
-			end
-			return
-		end
-
-		local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
-		if params.HoldNoteScore then -- Hold/Rolls
-			addJudgeST(params.Player, params.HoldNoteScore,true)
-			addJudgeGD(params.Player, params.HoldNoteScore,true)
-		elseif params.TapNoteScore == 'TapNoteScore_HitMine' or params.TapNoteScore == 'TapNoteScore_AvoidMine' then -- Mines
-			addJudgeST(params.Player, params.TapNoteScore,false)
-			addJudgeGD(params.Player, params.TapNoteScore,false)
-		else -- Rest should be taps.
-			addJudgeST(params.Player, params.TapNoteScore,false)
-			addJudgeGD(params.Player, params.TapNoteScore,false)
-			if params.TapNoteScore ~= 'TapNoteScore_Miss' then -- Add timing offset if it's not a miss
-				addOffsetST(params.Player, params.TapNoteOffset, GAMESTATE:GetSongPosition():GetMusicSeconds())
-			end
-		end;
-
-	end;
+	end
 }
 
 
