@@ -11,7 +11,7 @@ local frameHeight = 300
 local rate = getCurRate()
 
 -- Reset preview music starting point since song was finished.
-setLastSecond(0)
+GHETTOGAMESTATE:setLastPlayedSecond(0)
 
 -- ApproachSecond time for all rolling numbers in this file.
 local approachSecond = 0.5
