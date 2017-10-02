@@ -53,7 +53,15 @@ end
 function BUTTON.playTopPressedActor(self)	
 	-- SCREENMAN:SystemMessage("PLAY PLS")
 	if self.topActor then
-		self.topActor:playcommand("TopPressed", {input = self.topInput})
+
+		-- No way of checking whether the actor being referenced is stale
+		-- so just catch the error it throws with pcall instead.
+		local result,value = pcall(self.topActor.playcommand, self.topActor, "TopPressed" , {input = self.topInput})
+
+		-- Reset the top actor if there's an error
+		if not result then
+			self:resetPressedActors()
+		end
 	end
 end
 

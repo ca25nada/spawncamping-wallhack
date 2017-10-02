@@ -26,6 +26,9 @@ local t = Def.ActorFrame{
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
 	end;
+	OffCommand = function(self)
+		BUTTON:resetPressedActors()
+	end;
 	MouseLeftClickMessageCommand = function(self)
 		self:queuecommand("PlayTopPressedActor")
 	end;
