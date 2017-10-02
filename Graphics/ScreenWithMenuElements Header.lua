@@ -17,11 +17,11 @@ t[#t+1] = quadButton(3)..{
 	end;
 	OnCommand = function(self)
 		self:zoomy(0)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:zoomy(height)
 	end;
 	OffCommand = function(self)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:zoomy(0)
 	end;
 }
@@ -35,11 +35,11 @@ t[#t+1] = quadButton(4)..{
 	end;
 	OnCommand = function(self)
 		self:zoomy(0)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:zoomy(height)
 	end;
 	OffCommand = function(self)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:zoomy(0)
 	end;
 	TopPressedCommand = function(self, params)
@@ -60,11 +60,11 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 	OnCommand = function(self)
 		self:y(-height/2)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:y(height/2)
 	end;
 	OffCommand = function(self)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:y(-height/2)
 	end;
 };
@@ -80,11 +80,11 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 	OnCommand = function(self)
 		self:y(-height/2)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:y(height/2)
 	end;
 	OffCommand = function(self)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:y(-height/2)
 	end;
 	UpdateScreenHeaderMessageCommand = function(self,param)

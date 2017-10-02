@@ -10,11 +10,11 @@ t[#t+1] = quadButton(2) .. {
 	end;
 	OnCommand = function(self)
 		self:zoomy(0)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:zoomy(height)
 	end;
 	OffCommand = function(self)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:zoomy(0)
 	end;
 }
@@ -25,11 +25,11 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	OnCommand = function(self)
 		self:diffuse(color(colorConfig:get_data().main.headerText))
 		self:y(SCREEN_HEIGHT+height/2)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT-height/2)
 	end;
 	OffCommand = function(self)
-		self:smooth(0.5)
+		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT+height/2)
 	end;
 };
@@ -55,11 +55,11 @@ if themeConfig:get_data().global.TipType >= 2 then
 				self:settext(getRandomQuotes(themeConfig:get_data().global.TipType))
 			end
 			self:y(SCREEN_HEIGHT+height/2)
-			self:smooth(0.5)
+			self:easeOut(0.5)
 			self:y(SCREEN_HEIGHT-height/2)
 		end;
 		OffCommand = function(self)
-			self:smooth(0.5)
+			self:easeOut(0.5)
 			self:y(SCREEN_HEIGHT+height/2)
 		end
 	}
