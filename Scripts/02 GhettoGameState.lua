@@ -1,23 +1,24 @@
 
 
 GHETTOGAMESTATE = {
-	lastSelectedFolder = ""
+	lastSelectedFolder = "",
+	lastPlayedSecond = 0
 }
 
 --returns current autoplay type. returns a integer between 0~2 corresponding to
 --human, autoplay and autoplay cpu respectively.
 function GHETTOGAMESTATE.getAutoplay()
 	return Enum.Reverse(PlayerController)[tostring(PREFSMAN:GetPreference("AutoPlay"))]
-end;
+end
 
 function GHETTOGAMESTATE.isAutoplay()
 	return GHETTOGAMESTATE.getAutoplay() ~= 0
-end;
+end
 
 --returns true if windowed.
 function GHETTOGAMESTATE.isWindowed()
 	return PREFSMAN:GetPreference("Windowed")
-end;
+end
 
 -- Values based on ArrowEffects.cpp
 -- Gets the note scale from the mini mod being used.
@@ -57,4 +58,16 @@ end
 
 function GHETTOGAMESTATE.setLastSelectedFolder(self, group)
 	self.lastSelectedFolder = group
+end
+
+function GHETTOGAMESTATE.setLastPlayedSecond(self, t)
+	self.lastPlayedSecond = t
+end
+
+function GHETTOGAMESTATE.getLastPlayedSecond(self)
+	if self.lastPlayedSecond then
+		return self.lastPlayedSecond
+	else
+		return 0
+	end
 end

@@ -358,11 +358,3 @@ function getOffsetStdDevST(pn)
 	end
 	return math.sqrt((sum2 - math.pow(sum3,2)/#offset)/(#offset-1))
 end
-
-function setLastSecond(t)
-	lastSecond = t
-end
-
-function getLastSecond()
-	return lastSecond
-end

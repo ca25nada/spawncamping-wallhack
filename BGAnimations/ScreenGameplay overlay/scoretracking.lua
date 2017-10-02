@@ -40,7 +40,7 @@ end
 local function Update(self)
 	self.InitCommand=cmd(SetUpdateFunction,Update)
 	local curSecond = GAMESTATE:GetSongPosition():GetMusicSeconds()
-	setLastSecond(curSecond) -- For preview music when exiting midway.
+	GHETTOGAMESTATE:setLastPlayedSecond(curSecond) -- For preview music when exiting midway.
 
 	if not startFlag and (firstSecond-curSecond < 2 or curSecond > 1) then
         MESSAGEMAN:Broadcast("SongStarting")

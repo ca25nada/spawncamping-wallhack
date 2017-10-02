@@ -1,5 +1,5 @@
 local curSong = nil
-local start = math.max(0,getLastSecond())
+local start = math.max(0,GHETTOGAMESTATE:getLastPlayedSecond())
 local delay = 1
 local startFromPreview = true
 local loop = themeConfig:get_data().global.SongPreview == 2
@@ -9,7 +9,7 @@ local musicLength = 0
 
 local test = true
 
-setLastSecond(0)
+GHETTOGAMESTATE:setLastPlayedSecond(0)
 
 -- SongPreview == 1 (SM STYLE)
 -- 		Disable this stuff, loops from SampleStart to SampleStart+SampleLength
@@ -21,6 +21,7 @@ setLastSecond(0)
 -- SongPreview == 3 (old osu!)
 -- 		Play from SampleStart to end of the song. then Loop from the start of the song to the end.
 --		If a player exits midway in a song, play from last point to end of song, then loop from start.
+
 
 local deltaSum = 0
 local function playMusic(self, delta)
@@ -63,6 +64,7 @@ local t = Def.ActorFrame{
 			curPath = curSong:GetMusicPath()
 			if not curPath then
 				SCREENMAN:SystemMessage("Invalid music file path.")
+				return
 			end
 			sampleStart = curSong:GetSampleStart()
 			musicLength = curSong:MusicLengthSeconds()
