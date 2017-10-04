@@ -162,7 +162,7 @@ local function generalFrame(pn)
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(pn)));
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
 			self:zoomto(50,50)
 		end;
 	}

@@ -60,7 +60,7 @@ t[#t+1] = Def.Quad{
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(pn)));
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
 			self:zoomto(avatarHeight,avatarWidth)
 		end;
 	}
