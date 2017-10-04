@@ -46,9 +46,8 @@ t[#t+1] = Def.Quad{
 		end;
 		TopPressedCommand = function(self, params)
 			if params.input == "DeviceButton_left mouse button" then
-				SCREENMAN:SystemMessage("A full avatar selection screen coming soon(tm)")
+				SCREENMAN:AddNewScreenToTop("ScreenSelectAvatar")
 			end
-			--SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 		end;
 	}
 
