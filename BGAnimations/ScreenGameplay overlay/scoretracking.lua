@@ -46,9 +46,7 @@ local function Update(self)
 
     if not fcFlag and curSecond > lastSecond+fcFlagDelay then
     	for _,v in pairs(GAMESTATE:GetEnabledPlayers()) do
-	    	if isFullCombo(v) then
-	    		MESSAGEMAN:Broadcast("FullCombo",{pn = v})
-	    	end
+	    	-- FC CHECK
 	    end
 	    fcFlag = true
     end

@@ -6,10 +6,10 @@ local judgeTableP2 = {}
 local stepsP2 = 0
 
 if not GAMESTATE:IsCourseMode() then
-	judgeTableP1 = getJudgeTableST(PLAYER_1)
-	stepsP1 = getMaxNotesST(PLAYER_1)
-	judgeTableP2 = getJudgeTableST(PLAYER_2)
-	stepsP2 = getMaxNotesST(PLAYER_2)
+	judgeTableP1 = {}
+	stepsP1 = 0
+	judgeTableP2 = {}
+	stepsP2 = 0
 end;
 
 local cells = 50

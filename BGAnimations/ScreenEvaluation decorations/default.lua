@@ -289,7 +289,7 @@ local function scoreBoard(pn)
 		InitCommand=function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
 		ModifyAvatarCommand=function(self)
 			self:visible(true)
-			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(pn)));
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
 			self:zoomto(50,50)
 		end
 	}
@@ -561,8 +561,8 @@ local function scoreBoard(pn)
 		BeginCommand = function(self)
 			local recScoreValue = getScore(recScore, steps, true)
 
-			local maxScore = getMaxScoreST(pn,1)
-			local percentText = string.format("%05.2f%%",recScoreValue*100)
+			local maxScore = getMaxScore(pn)
+			local percentText = string.format("%05.2f%%",math.floor(recScoreValue*10000)/100)
 			self:settextf("%s (%0.0f/%d)",percentText,recScoreValue*maxScore,maxScore)
 		end;
 	}
@@ -607,7 +607,7 @@ local function scoreBoard(pn)
 			if diff >= 0 then
 				extra = "+"
 			end;
-			self:settextf("%s%d",extra,diff)
+			self:settextf("%s%0.2f",extra,diff)
 		end;
 	}
 
@@ -784,7 +784,7 @@ local function scoreBoard(pn)
 					percent = 0
 				end
 				self:diffuse(lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4)))
-				self:settextf("(%.2f%%)",percent*100)
+				self:settextf("(%.2f%%)",math.floor(percent*10000)/100)
 			end
 		}
 	end
@@ -837,7 +837,7 @@ local function scoreBoard(pn)
 					percent = 0
 				end
 				self:diffuse(lerp_color(percent,Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4)))
-				self:settextf("(%.2f%%)",percent*100)
+				self:settextf("(%.2f%%)",math.floor(percent*10000)/100)
 			end
 		}
 	end

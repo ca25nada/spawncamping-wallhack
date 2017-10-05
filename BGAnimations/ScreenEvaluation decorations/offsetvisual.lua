@@ -20,9 +20,9 @@ local songLength = song:GetLastSecond()
 local timingWindowScale = PREFSMAN:GetPreference("TimingWindowScale")
 local W5Window = PREFSMAN:GetPreference("TimingWindowSecondsW5") -- Timing window for Bads
 local pn = GAMESTATE:GetEnabledPlayers()[1]
-local offsetTable = getOffsetTableST(pn) -- Table containing offsets
-local mean = getOffsetMeanST(pn)
-local stddev = getOffsetStdDevST(pn)
+local offsetTable = {}--getOffsetTableST(pn) -- Table containing offsets
+local mean = 0 --getOffsetMeanST(pn)
+local stddev = 0 --getOffsetStdDevST(pn)
 
 local hidden = true
 
