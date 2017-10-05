@@ -46,16 +46,29 @@ t[#t+1] = LoadFont("Common Large")..{
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand  = function(self)
-		self:xy(100,0)
+		self:xy(100,-5)
+		self:zoom(0.3)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:settextf("Rating:",rating)
+	end;
+}
+
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand  = function(self)
+		self:xy(100,5)
 		self:zoom(0.3)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:queuecommand('Set')
 	end;
 	SetCommand = function(self)
+		local rating = profile:GetPlayerRating()
 		if profile ~= nil then
-			self:settextf("Skill Rating:\n%0.2f",profile:GetPlayerRating())
+			self:settextf("%0.2f",rating)
 		end
+		self:diffuse(getSRColor(rating))
 	end;
 }
 

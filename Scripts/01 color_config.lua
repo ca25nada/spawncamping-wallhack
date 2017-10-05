@@ -79,6 +79,19 @@ local defaultConfig = {
 		Grade_None		= "#666666", -- no play
 	},
 
+	etternaTier = {
+		Tier01  = "#c97bff",  -- THE PURPLE
+		Tier02 	= "#66ccff", -- 25+ AAAA Color
+		Tier03 	= "#eebb00", -- <25 AAA
+		Tier04 	= "#ddaa00", -- 25+ yellow
+		Tier05	= "#66cc66", -- 20+ AA
+		Tier06	= "#da5757", -- 15+ A
+		Tier07	= "#5b78bb", -- 10+ B
+		Tier08	= "#8c6239", -- 0+ D
+		None	= "#FFFFFF", -- None
+		Invalid	= "#666666", -- None
+	},
+
 	judgment = { -- Colors of each Judgment types
 		TapNoteScore_W1 = "#99ccff",
 		TapNoteScore_W2	= "#f2cb30",
@@ -212,3 +225,23 @@ function offsetToJudgeColor(offset)
 end
 
 function TapNoteScoreToColor(tns) return color(colorConfig:get_data().judgment[tns]) or color("#ffffff"); end;
+
+function getSRColor(SR)
+	if SR > 30 then 
+		return color(colorConfig:get_data().etternaTier["Tier01"])
+	elseif SR > 25 then
+		return color(colorConfig:get_data().etternaTier["Tier02"])
+	elseif SR > 20 then
+		return lerp_color((SR-20)/5, color(colorConfig:get_data().etternaTier["Tier04"]), color(colorConfig:get_data().etternaTier["Tier03"]))
+	elseif SR > 15 then
+		return lerp_color((SR-15)/5, color(colorConfig:get_data().etternaTier["Tier05"]), color(colorConfig:get_data().etternaTier["Tier04"]))
+	elseif SR > 10 then
+		return lerp_color((SR-10)/5, color(colorConfig:get_data().etternaTier["Tier06"]), color(colorConfig:get_data().etternaTier["Tier05"]))
+	elseif SR > 5 then
+		return lerp_color((SR-5)/5, color(colorConfig:get_data().etternaTier["Tier07"]), color(colorConfig:get_data().etternaTier["Tier06"]))
+	elseif SR > 0 then
+		return lerp_color(SR/5, color(colorConfig:get_data().etternaTier["Tier08"]), color(colorConfig:get_data().etternaTier["Tier07"]))
+	else
+		return color(colorConfig:get_data().etternaTier["None"])
+	end
+end

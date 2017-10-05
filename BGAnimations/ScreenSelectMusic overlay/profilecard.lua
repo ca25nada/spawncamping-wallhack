@@ -116,12 +116,10 @@ local function generalFrame(pn)
 		SetCommand = function(self)
 			self:stoptweening()
 			self:smooth(0.5)
-			local scoreList
-			local clearType
+			local rating
 			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
-				scoreList = getScoreTable(pn, getCurRate())
-				clearType = getHighestClearType(pn,steps[pn],scoreList,0)
-				self:diffuse(getClearTypeColor(clearType))
+				rating = profile[pn]:GetPlayerRating()
+				self:diffuse(getSRColor(rating))
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;

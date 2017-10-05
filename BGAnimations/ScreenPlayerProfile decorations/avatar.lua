@@ -15,15 +15,8 @@ local t = Def.ActorFrame{
 t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:zoomto(avatarHeight+avatarBorder*2,avatarWidth+avatarBorder*2)
-			self:diffuse(color("#000000"))
-			self:diffusealpha(0.8)
+			self:diffuse(getSRColor(profile:GetPlayerRating()))
 		end;
-		SetCommand = function(self)
-			self:stoptweening()
-			self:smooth(0.5)
-			self:diffuse(color("#FF9900"))
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = Def.Quad{
