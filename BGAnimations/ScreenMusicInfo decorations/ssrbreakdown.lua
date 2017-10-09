@@ -40,7 +40,7 @@ t[#t+1] = Def.Quad{
 	end
 }
 
-t[#t+1] = LoadFont("Common Normal")..{
+t[#t+1] = LoadFont("Common Bold")..{
 	InitCommand  = function(self)
 		self:xy(-frameWidth/2+5, -frameHeight/2+10)
 		self:zoom(0.4)
@@ -66,12 +66,9 @@ local function makeMSDPoints(i)
 			local steps = params.steps
 			local MSD = steps:GetMSD(getCurRateValue(), i+1)
 			self:settextf("%s\n%0.2f",SkillSets[i], MSD)
+			self:AddAttribute(#SkillSets[i], {Length = -1, Diffuse = getMSDColor(MSD)})
 		end;
 	}
-end
-
-for i=1, #SkillSets do
-	t[#t+1] = makeMSDPoints(i)
 end
 
 t[#t+1] = Def.ActorMultiVertex{
@@ -116,12 +113,13 @@ t[#t+1] = Def.ActorMultiVertex{
 		verts = {}
 		local steps = params.steps
 		local x,y
+		local overallMSD = steps:GetMSD(getCurRateValue(), 1)
 		local MSD
 		for i=1, #SkillSets do
 			x,y = getPointOffset(circleRadius,sepAngle*(i-1)-90)
 			MSD = steps:GetMSD(getCurRateValue(), i+1)
 
-			verts[#verts+1] = {{x*math.min(softCap,MSD/maxValue),y*math.min(softCap,MSD/maxValue),0},color(colorConfig:get_data().main.highlight)}
+			verts[#verts+1] = {{x*math.min(softCap,MSD/maxValue),y*math.min(softCap,MSD/maxValue),0},getMSDColor(MSD)}
 			verts[#verts+1] = {{0,0,0},color("#FFFFFF")}
 		end
 
@@ -131,6 +129,10 @@ t[#t+1] = Def.ActorMultiVertex{
 		self:playcommand("Set")
 	end;
 }
+
+for i=1, #SkillSets do
+	t[#t+1] = makeMSDPoints(i)
+end
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand  = function(self)
@@ -144,6 +146,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		local steps = params.steps
 		local MSD = steps:GetMSD(getCurRateValue(), 1)
 		self:settextf("Overall: %0.2f", MSD)
+		self:AddAttribute(8, {Length = -1, Diffuse = getMSDColor(MSD)})
 	end;
 }
 

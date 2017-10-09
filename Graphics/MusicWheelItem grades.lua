@@ -1,5 +1,5 @@
 return Def.ActorFrame{
-	LoadFont("Common Normal") .. {
+	LoadFont("Common Bold") .. {
         InitCommand=cmd(xy,16,-1;zoom,0.5;maxwidth,WideScale(get43size(20),20)/0.5);
         SetGradeCommand=function(self,params)
         	local player = params.PlayerNumber

@@ -202,7 +202,7 @@ local function scoreListItem(i)
 		SetCommand = function(self)
 			local rating = ths:GetSkillsetSSR(skillset)
 			self:settextf("%0.2f", rating)
-			self:diffuse(getSRColor(rating))
+			self:diffuse(getMSDColor(rating))
 		end;
 	}
 

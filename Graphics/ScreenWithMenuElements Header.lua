@@ -49,7 +49,7 @@ t[#t+1] = quadButton(4)..{
 	end;
 }
 
-t[#t+1] = LoadFont("Common Normal")..{
+t[#t+1] = LoadFont("Common Bold")..{
 	Name = "HeaderTitle";
 	Text = Screen.String("HeaderText");
 	InitCommand = function (self)
@@ -69,7 +69,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end;
 };
 
-t[#t+1] = LoadFont("Common Normal")..{
+t[#t+1] = LoadFont("Common Bold")..{
 	Name = "HeaderTitle";
 	Text = Screen.String("HeaderText");
 	InitCommand = function (self)

@@ -41,7 +41,7 @@ t[#t+1] = Def.Quad{
 	end
 }
 
-t[#t+1] = LoadFont("Common Normal")..{
+t[#t+1] = LoadFont("Common Bold")..{
 	InitCommand  = function(self)
 		self:xy(5, 10)
 		self:zoom(0.4)
@@ -146,7 +146,7 @@ local function scoreListItem(i)
 	}
 
 
-	t[#t+1] = LoadFont("Common Normal")..{
+	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand  = function(self)
 			self:xy(20,0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
@@ -155,10 +155,11 @@ local function scoreListItem(i)
 		SetCommand = function(self)
 			local ssr = scoreList[i]:GetSkillsetSSR("Overall")
 			self:settextf("%0.2f",ssr)
+			self:diffuse(getMSDColor(ssr))
 		end;
 	}
 
-	t[#t+1] = LoadFont("Common Normal")..{
+	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand  = function(self)
 			self:xy(40,-6)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
@@ -173,7 +174,7 @@ local function scoreListItem(i)
 		end
 	}
 
-	t[#t+1] = LoadFont("Common Normal")..{
+	t[#t+1] = LoadFont("Common Bold")..{
 		Name = "Grade";
 		InitCommand  = function(self)
 			self:xy(40,5)

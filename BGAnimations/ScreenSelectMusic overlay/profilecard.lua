@@ -166,7 +166,7 @@ local function generalFrame(pn)
 	}
 
 	-- Player name
-	t[#t+1] = LoadFont("Common Normal")..{
+	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand  = function(self)
 			self:xy(69-frameWidth/2,9)
 			self:zoom(0.6)
@@ -226,9 +226,9 @@ local function generalFrame(pn)
 	--Score Date
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self)
-			self:xy(frameWidth/2-150,3)
+			self:xy(frameWidth/2-5,3)
 			self:zoom(0.35)
-		    self:halign(0):valign(0)
+		    self:halign(1):valign(0)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText)):diffusealpha(0.5)
 		end;
 		SetCommand = function(self)
@@ -428,7 +428,7 @@ local function generalFrame(pn)
 	}
 
 	--Grades
-	t[#t+1] = LoadFont("Common Large")..{
+	t[#t+1] = LoadFont("Common BLarge")..{
 		InitCommand = function(self)
 			self:xy(60-frameWidth/2,frameHeight-35)
 			self:zoom(0.6)
@@ -448,7 +448,7 @@ local function generalFrame(pn)
 	}
 
 	--ClearType
-	t[#t+1] = LoadFont("Common Normal")..{
+	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand = function(self)
 			self:xy(60-frameWidth/2,frameHeight-15)
 			self:zoom(0.4)
@@ -472,7 +472,7 @@ local function generalFrame(pn)
 	}
 
 	-- Percentage Score
-	t[#t+1] = LoadFont("Common Large")..{
+	t[#t+1] = LoadFont("Common BLarge")..{
 		InitCommand= function(self)
 			self:xy(190-frameWidth/2,frameHeight-36)
 			self:zoom(0.45):halign(1):maxwidth(75/0.45)

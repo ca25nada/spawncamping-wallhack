@@ -19,7 +19,7 @@ t[#t+1] = quadButton(2) .. {
 	end;
 }
 
-t[#t+1] = LoadFont("Common Normal") .. {
+t[#t+1] = LoadFont("Common Bold") .. {
 	Name = "currentTime";
 	InitCommand=cmd(xy,SCREEN_WIDTH-10,SCREEN_HEIGHT-height/2;zoom,0.45;halign,1);
 	OnCommand = function(self)

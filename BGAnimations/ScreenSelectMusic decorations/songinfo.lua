@@ -143,7 +143,7 @@ t[#t+1] = Def.Sprite {
 	end
 };
 
-t[#t+1] = LoadFont("Common Normal") .. {
+t[#t+1] = LoadFont("Common Bold") .. {
 	Name="curStage";
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2+5,120-12-capWideScale(get43size(60),60))
@@ -165,7 +165,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 };
 
 -- Song title // Artist on top of the banner
-t[#t+1] = LoadFont("Common Normal") .. {
+t[#t+1] = LoadFont("Common Bold") .. {
 	Name="songTitle";
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2+5,132+capWideScale(get43size(60),60))

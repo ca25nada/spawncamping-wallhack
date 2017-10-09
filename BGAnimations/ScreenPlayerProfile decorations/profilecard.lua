@@ -68,7 +68,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		if profile ~= nil then
 			self:settextf("%0.2f",rating)
 		end
-		self:diffuse(getSRColor(rating))
+		self:diffuse(getMSDColor(rating))
 	end;
 }
 

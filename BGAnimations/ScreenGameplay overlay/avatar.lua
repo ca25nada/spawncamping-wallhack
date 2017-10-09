@@ -71,7 +71,7 @@ local function avatarFrame(pn)
 		end;	
 	};
 
-	t[#t+1] = LoadFont("Common Normal") .. {
+	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand= function(self)
 			local name = profile:GetDisplayName()
 			if pn == PLAYER_1 then
@@ -82,11 +82,11 @@ local function avatarFrame(pn)
 		    self:settext(name.." 0.00%")
 		end;
 		JudgmentMessageCommand = function(self, params) 
-			self:settextf("%s %.2f%%", profile:GetDisplayName(), math.floor(params.TotalPercent*10000)/100)
+			self:settextf("%s %.2f%%", profile:GetDisplayName(), params.TotalPercent)
 		end;
 	};
 
-	t[#t+1] = LoadFont("Common Normal") .. {
+	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand = function(self)
 			if pn == PLAYER_1 then
 				self:xy(53,20):zoom(0.4):halign(0):maxwidth(180/0.4)
@@ -126,79 +126,8 @@ local function avatarFrame(pn)
 	return t
 end
 
-local function bareBoneFrame(pn)
-	local profile = GetPlayerOrMachineProfile(pn)
-	local name = profile:GetDisplayName()
-
-	local t = Def.ActorFrame{
-		InitCommand = function(self)
-			self:xy(avatarPosition[pn].X,avatarPosition[pn].Y)
-		end;
-	}
-
-	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand = function(self)
-			if pn == PLAYER_1 then
-				self:xy(3,7):halign(0)
-			else
-				self:xy(-3,7):halign(1)
-			end
-			self:zoom(0.6):maxwidth(180/0.4)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		SetCommand=function(self)
-			local temp1 = getCurScoreST(pn,0)
-			local temp2 = getMaxScoreST(pn,0)
-			temp2 = math.max(temp2,1)
-			self:settextf("%s %.2f%%",name,math.floor((temp1/temp2)*10000)/100)
-		end;
-		JudgmentMessageCommand = function(self) self:queuecommand('Set') end;
-	};
-
-	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand = function(self)
-			if pn == PLAYER_1 then
-				self:xy(3,20):halign(0)
-			else
-				self:xy(-3,20):halign(1)
-			end
-			self:zoom(0.4):maxwidth(180/0.4)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		SetCommand=function(self)
-			local steps = GAMESTATE:GetCurrentSteps(pn);
-			local diff = getDifficulty(steps:GetDifficulty())
-			local meter = steps:GetMeter()
-			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-			self:settext(stype.." "..diff.." "..meter)
-		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-	};
-
-	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand = function(self)
-			if pn == PLAYER_1 then
-				self:xy(3,32):halign(0)
-			else
-				self:xy(-3,32):halign(1)
-			end
-			self:zoom(0.4):maxwidth(180/0.4)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		SetCommand=function(self)
-			self:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
-		end;
-	};
-
-	return t
-end
-
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-	if bareBone then
-		t[#t+1] = bareBoneFrame(pn)
-	else
-		t[#t+1] = avatarFrame(pn)
-	end
+	t[#t+1] = avatarFrame(pn)
 end
 
 return t;

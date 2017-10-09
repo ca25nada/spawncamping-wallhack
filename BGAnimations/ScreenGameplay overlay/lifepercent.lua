@@ -43,7 +43,7 @@ local function lifeBar(pn)
 				self:queuecommand("Set")
 			end;
 		};
-		LoadFont("Common Normal") .. {
+		LoadFont("Common Bold") .. {
 			Name = pn.."LifeVal";
 			Font = "Common Normal", 
 			InitCommand = function(self)

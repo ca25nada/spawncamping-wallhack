@@ -100,7 +100,7 @@ local function topRow()
 		end;
 	}
 
-	t[#t+1] = LoadFont("Common Large") .. {
+	t[#t+1] = LoadFont("Common BLarge") .. {
 		InitCommand = function(self)
 			self:xy(-frameWidth/2 + 30 +6, -7)
 			self:zoom(0.30)

@@ -50,7 +50,7 @@ local function topRow()
 		end
 	}
 
-	t[#t+1] = LoadFont("Common Large") .. {
+	t[#t+1] = LoadFont("Common BLarge") .. {
 		Name = "SongTitle";
 		InitCommand = function(self)
 			self:xy(-frameWidth/2 + 96 +6, -9)
@@ -280,7 +280,7 @@ local function stepsListRow()
 	}
 
 
-	t[#t+1] = LoadFont("Common Normal") .. {
+	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand = function(self)
 			self:zoom(0.4)
 			self:xy(-frameWidth/2+150/2,frameHeight)
@@ -433,7 +433,7 @@ local function stepsBPMRow()
 		end;
 	}
 
-	t[#t+1] = LoadFont("Common Normal") .. {
+	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand = function(self)
 			self:zoom(0.35)
 			self:xy(frameWidth/2-75,frameHeight-4)
