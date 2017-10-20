@@ -6,7 +6,7 @@ local steps = GAMESTATE:GetCurrentSteps(pn)
 local stepsType = steps:GetStepsType()
 
 local frameWidth = SCREEN_WIDTH - 20
-local frameHeight = 36
+local frameHeight = 40
 
 local validStepsType = {
 	'StepsType_Dance_Single',
@@ -43,7 +43,7 @@ local function topRow()
 	t[#t+1] = Def.Banner{
 		Name = "Banner";
 		InitCommand = function(self)
-			self:x(-frameWidth/2 + 3)
+			self:x(-frameWidth/2 + 5)
 			self:halign(0)
 			self:LoadFromSong(song)
 			self:scaletoclipped(96, 30)
@@ -53,7 +53,7 @@ local function topRow()
 	t[#t+1] = LoadFont("Common BLarge") .. {
 		Name = "SongTitle";
 		InitCommand = function(self)
-			self:xy(-frameWidth/2 + 96 +6, -9)
+			self:xy(-frameWidth/2 + 96 +10, -9)
 			self:zoom(0.25)
 			self:halign(0)
 			self:settext(song:GetMainTitle())
@@ -85,7 +85,7 @@ local function topRow()
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
-			self:xy(-frameWidth/2 + 96 +6, 1)
+			self:xy(-frameWidth/2 + 96 +10, 1)
 			self:zoom(0.35)
 			self:halign(0)
 			self:settext(song:GetDisplaySubTitle())
@@ -94,7 +94,7 @@ local function topRow()
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
-			self:xy(-frameWidth/2 + 96 +6, 9)
+			self:xy(-frameWidth/2 + 96 +10, 9)
 			self:zoom(0.35)
 			self:halign(0)
 			self:settext("// "..song:GetDisplayArtist())

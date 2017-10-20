@@ -3,7 +3,7 @@ local pn = GAMESTATE:GetEnabledPlayers()[1]			-- Usually PLAYER_1
 local profile = PROFILEMAN:GetProfile(pn)
 
 local frameWidth = SCREEN_WIDTH - 20				-- Width of the top bar
-local frameHeight = 36								-- Height of the top bar
+local frameHeight = 40								-- Height of the top bar
 
 local curPage = 1									-- Current Page index
 local curIndex = 1									-- Current Cursor Index

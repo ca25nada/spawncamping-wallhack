@@ -1,7 +1,7 @@
 local t = Def.ActorFrame{}
 
-local frameWidth = 475
-local frameHeight = 385
+local frameWidth = SCREEN_WIDTH - 300 - 30
+local frameHeight = SCREEN_HEIGHT - 60
 
 
 local scoreItemX = 100
@@ -30,7 +30,7 @@ local SkillSets = {
 
 t[#t+1] = Def.Quad{
 	InitCommand = function (self)
-		self:zoomto(475,385)
+		self:zoomto(frameWidth,frameHeight)
 		self:halign(0):valign(0)
 		self:diffuse(getMainColor("frame"))
 		self:diffusealpha(0.8)

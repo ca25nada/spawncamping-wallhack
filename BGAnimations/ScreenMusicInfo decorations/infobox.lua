@@ -137,7 +137,7 @@ local function scoreListItem(i)
 			self:diffuse(color(colorConfig:get_data().main.highlight))
 			self:diffusealpha(0.8)
 			self:xy(0, 0)
-			self:zoomto(5, scoreItemHeight)
+			self:zoomto(3, scoreItemHeight)
 		end;
 		SetCommand = function(self)
 			local clearType = getClearType(pn,steps,scoreList[i])

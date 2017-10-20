@@ -4,7 +4,7 @@ local maxValue = 30
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = PROFILEMAN:GetProfile(pn)
 local frameWidth = 300
-local frameHeight = 270
+local frameHeight = 310
 
 
 local SkillSets = {
