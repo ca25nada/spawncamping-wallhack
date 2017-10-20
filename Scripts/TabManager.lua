@@ -1,56 +1,62 @@
+local MAX_WIDTH = SCREEN_WIDTH*2/3
 
-local tabIndex = 1
-
-local tabData = { -- Name, Available in singleplayer, Available in multiplayer.
-	{"General",true,true},
-	{"Simfile",false,false},
-	{"Score",false,false},
-	{"Profile",false,false},
-	{"Other",false,false}
+TAB = {
+	choices = {},
+	width = 100,
+	height = 20
 }
 
-local tabSize = #tabData
+function TAB.new(self, choices)
+	TAB.choices = choices
+	TAB.width = math.min(100, SCREEN_WIDTH*2/3 / #choices)
 
--- Resets the index of the tabs to 1
-function resetTabIndex()
-	tabIndex = 1
+	return self
 end
 
-function setTabIndex(index)
-	if GAMESTATE:GetNumPlayersEnabled() == 1 then
-		if tabData[index][2] then
-			tabIndex = index
-			MESSAGEMAN:Broadcast("TabChanged")
-			SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
-		end
-	else
-		if tabData[index][3] then
-			tabIndex = index
-			MESSAGEMAN:Broadcast("TabChanged")
-			SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
-		end
+function TAB.makeTabActors(tab)
+	local t = Def.ActorFrame{}
+
+	for i,v in pairs(tab.choices) do
+		t[#t+1] = Def.Quad {
+			InitCommand = function(self)
+				self:halign(0)
+				self:zoomto(tab.width, tab.height)
+				self:x(tab.width*(i-1))
+				self:diffuse(color("#333333"))
+			end;
+			TopPressedCommand = function(self, params)
+				if params.input == "DeviceButton_left mouse button" then
+					MESSAGEMAN:Broadcast("TabPressed",{name = v})
+				end
+			end;
+		}
+
+		t[#t+1] = quadButton(3)..{
+		InitCommand = function(self)
+			self:halign(0)
+			self:zoomto(tab.width, tab.height)
+			self:x(tab.width*(i-1))
+			self:diffuse(color("#FFFFFF")):diffusealpha(0)
+		end;
+		TopPressedCommand = function(self, params)
+			if params.input == "DeviceButton_left mouse button" then
+				MESSAGEMAN:Broadcast("TabPressed",{name = v})
+				self:finishtweening()
+				self:diffusealpha(0.2)
+				self:smooth(0.3)
+				self:diffusealpha(0)
+			end
+		end;
+	}
+
+		t[#t+1] = LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:x((tab.width/2)+(tab.width*(i-1)))
+				self:zoom(0.4)
+				self:settext(v)
+			end;
+		}
 	end
-end
 
--- Returns the current tab index
-function getTabIndex()
-	return tabIndex
-end
-
--- Returns the total number of tabs
-function getTabSize()
-	return tabSize
-end
-
-function getTabName(index)
-	return tabData[index][1]
-end
-
--- Returns whether a certain tab is enabled
-function isTabEnabled(index)
-	if GAMESTATE:GetNumPlayersEnabled() == 1 then
-		return tabData[index][2]
-	else
-		return tabData[index][3]
-	end
+	return t
 end
