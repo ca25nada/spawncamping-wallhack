@@ -1,3 +1,10 @@
+local screenWithNoTips = {
+	ScreenSelectMusic = true,
+	ScreenMusicInfo = true,
+	ScreenPlayerProfile = true,
+	ScreenGroupInfo = true,
+}
+
 local t = Def.ActorFrame{}
 local height = 20
 
@@ -51,7 +58,7 @@ if themeConfig:get_data().global.TipType >= 2 then
 		InitCommand=cmd(xy,10,SCREEN_HEIGHT-10;zoom,0.4;maxwidth,(SCREEN_WIDTH-150)/0.4;halign,0);
 		OnCommand = function(self)
 			self:diffuse(color(colorConfig:get_data().main.headerText))
-			if SCREENMAN:GetTopScreen():GetName() ~= "ScreenSelectMusic" then
+			if not screenWithNoTips[SCREENMAN:GetTopScreen():GetName()] then
 				self:settext(getRandomQuotes(themeConfig:get_data().global.TipType))
 			end
 			self:y(SCREEN_HEIGHT+height/2)

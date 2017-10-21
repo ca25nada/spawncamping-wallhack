@@ -1,9 +1,5 @@
 local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("songinfo");
-t[#t+1] = LoadActor("simfile");
-t[#t+1] = LoadActor("score");
-t[#t+1] = LoadActor("profile");
-t[#t+1] = LoadActor("other");
 
 t[#t+1] = Def.ActorFrame {
 	InitCommand=cmd(rotationz,-90;xy,SCREEN_CENTER_X/2-WideScale(get43size(150),150),SCREEN_HEIGHT-50;diffusealpha,0);

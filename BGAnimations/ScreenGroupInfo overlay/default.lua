@@ -14,11 +14,16 @@ for i = 1, maxMSD+1 do
 	MSDTable[i] = 0
 end
 
-
+local song = GAMESTATE:GetCurrentSong()
+local group
+if song == nil then
+	group = GHETTOGAMESTATE.lastSelectedFolder
+else
+	group = song:GetGroupName()
+end
 
 local function updateFromGroup()
-	local group = GHETTOGAMESTATE.LastSelectedFolder
-	local songs = SONGMAN:GetAllSongs(   )
+	local songs = SONGMAN:GetSongsInGroup(group)
 	local steps
 	local numSongs = #songs
 	local numSteps = 0
@@ -63,7 +68,7 @@ end
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 
 local frameWidth = SCREEN_WIDTH - 20
-local frameHeight = 36
+local frameHeight = 40
 
 local function topRow()
 	local t = Def.ActorFrame{
@@ -79,25 +84,20 @@ local function topRow()
 	t[#t+1] = Def.Banner{
 		Name = "Banner";
 		InitCommand = function(self)
-			self:x(-frameWidth/2 + 3)
+			self:x(-frameWidth/2 + 5)
 			self:halign(0)
 			self:scaletoclipped(96, 30)
-		end;
-		UpdateMessageCommand = function(self, params)
-			self:LoadFromSongGroup(params.group)
+			self:LoadFromSongGroup(group)
 		end;
 	}
 
-	t[#t+1] = LoadFont("Common Large") .. {
+	t[#t+1] = LoadFont("Common BLarge") .. {
 		Name = "SongTitle";
 		InitCommand = function(self)
-			self:xy(-frameWidth/2 + 96 +6, -2)
+			self:xy(-frameWidth/2 + 96 +10, -2)
 			self:zoom(0.3)
 			self:halign(0)
-			self:settext("Pack Title")
-		end;
-		UpdateMessageCommand = function(self, params)
-			self:settext(params.group)
+			self:settext(group)
 		end;
 	}
 
@@ -108,7 +108,7 @@ local function topRow()
 			self:halign(1)
 			self:playcommand("Set")
 		end;
-		UpdateMessageCommand = function(self, params)
+		YieldMessageCommand = function(self, params)
 			self:settextf("%d Songs / %d Steps", params.numSongs, params.numSteps)
 		end;
 	}
@@ -183,9 +183,25 @@ for i=1, maxMSD+1 do
 	t[#t+1] = barGraphBars(i)
 end
 
+
+
 t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
+
+local tab = TAB:new({"Difficulty Distribution"})
+t[#t+1] = tab:makeTabActors() .. {
+	OnCommand = function(self)
+		self:y(SCREEN_HEIGHT+tab.height/2)
+		self:easeOut(0.5)
+		self:y(SCREEN_HEIGHT-tab.height/2)
+	end;
+	OffCommand = function(self)
+		self:y(SCREEN_HEIGHT+tab.height/2)
+	end;
+	TabPressedMessageCommand = function(self, params)
+	end
+}
 
 t[#t+1] = LoadActor("../_cursor")
 

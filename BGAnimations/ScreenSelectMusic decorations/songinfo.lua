@@ -3,10 +3,6 @@ local song
 local group
 local wheel
 
-local function doUpdate()
-	return getTabIndex() == 1
-end
-
 
 local t = Def.ActorFrame{
 	BeginCommand = cmd(queuecommand,"Set");
@@ -22,24 +18,14 @@ local t = Def.ActorFrame{
 		end
 	end;
 	SetCommand = function(self)
-		if doUpdate() then
-			song = GAMESTATE:GetCurrentSong()
-			group = wheel:GetSelectedSection()
+		song = GAMESTATE:GetCurrentSong()
+		group = wheel:GetSelectedSection()
+		GHETTOGAMESTATE:setLastSelectedFolder(group)
 
-			self:GetChild("Banner"):queuecommand("Set")
-			self:GetChild("CDTitle"):queuecommand("Set")
-			self:GetChild("songTitle"):queuecommand("Set")
-			self:GetChild("songLength"):queuecommand("Set")
-
-		end
-	end;
-	TabChangedMessageCommand = function(self) 
-		if doUpdate() then
-			self:queuecommand("Set")
-			self:playcommand("On")
-		else
-			self:playcommand("Off")
-		end
+		self:GetChild("Banner"):queuecommand("Set")
+		self:GetChild("CDTitle"):queuecommand("Set")
+		self:GetChild("songTitle"):queuecommand("Set")
+		self:GetChild("songLength"):queuecommand("Set")
 	end;
 	PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
 	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Set") end;
@@ -63,11 +49,10 @@ t[#t+1] = quadButton(1)..{
 	TopPressedCommand = function(self, params)
 		if params.input == "DeviceButton_left mouse button" then
 					
-			if song then 
+			if song ~= nil then 
 				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 
-			elseif group and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
-				GHETTOGAMESTATE:setLastSelectedFolder(group)
+			elseif group ~= nil and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
 				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
 			end
 

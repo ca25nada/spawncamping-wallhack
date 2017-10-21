@@ -48,8 +48,6 @@ local curY
 local top
 local wheel
 local t = Def.ActorFrame{
-	BeginCommand=function(self) resetTabIndex() end;
-	PlayerJoinedMessageCommand=function(self) resetTabIndex() end;
 	OnCommand = function(self)
 		top = SCREENMAN:GetTopScreen()
 		wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
@@ -66,11 +64,7 @@ local t = Def.ActorFrame{
 
 t[#t+1] = LoadActor("../_mouse")
 
-local frameWidth = (SCREEN_WIDTH*(403/854))/(getTabSize()-1)
-local frameX = frameWidth/2
-local frameY = SCREEN_HEIGHT
-
-local tab = TAB:new({"Profile", "Simfile", "Playlist", "Downloads", "Other"})
+local tab = TAB:new({"Profile", "Song Info", "Group Info", "Playlist", "Downloads", "Other"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -83,8 +77,12 @@ t[#t+1] = tab:makeTabActors() .. {
 	TabPressedMessageCommand = function(self, params)
 		if params.name == "Profile" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
-		elseif params.name == "Simfile" then
-			SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+		elseif params.name == "Song Info" then
+			if GAMESTATE:GetCurrentSong() then
+				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+			end
+		elseif params.name == "Group Info" then
+			SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
 		end
 	end
 }
