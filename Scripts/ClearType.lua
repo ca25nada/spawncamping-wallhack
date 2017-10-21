@@ -146,6 +146,13 @@ local function getClearLevel (pn,steps,score)
 		return 15
 	end
 
+	if tapNoteScore['TapNoteScore_W1'] + tapNoteScore['TapNoteScore_W2'] + tapNoteScore['TapNoteScore_W3'] + tapNoteScore['TapNoteScore_W4'] +
+		tapNoteScore['TapNoteScore_W5'] + tapNoteScore['TapNoteScore_Miss'] ~= maxNotes then
+
+		return 16
+
+	end
+
 	-- MFC
 	if tapNoteScore['TapNoteScore_W1'] == maxNotes and
 		holdNoteScore['HoldNoteScore_Held'] == maxHolds then
