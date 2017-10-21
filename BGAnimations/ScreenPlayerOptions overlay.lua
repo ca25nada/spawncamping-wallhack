@@ -123,7 +123,7 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		ModifyAvatarCommand=function(self)
 			self:finishtweening();
-			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_1)));
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(PLAYER_1));
 			self:zoomto(30,30)
 		end;
 	};
@@ -196,7 +196,7 @@ t[#t+1] = Def.ActorFrame{
 		PlayerUnjoinedMessageCommand=cmd(queuecommand,"ModifyAvatar");
 		ModifyAvatarCommand=function(self)
 			self:finishtweening();
-			self:LoadBackground(THEME:GetPathG("","../"..getAvatarPath(PLAYER_2)));
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(PLAYER_2));
 			self:zoomto(30,30)
 		end;	
 	};
