@@ -109,7 +109,7 @@ local function avatarFrame(pn)
 		end;
 	};
 
-	t[#t+1] = LoadFont("Common Bold") .. {
+	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
 			if pn == PLAYER_1 then
 				self:xy(56,26):zoom(0.4):halign(0):maxwidth(180/0.4)
@@ -121,9 +121,12 @@ local function avatarFrame(pn)
 		SetCommand=function(self)
 			local steps = GAMESTATE:GetCurrentSteps(pn);
 			local diff = getDifficulty(steps:GetDifficulty())
-			local meter = steps:GetMeter()
+			local meter = steps:GetMSD(getCurRateValue(),1)
+			meter = meter == 0 and steps:GetMeter() or math.floor(meter)
+
+
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-			self:settext(stype.." "..diff.." "..meter)
+			self:settext(stype.." "..diff.." "..math.floor(meter))
 			self:diffuse(getDifficultyColor(steps:GetDifficulty()))
 		end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;

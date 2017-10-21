@@ -376,7 +376,12 @@ local function scoreBoard(pn)
 		SetCommand=function(self) 
 			local diff = steps:GetDifficulty()
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-			local meter = steps:GetMeter()
+
+			local meter = steps:GetMSD(getCurRateValue(),1)
+			meter = meter == 0 and steps:GetMeter() or math.floor(meter)
+
+
+
 			local difftext
 			if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
 				difftext = steps:GetDescription()
