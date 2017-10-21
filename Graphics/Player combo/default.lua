@@ -68,7 +68,7 @@ local t = Def.ActorFrame {
 			c.GhostScore:diffuse(getMainColor('negative'))
 		end;
 
-		local wifePercent = param.WifePercent
+		local wifePercent = math.max(0, param.WifePercent)
 		if avgScoreType ~= 0 and avgScoreType ~= nil then 
 			c.AvgScore:settextf("%.2f%%", wifePercent)
 		end
@@ -104,53 +104,46 @@ local t = Def.ActorFrame {
 		if ghostType ~= 0 and ghostType ~= nil then 
 			c.GhostScore:visible(true)
 
-			if not bareBone then
-				c.GhostScore:finishtweening()
-				c.GhostScore:diffusealpha(1)
-				c.GhostScore:sleep(0.25)
-				c.GhostScore:smooth(0.75)
-				c.GhostScore:diffusealpha(0)
-			end
+			c.GhostScore:finishtweening()
+			c.GhostScore:diffusealpha(1)
+			c.GhostScore:sleep(0.25)
+			c.GhostScore:smooth(0.75)
+			c.GhostScore:diffusealpha(0)
 		end
 
 		if avgScoreType ~= 0 and avgScoreType ~= nil then 
 			c.AvgScore:visible(true)
 
-			if not bareBone then
-				c.AvgScore:finishtweening()
-				c.AvgScore:diffusealpha(1)
-				c.AvgScore:sleep(0.25)
-				c.AvgScore:smooth(0.75)
-				c.AvgScore:diffusealpha(0)
-			end
+			c.AvgScore:finishtweening()
+			c.AvgScore:diffusealpha(1)
+			c.AvgScore:sleep(0.25)
+			c.AvgScore:smooth(0.75)
+			c.AvgScore:diffusealpha(0)
 		end
 
 		c.Number:settext( string.format("%i", iCombo) );
 		-- FullCombo Rewards
-		if not bareBone then
-			if param.FullComboW1 then
-				c.Number:diffuse(color("#00aeef"));
-				c.Number:glowshift();
-			elseif param.FullComboW2 then
-				c.Number:diffuse(color("#fff568"));
-				c.Number:glowshift();
-			elseif param.FullComboW3 then
-				c.Number:diffuse(color("#a4ff00"));
-				c.Number:stopeffect();
-			elseif param.Combo then
-				c.Number:diffuse(Color("White"));
-				c.Number:stopeffect();
-				(cmd(diffuse,Color("White");diffusebottomedge,color("0.5,0.5,0.5,1")))(c.Label);
-			else
-				c.Number:diffuse(color("#ff0000"));
-				c.Number:stopeffect();
-				(cmd(diffuse,Color("Red");diffusebottomedge,color("0.5,0,0,1")))(c.Label);
-			end
-			-- Pulse
-			Pulse( c.Number, param );
-			PulseLabel( c.Label, param );
-			-- Milestone Logic
+		if param.FullComboW1 then
+			c.Number:diffuse(color("#00aeef"));
+			c.Number:glowshift();
+		elseif param.FullComboW2 then
+			c.Number:diffuse(color("#fff568"));
+			c.Number:glowshift();
+		elseif param.FullComboW3 then
+			c.Number:diffuse(color("#a4ff00"));
+			c.Number:stopeffect();
+		elseif param.Combo then
+			c.Number:diffuse(Color("White"));
+			c.Number:stopeffect();
+			(cmd(diffuse,Color("White");diffusebottomedge,color("0.5,0.5,0.5,1")))(c.Label);
+		else
+			c.Number:diffuse(color("#ff0000"));
+			c.Number:stopeffect();
+			(cmd(diffuse,Color("Red");diffusebottomedge,color("0.5,0,0,1")))(c.Label);
 		end
+		-- Pulse
+		Pulse( c.Number, param );
+		PulseLabel( c.Label, param );
 	end;
 };
 
