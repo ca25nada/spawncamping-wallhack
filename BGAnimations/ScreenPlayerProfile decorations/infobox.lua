@@ -37,7 +37,7 @@ t[#t+1] = Def.Quad{
 	end
 }
 
-t[#t+1] = LoadFont("Common Normal")..{
+t[#t+1] = LoadFont("Common Bold")..{
 	InitCommand  = function(self)
 		self:xy(5, 10)
 		self:zoom(0.4)

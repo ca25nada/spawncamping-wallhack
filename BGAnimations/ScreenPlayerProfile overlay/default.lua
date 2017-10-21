@@ -24,6 +24,20 @@ t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
 
+local tab = TAB:new({"Scores", "Stats", "Other"})
+t[#t+1] = tab:makeTabActors() .. {
+	OnCommand = function(self)
+		self:y(SCREEN_HEIGHT+tab.height/2)
+		self:easeOut(0.5)
+		self:y(SCREEN_HEIGHT-tab.height/2)
+	end;
+	OffCommand = function(self)
+		self:y(SCREEN_HEIGHT+tab.height/2)
+	end;
+	TabPressedMessageCommand = function(self, params)
+	end
+}
+
 t[#t+1] = LoadActor("../_cursor")
 
 return t

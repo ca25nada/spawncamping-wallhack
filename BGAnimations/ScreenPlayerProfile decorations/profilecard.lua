@@ -24,7 +24,7 @@ t[#t+1] = LoadActor("expbar") .. {
 
 
 -- Player name
-t[#t+1] = LoadFont("Common Large")..{
+t[#t+1] = LoadFont("Common BLarge")..{
 	InitCommand  = function(self)
 		self:xy(100,-25)
 		self:zoom(0.4)
