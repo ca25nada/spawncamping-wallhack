@@ -12,22 +12,20 @@ local profileP2
 local profileNameP1 = "No Profile"
 local profileNameP2 = "No Profile"
 
-
-local AvatarXP1 = 0
-local AvatarYP1 = SCREEN_HEIGHT-50
-local AvatarXP2 = SCREEN_WIDTH-50
-local AvatarYP2 = SCREEN_HEIGHT-50
-
 local avatarPosition = {
 	PlayerNumber_P1 = {
-		X = 0,
-		Y = SCREEN_HEIGHT-50
+		X = 10,
+		Y = 10
 	},
 	PlayerNumber_P2 = {
-		X = SCREEN_WIDTH-50,
-		Y = SCREEN_HEIGHT-50
+		X = SCREEN_WIDTH-60,
+		Y = 10
 	}
 }
+
+local function PLife(pn)
+	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentLife() or 0
+end;
 
 local function avatarFrame(pn)
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
@@ -42,10 +40,10 @@ local function avatarFrame(pn)
 	t[#t+1] = Def.Quad {
 		InitCommand = function(self)
 			if pn == PLAYER_1 then
-				self:zoomto(200,50):faderight(0.7)
+				self:zoomto(200,50)
 				self:halign(0):valign(0)
 			else
-				self:x(50):zoomto(200,50):fadeleft(0.7)
+				self:x(50):zoomto(200,50)
 				self:halign(1):valign(0)
 			end
 			self:queuecommand('Set')
@@ -53,10 +51,36 @@ local function avatarFrame(pn)
 		SetCommand=function(self)
 			local steps = GAMESTATE:GetCurrentSteps(pn);
 			local diff = steps:GetDifficulty()
-			self:diffuse(getDifficultyColor(diff))
-			self:diffusealpha(0.7)
+			self:diffuse(color("#000000"))
+			self:diffusealpha(0.8)
 		end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			if pn == PLAYER_1 then
+				self:zoomto(200,50)
+				self:halign(0):valign(0)
+				self:xy(-3,-3)
+			else
+				self:xy(53,-3):zoomto(200,50)
+				self:halign(1):valign(0)
+			end
+			self:zoomto(56,56)
+			self:diffuse(color("#000000"))
+			self:diffusealpha(0.8)
+		end;
+		SetCommand = function(self)
+			self:stoptweening()
+			self:smooth(0.5)
+			local rating
+			if profile ~= nil then
+				rating = profile:GetPlayerRating()
+				self:diffuse(getSRColor(rating))
+			end
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	t[#t+1] = Def.Sprite {
@@ -71,29 +95,26 @@ local function avatarFrame(pn)
 		end;	
 	};
 
+
+
 	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand= function(self)
 			local name = profile:GetDisplayName()
 			if pn == PLAYER_1 then
-				self:xy(53,7):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
+				self:xy(56,12):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
 			else
-				self:xy(-3,7):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
+				self:xy(-6,12):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
 			end
-		    self:settext(name.." 0.00%")
-		end;
-		JudgmentMessageCommand = function(self, params) 
-			self:settextf("%s %.2f%%", profile:GetDisplayName(), params.TotalPercent)
+		    self:settext(name)
 		end;
 	};
 
 	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand = function(self)
 			if pn == PLAYER_1 then
-				self:xy(53,20):zoom(0.4):halign(0):maxwidth(180/0.4)
-				self:shadowlength(1)
+				self:xy(56,26):zoom(0.4):halign(0):maxwidth(180/0.4)
 			else
-				self:xy(-3,20):zoom(0.4):halign(1):maxwidth(180/0.4)
-				self:shadowlength(1)
+				self:xy(-6,26):zoom(0.4):halign(1):maxwidth(180/0.4)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
@@ -103,25 +124,79 @@ local function avatarFrame(pn)
 			local meter = steps:GetMeter()
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			self:settext(stype.." "..diff.." "..meter)
+			self:diffuse(getDifficultyColor(steps:GetDifficulty()))
 		end;
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
 	};
 
-	t[#t+1] = LoadFont("Common Normal") .. {
+	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			if pn == PLAYER_1 then
-				self:xy(53,32):zoom(0.4):halign(0):maxwidth(180/0.4)
-				self:shadowlength(1)
+				self:zoomto(200,50)
+				self:halign(0)
+				self:xy(57, 40)
 			else
-				self:xy(-3,32):zoom(0.4):halign(1):maxwidth(180/0.4)
-				self:shadowlength(1)
+				self:xy(-7, 40):zoomto(200,50)
+				self:halign(1)
 			end
+			self:zoomto(120,10)
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		SetCommand=function(self)
-			self:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			if pn == PLAYER_1 then
+				self:halign(0)
+				self:xy(57, 40)
+			else
+				self:halign(1)
+				self:xy(-7, 40)
+			end
+			self:zoomto(0,10)
+			self:diffuse(getMainColor("highlight"))
+			self:queuecommand("Set")
 		end;
-	};
+		JudgmentMessageCommand = function(self)
+			self:queuecommand("Set")
+		end;
+		SetCommand = function(self)
+			self:finishtweening()
+			self:smooth(0.1)
+			self:zoomx(PLife(pn)*120)
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Bold") .. {
+		OnCommand = function(self)
+			if pn == PLAYER_1 then
+				self:xy(57+120+10, 40-1)
+			else
+				self:xy(-7-120-10, 40-1)
+			end
+			self:zoom(0.35)
+			self:queuecommand("Set")
+		end;
+		JudgmentMessageCommand = function(self)
+			self:queuecommand("Set")
+		end;
+		SetCommand = function(self)
+			local life = PLife(pn)
+			self:settextf("%0.0f",life*100)
+			if life*100 < 30 and life*100 ~= 0 then -- replace with lifemeter danger later
+				self:diffuseshift()
+				self:effectcolor1(1,1,1,1)
+				self:effectcolor2(1,0.9,0.9,0.5)
+				self:effectperiod(0.9*life+0.15)
+			elseif life*100 <= 0 then
+				self:stopeffect()
+				self:diffuse(color("0,0,0,1"))
+			else
+				self:stopeffect()
+				self:diffuse(color("1,1,1,1"))
+			end;
+		end
+	}
+
 
 	return t
 end
