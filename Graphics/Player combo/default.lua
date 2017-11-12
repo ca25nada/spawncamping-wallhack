@@ -135,11 +135,11 @@ local t = Def.ActorFrame {
 		elseif param.Combo then
 			c.Number:diffuse(Color("White"));
 			c.Number:stopeffect();
-			(cmd(diffuse,Color("White");diffusebottomedge,color("0.5,0.5,0.5,1")))(c.Label);
+			c.Label:diffuse(Color("White")):diffusebottomedge(color("0.5,0.5,0.5,1"))
 		else
 			c.Number:diffuse(color("#ff0000"));
 			c.Number:stopeffect();
-			(cmd(diffuse,Color("Red");diffusebottomedge,color("0.5,0,0,1")))(c.Label);
+			c.Label:diffuse(Color("Red")):diffusebottomedge(color("0.5,0,0,1"))
 		end
 		-- Pulse
 		Pulse( c.Number, param );

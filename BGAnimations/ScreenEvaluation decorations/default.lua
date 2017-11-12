@@ -121,8 +121,10 @@ local function GraphDisplay( pn )
 	local t = Def.ActorFrame {
 
 		Def.GraphDisplay {
-			InitCommand=cmd(Load,"GraphDisplay");
-			BeginCommand=function(self)
+			InitCommand = function(self)
+				self:Load("GraphDisplay")
+			end;
+			BeginCommand = function(self)
 				local ss = SCREENMAN:GetTopScreen():GetStageStats()
 				self:Set(ss,pss)
 				self:diffusealpha(0.5);
@@ -133,7 +135,9 @@ local function GraphDisplay( pn )
 
 		LoadFont("Common Large")..{
 			Name = "Grade";
-			InitCommand=cmd(xy,-frameWidth/2+35,55;zoom,0.7;maxwidth,70/0.8;);
+			InitCommand = function(self)
+				self:xy(-frameWidth/2+35,55):zoom(0.7):maxwidth(70/0.8)
+			end;
 			BeginCommand=function(self) 
 				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetHighScore():GetWifeGrade()))) 
 			end;
@@ -178,7 +182,9 @@ local function GraphDisplay( pn )
 
 
 		LoadFont("Common Normal")..{
-			InitCommand=cmd(xy,frameWidth/2-5,60-25+5;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
+			InitCommand = function(self)
+				self:xy(frameWidth/2-5,60-25+5):zoom(0.4):halign(1):valign(0):diffusealpha(0.7)
+			end;
 			BeginCommand=function(self)
 				local text = ""
 				text = string.format("Life: %.0f%%",pss:GetCurrentLife()*100)
@@ -197,8 +203,10 @@ end
 
 local function ComboGraph( pn ) 
   	local t = Def.ActorFrame { 
-	    Def.ComboGraph { 
-		    InitCommand=cmd(Load,"ComboGraph"..ToEnumShortString(pn);); 
+	    Def.ComboGraph {
+	    	InitCommand = function(self)
+				self:Load("ComboGraph"..ToEnumShortString(pn))
+			end;
 		    BeginCommand=function(self) 
 		        local ss = SCREENMAN:GetTopScreen():GetStageStats() 
 		        self:Set(ss,ss:GetPlayerStageStats(pn)) 
@@ -241,7 +249,10 @@ local function scoreBoard(pn)
 	}
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(zoomto,frameWidth,frameHeight;valign,0;diffuse,getMainColor("frame");diffusealpha,0.8)
+		InitCommand = function(self)
+			self:zoomto(frameWidth,frameHeight):valign(0)
+			self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+		end
 	}
 
 	t[#t+1] = StandardDecorationFromTable("GraphDisplay"..ToEnumShortString(pn), GraphDisplay(pn))
@@ -371,8 +382,14 @@ local function scoreBoard(pn)
 
 	--Difficulty
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameWidth/2-5,5;zoom,0.5;halign,1;valign,0);
-		BeginCommand=cmd(glowshift;effectcolor1,color("1,1,1,0.05");effectcolor2,color("1,1,1,0");effectperiod,2;queuecommand,"Set");
+
+		InitCommand = function(self)
+			self:xy(frameWidth/2-5,5):zoom(0.5):halign(1):valign(0)
+		end;
+		BeginCommand = function(self)
+			self:glowshift():effectcolor1(color("1,1,1,0.05")):effectcolor2(color("1,1,1,0")):effectperiod(2)
+			self:queuecommand("Set")
+		end;
 		SetCommand=function(self) 
 			local diff = steps:GetDifficulty()
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
@@ -401,7 +418,9 @@ local function scoreBoard(pn)
 
 	-- Notecount
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,frameWidth/2-5,19;zoom,0.4;halign,1;valign,0;diffusealpha,0.7;);
+		InitCommand = function(self) 
+		 	self:xy(frameWidth/2-5,19):zoom(0.4):halign(1):valign(0):diffusealpha(0.7)
+		end;
 		BeginCommand=function(self) 
 			local notes = 0
 			if steps ~= nil then
@@ -802,7 +821,9 @@ local function scoreBoard(pn)
 				self:zoom(0.4)
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end;
-			BeginCommand=cmd(queuecommand,"Set");
+			BeginCommand = function(self) 
+				self:queuecommand("Set")
+			end;
 			SetCommand=function(self)
 				local text = getJudgeStrings(v)
 				if text == "OK" or text == "NG" then
