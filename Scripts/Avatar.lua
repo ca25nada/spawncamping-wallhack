@@ -68,7 +68,7 @@ function ProfileManager.GetAvatarNameFromProfileID(self, id)
 	local profile = PROFILEMAN:GetLocalProfile(id)
 	local GUID = profile:GetGUID()
 
-	fileName = avatarConfig:get_data().avatar[GUID]
+	local fileName = avatarConfig:get_data().avatar[GUID]
 
 	if fileName == nil then
 		return default

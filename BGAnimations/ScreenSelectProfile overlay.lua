@@ -46,7 +46,7 @@ function GetLocalProfiles(pn)
 				end;
 				ModifyAvatarCommand=function(self)
 					self:finishtweening();
-					self:LoadBackground(THEME:GetPathG("","../"..getAvatarPathFromProfileID(profileID)));
+					self:LoadBackground(PROFILEMAN:GetAvatarPathFromProfileID(ProfileID));
 					self:zoomto(30,30)
 				end;	
 			};
