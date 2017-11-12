@@ -93,7 +93,7 @@ local function topRow()
 
 	t[#t+1] = Def.Sprite {
 		InitCommand = function (self) 
-			self:x(-frameWidth/2 + 3)
+			self:x(-frameWidth/2 + 5)
 			self:halign(0)
 			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
 			self:zoomto(30,30)
@@ -102,7 +102,7 @@ local function topRow()
 
 	t[#t+1] = LoadFont("Common BLarge") .. {
 		InitCommand = function(self)
-			self:xy(-frameWidth/2 + 30 +6, -7)
+			self:xy(-frameWidth/2 + 30 +10, -7)
 			self:zoom(0.30)
 			self:halign(0)
 			self:settext(profile:GetDisplayName())
@@ -111,7 +111,7 @@ local function topRow()
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
-			self:xy(-frameWidth/2 + 30 +6, 7)
+			self:xy(-frameWidth/2 + 30 +10, 7)
 			self:zoom(0.35)
 			self:halign(0)
 			self:settextf("%s", avatarTable[getAvatarIndex()])

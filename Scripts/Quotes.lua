@@ -318,6 +318,8 @@ local Phrases = {
     "what does bms mean? \"by myself\"?", -- chakratos
     "it's only 180bpm jacks", -- shiki
     "How's J1 cheating", -- etienne
+    "I can jumptrill at 5 centimeters per second and with each centimeter i move through the map faster.", -- Cataclysm-
+    "Etterna is for overmapped songs and people who can't play long notes", -- p3
 }
 
 --tip

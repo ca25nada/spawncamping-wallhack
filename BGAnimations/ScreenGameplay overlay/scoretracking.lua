@@ -7,33 +7,6 @@ local fcFlagDelay = 0.5 -- Minimum delay after lastSecond before broadcasting FC
 local firstSecond -- First Second of a song.
 local lastSecond -- Last Second of a song.
 
-local ghostDataUpdateDelay = 0.01
-local ghostDataLastUpdate = 0
-
---[[
-for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-	setCurExp(pn) -- Save current exp for each player for comparison after gameplay.
-
-	-- Ignore ghostdata stuff for course mode.
-	if GAMESTATE:IsCourseMode() then
-		break
-	end
-
-	local origTable
-	local rtTable
-	local hsTable
-	if themeConfig:get_data().global.RateSort then
-		origTable = getScoreList(pn)
-		rtTable = getRateTable(origTable)
-		hsTable = sortScore(rtTable[getCurRate()] or {},ghostType)
-	else
-		origTable = getScoreList(pn)
-		hsTable = sortScore(origTable,ghostType)
-	end
-	readGhostData(pn,hsTable[1]) -- Read ghost data.
-end
---]]
-
 local function Update(self)
 	self.InitCommand=function(self)
 		self:SetUpdateFunction(Update)

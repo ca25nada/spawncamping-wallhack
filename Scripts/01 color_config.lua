@@ -251,7 +251,7 @@ end
 -- a tad-bit desaturated with a wider color range vs til death
 function getMSDColor(MSD)
 	if MSD then
-		return HSV(math.max(200 - math.sin(math.min(50,MSD)/40*math.pi/2.2)*250, -50), 0.5, 1)
+		return HSV(math.max(270 - math.sin(math.min(50,MSD)/40*math.pi/2)*330, -50), 0.5, 1)
 	end
 	return HSV(0, 0.9, 0.9)
 end

@@ -57,7 +57,9 @@ function GHETTOGAMESTATE.getNoteFieldWidth(self, pn)
 end
 
 function GHETTOGAMESTATE.setLastSelectedFolder(self, group)
-	self.lastSelectedFolder = group
+	if group ~= nil then
+		self.lastSelectedFolder = group
+	end
 end
 
 function GHETTOGAMESTATE.setLastPlayedSecond(self, t)
