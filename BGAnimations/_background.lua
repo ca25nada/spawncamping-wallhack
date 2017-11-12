@@ -1,3 +1,5 @@
 return Def.Quad{
-	InitCommand=cmd(FullScreen;diffuse,getMainColor("background"));
+	InitCommand=function(self)
+		self:FullScreen():diffuse(getMainColor("background"))
+	end;
 }

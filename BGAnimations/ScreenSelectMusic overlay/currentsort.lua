@@ -191,8 +191,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(x,-5;halign,1;zoom,0.3;maxwidth,40/0.45);
-	BeginCommand=cmd(queuecommand,"Set");
+	InitCommand=function(self)
+		self:x(-5):halign(1):zoom(0.3):maxwidth(40/0.45)
+	end;
+	BeginCommand=function(self)
+		self:queuecommand("Set")
+	end;
 	SetCommand=function(self)
 		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 		local top = SCREENMAN:GetTopScreen()

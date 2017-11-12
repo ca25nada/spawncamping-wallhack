@@ -27,9 +27,13 @@ local t = Def.ActorFrame {
 t[#t+1] = Def.ActorFrame {
 	LoadActor(THEME:GetPathG("Judgment","Normal")) .. {
 		Name="Judgment";
-		InitCommand=cmd(pause;visible,false);
+		InitCommand=function(self)
+			self:pause():visible(false)
+		end;
 		OnCommand=THEME:GetMetric("Judgment","JudgmentOnCommand");
-		ResetCommand=cmd(finishtweening;stopeffect;visible,false);
+		ResetCommand=function(self)
+			self:finishtweening():stopeffect():visible(false)
+		end;
 	};
 	
 	InitCommand = function(self)

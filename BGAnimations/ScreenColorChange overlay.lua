@@ -270,15 +270,21 @@ t[#t+1] = LoadActor("_frame");
 t[#t+1] = LoadActor("_mouse");
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX[1],frameY;halign,0;valign,1;zoom,0.6;settext,"Category:";);
+	InitCommand=function(self)
+		self:xy(frameX[1],frameY):halign(0):valign(1):zoom(0.6):settext("Category:")
+	end;
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX[2],frameY;halign,0;valign,1;zoom,0.6;settext,"Name:";);
+	InitCommand=function(self)
+		self:xy(frameX[2],frameY):halign(0):valign(1):zoom(0.6):settext("Name:")
+	end;
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=cmd(xy,frameX[3],frameY;halign,0;valign,1;zoom,0.6;settext,"Color:";);
+	InitCommand=function(self)
+		self:xy(frameX[3],frameY):halign(0):valign(1):zoom(0.6):settext("Color:")
+	end;
 }
 
 if configData ~= nil then

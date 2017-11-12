@@ -5,7 +5,9 @@ local wheel
 
 
 local t = Def.ActorFrame{
-	BeginCommand = cmd(queuecommand,"Set");
+	BeginCommand = function(self)
+		self:queuecommand("Set")
+	end;
 	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
 	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,-100):diffusealpha(0) end;
 	OnCommand = function(self) 
@@ -65,7 +67,9 @@ t[#t+1] = quadButton(1)..{
 -- Song banner
 t[#t+1] = Def.Banner{
 	Name = "Banner";
-	InitCommand = cmd(xy,SCREEN_CENTER_X/2,120;);
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2,120)
+	end;
 	SetCommand = function(self)
 		self:stoptweening()
 		self:sleep(0.5)

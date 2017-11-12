@@ -28,7 +28,9 @@ t[#t+1] = quadButton(2) .. {
 
 t[#t+1] = LoadFont("Common Bold") .. {
 	Name = "currentTime";
-	InitCommand=cmd(xy,SCREEN_WIDTH-10,SCREEN_HEIGHT-height/2;zoom,0.45;halign,1);
+	InitCommand=function(self)
+		self:xy(SCREEN_WIDTH-10,SCREEN_HEIGHT-height/2):zoom(0.45):halign(1)
+	end;
 	OnCommand = function(self)
 		self:diffuse(color(colorConfig:get_data().main.headerText))
 		self:y(SCREEN_HEIGHT+height/2)
@@ -51,11 +53,15 @@ local function Update(self)
 	self:GetChild("currentTime"):settextf("%04d-%02d-%02d %02d:%02d:%02d",year,month,day,hour,minute,second)
 end;
 
-t.InitCommand=cmd(SetUpdateFunction,Update)
+t.InitCommand=function(self)
+	self:SetUpdateFunction(Update)
+end	
 
 if themeConfig:get_data().global.TipType >= 2 then
 	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand=cmd(xy,10,SCREEN_HEIGHT-10;zoom,0.4;maxwidth,(SCREEN_WIDTH-150)/0.4;halign,0);
+		InitCommand=function(self)
+			self:xy(10,SCREEN_HEIGHT-10):zoom(0.4):maxwidth((SCREEN_WIDTH-150)/0.4):halign(0)
+		end;
 		OnCommand = function(self)
 			self:diffuse(color(colorConfig:get_data().main.headerText))
 			if not screenWithNoTips[SCREENMAN:GetTopScreen():GetName()] then

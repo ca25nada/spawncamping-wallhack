@@ -79,10 +79,10 @@ local function generalFrame(pn)
 			self:bouncy(0.3)
 			self:y(frameY)
 		end;
-		CurrentSongChangedMessageCommand = function(self) self:RunCommandsOnChildren(cmd(queuecommand, "Set"))  end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:RunCommandsOnChildren(cmd(queuecommand, "Set"))  end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:RunCommandsOnChildren(cmd(queuecommand, "Set"))  end;
-		CurrentRateChangedMessageCommand = function(self) self:RunCommandsOnChildren(cmd(queuecommand, "Set"))  end;
+		CurrentSongChangedMessageCommand = function(self) self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)  end;
+		CurrentStepsP1ChangedMessageCommand = function(self) self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)  end;
+		CurrentStepsP2ChangedMessageCommand = function(self) self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)  end;
+		CurrentRateChangedMessageCommand = function(self) self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)  end;
 	}
 
 	--Upper Bar
@@ -587,7 +587,9 @@ local function generalFrame(pn)
 end
 
 t[#t+1] = Def.Actor{
-	BeginCommand=cmd(playcommand,"Set");
+	BeginCommand=function(self)
+		self:playcommand("Set")
+	end;
 	SetCommand = function(self)
 		song = GAMESTATE:GetCurrentSong()
 		for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do

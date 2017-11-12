@@ -61,7 +61,9 @@ end
 if enabled then
 		-- Initialize a bunch of bars
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(zoomto,frameWidth,frameHeight;diffuse,color("#666666");diffusealpha,backgroundOpacity);
+		InitCommand=function(self)
+			self:zoomto(frameWidth,frameHeight):diffuse(color("#666666")):diffusealpha(backgroundOpacity)
+		end;
 	}
 
 	for i=1,barcount do
@@ -82,18 +84,28 @@ if enabled then
 	}
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(zoomto,2,frameHeight;diffuse,color("#FFFFFF");diffusealpha,0.5);
+		InitCommand=function(self)
+			self:zoomto(2,frameHeight):diffuse(color("#FFFFFF")):diffusealpha(0.5)
+		end;
 	}
 
 	if not bareBone then
 		t[#t+1] = LoadFont("Common Normal") .. {
-	        InitCommand=cmd(x,frameWidth/4;zoom,0.35;);
-	        BeginCommand=cmd(settext,"Late";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
+	        InitCommand=function(self)
+	        	self:x(frameWidth/4):zoom(0.35)
+	        end;
+	        BeginCommand=function(self)
+	        	self:settext("Late"):diffusealpha(0):smooth(0.5):diffusealpha(0.5):sleep(1.5):smooth(0.5):diffusealpha(0)
+	        end;
 	    }
 
 	    t[#t+1] = LoadFont("Common Normal") .. {
-	        InitCommand=cmd(x,-frameWidth/4;zoom,0.35;);
-	        BeginCommand=cmd(settext,"Early";diffusealpha,0;smooth,0.5;diffusealpha,0.5;sleep,1.5;smooth,0.5;diffusealpha,0;);
+	        InitCommand=function(self)
+	        	self:x(-frameWidth/4):zoom(0.35)
+	        end;
+	        BeginCommand=function(self)
+	        	self:settext("Early"):diffusealpha(0):smooth(0.5):diffusealpha(0.5):sleep(1.5):smooth(0.5):diffusealpha(0)
+	        end;
 	    }
 	end
 

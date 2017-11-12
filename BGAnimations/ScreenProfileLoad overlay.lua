@@ -22,7 +22,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:diffuseshift()
 		self:effectcolor1(color("#FFFFFF")):effectcolor2(getMainColor("positive"))
 	end;
-	OffCommand=cmd(linear,0.15;diffusealpha,0);
+	OffCommand=function(self)
+		self:linear(0.15):diffusealpha(0)
+	end;
 };
 
 t[#t+1] = Def.Actor {

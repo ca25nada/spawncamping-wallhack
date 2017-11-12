@@ -37,7 +37,9 @@ end
 
 -- Updates bpm text.
 local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update)
+	t.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end	
 
 	if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 		self:GetChild("Player1BPM"):settextf("%0.2f BPM",getPlayerBPM(PLAYER_1))
@@ -49,7 +51,9 @@ local function Update(self)
 end
 
 if true then
-	t.InitCommand=cmd(SetUpdateFunction,Update)
+	t.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end	
 end
 
 return t

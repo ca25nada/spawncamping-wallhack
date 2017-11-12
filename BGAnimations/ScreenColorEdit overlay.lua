@@ -19,7 +19,9 @@ local function scroller(index)
 	local t = Def.ActorFrame{}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
-		InitCommand=cmd(xy,SCREEN_CENTER_X-60+index*20,SCREEN_CENTER_Y;zoom,0.8;);
+		InitCommand=function(self)
+			self:xy(SCREEN_CENTER_X-60+index*20,SCREEN_CENTER_Y):zoom(0.8)
+		end;
 		OnCommand=function(self)
 			self:settext(string.format("%01X",number or 0))
 			if index == cursor then
@@ -100,14 +102,18 @@ local t = Def.ActorFrame{
 
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,0,0;halign,0;valign,0;zoomto,SCREEN_WIDTH,SCREEN_HEIGHT;diffuse,getMainColor("frame");diffusealpha,0.6);
+	InitCommand=function(self)
+		self:xy(0,0):halign(0):valign(0):zoomto(SCREEN_WIDTH,SCREEN_HEIGHT):diffuse(getMainColor("frame")):diffusealpha(0.6)
+	end;
 };
 
 t[#t+1] = LoadActor("_frame");
 t[#t+1] = LoadActor("_mouse");
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y+40;zoomto,200,30;);
+	InitCommand=function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+40):zoomto(200,30)
+	end;
 	OnCommand=function(self)
 		self:diffuse(color(themeColor))
 	end;
@@ -125,7 +131,9 @@ t[#t+1] = Def.Quad{
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,SCREEN_CENTER_X-60,SCREEN_CENTER_Y;zoom,0.8;);
+	InitCommand=function(self)
+		self:xy(SCREEN_CENTER_X-60,SCREEN_CENTER_Y):zoom(0.8)
+	end;
 	OnCommand=function(self)
 		self:settext("#")
 		self:diffuse(color("#666666"))
@@ -133,7 +141,9 @@ t[#t+1] = LoadFont("Common Normal") .. {
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y+100;zoom,0.4;);
+	InitCommand=function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+100):zoom(0.4)
+	end;
 	OnCommand=function(self)
 		self:settextf("%s \"%s - %s\".\n\n%s",THEME:GetString("ScreenColorEdit","Description1"),selected[1],selected[2],THEME:GetString("ScreenColorEdit","Description2"))
 		self:diffuse(color("#FFFFFF"))

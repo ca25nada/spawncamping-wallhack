@@ -144,7 +144,7 @@ local function scoreListItem(i)
 			song = SONGMAN:GetSongByChartKey(chartKey)
 			steps = SONGMAN:GetStepsByChartKey(chartKey)
 			self:playcommand("Tween")
-			self:RunCommandsOnChildren(cmd(queuecommand, "Set"))
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end;
 		DisplaySongMessageCommand = function(self, params)
 			self:visible(false)

@@ -123,7 +123,9 @@ end
 
 -- This is an update function that is being called every frame while this is loaded.
 local function Update(self)
-	self.InitCommand=cmd(SetUpdateFunction,Update)
+	self.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end	
 
 	for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 		if enabled.NPSDisplay[pn] or enabled.NPSGraph[pn] then
@@ -206,7 +208,9 @@ local function npsDisplay(pn)
 	if enabled.NPSDisplay[pn] then
 		t[#t+1] = LoadFont("Common Normal")..{
 			Name="Text"; -- sets the name of this actor as "Text". this is a child of the actor "t".
-			InitCommand=cmd(x,textPos[pn].X;y,textPos[pn].Y;halign,0;zoom,0.40;halign,0;valign,0;shadowlength,1;settext,"0.0 NPS");
+			InitCommand=function(self)
+				self:x(textPos[pn].X):y(textPos[pn].Y):halign(0):zoom(0.40):halign(0):valign(0):shadowlength(1):settext("0.0 NPS")
+			end;
 			BeginCommand=function(self)
 				if pn == PLAYER_2 then
 					self:x(SCREEN_WIDTH-5)

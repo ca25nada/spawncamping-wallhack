@@ -3,7 +3,9 @@ local t = Def.ActorFrame{}
 t[#t+1] = Def.Actor{};
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(y,SCREEN_HEIGHT;halign,0;valign,1;zoomto,SCREEN_WIDTH,200;diffuse,getMainColor("background");fadetop,1);
+	InitCommand=function(self)
+		self:y(SCREEN_HEIGHT):halign(0):valign(1):zoomto(SCREEN_WIDTH,200):diffuse(getMainColor("background")):fadetop(1)
+	end;
 };
 
 

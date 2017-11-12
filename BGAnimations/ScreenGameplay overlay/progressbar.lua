@@ -28,32 +28,46 @@ local t = Def.ActorFrame {
 
 t[#t+1] = Def.Quad{
 	Name="ProgressBG";
-	InitCommand=cmd(xy,frameX-(width/2),frameY;zoomto,width,height;halign,0;diffuse,color("#666666");diffusealpha,backgroundOpacity;);
+	InitCommand=function(self)
+		self:xy(frameX-(width/2),frameY):zoomto(width,height):halign(0):diffuse(color("#666666")):diffusealpha(backgroundOpacity)
+	end;
 }
 
 t[#t+1] = Def.Quad{
 	Name="ProgressFG";
-	InitCommand=cmd(xy,frameX-(width/2),frameY;zoomto,0,height;halign,0;diffuse,getMainColor('highlight'));
+	InitCommand=function(self)
+		self:xy(frameX-(width/2),frameY):zoomto(0,height):halign(0):diffuse(getMainColor('highlight'))
+	end;
 }
 
 if not bareBone then
     t[#t+1] = LoadFont("Common Normal") .. {
         Name="Song Name";
-        InitCommand=cmd(xy,frameX,frameY-1;zoom,0.35;maxwidth,(width-65)/0.35;);
-        SetCommand=cmd(settext,GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist());
+        InitCommand=function(self)
+        	self:xy(frameX,frameY-1):zoom(0.35):maxwidth((width-65)/0.35)
+        end;
+        SetCommand=function(self)
+        	self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist())
+        end;
         BeginCommand = function(self) self:playcommand('Set') end;
         CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
     }
 
     t[#t+1] = LoadFont("Common Normal") .. {
             Name="CurrentTime";
-            InitCommand=cmd(xy,frameX-(width/2),frameY-1;halign,0;zoom,0.35;settext,"0:00";)
+            InitCommand=function(self)
+            	self:xy(frameX-(width/2),frameY-1):halign(0):zoom(0.35):settext("0:00")
+            end	
     }
 
     t[#t+1] = LoadFont("Common Normal") .. {
         Name="TotalTime";
-        InitCommand=cmd(xy,frameX+(width/2),frameY-1;halign,1;zoom,0.35;);
-        SetCommand=cmd(settext,SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()));
+        InitCommand=function(self)
+        	self:xy(frameX+(width/2),frameY-1):halign(1):zoom(0.35)
+        end;
+        SetCommand=function(self)
+        	self:settext(SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()))
+        end;
         BeginCommand = function(self) self:playcommand('Set') end;
         CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
     }  
@@ -77,7 +91,9 @@ local function getCurrentTime()
 end;
 
 local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update);
+	t.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end;
 	self:GetChild("ProgressFG"):zoomx(width*getMusicProgress())
     if not bareBone then
         self:GetChild("CurrentTime"):settext(getCurrentTime())

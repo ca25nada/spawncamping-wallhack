@@ -72,12 +72,16 @@ if (not GAMESTATE:IsCourseMode()) then
 	end
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,cellX,cellY;halign,0;valign,0;zoomto,maxCellWidth,cellHeight;diffuse,color("#333333"));
+		InitCommand=function(self)
+			self:xy(cellX,cellY):halign(0):valign(0):zoomto(maxCellWidth,cellHeight):diffuse(color("#333333"))
+		end;
 	}
 
 	for k,v in ipairs(cellTable) do
 		t[#t+1] = Def.Quad{
-			InitCommand=cmd(xy,0,cellY;zoomto,(maxCellWidth/cells)-2,cellHeight;halign,0;valign,0;diffuse,judgeColors[v];x,((k-1)*maxCellWidth/cells)+cellX+1;diffusealpha,0;sleep,k/cells;smooth,1;diffusealpha,1);
+			InitCommand=function(self)
+				self:xy(0,cellY):zoomto((maxCellWidth/cells)-2,cellHeight):halign(0):valign(0):diffuse(judgeColors[v]):x(((k-1)*maxCellWidth/cells)+cellX+1):diffusealpha(0):sleep(k/cells):smooth(1):diffusealpha(1)
+			end;
 		}
 	end
 end
@@ -104,12 +108,16 @@ if GAMESTATE:GetNumPlayersEnabled() >= 2 and (not GAMESTATE:IsCourseMode()) then
 	end;
 
 	t[#t+1] = Def.Quad{
-		InitCommand=cmd(xy,SCREEN_CENTER_X+cellX,cellY;halign,0;valign,0;zoomto,maxCellWidth,cellHeight;diffuse,color("#333333"));
+		InitCommand=function(self)
+			self:xy(SCREEN_CENTER_X+cellX,cellY):halign(0):valign(0):zoomto(maxCellWidth,cellHeight):diffuse(color("#333333"))
+		end;
 	}
 
 	for k,v in ipairs(cellTable) do
 		t[#t+1] = Def.Quad{
-			InitCommand=cmd(xy,0,cellY;zoomto,(maxCellWidth/cells),cellHeight;halign,0;valign,0;diffuse,judgeColors[v];x,SCREEN_CENTER_X+((k-1)*maxCellWidth/cells)+cellX+1;diffusealpha,0;sleep,k/cells;smooth,1;diffusealpha,1);
+			InitCommand=function(self)
+				self:xy(0,cellY):zoomto((maxCellWidth/cells),cellHeight):halign(0):valign(0):diffuse(judgeColors[v]):x(SCREEN_CENTER_X+((k-1)*maxCellWidth/cells)+cellX+1):diffusealpha(0):sleep(k/cells):smooth(1):diffusealpha(1)
+			end;
 		}
 	end
 end

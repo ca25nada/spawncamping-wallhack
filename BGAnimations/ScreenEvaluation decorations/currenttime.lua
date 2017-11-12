@@ -2,7 +2,9 @@ local t = Def.ActorFrame{};
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name = "currentTime";
-	InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_BOTTOM-75;zoom,0.45;settext,"");
+	InitCommand=function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_BOTTOM-75):zoom(0.45):settext("")
+	end;
 };
 
 local function Update(self)
@@ -15,6 +17,8 @@ local function Update(self)
 	self:GetChild("currentTime"):settextf("%04d-%02d-%02d %02d:%02d:%02d",year,month,day,hour,minute,second)
 end;
 
-t.InitCommand=cmd(SetUpdateFunction,Update)
+t.InitCommand=function(self)
+	self:SetUpdateFunction(Update)
+end	
 
 return t

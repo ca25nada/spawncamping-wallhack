@@ -126,7 +126,7 @@ local function barGraphBars(i)
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:y(-5)
-			self:diffuse(color("#000000"))
+			self:diffuse(getMSDColor(i))
 			self:valign(1)
 		end;
 		YieldMessageCommand = function(self)
@@ -146,7 +146,7 @@ local function barGraphBars(i)
 		InitCommand = function(self)
 			self:y(10)
 			self:zoom(0.4)
-			self:diffuse(color("#000000"))
+			self:diffuse(getMSDColor(i))
 			if i == 1 then
 				self:settext("N/A")
 			elseif i == maxMSD+1 then

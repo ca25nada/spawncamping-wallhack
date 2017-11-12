@@ -35,7 +35,9 @@ end
 --]]
 
 local function Update(self)
-	self.InitCommand=cmd(SetUpdateFunction,Update)
+	self.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end	
 	local curSecond = GAMESTATE:GetSongPosition():GetMusicSeconds()
 	GHETTOGAMESTATE:setLastPlayedSecond(curSecond) -- For preview music when exiting midway.
 

@@ -148,12 +148,16 @@ local function getPosY()
 end
 
 local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update);
+	t.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end;
     self:GetChild("MouseXY"):xy(getPosX(),getPosY())
 end; 
 
 if moveBG then
-	t.InitCommand=cmd(SetUpdateFunction,Update);
+	t.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end;
 end;
 
 return t

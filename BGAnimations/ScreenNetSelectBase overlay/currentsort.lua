@@ -49,13 +49,19 @@ local t = Def.ActorFrame{
 
 t[#t+1] = Def.Quad{
 	Name="CurrentSort";
-	InitCommand=cmd(halign,1;zoomto,frameWidth,frameHeight;diffuse,getMainColor('highlight'););
+	InitCommand=function(self)
+		self:halign(1):zoomto(frameWidth,frameHeight):diffuse(getMainColor('highlight'))
+	end;
 
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(x,5-frameWidth;halign,0;zoom,0.45;maxwidth,(frameWidth-40)/0.45);
-	BeginCommand=cmd(queuecommand,"Set");
+	InitCommand=function(self)
+		self:x(5-frameWidth):halign(0):zoom(0.45):maxwidth((frameWidth-40)/0.45)
+	end;
+	BeginCommand=function(self)
+		self:queuecommand("Set")
+	end;
 	SetCommand=function(self)
 		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 		local sort = GAMESTATE:GetSortOrder()
@@ -69,13 +75,21 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		end
 
 	end;
-	SortOrderChangedMessageCommand=cmd(queuecommand,"Set");
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	SortOrderChangedMessageCommand=function(self)
+		self:queuecommand("Set")
+	end;
+	CurrentSongChangedMessageCommand=function(self)
+		self:queuecommand("Set")
+	end;
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=cmd(x,-5;halign,1;zoom,0.3;maxwidth,40/0.45);
-	BeginCommand=cmd(queuecommand,"Set");
+	InitCommand=function(self)
+		self:x(-5):halign(1):zoom(0.3):maxwidth(40/0.45)
+	end;
+	BeginCommand=function(self)
+		self:queuecommand("Set")
+	end;
 	SetCommand=function(self)
 		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 		local top = SCREENMAN:GetTopScreen()
@@ -87,8 +101,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			self:settextf("%d/%d",wheel:GetCurrentIndex()+1,wheel:GetNumItems())
 		end;
 	end;
-	SortOrderChangedMessageCommand=cmd(queuecommand,"Set");
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	SortOrderChangedMessageCommand=function(self)
+		self:queuecommand("Set")
+	end;
+	CurrentSongChangedMessageCommand=function(self)
+		self:queuecommand("Set")
+	end;
 };
 
 return t

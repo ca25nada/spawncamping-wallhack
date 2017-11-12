@@ -20,10 +20,10 @@ local t = Def.ActorFrame{
 		steps = params.steps
 		scoreList = getScoreTable(pn, getCurRate(), steps)
 		if scoreList ~= nil then
-			self:RunCommandsOnChildren(cmd(playcommand, "UpdateList"))
+			self:RunCommandsOnChildren(function(self) self:playcommand("UpdateList") end)
 			self:GetChild("NoScore"):visible(false)
 		else
-			self:RunCommandsOnChildren(cmd(playcommand, "Hide"))
+			self:RunCommandsOnChildren(function(self) self:playcommand("Hide") end)
 			self:GetChild("NoScore"):visible(true):playcommand("Set")
 		end
 	end
@@ -68,31 +68,31 @@ t[#t+1] = LoadFont("Common Normal")..{
 }
 
 local function scoreListItem(i)
-
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:diffusealpha(0)
-			self:xy(scoreItemX-10, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing))
+			self:zoomy(0)
+			self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing)-10)
 		end;
 		ShowCommand = function(self)
+			self:y(scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing)-10)
 			self:diffusealpha(0)
-			self:x(scoreItemX-10)
+			self:zoomy(0)
 			self:finishtweening()
 			self:sleep((i-1)*0.05)
 			self:easeOut(1)
-			self:x(scoreItemX)
+			self:zoomy(1)
+			self:y(scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing))
 			self:diffusealpha(1)
 		end;
 		HideCommand = function(self)
-			self:finishtweening()
-			self:sleep((i-1)*0.05)
-			self:easeOut(1)
+			self:stoptweening()
+			self:easeOut(0.5)
 			self:diffusealpha(0)
-			self:x(scoreItemX-10)
 		end;
 		UpdateListCommand = function(self)
 			if scoreList[i] ~= nil then
-				self:RunCommandsOnChildren(cmd(playcommand, "Set"))
+				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 				self:playcommand("Show")
 			else
 				self:playcommand("Hide")

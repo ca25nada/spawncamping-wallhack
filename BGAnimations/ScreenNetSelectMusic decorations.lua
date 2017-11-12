@@ -4,7 +4,9 @@ local t = Def.ActorFrame{}
 t[#t+1] = LoadActor("_chatbox")
 
 t[#t+1] = Def.Banner{
-	InitCommand=cmd(x,10;y,60;halign,0;valign,0);
+	InitCommand=function(self)
+		self:x(10):y(60):halign(0):valign(0)
+	end;
 	SetMessageCommand=function(self)
 		local top = SCREENMAN:GetTopScreen()
 		if top:GetName() == "ScreenSelectMusic" then
@@ -32,18 +34,26 @@ t[#t+1] = Def.Banner{
 		end;
 		self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 	end;
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand=function(self)
+		self:queuecommand("Set")
+	end;
 };
 
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(xy,10,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10);zoomto,capWideScale(get43size(384),384),capWideScale(get43size(20),20);halign,0;diffuse,color("#000000");diffusealpha,0.7);
+	InitCommand=function(self)
+		self:xy(10,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10)):zoomto(capWideScale(get43size(384),384),capWideScale(get43size(20),20)):halign(0):diffuse(color("#000000")):diffusealpha(0.7)
+	end;
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songTitle";
-	InitCommand=cmd(xy,15,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10);visible,true;halign,0;zoom,capWideScale(get43size(0.45),0.45);maxwidth,capWideScale(get43size(340),340)/capWideScale(get43size(0.45),0.45));
-	BeginCommand=cmd(queuecommand,"Set");
+	InitCommand=function(self)
+		self:xy(15,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10)):visible(true):halign(0):zoom(capWideScale(get43size(0.45),0.45)):maxwidth(capWideScale(get43size(340),340)/capWideScale(get43size(0.45),0.45))
+	end;
+	BeginCommand=function(self)
+		self:queuecommand("Set")
+	end;
 	SetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		if song ~= nil then
@@ -52,13 +62,19 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			self:settext("")
 		end
 	end;
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand=function(self)
+		self:queuecommand("Set")
+	end;
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songLength";
-	InitCommand=cmd(xy,5+(capWideScale(get43size(384),384)),60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10);visible,true;halign,1;zoom,capWideScale(get43size(0.45),0.45);maxwidth,capWideScale(get43size(360),360)/capWideScale(get43size(0.45),0.45));
-	BeginCommand=cmd(queuecommand,"Set");
+	InitCommand=function(self)
+		self:xy(5+(capWideScale(get43size(384),384)),60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10)):visible(true):halign(1):zoom(capWideScale(get43size(0.45),0.45)):maxwidth(capWideScale(get43size(360),360)/capWideScale(get43size(0.45),0.45))
+	end;
+	BeginCommand=function(self)
+		self:queuecommand("Set")
+	end;
 	SetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		local seconds = 0
@@ -70,13 +86,19 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			self:settext("")
 		end
 	end;
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand=function(self)
+		self:queuecommand("Set")
+	end;
 };
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songTitle";
-	InitCommand=cmd(xy,15,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10);visible,true;halign,0;zoom,capWideScale(get43size(0.45),0.45);maxwidth,capWideScale(get43size(340),340)/capWideScale(get43size(0.45),0.45));
-	BeginCommand=cmd(queuecommand,"Set");
+	InitCommand=function(self)
+		self:xy(15,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10)):visible(true):halign(0):zoom(capWideScale(get43size(0.45),0.45)):maxwidth(capWideScale(get43size(340),340)/capWideScale(get43size(0.45),0.45))
+	end;
+	BeginCommand=function(self)
+		self:queuecommand("Set")
+	end;
 	SetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		if song ~= nil then
@@ -85,7 +107,9 @@ t[#t+1] = LoadFont("Common Normal") .. {
 			self:settext("")
 		end
 	end;
-	CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+	CurrentSongChangedMessageCommand=function(self)
+		self:queuecommand("Set")
+	end;
 };
 
 t[#t+1] = LoadFont("Common Normal")..{

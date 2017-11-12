@@ -59,8 +59,12 @@ if enabled then
 	t[#t+1] = Def.ActorFrame{
 		Name="MouseXY";
 		Def.Sprite {
-			OnCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;queuecommand,"ModifySongBackground");
-			CurrentSongChangedMessageCommand=cmd(finishtweening;smooth,0.5;diffusealpha,0;sleep,0.35;queuecommand,"ModifySongBackground");
+			OnCommand=function(self)
+				self:finishtweening():smooth(0.5):diffusealpha(0):queuecommand("ModifySongBackground")
+			end;
+			CurrentSongChangedMessageCommand=function(self)
+				self:finishtweening():smooth(0.5):diffusealpha(0):sleep(0.35):queuecommand("ModifySongBackground")
+			end;
 			ModifySongBackgroundCommand=function(self)
 				self:finishtweening()
 				if GAMESTATE:GetCurrentSong() then
@@ -82,17 +86,23 @@ if enabled then
 					self:visible(false);
 				end;
 			end;
-			OffCommand=cmd(smooth,0.5;diffusealpha,0)	
+			OffCommand=function(self)
+				self:smooth(0.5):diffusealpha(0)
+			end	
 		};
 	}
 end;
 
 local function Update(self)
-	t.InitCommand=cmd(SetUpdateFunction,Update);
+	t.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end;
     self:GetChild("MouseXY"):xy(getPosX()-SCREEN_CENTER_X,getPosY()-SCREEN_CENTER_Y)
 end; 
 if moveBG then
-	t.InitCommand=cmd(SetUpdateFunction,Update);
+	t.InitCommand=function(self)
+		self:SetUpdateFunction(Update)
+	end;
 end;
 
 return t

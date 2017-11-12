@@ -212,7 +212,7 @@ local function stepsListRow()
 		SetStepsTypeMessageCommand = function(self, params)
 			stepsTable = song:GetStepsByStepsType(params.st)
 			table.sort(stepsTable, meterComparator)
-			self:RunCommandsOnChildren(cmd(playcommand, "Set"))
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end;
 	}
 
