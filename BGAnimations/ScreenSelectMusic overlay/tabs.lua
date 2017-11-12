@@ -77,12 +77,18 @@ t[#t+1] = tab:makeTabActors() .. {
 	TabPressedMessageCommand = function(self, params)
 		if params.name == "Profile" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
+
 		elseif params.name == "Song Info" then
 			if GAMESTATE:GetCurrentSong() then
 				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 			end
+
 		elseif params.name == "Group Info" then
 			SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
+
+		elseif params.name == "Downloads" then
+			SCREENMAN:AddNewScreenToTop("ScreenDownload")
+
 		end
 	end
 }
