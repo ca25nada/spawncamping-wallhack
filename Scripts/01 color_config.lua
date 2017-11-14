@@ -103,6 +103,14 @@ local defaultConfig = {
 		HoldNoteScore_LetGo = "#cc2929"
 	},
 
+	downloadStatus = {
+		downloaded = "#66ccff",
+		completed = "#66cc66",
+		downloading = "#eebb00",
+		available = "#da5757",
+		unavailable = "#666666",
+	},
+
 	songLength = {
 		short = "#666666", -- grey
 		normal = "#FFFFFF", -- normal
