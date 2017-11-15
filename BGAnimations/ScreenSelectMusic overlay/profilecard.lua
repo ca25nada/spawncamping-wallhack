@@ -2,19 +2,8 @@ local t = Def.ActorFrame{
 	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
 	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,100):diffusealpha(0) end;
 	OnCommand = function(self) self:bouncy(0.3) self:xy(0,0):diffusealpha(1) end;
-	TabChangedMessageCommand = function(self)
-		self:finishtweening()
-		if getTabIndex() == 1 then
-			self:finishtweening()
-			MESSAGEMAN:Broadcast("Expand")
-		else 
-			self:finishtweening()
-			MESSAGEMAN:Broadcast("Contract")
-		end
-	end;
 	PlayerJoinedMessageCommand = function(self)
 		self:queuecommand("TabChangedMessage")
-		MESSAGEMAN:Broadcast("Expand")
 	end
 };
 
@@ -92,16 +81,6 @@ local function generalFrame(pn)
 			self:valign(0)
 			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
-		end;
-		ContractMessageCommand = function(self)
-			self:stoptweening()
-			self:smooth(0.1)
-			self:zoomy(frameHeightShort)
-		end;
-		ExpandMessageCommand = function(self)
-			self:stoptweening()
-			self:smooth(0.1)
-			self:zoomy(frameHeight)
 		end;
 	}
 
@@ -443,8 +422,6 @@ local function generalFrame(pn)
 			self:diffuse(getGradeColor(grade))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		ContractMessageCommand = function(self) self:visible(false) end;
-		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 	--ClearType
@@ -467,8 +444,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		ContractMessageCommand = function(self) self:visible(false) end;
-		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 	-- Percentage Score
@@ -486,8 +461,6 @@ local function generalFrame(pn)
 			self:settextf("%.2f%%",math.floor((scorevalue)*10000)/100)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		ContractMessageCommand = function(self) self:visible(false) end;
-		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 
@@ -503,8 +476,6 @@ local function generalFrame(pn)
 			self:settext(getMaxScore(pn,0))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		ContractMessageCommand = function(self) self:visible(false) end;
-		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -523,8 +494,6 @@ local function generalFrame(pn)
 			self:settextf("%.0f/",scoreValue)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		ContractMessageCommand = function(self) self:visible(false) end;
-		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
 
 	--ScoreType superscript(?)
@@ -538,8 +507,6 @@ local function generalFrame(pn)
 		BeginCommand = function(self)
 			self:settext(getScoreTypeText(1))
 		end;
-		ContractMessageCommand = function(self) self:visible(false) end;
-		ExpandMessageCommand = function(self) self:visible(true) end;
 	}
 
 	--MaxCombo
@@ -557,8 +524,6 @@ local function generalFrame(pn)
 			self:settextf("Max Combo: %d",maxCombo)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		ContractMessageCommand = function(self) self:visible(false) end;
-		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
 
 
@@ -579,8 +544,6 @@ local function generalFrame(pn)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
-		ContractMessageCommand = function(self) self:visible(false) end;
-		ExpandMessageCommand = function(self) self:visible(true) end;
 	};
 
 	return t

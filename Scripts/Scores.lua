@@ -317,7 +317,7 @@ end;
 
 function getBestScore(pn, ignore, rate, percent)
 	if not rate then rate = "1.0x" end
-	local highest = 0
+	local highest = -math.huge
 
 	local indexScore
 	local bestScore
@@ -332,7 +332,7 @@ function getBestScore(pn, ignore, rate, percent)
 				indexScore = hsTable[k]
 				if indexScore ~= nil then
 					temp = getScore(indexScore, steps, percent)
-					if temp > highest then
+					if temp >= highest then
 						highest = temp
 						bestScore = indexScore
 					end
