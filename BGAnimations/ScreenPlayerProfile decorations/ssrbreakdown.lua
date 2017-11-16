@@ -14,20 +14,9 @@ local SkillSets = {
 	"Handstream", 
 	"Stamina",
 	"JackSpeed",
-	"JackStamina",
+	"Chordjack",
 	"Technical"
 }
-
-local SkillSetsShort = {
-	"Stream", 
-	"JS", 
-	"HS", 
-	"Stam",
-	"Jack Speed",
-	"Jack Stam",
-	"Tech"
-}
-
 
 -- Angle in degrees
 local function getPointOffset(distance, angle)

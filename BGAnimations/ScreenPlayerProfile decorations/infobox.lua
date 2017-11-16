@@ -24,7 +24,7 @@ local SkillSets = {
 	"Handstream", 
 	"Stamina",
 	"JackSpeed",
-	"JackStamina",
+	"Chordjack",
 	"Technical"
 }
 
