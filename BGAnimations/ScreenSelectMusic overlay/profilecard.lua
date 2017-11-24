@@ -53,25 +53,24 @@ local function generalFrame(pn)
 			end
 			self:visible(GAMESTATE:IsPlayerEnabled(pn))
 		end;
-		BeginCommand = function(self) 
-			self:playcommand('Set')
+
+		UpdateInfoCommand = function(self)
+			song = GAMESTATE:GetCurrentSong()
+			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
+				profile[pn] = GetPlayerOrMachineProfile(pn)
+				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
+				topScore[pn] = getBestScore(pn, 0, getCurRate())
+			end
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end;
-		PlayerJoinedMessageCommand = function(self) self:playcommand('Set') end;
-		PlayerUnjoinedMessageCommand = function(self) self:playcommand('Set') end;
-		ContractMessageCommand = function(self)
-			self:stoptweening()
-			self:bouncy(0.3)
-			self:y(frameY+frameHeight-frameHeightShort)
-		end;
-		ExpandMessageCommand = function(self)
-			self:stoptweening()
-			self:bouncy(0.3)
-			self:y(frameY)
-		end;
-		CurrentSongChangedMessageCommand = function(self) self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)  end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)  end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)  end;
-		CurrentRateChangedMessageCommand = function(self) self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)  end;
+
+		BeginCommand = function(self) self:playcommand('Set') end;
+		PlayerJoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
+		PlayerUnjoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
+		CurrentSongChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
+		CurrentStepsP1ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
+		CurrentStepsP2ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
+		CurrentRateChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
 	}
 
 	--Upper Bar
@@ -363,7 +362,7 @@ local function generalFrame(pn)
 			self:diffuse(getMainColor("highlight"))
 		end;
 		SetCommand = function(self)
-			self:finishtweening()
+			self:stoptweening()
 			self:decelerate(0.5)
 			local meter = 0
 			local enabled = GAMESTATE:IsPlayerEnabled(pn)
@@ -387,7 +386,7 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self) 
-			self:finishtweening()
+			self:stoptweening()
 			self:decelerate(0.5)
 			local meter = 0
 			local enabled = GAMESTATE:IsPlayerEnabled(pn)
@@ -548,24 +547,6 @@ local function generalFrame(pn)
 
 	return t
 end
-
-t[#t+1] = Def.Actor{
-	BeginCommand=function(self)
-		self:playcommand("Set")
-	end;
-	SetCommand = function(self)
-		song = GAMESTATE:GetCurrentSong()
-		for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-			profile[pn] = GetPlayerOrMachineProfile(pn)
-			steps[pn] = GAMESTATE:GetCurrentSteps(pn)
-			topScore[pn] = getBestScore(pn, 0, getCurRate())
-		end
-	end;
-	CurrentSongChangedMessageCommand = function(self)  self:queuecommand('Set') end;
-	CurrentStepsP1ChangedMessageCommand = function(self)  self:queuecommand('Set') end;
-	CurrentStepsP2ChangedMessageCommand = function(self)  self:queuecommand('Set') end;
-	CurrentRateChangedMessageCommand = function(self)  self:queuecommand('Set') end;
-}
 
 t[#t+1] = generalFrame(PLAYER_1)
 t[#t+1] = generalFrame(PLAYER_2)
