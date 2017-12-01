@@ -166,10 +166,27 @@ local function generalFrame(pn)
 	}
 
 	-- Level and exp
+
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(69-frameWidth/2,20)
-			self:zoom(0.3)
+			self:xy(69-frameWidth/2,24)
+			self:zoom(0.42)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+		end;
+		SetCommand = function(self)
+			if profile[pn] ~= nil then
+				self:settextf("Rating: %0.2f",profile[pn]:GetPlayerRating())
+			end
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(138-frameWidth/2,24)
+			self:zoom(0.42)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
@@ -179,22 +196,6 @@ local function generalFrame(pn)
 				local currentExp = getProfileExp(pn) - getLvExp(level)
 				local nextExp = getNextLvExp(level)
 				self:settextf("Lv.%d (%d/%d)",level, currentExp, nextExp)
-			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
-	}
-
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand  = function(self)
-			self:xy(69-frameWidth/2,28)
-			self:zoom(0.3)
-			self:halign(0)
-			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
-		SetCommand = function(self)
-			if profile[pn] ~= nil then
-				self:settextf("Rating: %0.2f",profile[pn]:GetPlayerRating())
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
@@ -272,8 +273,8 @@ local function generalFrame(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="StepsAndMeter";
 		InitCommand = function(self)
-			self:xy(frameWidth/2-5,38)
-			self:zoom(0.5)
+			self:xy(frameWidth/2-5,35)
+			self:zoom(0.8)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
@@ -282,11 +283,7 @@ local function generalFrame(pn)
 
 				local diff = steps[pn]:GetDifficulty()
 				local stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-				local meter = math.floor(steps[pn]:GetMSD(getCurRateValue(),1))
-				if meter == 0 then
-					meter = steps[pn]:GetMeter()
-				end
-				meter = math.max(1,meter)
+				local meter = steps[pn]:GetMSD(getCurRateValue(), 1)
 
 				local difftext
 				if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
@@ -295,11 +292,9 @@ local function generalFrame(pn)
 				else
 					difftext = getDifficulty(diff)
 				end
-				if IsUsingWideScreen() then
-					self:settext(stype.." "..difftext.." "..meter)
-				else
-					self:settext(difftext.." "..meter)
-				end
+
+				self:settextf(difftext.." ".."%05.2f",meter)
+
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
 			end
 		end;
@@ -308,8 +303,8 @@ local function generalFrame(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="MSDAvailability";
 		InitCommand = function(self)
-			self:xy(frameWidth/2-5,27)
-			self:zoom(0.3)
+			self:xy(frameWidth/2-5,22)
+			self:zoom(0.35)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
