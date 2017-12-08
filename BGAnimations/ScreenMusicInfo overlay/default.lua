@@ -759,6 +759,25 @@ local function scoreList()
 			end
 		}
 
+		t[#t+1] = LoadFont("Common Normal")..{
+			Name = "ReplayAvailability";
+			InitCommand  = function(self)
+				self:xy(scoreItemWidth-5,5)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+				self:halign(1)
+			end;
+			SetCommand = function(self)
+				if scoreList[scoreIndex]:HasReplayData() then
+					self:settext("Replay Data Available.")
+					self:diffuse(getMainColor("enabled"))
+				else
+					self:settext("Replay Data Unavailable.")
+					self:diffuse(getMainColor("disabled"))
+				end
+			end
+		}
+
 		return t
 	end
 
@@ -792,11 +811,29 @@ local function scoreList()
 			InitCommand = function(self)
 				self:diffusealpha(0.2)
 				self:halign(0):valign(0)
-				self:zoomto(scoreItemWidth, frameHeight-100)
+				self:zoomto(scoreItemWidth, frameHeight-80)
 			end;
-			SetCommand = function(self)
-				local clearType = getClearType(pn,steps,scoreList[scoreIndex])
-				self:diffuse(getClearTypeColor(clearType))
+		}
+
+		t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
+			InitCommand = function(self, params)
+				self:xy(5, 35)
+			end;
+			ShowScoreDetailMessageCommand = function(self, params)
+
+				if scoreList[params.scoreIndex]:HasReplayData() then
+					self:RunCommandsOnChildren(function(self)
+						local params = 	{width = scoreItemWidth-10, 
+										height = frameHeight-120, 
+										song = song, 
+										steps = steps, 
+										noterow = scoreList[params.scoreIndex]:GetNoteRowVector(), 
+										offset = scoreList[params.scoreIndex]:GetOffsetVector()}
+						self:playcommand("Update", params) end
+					)
+				else
+					self:RunCommandsOnChildren(function(self) self:playcommand("Update", {width = scoreItemWidth-10, height = frameHeight-120,}) end)
+				end
 			end;
 		}
 
@@ -805,7 +842,11 @@ local function scoreList()
 				self:xy(scoreItemWidth/2, (frameHeight-100)/2)
 				self:zoom(0.4)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.6)
-				self:settext("Add stuff here soon.. ish")
+				self:settext("No Replay Data.\n(゜´Д｀゜)")
+
+			end;
+			ShowScoreDetailMessageCommand = function(self, params)
+				self:visible(not scoreList[params.scoreIndex]:HasReplayData())
 			end;
 		}
 
