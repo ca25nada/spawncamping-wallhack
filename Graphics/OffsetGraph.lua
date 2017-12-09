@@ -1,8 +1,8 @@
 local timingWindowScale = PREFSMAN:GetPreference("TimingWindowScale")
 local W5Window = PREFSMAN:GetPreference("TimingWindowSecondsW5") -- Timing window for Bads
 
-local dotWidth = 1
-local dotHeight = 1
+local dotWidth = 2
+local dotHeight = 2
 
 local t = Def.ActorFrame{
 	InitCommand = function(self)
@@ -24,6 +24,38 @@ t[#t+1] = Def.Quad{
 	end;
 }
 
+t[#t+1] = Def.Quad{
+	Name = "Center Line",
+	InitCommand = function(self)
+		self:halign(0):valign(0)
+		self:diffusealpha(0.4)
+	end;
+	UpdateCommand = function(self, params)
+		self:xy(0,params.height/2)
+		self:zoomto(params.width,1)
+	end;
+}
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=function(self)
+		self:zoom(0.3):halign(0):valign(0):diffusealpha(0.4)
+	end,
+	UpdateCommand = function(self)
+		self:xy(5,5)
+		self:settextf("Early (-%d ms)", timingWindowScale*W5Window*1000)
+	end
+}
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand=function(self)
+		self:zoom(0.3):halign(0):valign(1):diffusealpha(0.4)
+	end,
+	UpdateCommand = function(self, params)
+		self:xy(5,params.height-5)
+		self:settextf("Late (+%d ms)", timingWindowScale*W5Window*1000)
+	end
+}
+
 t[#t+1] = Def.ActorMultiVertex{
 	UpdateCommand = function(self, params)
 		local verts = {}
@@ -42,9 +74,9 @@ t[#t+1] = Def.ActorMultiVertex{
 			local color = offsetToJudgeColor(offset) -- WHY MULTIPLY BY 1000 IF WE NEED IT DIVIDED BY 1000 AGAIN
 
 			local x = (timestamp/songLength) * params.width
-			local y = (offset/W5Window/2*timingWindowScale) * params.height + (params.height/2)
+			local y = (offset/W5Window/2/timingWindowScale) * params.height + (params.height/2)
 
-			if offset >=1 then
+			if math.abs(offset) > (W5Window * timingWindowScale) then
 				-- Misses
 				verts[#verts+1] = {{x-dotWidth/2, params.height,0}, Alpha(color, 0.3)}
 				verts[#verts+1] = {{x+dotWidth/2, params.height,0}, Alpha(color, 0.3)}

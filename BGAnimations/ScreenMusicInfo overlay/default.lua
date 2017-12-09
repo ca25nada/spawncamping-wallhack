@@ -612,6 +612,7 @@ local function scoreList()
 				self:y(SCREEN_HEIGHT*10) -- Throw it offscreen
 			end;
 			UpdateListMessageCommand = function(self)
+				detail = false
 				scoreIndex = (curPage-1)*10+i
 				if scoreList ~= nil and scoreList[scoreIndex] ~= nil then
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
@@ -627,7 +628,6 @@ local function scoreList()
 					self:easeOut(0.5)
 					self:y(scoreItemY)
 					self:valign(0)
-					self:RunCommandsOnChildren(function(self) self:playcommand("ShowDetail") end)
 				else
 					self:playcommand("Hide")
 				end
@@ -817,14 +817,14 @@ local function scoreList()
 
 		t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 			InitCommand = function(self, params)
-				self:xy(5, 35)
+				self:xy(5, 55)
 			end;
 			ShowScoreDetailMessageCommand = function(self, params)
 
 				if scoreList[params.scoreIndex]:HasReplayData() then
 					self:RunCommandsOnChildren(function(self)
 						local params = 	{width = scoreItemWidth-10, 
-										height = frameHeight-120, 
+										height = frameHeight-140, 
 										song = song, 
 										steps = steps, 
 										noterow = scoreList[params.scoreIndex]:GetNoteRowVector(), 
@@ -832,7 +832,7 @@ local function scoreList()
 						self:playcommand("Update", params) end
 					)
 				else
-					self:RunCommandsOnChildren(function(self) self:playcommand("Update", {width = scoreItemWidth-10, height = frameHeight-120,}) end)
+					self:RunCommandsOnChildren(function(self) self:playcommand("Update", {width = scoreItemWidth-10, height = frameHeight-140,}) end)
 				end
 			end;
 		}
@@ -842,7 +842,7 @@ local function scoreList()
 				self:xy(scoreItemWidth/2, (frameHeight-100)/2)
 				self:zoom(0.4)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.6)
-				self:settext("No Replay Data.\n(゜´Д｀゜)")
+				self:settext("No replay data\n(゜´Д｀゜)")
 
 			end;
 			ShowScoreDetailMessageCommand = function(self, params)
