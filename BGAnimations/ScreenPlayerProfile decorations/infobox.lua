@@ -117,6 +117,11 @@ end
 local function scoreListItem(i)
 	local skillset = SkillSets[1]
 	local ths = SCOREMAN:GetTopSSRHighScore(i, SkillSets[1])
+	
+	if ths == nil then
+		return
+	end
+
 	local chartKey = ths:GetChartKey()
 	local steps = SONGMAN:GetStepsByChartKey(chartKey)
 	local song = SONGMAN:GetSongByChartKey(chartKey)
