@@ -222,8 +222,11 @@ local function scoreBoard(pn)
 	local steps = GAMESTATE:GetCurrentSteps(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	local index = getHighScoreIndex(hsTable, pss:GetHighScore())
+
 	local recScore = getBestScore(pn, index, rate, true)
 	local curScore = pss:GetHighScore()
+
+	local clearType = getClearType(pn,steps,curScore)
 
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
@@ -241,6 +244,7 @@ local function scoreBoard(pn)
 			self:diffusealpha(0)
 		end;
 		OnCommand = function(self)
+			self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)
 			self:bouncy(0.3)
 			self:y(frameY)
 			self:zoom(1)
@@ -266,20 +270,8 @@ local function scoreBoard(pn)
 			self:diffusealpha(0.8)
 		end;
 		SetCommand = function(self)
-			self:stoptweening()
-			self:smooth(0.5)
-
-			local scoreList
-
-			if profile ~= nil and song ~= nil and steps ~= nil then
-				scoreList = profile:GetHighScoreList(song,steps):GetHighScores()
-			end
-			local clearType = getHighestClearType(pn,steps,scoreList,0)
 			self:diffuse(getClearTypeColor(clearType))
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -287,8 +279,6 @@ local function scoreBoard(pn)
 			self:xy(25+10-(frameWidth/2),5)
 			self:zoomto(56,56)
 			self:diffusealpha(0.8)
-		end;
-		BeginCommand=function(self)
 			self:diffuseramp()
 			self:effectcolor2(color("1,1,1,0.6"))
 			self:effectcolor1(color("1,1,1,0"))
@@ -297,8 +287,8 @@ local function scoreBoard(pn)
 	}
 
 	t[#t+1] = Def.Sprite {
-		InitCommand=function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
-		ModifyAvatarCommand=function(self)
+		InitCommand = function (self) 
+			self:xy(25+10-(frameWidth/2),5)
 			self:visible(true)
 			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
 			self:zoomto(50,50)
@@ -313,12 +303,9 @@ local function scoreBoard(pn)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 
-			local text = ""
-			if profile ~= nil then
-				text = profile:GetDisplayName()
-				if text == "" then
-					text = pn == PLAYER_1 and "Player 1" or "Player 2"
-				end
+			local text = profile:GetDisplayName()
+			if text == "" then
+				text = pn == PLAYER_1 and "Player 1" or "Player 2"
 			end
 			self:settext(text)
 		end;
@@ -332,20 +319,17 @@ local function scoreBoard(pn)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		SetCommand = function(self)
-			if profile ~= nil then
-				local text = "Lv.%d (%d/%d)"
-				local level = getLevel(getProfileExp(pn))
-				local currentExp = getProfileExp(pn) - getLvExp(level)
-				local nextExp = getNextLvExp(level)
-				if playerLeveled(pn) then
-					text = text.." - Level Up!"
-					self:diffuse(getMainColor("positive"))
-				end
-
-				self:settextf(text,level, currentExp,nextExp)
+			local text = "Lv.%d (%d/%d)"
+			local level = getLevel(getProfileExp(pn))
+			local currentExp = getProfileExp(pn) - getLvExp(level)
+			local nextExp = getNextLvExp(level)
+			if playerLeveled(pn) then
+				text = text.." - Level Up!"
+				self:diffuse(getMainColor("positive"))
 			end
+
+			self:settextf(text,level, currentExp,nextExp)
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -356,11 +340,8 @@ local function scoreBoard(pn)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
 		SetCommand = function(self)
-			if profile ~= nil then
-				self:settextf("Rating: %0.2f",profile:GetPlayerRating())
-			end
+			self:settextf("Rating: %0.2f",profile:GetPlayerRating())
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
 	}
 
 
@@ -372,12 +353,11 @@ local function scoreBoard(pn)
 			self:diffuse(getMainColor("positive"))
 		end;
 		SetCommand = function(self)
-			self:settextf("+%d",getExpDiff(pn))
+			self:settextf("+%d", getExpDiff(pn))
 			self:smooth(4)
 			self:diffusealpha(0)
 			self:addy(-5)
 		end;
-		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	--Difficulty
@@ -385,10 +365,7 @@ local function scoreBoard(pn)
 
 		InitCommand = function(self)
 			self:xy(frameWidth/2-5,5):zoom(0.5):halign(1):valign(0)
-		end;
-		BeginCommand = function(self)
 			self:glowshift():effectcolor1(color("1,1,1,0.05")):effectcolor2(color("1,1,1,0")):effectperiod(2)
-			self:queuecommand("Set")
 		end;
 		SetCommand=function(self) 
 			local diff = steps:GetDifficulty()
@@ -397,8 +374,6 @@ local function scoreBoard(pn)
 			local meter = steps:GetMSD(getCurRateValue(),1)
 			meter = meter == 0 and steps:GetMeter() or math.floor(meter)
 
-
-
 			local difftext
 			if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
 				difftext = steps:GetDescription()
@@ -406,11 +381,13 @@ local function scoreBoard(pn)
 			else
 				difftext = getDifficulty(diff)
 			end
+
 			if IsUsingWideScreen() then
 				self:settext(stype.." "..difftext.." "..meter)
 			else
 				self:settext(difftext.." "..meter)
 			end
+
 			self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
 
 		end
@@ -421,15 +398,15 @@ local function scoreBoard(pn)
 		InitCommand = function(self) 
 		 	self:xy(frameWidth/2-5,19):zoom(0.4):halign(1):valign(0):diffusealpha(0.7)
 		end;
-		BeginCommand=function(self) 
-			local notes = 0
-			if steps ~= nil then
-				notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-			end
+		SetCommand=function(self) 
+			
+			local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 			self:settextf("%d Notes",notes)
+
 			if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
 				self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
 			end
+
 			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())),0.3))
 		end;
 	};
@@ -460,13 +437,9 @@ local function scoreBoard(pn)
 			self:zoom(0.5)
 			self:halign(1):valign(1)
 		end;
-		BeginCommand = function(self)
-			local score = pss:GetHighScore()
-			if score ~= nil then
-				local clearType = getClearType(pn,steps,score)
-				self:settext(getClearTypeText(clearType))
-				self:diffuse(getClearTypeColor(clearType))
-			end;
+		SetCommand = function(self)
+			self:settext(getClearTypeText(clearType))
+			self:diffuse(getClearTypeColor(clearType))
 		end;
 	}
 
@@ -477,26 +450,11 @@ local function scoreBoard(pn)
 			self:zoom(0.35)
 			self:halign(1):valign(0)
 		end;
-		BeginCommand = function(self)
-			local score = pss:GetHighScore()
-			if score ~= nil then
-				local index
-				if  GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
-					index = pss:GetMachineHighScoreIndex()+2 -- i have no idea why the indexes are screwed up for this
-				else
-					index = pss:GetPersonalHighScoreIndex()+1
-				end
-
-				local scoreList
-
-				if profile ~= nil and song ~= nil and steps ~= nil then
-					scoreList = profile:GetHighScoreList(song,steps):GetHighScores()
-				end
-				local clearType = getHighestClearType(pn,steps,scoreList,index)
-				self:settext(getClearTypeText(clearType))
-				self:diffuse(getClearTypeColor(clearType))
-				self:diffusealpha(0.5)
-			end
+		SetCommand = function(self)
+			local clearType = getHighestClearType(pn,steps,hsTable,index)
+			self:settext(getClearTypeText(clearType))
+			self:diffuse(getClearTypeColor(clearType))
+			self:diffusealpha(0.5)
 		end;
 	}
 
@@ -506,23 +464,9 @@ local function scoreBoard(pn)
 			self:zoom(0.30)
 			self:valign(1)
 		end;
-		BeginCommand = function(self) 
-			local score = pss:GetHighScore();
-			local index
-			if GetPlayerOrMachineProfile(pn) == PROFILEMAN:GetMachineProfile() then
-				index = pss:GetMachineHighScoreIndex()+2
-			else
-				index = pss:GetPersonalHighScoreIndex()+1
-			end
-
-			local scoreList
-
-			if profile ~= nil and song ~= nil and steps ~= nil then
-				scoreList = profile:GetHighScoreList(song,steps):GetHighScores()
-			end
-
-			local recCTLevel = getClearTypeLevel(getHighestClearType(pn,steps,scoreList,index))
-			local curCTLevel = getClearTypeLevel(getClearType(pn,steps,score))
+		SetCommand = function(self) 
+			local recCTLevel = getClearTypeLevel(getHighestClearType(pn,steps,hsTable,index))
+			local curCTLevel = getClearTypeLevel(clearType)
 			if curCTLevel < recCTLevel then
 				self:settext("▲")
 				self:diffuse(getMainColor("positive"))
@@ -565,7 +509,7 @@ local function scoreBoard(pn)
 			self:halign(1):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
-		BeginCommand = function(self)
+		SetCommand = function(self)
 			local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 			local curScoreValue = getScore(curScore, steps, false)
 			local curScorePercent = getScore(curScore, steps, true)
@@ -582,7 +526,7 @@ local function scoreBoard(pn)
 			self:halign(1):valign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText)):diffusealpha(0.3)
 		end;
-		BeginCommand = function(self)
+		SetCommand = function(self)
 			local recScoreValue = getScore(recScore, steps, true)
 
 			local maxScore = getMaxScore(pn)
@@ -597,7 +541,7 @@ local function scoreBoard(pn)
 			self:zoom(0.30)
 			self:valign(1)
 		end;
-		BeginCommand = function(self) 
+		SetCommand = function(self) 
 			local curScoreValue = getScore(curScore, steps, false)
 			local recScoreValue = getScore(recScore, steps, false)
 			local diff = curScoreValue - recScoreValue
@@ -622,7 +566,7 @@ local function scoreBoard(pn)
 			self:valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
-		BeginCommand = function(self) 
+		SetCommand = function(self) 
 			local curScoreValue = getScore(curScore, steps, false)
 			local recScoreValue = getScore(recScore, steps, false)
 			local diff = curScoreValue - recScoreValue
@@ -663,9 +607,8 @@ local function scoreBoard(pn)
 			self:halign(1):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
-		BeginCommand = function(self)
-			local score = pss:GetHighScore();
-			local missCount = getScoreMissCount(score)
+		SetCommand = function(self)
+			local missCount = getScoreMissCount(curScore)
 			self:settext(missCount)
 		end;
 	}
@@ -677,7 +620,7 @@ local function scoreBoard(pn)
 			self:halign(1):valign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText)):diffusealpha(0.3)
 		end;
-		BeginCommand = function(self)
+		SetCommand = function(self)
 			local score = getBestMissCount(pn,index, rate)
 			local missCount = getScoreMissCount(score)
 
@@ -695,7 +638,7 @@ local function scoreBoard(pn)
 			self:zoom(0.30)
 			self:valign(1)
 		end;
-		BeginCommand = function(self) 
+		SetCommand = function(self) 
 
 			local score = getBestMissCount(pn,index, rate)
 			local recMissCount = getScoreMissCount(score)
@@ -728,7 +671,7 @@ local function scoreBoard(pn)
 			self:valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
-		BeginCommand = function(self) 
+		SetCommand = function(self) 
 			local score = getBestMissCount(pn,index, rate)
 			local recMissCount = getScoreMissCount(score)
 			local curMissCount = getScoreMissCount(curScore)
@@ -773,20 +716,17 @@ local function scoreBoard(pn)
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),210)
 				self:zoom(0.4)
-			end;
-			BeginCommand = function(self) 
 				self:settext(getJudgeStrings(v))
 				self:diffuse(TapNoteScoreToColor(v))
 			end;
 		};
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Font= "Common Normal";
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),225)
 				self:zoom(0.35)
 			end;
-			BeginCommand=function(self) 
+			SetCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
 				if tostring(percent) == tostring(0/0) then
 					percent = 0
@@ -797,12 +737,11 @@ local function scoreBoard(pn)
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Font= "Common Normal";
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),235)
 				self:zoom(0.30)
 			end;
-			BeginCommand=function(self) 
+			SetCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
 				if tostring(percent) == tostring(0/0) then
 					percent = 0
@@ -815,16 +754,11 @@ local function scoreBoard(pn)
 
 	for k,v in ipairs(hjudges) do
 		t[#t+1] = LoadFont("Common Normal")..{
-
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),260)
 				self:zoom(0.4)
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-			end;
-			BeginCommand = function(self) 
-				self:queuecommand("Set")
-			end;
-			SetCommand=function(self)
+
 				local text = getJudgeStrings(v)
 				if text == "OK" or text == "NG" then
 					text = "Hold "..text
@@ -834,13 +768,12 @@ local function scoreBoard(pn)
 		};
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Font= "Common Normal";
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),275)
 				self:zoom(0.35)
 		    	self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end;
-			BeginCommand=function(self) 
+			SetCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
 				if tostring(percent) == tostring(0/0) then
 					percent = 0
@@ -851,13 +784,12 @@ local function scoreBoard(pn)
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Font= "Common Normal";
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),285)
 				self:zoom(0.30)
 		    	self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end;
-			BeginCommand=function(self) 
+			SetCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
 				if tostring(percent) == tostring(0/0) then
 					percent = 0
@@ -869,7 +801,6 @@ local function scoreBoard(pn)
 	end
 
 	t[#t+1] = LoadFont("Common Normal")..{
-
 		InitCommand= function(self)
 			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),260)
 			self:zoom(0.4)
@@ -879,13 +810,12 @@ local function scoreBoard(pn)
 	};
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Font= "Common Normal";
 		InitCommand= function(self)
 			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),275)
 			self:zoom(0.35)
 		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
-		BeginCommand=function(self) 
+		SetCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
 			if tostring(percent) == tostring(0/0) then
 				percent = 0
@@ -896,13 +826,12 @@ local function scoreBoard(pn)
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Font= "Common Normal";
 		InitCommand= function(self)
 			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),285)
 			self:zoom(0.30)
 		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end;
-		BeginCommand=function(self) 
+		SetCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
 			if tostring(percent) == tostring(0/0) then
 				percent = 0
@@ -919,15 +848,27 @@ for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	t[#t+1] = scoreBoard(pn)
 end
 
-if themeConfig:get_data().eval.JudgmentBarEnabled then
-	t[#t+1] = LoadActor("adefaultmoreripoff")
-end;
+if GAMESTATE:GetNumPlayersEnabled() == 1 then
+	t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
+		InitCommand = function(self, params)
+			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, 200)
 
-if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
-	t[#t+1] = LoadActor("scoreboard")
-	t[#t+1] = LoadActor("offsetvisual")
-end;
+			local pn = GAMESTATE:GetEnabledPlayers()[1]
+			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+			local steps = GAMESTATE:GetCurrentSteps(pn)
 
+			self:RunCommandsOnChildren(function(self)
+				local params = 	{width = frameWidth, 
+								height = 150, 
+								song = song, 
+								steps = steps, 
+								noterow = pss:GetNoteRowVector(), 
+								offset = pss:GetOffsetVector()}
+				self:playcommand("Update", params) end
+			)
+		end;
+	}
+end
 
 
 return t
