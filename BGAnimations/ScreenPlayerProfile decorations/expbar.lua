@@ -11,11 +11,12 @@ local barWidth = 190
 
 local t = Def.ActorFrame{}
 
+
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand  = function(self)
-		self:xy(0,-10)
+		self:xy(barWidth,-11)
 		self:zoom(0.3)
-		self:halign(0)
+		self:halign(1)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:queuecommand('Set')
 	end;
@@ -23,6 +24,23 @@ t[#t+1] = LoadFont("Common Normal")..{
 		if profile ~= nil then
 			self:settextf("Lv.%d (%d/%d)",level, currentExp, nextExp)
 		end
+	end;
+}
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand  = function(self)
+		self:xy(0, -11)
+		self:zoom(0.3)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:queuecommand('Set')
+	end;
+	SetCommand = function(self)
+		local rating = profile:GetPlayerRating()
+		if profile ~= nil then
+			self:settextf("Skill Rating: %0.2f",rating)
+		end
+		self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})
 	end;
 }
 

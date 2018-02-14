@@ -156,3 +156,25 @@ function getBPMChangeCount(bpms)
 
 	return count
 end
+
+-- from profile.lua in til death
+function easyInputStringWithParams(question, maxLength, isPassword, f, params)
+	SCREENMAN:AddNewScreenToTop("ScreenTextEntry");
+	local settings = {
+		Question = question,
+		MaxInputLength = maxLength,
+		Password = isPassword,
+		OnOK = function(answer)
+			f(answer, params)
+		end
+	};
+	SCREENMAN:GetTopScreen():Load(settings);
+end
+
+function easyInputStringWithFunction(question, maxLength, isPassword, f)
+	easyInputStringWithParams(question, maxLength, isPassword, function(answer, params) f(answer) end, {})
+end
+
+function easyInputString(question, maxLength, isPassword, tablewithvalue)
+	easyInputStringWithParams(question, maxLength, isPassword, function(answer, params) tablewithvalue.inputString=answer end, {})
+end

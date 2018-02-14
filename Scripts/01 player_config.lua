@@ -19,6 +19,8 @@ local defaultConfig = {
 	--NPSMaxVerts = 300,
 	CBHighlight = false,
 	FCEffect = true,
+	UserName = "",
+	PassWord = "",
 }
 
 playerConfig = create_setting("playerConfig", "playerConfig.lua", defaultConfig, -1)
