@@ -73,12 +73,10 @@ local function scoreSSRTypes(i)
 		TweenCommand = function(self)
 			self:finishtweening()
 			self:xy(scoreSSRItemX, scoreSSRItemY + (i-1)*(scoreSSRItemHeight+scoreSSRItemYSpacing)-10)
-			self:zoomy(0)
 			self:diffusealpha(0)
-			self:sleep((i-1)*0.05)
-			self:easeOut(1)
+			self:sleep((i-1)*0.03)
+			self:easeOut(0.5)
 			self:diffusealpha(1)
-			self:zoomy(1)
 			self:xy(scoreSSRItemX, scoreSSRItemY + (i-1)*(scoreSSRItemHeight+scoreSSRItemYSpacing))
 		end;
 		DisplaySongMessageCommand = function(self, params)
@@ -117,7 +115,7 @@ end
 local function scoreListItem(i)
 	local skillset = SkillSets[1]
 	local ths = SCOREMAN:GetTopSSRHighScore(i, SkillSets[1])
-	
+
 	if ths == nil then
 		return
 	end
@@ -133,12 +131,10 @@ local function scoreListItem(i)
 		TweenCommand = function(self)
 			self:finishtweening()
 			self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing)-10)
-			self:zoomy(0)
 			self:diffusealpha(0)
-			self:sleep((i-1)*0.05)
+			self:sleep((i-1)*0.03)
 			self:easeOut(1)
 			self:diffusealpha(1)
-			self:zoomy(1)
 			self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing))
 		end;
 		UpdateRankingMessageCommand = function(self, params)

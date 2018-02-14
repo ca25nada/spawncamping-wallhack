@@ -17,7 +17,7 @@ t[#t+1] = Def.Quad{
 	Name = "Background",
 	InitCommand = function(self)
 		self:halign(0):valign(0)
-		self:diffuse(getMainColor("frame")):diffusealpha(0.6)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 	end;
 	UpdateCommand = function(self, params)
 		self:zoomto(params.width, params.height)

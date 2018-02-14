@@ -369,7 +369,7 @@ local function stepsListRow()
 			ShowCommand = function(self)
 				self:y(topRowFrameHeight)
 				self:finishtweening()
-				self:sleep((i-1)*0.05)
+				self:sleep((i-1)*0.03)
 				self:easeOut(1)
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1))
 				self:diffusealpha(0.8)
@@ -395,7 +395,13 @@ local function stepsListRow()
 			SetCommand = function(self)
 				local curSteps = stepsTable[i]
 				if curSteps then
-					self:settext(curSteps:GetMeter())
+
+					local meter = math.floor(curSteps:GetMSD(getCurRateValue(),1))
+					if meter == 0 then
+						meter = curSteps:GetMeter()
+					end
+
+					self:settext(meter)
 					self:diffuse(color(colorConfig:get_data().difficulty[curSteps:GetDifficulty()]))
 					self:diffusealpha(0)
 					self:playcommand("Show")
@@ -591,17 +597,14 @@ local function scoreList()
 		local t = Def.ActorFrame{
 			InitCommand = function(self)
 				self:diffusealpha(0)
-				self:zoomy(0)
 				self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing)-10)
 			end;
 			ShowCommand = function(self)
 				self:y(scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing)-10)
 				self:diffusealpha(0)
-				self:zoomy(0)
 				self:finishtweening()
-				self:sleep((i-1)*0.05)
+				self:sleep((i-1)*0.03)
 				self:easeOut(1)
-				self:zoomy(1)
 				self:y(scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing))
 				self:diffusealpha(1)
 			end;

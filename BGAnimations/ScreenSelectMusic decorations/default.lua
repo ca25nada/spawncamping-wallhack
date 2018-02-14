@@ -19,14 +19,6 @@ t[#t+1] = Def.ActorFrame {
 		self:diffusealpha(1)
 		wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
 	end;
-	TabChangedMessageCommand=function(self)
-		self:finishtweening()
-		if getTabIndex() == 1 then
-			self:playcommand("On");
-		else 
-			self:playcommand("Off");
-		end;
-	end;
 	CurrentSongChangedMessageCommand=function(self)
 		self:playcommand("PositionSet")
 	end;
@@ -51,18 +43,7 @@ t[#t+1] = Def.ActorFrame {
 			end;
 			Def.Quad{
 				InitCommand=function(self)
-					self:zoomto(65,65):diffuseshift():effectperiod(1):effectcolor1(color("#FFFFFF11")):effectcolor2(PlayerColor(PLAYER_1))
-				end;
-				BeginCommand=function(self)
-					self:queuecommand("Set")
-				end;
-				SetCommand=function(self)
-				end;
-				PlayerJoinedMessageCommand=function(self)
-					self:playcommand("Set")
-				end;
-				PlayerUnjoinedMessageCommand=function(self)
-					self:playcommand("Set")
+					self:zoomto(65,65):diffuseshift():effectperiod(1):effectcolor1(Alpha(PlayerColor(PLAYER_1), 0.5)):effectcolor2(PlayerColor(PLAYER_1))
 				end;
 			};
 		};
@@ -84,29 +65,18 @@ t[#t+1] = Def.ActorFrame {
 			end;
 			Def.Quad{
 				InitCommand=function(self)
-					self:zoomto(65,65):sleep(0.5):diffuseshift():effectperiod(1):effectcolor2(color("#FFFFFF11")):effectcolor1(PlayerColor(PLAYER_2))
-				end;
-				BeginCommand=function(self)
-					self:queuecommand("Set")
-				end;
-				SetCommand=function(self)
-				end;
-				PlayerJoinedMessageCommand=function(self)
-					self:playcommand("Set")
-				end;
-				PlayerUnjoinedMessageCommand=function(self)
-					self:playcommand("Set")
+					self:zoomto(65,65):sleep(0.5):diffuseshift():effectperiod(1):effectcolor2(Alpha(PlayerColor(PLAYER_2), 0.5)):effectcolor1(PlayerColor(PLAYER_2))
 				end;
 			};
 		};
 		CursorP1Frame = Def.Actor{
 			ChangeCommand=function(self)
-				self:stoptweening():decelerate(0.1)
+				self:stoptweening():easeOut(0.5)
 			end;
 		};
 		CursorP2Frame = Def.Actor{
 			ChangeCommand=function(self)
-				self:stoptweening():decelerate(0.1)
+				self:stoptweening():easeOut(0.5)
 			end;
 		};
 	};
