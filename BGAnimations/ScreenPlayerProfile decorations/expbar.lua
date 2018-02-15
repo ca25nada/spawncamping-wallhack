@@ -33,13 +33,39 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:zoom(0.3)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		self:queuecommand('Set')
+		self:playcommand('Set')
 	end;
+
+	LoginMessageCommand = function(self)
+		self:playcommand('Set')
+	end;
+
+	LogOutMessageCommand = function(self)
+		self:playcommand('Set')
+	end;
+
+	OnlineUpdateMessageCommand = function(self)
+		self:playcommand('Set')
+	end;
+
 	SetCommand = function(self)
-		local rating = profile:GetPlayerRating()
-		if profile ~= nil then
-			self:settextf("Skill Rating: %0.2f",rating)
+		local rating = 0
+		local rank = 0
+
+		if DLMAN:IsLoggedIn() then
+			rank = DLMAN:GetSkillsetRank("Overall")
+			rating = DLMAN:GetSkillsetRating("Overall")
+
+			self:settextf("Skill Rating: %0.2f (#%d)", rating, rank)
+
+		else		
+			if profile ~= nil then
+				rating = profile:GetPlayerRating()
+				self:settextf("Skill Rating: %0.2f",rating)
+			end
+
 		end
+
 		self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})
 	end;
 }

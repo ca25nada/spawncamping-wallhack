@@ -4,7 +4,9 @@ function getCurrentUsername(pn)
 		return DLMAN:GetUsername()
 
 	else
-		local profile = PROFILEMAN:GetLocalProfile(pn)
+
+		local profile = PROFILEMAN:GetProfile(pn)
+
 
 		if profile ~= nil then
 			return profile:GetDisplayName()
@@ -14,6 +16,16 @@ function getCurrentUsername(pn)
 
 		end
 
+	end
+end
+
+-- replace with prefs later
+local autoLogin = true
+function isAutoLogin()
+	if DLMAN:IsLoggedIn() or not autoLogin then
+		return false
+	else
+		return true
 	end
 end
 

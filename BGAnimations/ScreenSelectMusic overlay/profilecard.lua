@@ -154,7 +154,7 @@ local function generalFrame(pn)
 		SetCommand = function(self)
 			local text = ""
 			if profile[pn] ~= nil then
-				text = profile[pn]:GetDisplayName()
+				text = getCurrentUsername(pn)
 				if text == "" then
 					text = pn == PLAYER_1 and "Player 1" or "Player 2"
 				end
@@ -163,12 +163,48 @@ local function generalFrame(pn)
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
+		LoginMessageCommand = function(self) self:queuecommand('Set') end;
+		LogOutMessageCommand = function(self) self:queuecommand('Set') end;
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(69-frameWidth/2,20)
+			self:zoom(0.3)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+		end;
+		SetCommand = function(self)
+			local rating = 0
+			local rank = 0
+
+			if DLMAN:IsLoggedIn() then
+				rank = DLMAN:GetSkillsetRank("Overall")
+				rating = DLMAN:GetSkillsetRating("Overall")
+
+				self:settextf("Skill Rating: %0.2f (#%d)", rating, rank)
+
+			else		
+				if profile[pn] ~= nil then
+					rating = profile[pn]:GetPlayerRating()
+					self:settextf("Skill Rating: %0.2f",rating)
+				end
+
+			end
+
+			self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
+		LoginMessageCommand = function(self) self:queuecommand('Set') end;
+		LogOutMessageCommand = function(self) self:queuecommand('Set') end;
+		OnlineUpdateMessageCommand = function(self) self:queuecommand('Set') end;
 	}
 
 	-- Level and exp
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(69-frameWidth/2,20)
+			self:xy(69-frameWidth/2,29)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
@@ -179,22 +215,6 @@ local function generalFrame(pn)
 				local currentExp = getProfileExp(pn) - getLvExp(level)
 				local nextExp = getNextLvExp(level)
 				self:settextf("Lv.%d (%d/%d)",level, currentExp, nextExp)
-			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
-	}
-
-	t[#t+1] = LoadFont("Common Normal")..{
-		InitCommand  = function(self)
-			self:xy(69-frameWidth/2,28)
-			self:zoom(0.3)
-			self:halign(0)
-			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
-		SetCommand = function(self)
-			if profile[pn] ~= nil then
-				self:settextf("Rating: %0.2f",profile[pn]:GetPlayerRating())
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;

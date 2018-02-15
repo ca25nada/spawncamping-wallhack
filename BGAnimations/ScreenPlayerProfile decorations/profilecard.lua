@@ -1,9 +1,6 @@
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = PROFILEMAN:GetProfile(pn)
 
-local user = playerConfig:get_data(pn_to_profile_slot(pn)).UserName
-local pass = playerConfig:get_data(pn_to_profile_slot(pn)).Password
-
 local t = Def.ActorFrame{
 
 }
@@ -77,7 +74,7 @@ t[#t+1] = quadButton(3)..{
 	-- Save config upon successful login
 	LoginMessageCommand = function(self)
 		self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
-		playerConfig:get_data(pn_to_profile_slot(pn)).UserName = user
+		playerConfig:get_data(pn_to_profile_slot(pn)).Username = user
 		playerConfig:get_data(pn_to_profile_slot(pn)).Password = pass
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
@@ -91,7 +88,7 @@ t[#t+1] = quadButton(3)..{
 
 	-- delete config upon logout
 	StartLogoutCommand = function(self)
-		playerConfig:get_data(pn_to_profile_slot(pn)).UserName = ""
+		playerConfig:get_data(pn_to_profile_slot(pn)).Username = ""
 		playerConfig:get_data(pn_to_profile_slot(pn)).Password = ""
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
@@ -160,6 +157,7 @@ t[#t+1] = LoadFont("Common BLarge")..{
 				text = pn == PLAYER_1 and "Player 1" or "Player 2"
 			end
 		end
+
 		self:settext(text)
 	end;
 }
