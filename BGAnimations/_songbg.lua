@@ -60,10 +60,10 @@ if enabled then
 		Name="MouseXY";
 		Def.Sprite {
 			OnCommand=function(self)
-				self:finishtweening():smooth(0.5):diffusealpha(0):queuecommand("ModifySongBackground")
+				self:smooth(0.5):diffusealpha(0):queuecommand("ModifySongBackground")
 			end;
 			CurrentSongChangedMessageCommand=function(self)
-				self:finishtweening():smooth(0.5):diffusealpha(0):sleep(0.35):queuecommand("ModifySongBackground")
+				self:stoptweening():smooth(0.5):diffusealpha(0):queuecommand("ModifySongBackground")
 			end;
 			ModifySongBackgroundCommand=function(self)
 				self:finishtweening()
@@ -71,7 +71,7 @@ if enabled then
 					local song = GAMESTATE:GetCurrentSong();
 					if song:HasBackground() then
 						self:visible(true);
-						self:LoadBackground(song:GetBackgroundPath());
+						self:LoadFromCached("Background", song:GetBackgroundPath());
 
 						if moveBG then
 							self:scaletocover(0-maxDistY/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8);
