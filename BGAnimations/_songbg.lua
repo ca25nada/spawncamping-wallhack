@@ -68,10 +68,10 @@ if enabled then
 			ModifySongBackgroundCommand=function(self)
 				self:finishtweening()
 				if GAMESTATE:GetCurrentSong() then
-					local song = GAMESTATE:GetCurrentSong();
+					local song = GAMESTATE:GetCurrentSong()
 					if song:HasBackground() then
 						self:visible(true);
-						self:LoadFromCached("Background", song:GetBackgroundPath());
+						self:LoadBackground(song:GetBackgroundPath())
 
 						if moveBG then
 							self:scaletocover(0-maxDistY/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8);

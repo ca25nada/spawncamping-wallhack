@@ -73,19 +73,12 @@ t[#t+1] = Def.Banner{
 	SetCommand = function(self)
 		if topScreen:GetName() == "ScreenSelectMusic" or topScreen:GetName() == "ScreenNetSelectMusic" then
 			if song then
-				local path = song:GetBannerPath()
-				if path then
-					self:LoadFromCached("Banner", song:GetBannerPath())
-				end
-				self:queuecommand("SetBanner")
+				self:LoadFromSong(song)
 			elseif group then
 				self:LoadFromSongGroup(group)
 			end
 			self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 		end
-	end;
-	SetBannerCommand = function(self)
-		self:LoadFromSong(song)
 	end;
 }
 
@@ -102,7 +95,7 @@ t[#t+1] = Def.Sprite {
 		if song then
 			if song:HasCDTitle() then
 				self:visible(true)
-				self:LoadFromCached("CDTitle", song:GetCDTitlePath())
+				self:Load(song:GetCDTitlePath())
 			else
 				self:visible(false)
 			end
