@@ -37,7 +37,31 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:zoom(0.4)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		self:settext("SSR Breakdown")
+		self:settext("Skill Rating Breakdown")
+	end;
+}
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand  = function(self)
+		self:xy(-frameWidth/2+5, -frameHeight/2+20)
+		self:zoom(0.3)
+		self:halign(0)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:queuecommand("Set")
+	end;
+	SetCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:settext("Using server values")
+		else
+			self:settext("Using client values")
+		end
+	end;
+
+	OnlineUpdateMessageCommand = function(self)
+		self:queuecommand("Set")
+	end;
+	LogOutMessageCommand = function(self)
+		self:queuecommand("Set")
 	end;
 }
 
@@ -52,8 +76,16 @@ local function makeSSRPoints(i)
 			self:xy(x,y)
 			self:zoom(0.3)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:queuecommand("Set")
+		end;
+		SetCommand = function(self)
+			local SSR = 0
+			if DLMAN:IsLoggedIn() then
+				SSR = DLMAN:GetSkillsetRating(SkillSets[i])
+			else
+				SSR = profile:GetPlayerSkillsetRating(SkillSets[i])
+			end
 
-			local SSR = profile:GetPlayerSkillsetRating(SkillSets[i])
 			self:settextf("%s\n%0.2f",SkillSets[i], SSR)
 			self:AddAttribute(#SkillSets[i], {Length = -1, Diffuse = getMSDColor(SSR)})
 		end;
@@ -84,6 +116,12 @@ t[#t+1] = Def.ActorMultiVertex{
 		self:SetVertices(maxVerts)
 		self:SetDrawState{First= 1, Num= -1}
 	end;
+	OnlineUpdateMessageCommand = function(self)
+		self:queuecommand("Set")
+	end;
+	LogOutMessageCommand = function(self)
+		self:queuecommand("Set")
+	end;
 }
 
 t[#t+1] = Def.ActorMultiVertex{
@@ -93,13 +131,23 @@ t[#t+1] = Def.ActorMultiVertex{
 		self:SetDrawState{Mode="DrawMode_QuadStrip"}
 		self:queuecommand("Set")
 	end;
+	OnlineUpdateMessageCommand = function(self)
+		self:queuecommand("Set")
+	end;
+	LogOutMessageCommand = function(self)
+		self:queuecommand("Set")
+	end;
 	SetCommand = function(self)
 		verts = {}
 		local x,y
-		local SSR
 		for i=1, #SkillSets do
+			local SSR = 0
 			x,y = getPointOffset(circleRadius,sepAngle*(i-1)-90)
-			SSR = profile:GetPlayerSkillsetRating(SkillSets[i])
+			if DLMAN:IsLoggedIn() then
+				SSR = DLMAN:GetSkillsetRating(SkillSets[i])
+			else
+				SSR = profile:GetPlayerSkillsetRating(SkillSets[i])
+			end
 
 			verts[#verts+1] = {{x*math.min(softCap,SSR/maxValue),y*math.min(softCap,SSR/maxValue),0},getMSDColor(SSR)}
 			verts[#verts+1] = {{0,0,0},color("#FFFFFF")}
