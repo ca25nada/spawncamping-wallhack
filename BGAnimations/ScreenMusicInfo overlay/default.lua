@@ -880,18 +880,49 @@ t[#t+1] = Def.Actor{
 t[#t+1] = topRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
+		self:diffusealpha(0)
+		self:smooth(0.2)
+		self:diffusealpha(1)
 	end;
 }
 
 t[#t+1] = stepsListRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
+		self:diffusealpha(0)
+		self:sleep(0.025)
+		self:smooth(0.2)
+		self:diffusealpha(1)
 	end;
 }
 
 t[#t+1] = stepsBPMRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
+		self:diffusealpha(0)
+		self:sleep(0.05)
+		self:smooth(0.2)
+		self:diffusealpha(1)
+	end;
+}
+
+t[#t+1] = LoadActor("stepsinfo") .. {
+	InitCommand = function(self)
+		self:xy(capWideScale(135,160),140)
+		self:diffusealpha(0)
+		self:sleep(0.075)
+		self:smooth(0.2)
+		self:diffusealpha(1)
+	end;
+}
+
+t[#t+1] = LoadActor("ssrbreakdown") .. {
+	InitCommand = function(self)
+		self:xy(capWideScale(135,160),315)
+		self:diffusealpha(0)
+		self:sleep(0.1)
+		self:smooth(0.2)
+		self:diffusealpha(1)
 	end;
 }
 
@@ -899,22 +930,12 @@ t[#t+1] = scoreList() .. {
 	Name = "ScoreList";
 	InitCommand = function(self)
 		self:xy(320,110)
+		self:diffusealpha(0)
+		self:sleep(0.125)
+		self:smooth(0.2)
+		self:diffusealpha(1)
 	end
 }
-
-
-t[#t+1] = LoadActor("stepsinfo") .. {
-	InitCommand = function(self)
-		self:xy(capWideScale(135,160),140)
-	end;
-}
-
-t[#t+1] = LoadActor("ssrbreakdown") .. {
-	InitCommand = function(self)
-		self:xy(capWideScale(135,160),315)
-	end;
-}
-
 
 
 

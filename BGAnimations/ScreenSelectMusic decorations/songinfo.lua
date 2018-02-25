@@ -24,10 +24,10 @@ local t = Def.ActorFrame{
 		group = wheel:GetSelectedSection()
 		GHETTOGAMESTATE:setLastSelectedFolder(group)
 
-		self:GetChild("Banner"):queuecommand("Set")
-		self:GetChild("CDTitle"):queuecommand("Set")
-		self:GetChild("songTitle"):queuecommand("Set")
-		self:GetChild("songLength"):queuecommand("Set")
+		self:GetChild("Banner"):playcommand("Set")
+		self:GetChild("CDTitle"):playcommand("Set")
+		self:GetChild("songTitle"):playcommand("Set")
+		self:GetChild("songLength"):playcommand("Set")
 	end;
 	PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
 	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Set") end;
