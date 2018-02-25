@@ -1,6 +1,10 @@
 local top
 
 local packlist = DLMAN:GetPackList()
+local downloading = DLMAN:GetDownloadingPacks()
+
+SCREENMAN:SystemMessage(tostring(#packlist))
+
 -- make lookup table for installed packs
 local installedPacks = {}
 for k,v in pairs(SONGMAN:GetSongGroupNames()) do
@@ -31,10 +35,6 @@ end
 local function input(event)
 	if event.type == "InputEventType_FirstPress" then
 		if event.button == "Back" or event.button == "Start" then
-			for name, download in pairs(downloading) do
-				download:Stop()
-				downloading[name] = nil
-			end
 			SCREENMAN:GetTopScreen():Cancel()
 		end
 
@@ -52,15 +52,18 @@ local function input(event)
 
 end
 
-downloading = {}
+local downloading = DLMAN:GetDownloadingPacks()
 local function update(self, delta)
-	for name, download in pairs(downloading) do
-		self:GetChild("PackList"):playcommand("DownloadStatus", {name = name, downloaded = download:GetKBDownloaded(), total = download:GetTotalKB()})
+	for _,pack in ipairs(downloading) do
+		local download = pack:GetDownload()
+		self:GetChild("PackList"):playcommand("DownloadStatus", {pack = pack, download = download})
 	end
+
 end
 
 local t = Def.ActorFrame {
 	OnCommand = function(self)
+
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
 		self:SetUpdateFunction(update)
@@ -185,42 +188,47 @@ local function packList()
 				end
 			end;
 			DownloadStatusCommand = function(self, params) -- Download status update from updatefunction
-				if packlist[packIndex] ~= nil and packlist[packIndex]:GetName() == params.name then
-					self:GetChild("Size"):settextf("Downloading %5.2f MB / %5.2f MB", params.downloaded/1048576, params.total/1048576)
-					self:GetChild("ProgressBar"):zoomx(params.downloaded/params.total*packItemWidth)
+				if not params.download then
+					return 
+				end
+
+				if params.pack == packlist[packIndex] then
+					download = params.download
+
+					self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
+					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
+					self:GetChild("Size"):settextf("Downloading %5.2f MB / %5.2f MB", download:GetKBDownloaded()/1048576, download:GetTotalKB()/1048576)
+					self:GetChild("ProgressBar"):zoomx(download:GetKBDownloaded()/download:GetTotalKB()*packItemWidth)
 				end
 			end;
 			StartDownloadCommand = function(self) -- Start download
 				download = packlist[packIndex]:DownloadAndInstall()
-				downloading[packlist[packIndex]:GetName()] = download
+
+				-- Will crash the game if the pack is already downloaded for the time being.
+				downloading = DLMAN:GetDownloadingPacks()
+
 				self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
 			end;
 			StopDownloadCommand = function(self) -- Stop download
 				download:Stop()
-				downloading[packlist[packIndex]:GetName()] = nil
+				downloading = DLMAN:GetDownloadingPacks()
 				self:GetChild("Status"):playcommand("Set")
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
 				self:GetChild("Size"):settextf("Download Cancelled")
 			end;
 			FinishDownloadCommand = function(self) -- Download Finished
+				downloading = DLMAN:GetDownloadingPacks()
 				self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.completed)):diffusealpha(0.8)
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.completed)):diffusealpha(0.2)
 				self:GetChild("Size"):settextf("Download Complete!")
 			end;
 			PackDownloadedMessageCommand = function(self, params) -- Download Stopped/Finished
-				if packlist[packIndex] ~= nil and packlist[packIndex]:GetName() == params.pack:GetName() then 
-					--This messagecommand still gets broadcast even when cancelled for some reason. 
-					--If it's nil here it was cancelled, not finished.
-					if downloading[params.pack:GetName()] ~= nil then
-						downloading[params.pack:GetName()] = nil
-						self:playcommand("FinishDownload")
-					end
-				end
+				downloading = DLMAN:GetDownloadingPacks()
 			end;
 			DownloadFailedMessageCommand = function(self, params) -- Download Failed
 				if packlist[packIndex]:GetName() == params.pack:GetName() then 
-					downloading[params.pack:GetName()] = nil
+					downloading = DLMAN:GetDownloadingPacks()
 					self:GetChild("Status"):playcommand("Set")
 					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
 					self:GetChild("Size"):settextf("Download Failed")
