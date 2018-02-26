@@ -2,7 +2,7 @@
 A WIP Stepmania 5 theme aimed primarily for KB players.  
 <a href="http://imgur.com/a/RpFvQ" target="_blank">Screenshots</a>
 
-Requirements: See the requirements listed for each release. Otherwise, master branch requires Etterna 0.57.0 or newer. 
+Requirements: See the requirements listed for each release. Otherwise, master branch requires Etterna 0.58 or newer. 
 sc-wh 2.0.2 will be the final release for vanilla SM5 version(s) unless there's demand for another backport.
 
 ---
