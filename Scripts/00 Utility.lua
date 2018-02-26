@@ -178,3 +178,14 @@ end
 function easyInputString(question, maxLength, isPassword, tablewithvalue)
 	easyInputStringWithParams(question, maxLength, isPassword, function(answer, params) tablewithvalue.inputString=answer end, {})
 end
+
+-- Overload the function in 02 Utilities.lua with the one in the current SM repository.
+-- Because the one currently in etterna is dumb.
+function IsUsingWideScreen()
+	local curAspect = GetScreenAspectRatio()
+	if math.abs(curAspect-16/9) <= .044 or math.abs(curAspect - 16/10) <= .044 then
+		return true
+	else
+		return false
+	end
+end
