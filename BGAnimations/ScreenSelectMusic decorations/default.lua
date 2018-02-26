@@ -3,20 +3,21 @@ t[#t+1] = LoadActor("songinfo");
 
 t[#t+1] = Def.ActorFrame {
 	InitCommand=function(self)
-		self:rotationz(-90):xy(SCREEN_CENTER_X/2-WideScale(get43size(150),150),SCREEN_HEIGHT-50):diffusealpha(0)
+		self:rotationz(-90):xy(SCREEN_CENTER_X/2-WideScale(get43size(150),150),270)
+		self:diffusealpha(0)
+		self:sleep(0.125)
+		self:smooth(0.2)
+		self:diffusealpha(1) 
 	end;
 	OffCommand=function(self)
 		self:stoptweening()
-		self:bouncy(0.3)
-		self:y(SCREEN_HEIGHT-50)
-		self:diffusealpha(0)
+		self:sleep(0.025)
+		self:smooth(0.2)
+		self:diffusealpha(0) 
 	end;
 
 	OnCommand=function(self)
-		self:stoptweening()
-		self:bouncy(0.3)
-		self:xy(SCREEN_CENTER_X/2-WideScale(get43size(150),150),270)
-		self:diffusealpha(1)
+
 		wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
 	end;
 	CurrentSongChangedMessageCommand=function(self)

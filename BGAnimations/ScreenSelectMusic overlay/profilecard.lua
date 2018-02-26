@@ -1,18 +1,20 @@
 local t = Def.ActorFrame{
-	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
-	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,100):diffusealpha(0) end;
-	OnCommand = function(self) self:bouncy(0.3) self:xy(0,0):diffusealpha(1) end;
-	PlayerJoinedMessageCommand = function(self)
-		self:queuecommand("TabChangedMessage")
-	end
+	InitCommand = function(self) 
+		self:diffusealpha(0)
+		self:sleep(0.15)
+		self:smooth(0.2)
+		self:diffusealpha(1) 
+	end;
+	OffCommand = function(self)
+		self:sleep(0.05)
+		self:smooth(0.2)
+		self:diffusealpha(0) 
+	end;
 };
-
-local approachSecond = 0.2
 
 local frameX = SCREEN_CENTER_X/2
 local frameY = SCREEN_CENTER_Y+100
 local maxMeter = 30
-local starSize = 0.55
 local frameWidth = capWideScale(get43size(390),390)
 local frameHeight = 110
 local frameHeightShort = 61

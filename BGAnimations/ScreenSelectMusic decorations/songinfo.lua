@@ -5,19 +5,24 @@ local wheel
 
 
 local t = Def.ActorFrame{
-	BeginCommand = function(self)
-		self:queuecommand("Set")
+	InitCommand = function(self) 
+		self:diffusealpha(0)
+		self:sleep(0.100)
+		self:smooth(0.2)
+		self:diffusealpha(1) 
 	end;
-	InitCommand = function(self) self:xy(0,-100):diffusealpha(0) end;
-	OffCommand = function(self) self:finishtweening() self:bouncy(0.3) self:xy(0,-100):diffusealpha(0) end;
+	OffCommand = function(self)
+		self:stoptweening()
+		self:smooth(0.2)
+		self:diffusealpha(0)
+	end;
 	OnCommand = function(self) 
-		self:bouncy(0.3)
-		self:xy(0,0):diffusealpha(1)
 		topScreen = SCREENMAN:GetTopScreen()
 		song = GAMESTATE:GetCurrentSong()
 		if topScreen then
 			wheel = topScreen:GetMusicWheel()
 		end
+		self:playcommand("Set")
 	end;
 	SetCommand = function(self)
 		song = GAMESTATE:GetCurrentSong()

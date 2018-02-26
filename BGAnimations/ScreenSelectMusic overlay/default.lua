@@ -32,7 +32,7 @@ t[#t+1] = Def.Quad{
 
 t[#t+1] = LoadActor("../_frame");
 
-t[#t+1] = LoadActor("profilecard");
+t[#t+1] = LoadActor("profilecard")
 t[#t+1] = LoadActor("tabs");
 t[#t+1] = LoadActor("currentsort");
 t[#t+1] = StandardDecorationFromFileOptional("BPMDisplay","BPMDisplay");
