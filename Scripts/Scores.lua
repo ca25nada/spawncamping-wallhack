@@ -6,8 +6,22 @@ WifeTiers = {
 	Grade_Tier04 = 0.8, 
 	Grade_Tier05 = 0.7, 
 	Grade_Tier06 = 0.6,
-	Grade_Tier07 = 0.6
+	Grade_Tier07 = 0.0
 }
+
+WifeTierList = {"Grade_Tier01","Grade_Tier02","Grade_Tier03","Grade_Tier04","Grade_Tier05","Grade_Tier06","Grade_Tier07"}
+
+function getWifeGradeTier(percent)
+	percent = percent / 100
+	for _,v in pairs(WifeTierList) do
+		if percent > WifeTiers[v] then
+			return v
+		end
+	end
+
+	return "Grade_Tier07"
+
+end
 
 function getScoresByKey(pn, steps)
 	local song = GAMESTATE:GetCurrentSong()

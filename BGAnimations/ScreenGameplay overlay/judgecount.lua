@@ -71,7 +71,7 @@ local function judgeCounter(pn)
 		end;
 		JudgmentMessageCommand = function(self, params)
 			if params.Player == pn then
-				self:GetChild(pn.."Grade"):queuecommand("Set")
+				self:GetChild(pn.."Grade"):playcommand("Set", params)
 				if judges2[params.HoldNoteScore] then
 					if highlight then
 						self:GetChild(pn..params.HoldNoteScore.."Highlight"):playcommand("Set")
@@ -94,18 +94,21 @@ local function judgeCounter(pn)
 		end
 	}
 
-	t[#t+1] = LoadFont("Common Normal") .. { --grade
+	t[#t+1] = LoadFont("Common Bold") .. { --grade
 		Name=pn.."Grade";
 		InitCommand = function(self)
 			self:xy(5,8+(#judges*spacing)):halign(0)
 			self:zoom(gradeFontSize)
 			self:playcommand("Set")
 		end;
-		SetCommand=function(self)
-			local grade = pss:GetWifeGrade(pn)
-			if grade then
-				self:settext(getGradeStrings(grade))
+		SetCommand = function(self, params)
+			if not params then
+				self:settext(getGradeStrings("Grade_Tier07"))
+				return
 			end
+			self:settext(getGradeStrings(getWifeGradeTier(params.WifePercent)))
+
+			
 		end;
 	}
 
