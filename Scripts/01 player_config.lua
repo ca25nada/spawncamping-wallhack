@@ -21,6 +21,7 @@ local defaultConfig = {
 	FCEffect = true,
 	Username = "",
 	Password = "",
+	CBHighlightMinJudge = "TapNoteScore_W4"
 }
 
 playerConfig = create_setting("playerConfig", "playerConfig.lua", defaultConfig, -1)

@@ -29,7 +29,7 @@ local function LaneHighlight()
 	local t = Def.ActorFrame{}
 	local alpha = 0.4
 	local pn 
-	local judgeThreshold = Enum.Reverse(TapNoteScore)[ComboContinue()]
+	local judgeThreshold = Enum.Reverse(TapNoteScore)[playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlightMinJudge]
 
 	for i=1,16 do
 		t[#t+1] = Def.Quad{
