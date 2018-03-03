@@ -67,6 +67,7 @@ local t = Def.ActorFrame {
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
 		self:SetUpdateFunction(update)
+		MESSAGEMAN:Broadcast("UpdateList")
 	end;
 }
 
@@ -162,7 +163,6 @@ local function packList()
 				self:diffusealpha(0)
 				self:xy(packItemX, packItemY + (i-1)*(packItemHeight+packItemYSpacing)-10)
 				self:playcommand("Show")
-				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 			end;
 			ShowCommand = function(self)
 				self:y(packItemY + (i-1)*(packItemHeight+packItemYSpacing)-10)
