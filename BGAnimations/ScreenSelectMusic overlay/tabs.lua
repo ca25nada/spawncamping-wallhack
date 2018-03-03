@@ -79,6 +79,7 @@ t[#t+1] = tab:makeTabActors() .. {
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 
 		elseif params.name == "Song Info" then
+
 			if GAMESTATE:GetCurrentSong() then
 				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 			end
@@ -88,6 +89,9 @@ t[#t+1] = tab:makeTabActors() .. {
 
 		elseif params.name == "Downloads" then
 			SCREENMAN:AddNewScreenToTop("ScreenDownload")
+
+		elseif params.name == "Playlist" then
+			SCREENMAN:AddNewScreenToTop("ScreenPlaylistInfo")
 
 		end
 	end
