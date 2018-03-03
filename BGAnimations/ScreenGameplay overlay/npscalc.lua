@@ -2,8 +2,8 @@
 
 local debug = false
 -- Generally, a smaller window will adapt faster, but a larger window will have a more stable value.
-local maxWindow = themeConfig:get_data().NPSDisplay.MaxWindow -- this will be the maximum size of the "window" in seconds. 
-local minWindow = themeConfig:get_data().NPSDisplay.MinWindow -- this will be the minimum size of the "window" in seconds. Unused for now.
+local maxWindow = 3 --themeConfig:get_data().NPSDisplay.MaxWindow -- this will be the maximum size of the "window" in seconds. 
+local minWindow = 3 --themeConfig:get_data().NPSDisplay.MinWindow -- this will be the minimum size of the "window" in seconds. Unused for now.
 
 --Graph related stuff
 local graphLastUpdate = 0
@@ -15,22 +15,22 @@ local graphHeight = 50
 local graphPos = {  -- Position of the NPS graph
 	PlayerNumber_P1 = {
 		X = 0,
-		Y = 50
+		Y = 100
 	},
 	PlayerNumber_P2 = {
 		X = SCREEN_WIDTH-graphWidth,
-		Y = 50
+		Y = 100
 	}
 }
 
 local textPos = { -- Position of the NPS text
 	PlayerNumber_P1 = {
 		X = 5,
-		Y = 34
+		Y = 84
 	},
 	PlayerNumber_P2 = {
 		X = SCREEN_WIDTH-graphWidth,
-		Y = 34
+		Y = 84
 	}
 }
 

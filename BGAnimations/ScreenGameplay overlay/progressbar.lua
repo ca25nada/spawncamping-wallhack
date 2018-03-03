@@ -1,27 +1,21 @@
 -- Song Progress bar with current/end time and the song title+artist.
 
-local barPosition = themeConfig:get_data().global.ProgressBar -- 0 = bottom, 1 = top, 2 = off. 
 local bareBone = isBareBone()
 --=======================================
 --ONLY EDIT THESE VALUES
 --=======================================
-local width = capWideScale(get43size(300),300)
-local height = 7
+local width = SCREEN_WIDTH
+local height = 15
 local frameX = SCREEN_CENTER_X
 local bottomModifier = -20;  -- Negative value, how far up
 local topModifier = 15;       -- Positive value, how far down
-local frameY = 0
-local backgroundOpacity = bareBone and 1 or 0.6
+local frameY = SCREEN_HEIGHT-height/2
+local opacity = 1
 --=======================================
 
-if barPosition == 1 then  -- BOTTOM
-    frameY = SCREEN_BOTTOM + bottomModifier
-elseif barPosition == 2 then -- TOP
-    frameY = SCREEN_TOP + topModifier 
-end
 
 local t = Def.ActorFrame {
-    InitCommand = function(self)
+    OnCommand = function(self)
         self:xy(frameX,frameY)
     end
 }
@@ -29,49 +23,51 @@ local t = Def.ActorFrame {
 t[#t+1] = Def.Quad{
 	Name="ProgressBG";
 	InitCommand=function(self)
-		self:xy(frameX-(width/2),frameY):zoomto(width,height):halign(0):diffuse(color("#666666")):diffusealpha(backgroundOpacity)
+		self:x(width/2):zoomto(width,height):halign(1):diffuse(color("#000000")):diffusealpha(opacity)
 	end;
 }
 
 t[#t+1] = Def.Quad{
 	Name="ProgressFG";
 	InitCommand=function(self)
-		self:xy(frameX-(width/2),frameY):zoomto(0,height):halign(0):diffuse(getMainColor('highlight'))
+		self:x(-width/2):zoomto(0,height):halign(0):diffuse(getMainColor('highlight')):diffusealpha(opacity)
 	end;
 }
 
-if not bareBone then
-    t[#t+1] = LoadFont("Common Normal") .. {
-        Name="Song Name";
-        InitCommand=function(self)
-        	self:xy(frameX,frameY-1):zoom(0.35):maxwidth((width-65)/0.35)
-        end;
-        SetCommand=function(self)
-        	self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle().." // "..GAMESTATE:GetCurrentSong():GetDisplayArtist())
-        end;
-        BeginCommand = function(self) self:playcommand('Set') end;
-        CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
-    }
 
-    t[#t+1] = LoadFont("Common Normal") .. {
-            Name="CurrentTime";
-            InitCommand=function(self)
-            	self:xy(frameX-(width/2),frameY-1):halign(0):zoom(0.35):settext("0:00")
-            end	
-    }
+t[#t+1] = LoadFont("Common Normal") .. {
+    Name="Song Name";
+    InitCommand=function(self)
+    	self:zoom(0.35):maxwidth((width-65)/0.35)
+    end;
+    SetCommand=function(self)
+        local song = GAMESTATE:GetCurrentSong()
+    	self:settextf("%s // %s",song:GetDisplayMainTitle(),song:GetDisplayArtist())
+    end;
+    BeginCommand = function(self) self:playcommand('Set') end;
+    CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
+}
 
-    t[#t+1] = LoadFont("Common Normal") .. {
-        Name="TotalTime";
+t[#t+1] = LoadFont("Common Normal") .. {
+        Name="CurrentTime";
         InitCommand=function(self)
-        	self:xy(frameX+(width/2),frameY-1):halign(1):zoom(0.35)
-        end;
-        SetCommand=function(self)
-        	self:settext(SecondsToMSSMsMs(GAMESTATE:GetCurrentSong():GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()))
-        end;
-        BeginCommand = function(self) self:playcommand('Set') end;
-        CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
-    }  
-end
+        	self:x(-width/2+5):halign(0):zoom(0.35):settext("0:00")
+        end	
+}
+
+t[#t+1] = LoadFont("Common Normal") .. {
+    Name="TotalTime";
+    InitCommand=function(self)
+    	self:x(width/2-5):halign(1):zoom(0.35)
+    end;
+    SetCommand=function(self)
+        local song = GAMESTATE:GetCurrentSong()
+    	self:settext(SecondsToMSSMsMs(song:GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()))
+    end;
+    BeginCommand = function(self) self:playcommand('Set') end;
+    CurrentSongChangedMessageCommand = function(self) self:playcommand('Set') end;
+}  
+
 
 
 -- Returns the %of song played from 0~1.
