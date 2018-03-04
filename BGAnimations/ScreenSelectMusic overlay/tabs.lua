@@ -60,6 +60,9 @@ local t = Def.ActorFrame{
 		self:smooth(0.5)
 		self:diffusealpha(0)
 	end;
+	StartPlaylistMessageCommand=function(self, params)
+		top:StartPlaylistAsCourse(params.playlist:GetName())
+	end;
 }
 
 t[#t+1] = LoadActor("../_mouse")
