@@ -576,7 +576,7 @@ local function playlistStepsList()
 			end;
 			UpdateStepsListMessageCommand = function(self)
 				stepsIndex = (curStepsPage-1)*itemCount+i-1
-				local key = playlist:GetChartlist()[stepsIndex]
+				local key = playlist:GetChartkeys()[stepsIndex]
 				if not key then
 					self:playcommand("Hide")
 					return
@@ -588,7 +588,7 @@ local function playlistStepsList()
 				self:playcommand("Show")
 			end;
 			ShowPlaylistDetailMessageCommand = function(self, params)
-				local key = params.playlist:GetChartlist()[stepsIndex]
+				local key = params.playlist:GetChartkeys()[stepsIndex]
 				if not key then
 					return
 				end
@@ -607,7 +607,7 @@ local function playlistStepsList()
 				end
 
 				stepsIndex = (curStepsPage-1)*itemCount+i-1
-				local key = playlist:GetChartlist()[stepsIndex]
+				local key = playlist:GetChartkeys()[stepsIndex]
 				if not key then
 					self:playcommand("Hide")
 					return
