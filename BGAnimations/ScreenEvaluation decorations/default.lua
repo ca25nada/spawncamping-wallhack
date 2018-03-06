@@ -270,7 +270,7 @@ local function scoreBoard(pn)
 			self:diffusealpha(0.8)
 		end;
 		SetCommand = function(self)
-			self:diffuse(getClearTypeColor(clearType))
+			self:diffuse(getBorderColor())
 		end;
 	}
 

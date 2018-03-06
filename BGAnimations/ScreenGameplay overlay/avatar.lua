@@ -74,11 +74,7 @@ local function avatarFrame(pn)
 		SetCommand = function(self)
 			self:stoptweening()
 			self:smooth(0.5)
-			local rating
-			if profile ~= nil then
-				rating = profile:GetPlayerRating()
-				self:diffuse(getSRColor(rating))
-			end
+			self:diffuse(getBorderColor())
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 	}

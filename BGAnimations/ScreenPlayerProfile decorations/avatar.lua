@@ -15,7 +15,7 @@ local t = Def.ActorFrame{
 t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:zoomto(avatarHeight+avatarBorder*2,avatarWidth+avatarBorder*2)
-			self:diffuse(getSRColor(profile:GetPlayerRating()))
+			self:diffuse(getBorderColor())
 		end;
 	}
 

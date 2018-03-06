@@ -96,11 +96,7 @@ local function generalFrame(pn)
 		SetCommand = function(self)
 			self:stoptweening()
 			self:smooth(0.5)
-			local rating
-			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
-				rating = profile[pn]:GetPlayerRating()
-				self:diffuse(getSRColor(rating))
-			end
+			self:diffuse(getBorderColor())
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 	}
