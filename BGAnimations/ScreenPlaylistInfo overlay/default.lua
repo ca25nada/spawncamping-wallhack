@@ -542,7 +542,9 @@ local function playlistStepsList()
 			maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
 		end;
 		PlaylistChangedMessageCommand = function(self)
-			maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
+			if playlist then
+				maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
+			end
 		end;
 	}
 
@@ -716,7 +718,7 @@ local function playlistStepsList()
 				self:diffusealpha(0.8)
 			end;
 			SetCommand = function(self)
-				if playlist then
+				if song and steps then
 					self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
 				else
 					self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
@@ -730,6 +732,43 @@ local function playlistStepsList()
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
 				self:settextf("Remove")
+			end;
+		}
+
+		t[#t+1] = quadButton(7) .. {
+			Name = "Play";
+			InitCommand = function(self)
+				self:xy(itemWidth-10-60, 0)
+				self:zoomto(40, 17)
+			end;
+			TopPressedCommand = function(self)
+				if not playlist then
+					return
+				end
+
+				SCREENMAN:GetTopScreen():Cancel()
+				MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
+
+				self:finishtweening()
+				self:diffusealpha(1)
+				self:smooth(0.3)
+				self:diffusealpha(0.8)
+			end;
+			SetCommand = function(self)
+				if song and steps then
+					self:diffuse(color(colorConfig:get_data().main.positive)):diffusealpha(0.8)
+				else
+					self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+				end
+			end
+		}
+
+		t[#t+1] = LoadFont("Common Normal")..{
+			InitCommand  = function(self)
+				self:xy(itemWidth-10-60, 0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+				self:settextf("Play")
 			end;
 		}
 
