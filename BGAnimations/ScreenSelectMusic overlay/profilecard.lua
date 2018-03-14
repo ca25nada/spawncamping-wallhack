@@ -563,6 +563,21 @@ local function generalFrame(pn)
 		BeginCommand = function(self) self:queuecommand('Set') end;
 	};
 
+
+	-- EO rank placeholder
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand = function(self)
+			self:xy(210-frameWidth/2,frameHeight-16)
+			self:zoom(0.4)
+		    self:halign(0)
+		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+		end;
+		SetCommand = function(self)
+			self:settextf("Ranking: %d/%d",0,0)
+		end;
+		BeginCommand = function(self) self:queuecommand('Set') end;
+	};
+
 	return t
 end
 

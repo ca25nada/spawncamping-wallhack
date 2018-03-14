@@ -84,7 +84,7 @@ local function create_menu_frame(pn, x, y)
 		Def.Quad{
 			InitCommand= function(self)
 				self:setsize(menu_bg_width, menu_spacing * (#menu_choices + 1))
-					:y(-menu_spacing):vertalign(top)
+					:y(-menu_spacing):vertalign(0)
 					:diffuse{0, 0, 0, .25}
 					:playcommand("Hide")
 			end,
