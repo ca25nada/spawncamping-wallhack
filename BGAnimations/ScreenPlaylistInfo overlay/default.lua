@@ -15,7 +15,46 @@ local song = GAMESTATE:GetCurrentSong()
 
 local detail = false
 
+
+-- Exits the screen while sending a message to begin playing the playlist immediately.
+local function playPlaylist(pl)
+	MESSAGEMAN:Broadcast("StartPlaylist",{playlist = pl})
+	SCREENMAN:GetTopScreen():Cancel()
+end
+
+-- NOTE: 
+-- Doesn't work as SONGMAN:NewPlaylist() failed to add the playlist outside of ScreenSelectMusic.
+-- Creates a new playlist and updates the screen.
+local function addPlaylist()
+	SONGMAN:NewPlaylist()
+	detail = false
+	playlists = SONGMAN:GetPlaylists()
+	maxPages = math.ceil(#playlists/maxItems)
+	MESSAGEMAN:Broadcast("UpdateList")
+end
+
+-- Deletes the playlist and updates the screen.
+local function deletePlaylist(pl)
+	local name = pl:GetName()
+
+	-- Delete playlist and update parameters
+	SCREENMAN:SystemMessage(string.format("Playlist \"%s\" deleted.", name))
+	SONGMAN:DeletePlaylist(name)
+	detail = false
+	playlists = SONGMAN:GetPlaylists()
+	maxPages = math.ceil(#playlists/maxItems)
+	MESSAGEMAN:Broadcast("UpdateList")
+	MESSAGEMAN:Broadcast("HidePlaylistDetail")
+end
+
+-- No such functionality exists for playlists apparently.
+local function editPlaylist(pl)
+end
+
+
 local function movePage(n)
+
+	-- Moves to next page of steps while a playlist is selected.
 	if detail then
 		if n > 0 then 
 			curStepsPage = ((curStepsPage+n-1) % maxPlaylistPages + 1)
@@ -23,6 +62,8 @@ local function movePage(n)
 			curStepsPage = ((curStepsPage+n+maxPlaylistPages-1) % maxPlaylistPages+1)
 		end
 		MESSAGEMAN:Broadcast("UpdateStepsList")
+
+	-- Moves to next page of playlists while no playlist is selected.
 	else
 		if n > 0 then 
 			curPage = ((curPage+n-1) % maxPages + 1)
@@ -33,6 +74,8 @@ local function movePage(n)
 	end
 end
 
+
+-- Input callback function
 local function input(event)
 	if event.type == "InputEventType_FirstPress" then
 		if event.button == "Back" or event.button == "Start" then
@@ -61,6 +104,8 @@ local t = Def.ActorFrame{
 	end;
 }
 
+
+-- Playlist info on the left side.
 local function playlistInfo()
 	local frameWidth = 300
 	local frameHeight = SCREEN_HEIGHT - 60
@@ -124,6 +169,7 @@ local function playlistInfo()
 		end;
 	}
 
+	-- Delete Button
 	t[#t+1] = quadButton(6) .. {
 		Name = "Delete Button";
 		InitCommand = function(self)
@@ -134,6 +180,9 @@ local function playlistInfo()
 			if not playlist then
 				return
 			end
+
+			deletePlaylist(playlist)
+
 			self:finishtweening()
 			self:diffusealpha(1)
 			self:smooth(0.3)
@@ -238,8 +287,7 @@ local function playlistInfo()
 				return
 			end
 
-			MESSAGEMAN:Broadcast("StartPlaylist",{playlist = playlist})
-			SCREENMAN:GetTopScreen():Cancel()
+			playPlaylist(playlist)
 
 			self:finishtweening()
 			self:diffusealpha(1)
@@ -302,13 +350,15 @@ local function playlistList()
 	local itemYSpacing = 5
 
 	t[#t+1] = quadButton(6) .. {
-		Name = "Delete Button";
+		Name = "Add Button";
 		InitCommand = function(self)
 			self:xy(frameWidth-50-10, itemY - 30)
 			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 			self:zoomto(100, 20)
 		end;
 		TopPressedCommand = function(self)
+			-- Doesn't work yet outside of ScreenSelectMusic apparently.
+			addPlaylist()
 			self:finishtweening()
 			self:diffusealpha(1)
 			self:smooth(0.3)
@@ -352,8 +402,9 @@ local function playlistList()
 			end;
 			UpdateListMessageCommand = function(self) -- Pack List updates (e.g. new page)
 				playlistIndex = (curPage-1)*10+i
-				if playlists[playlistIndex] ~= nil then
-					playlist = playlists[playlistIndex]
+				playlist = playlists[playlistIndex]
+
+				if playlist then
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 					self:playcommand("Show")
 				else
@@ -362,7 +413,6 @@ local function playlistList()
 			end;
 			ShowPlaylistDetailMessageCommand = function(self, params)
 				if params.index == i then
-					detail = true
 					self:finishtweening()
 					self:easeOut(0.5)
 					self:y(itemY)
@@ -372,13 +422,14 @@ local function playlistList()
 				end
 			end;
 			HidePlaylistDetailMessageCommand = function(self)
-				detail = false
-				if playlist ~= nil then 
+				if playlist then 
 					self:playcommand("Show")
 				end
 			end;
 			PlaylistChangedMessageCommand = function(self)
-				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+				if playlist then
+					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+				end
 			end;
 		}
 
@@ -391,10 +442,12 @@ local function playlistList()
 			TopPressedCommand = function(self, params)
 				if params.input == "DeviceButton_left mouse button" then
 					if not detail and playlist then
+						detail = true
 						MESSAGEMAN:Broadcast("ShowPlaylistDetail", {playlist = playlist, playlistIndex = playlistIndex, index = i})
 					end
 
 				elseif params.input == "DeviceButton_right mouse button" then
+					detail = false
 					MESSAGEMAN:Broadcast("HidePlaylistDetail")
 				end
 
@@ -494,7 +547,6 @@ local function playlistList()
 				SONGMAN:SetActivePlaylist(playlist:GetName())
 				playlist:AddChart(steps:GetChartKey())
 				MESSAGEMAN:Broadcast("PlaylistChanged")
-				self:GetParent():RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 
 				self:finishtweening()
 				self:diffusealpha(1)
