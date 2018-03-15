@@ -382,10 +382,7 @@ local function playlistList()
 			end;
 			HideCommand = function(self)
 				hidden = true
-				playlist = nil
-				self:stoptweening()
-				self:easeOut(0.5)
-				self:diffusealpha(0)
+				self:y(SCREEN_HEIGHT*10)
 			end;
 			UpdateListMessageCommand = function(self) -- Pack List updates (e.g. new page)
 				playlistIndex = (curPage-1)*10+i
@@ -395,7 +392,10 @@ local function playlistList()
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 					self:playcommand("Show")
 				else
-					self:playcommand("Hide")
+					self:stoptweening()
+					self:easeOut(0.5)
+					self:diffusealpha(0)
+					self:queuecommand("Hide")
 				end
 			end;
 			ShowPlaylistDetailMessageCommand = function(self, params)
@@ -405,11 +405,13 @@ local function playlistList()
 					self:y(itemY)
 					self:valign(0)
 				else
+					self:stoptweening()
+					self:easeOut(0.5)
+					self:diffusealpha(0)
 					self:playcommand("Hide")
 				end
 			end;
 			HidePlaylistDetailMessageCommand = function(self)
-				playlist = playlists[playlistIndex]
 				if playlist then 
 					self:playcommand("Show")
 				end
@@ -657,10 +659,7 @@ local function playlistStepsList()
 				song = nil
 				steps = nil
 				hidden = true
-				self:stoptweening()
-				self:easeOut(0.5)
-				self:diffusealpha(0)
-
+				self:y(SCREEN_HEIGHT*10)
 			end;
 			ShowPlaylistDetailMessageCommand = function(self, params)
 				local key = params.playlist:GetChartkeys()[stepsIndex]
@@ -674,7 +673,10 @@ local function playlistStepsList()
 				self:playcommand("Show")
 			end;
 			HidePlaylistDetailMessageCommand = function(self)
-				self:playcommand("Hide")
+				self:stoptweening()
+				self:easeOut(0.5)
+				self:diffusealpha(0)
+				self:queuecommand("Hide")
 			end;
 			UpdateStepsListMessageCommand = function(self)
 				if not detail then
@@ -684,7 +686,10 @@ local function playlistStepsList()
 				stepsIndex = (curStepsPage-1)*itemCount+i-1
 				local key = playlist:GetChartkeys()[stepsIndex]
 				if not key then
-					self:playcommand("Hide")
+					self:stoptweening()
+					self:easeOut(0.5)
+					self:diffusealpha(0)
+					self:queuecommand("Hide")
 					return
 				elseif steps and key == steps:GetChartKey() then
 					return
