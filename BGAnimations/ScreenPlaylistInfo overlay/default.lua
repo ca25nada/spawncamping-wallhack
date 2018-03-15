@@ -34,6 +34,26 @@ local song = GAMESTATE:GetCurrentSong()
 
 local detail = false -- True if displaying steps within a playlist, false if just displaying available playlists
 
+-- checks whether a playlist only has a single stepstype as the game will crash if attempting to play
+-- a playlist with multiple stepstype.
+function Playlist.IsPlayable(pl)
+	if not pl then
+		return false
+	end
+
+	local stepsType = {}
+	for i,key in ipairs(pl:GetChartkeys()) do
+		local steps = SONGMAN:GetStepsByChartKey(key)
+		if steps then
+			stepsType[steps:GetStepsType()] = true
+		else
+			return false
+		end
+	end
+
+	return getTableSize(stepsType) == 1
+end
+
 -- Exits the screen while sending a message to begin playing the playlist immediately.
 local function playPlaylist(pl)
 	MESSAGEMAN:Broadcast("StartPlaylist",{playlist = pl})
@@ -292,7 +312,7 @@ local function playlistInfo()
 			self:zoomto(buttonWidth, buttonHeight)
 		end;
 		TopPressedCommand = function(self)
-			if not playlist then
+			if not playlist and playlist:IsPlayable() then
 				return
 			end
 
@@ -303,8 +323,11 @@ local function playlistInfo()
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
 		end;
+		UpdateStepsListMessageCommand = function(self)
+			self:playcommand("Set")
+		end;
 		SetCommand = function(self)
-			if playlist then
+			if playlist and playlist:IsPlayable() then
 				self:diffuse(color(colorConfig:get_data().main.positive)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
