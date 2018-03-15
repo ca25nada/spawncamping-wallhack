@@ -6,10 +6,7 @@ local wheel
 
 local t = Def.ActorFrame{
 	InitCommand = function(self) 
-		self:diffusealpha(0)
-		self:sleep(0.100)
-		self:smooth(0.2)
-		self:diffusealpha(1) 
+		self:delayedFadeIn(4)
 	end;
 	OffCommand = function(self)
 		self:stoptweening()

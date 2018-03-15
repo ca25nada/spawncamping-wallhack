@@ -1,9 +1,6 @@
 local t = Def.ActorFrame{
 	InitCommand = function(self) 
-		self:diffusealpha(0)
-		self:sleep(0.15)
-		self:smooth(0.2)
-		self:diffusealpha(1) 
+		self:delayedFadeIn(6)
 	end;
 	OffCommand = function(self)
 		self:sleep(0.05)

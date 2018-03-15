@@ -3,8 +3,6 @@ local top
 local packlist = DLMAN:GetPackList()
 local downloading = DLMAN:GetDownloadingPacks()
 
-SCREENMAN:SystemMessage(tostring(#packlist))
-
 -- make lookup table for installed packs
 local installedPacks = {}
 for k,v in pairs(SONGMAN:GetSongGroupNames()) do
@@ -359,6 +357,7 @@ end
 t[#t+1] = packInfo() .. {
 	InitCommand = function(self)
 		self:xy(10,30)
+		self:delayedFadeIn(1)
 	end
 }
 
@@ -366,6 +365,7 @@ t[#t+1] = packList() .. {
 	Name = "PackList";
 	InitCommand = function(self)
 		self:xy(320,30)
+		self:delayedFadeIn(2)
 	end
 }
 
