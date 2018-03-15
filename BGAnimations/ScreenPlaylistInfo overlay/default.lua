@@ -1,7 +1,26 @@
+-- Messages broadcast from the screen:
 
-local maxItems = 10
-local curPage = 1
-local curStepsPage = 1
+--  StartPlaylist 
+--   - When exitng the screen to play the playlist. The broadcast is handled in ScreenSelectMusic.
+
+--  MoveMusicWheelToSong
+--   - When exitng the screen to jump to a specific song. The broadcast is handled in ScreenSelectMusic.
+   
+--  UpdateStepsList
+--   - Broadcast when the list of steps within a playlist to display is updated. (playlist updates or page changes)
+
+--  UpdateList 
+--   - Broadcast the list of playlist to display is updated. (new/removed playlists or page changes)
+
+--  ShowPlaylistDetail
+--   - Broadcast when a playlist is clicked, displaying all the steps within the playlist.
+
+--  HidePlaylistDetail
+--   - Broadcast when exiting the detail view to display the list of playlists again.
+
+local maxItems = 10 -- Max number of items (either playlists or steps) to be shown on the screen.
+local curPage = 1 -- Current page for displaying playlists
+local curStepsPage = 1 -- current page for displaying steps within a playlist
 
 local playlist
 local maxPlaylistPages
@@ -13,8 +32,7 @@ local pn = GAMESTATE:GetEnabledPlayers()[1]
 local steps = GAMESTATE:GetCurrentSteps(pn)
 local song = GAMESTATE:GetCurrentSong()
 
-local detail = false
-
+local detail = false -- True if displaying steps within a playlist, false if just displaying available playlists
 
 -- Exits the screen while sending a message to begin playing the playlist immediately.
 local function playPlaylist(pl)
@@ -95,15 +113,6 @@ local function input(event)
 	return false
 
 end
-
-local t = Def.ActorFrame{
-	OnCommand = function(self)
-		top = SCREENMAN:GetTopScreen()
-		top:AddInputCallback(input)
-		MESSAGEMAN:Broadcast("UpdateList")
-	end;
-}
-
 
 -- Playlist info on the left side.
 local function playlistInfo()
@@ -251,7 +260,7 @@ local function playlistInfo()
 			end
 
 			playlist:AddChart(steps:GetChartKey())
-			MESSAGEMAN:Broadcast("PlaylistChanged")
+			MESSAGEMAN:Broadcast("UpdateStepsList")
 
 			self:finishtweening()
 			self:diffusealpha(1)
@@ -315,33 +324,11 @@ local function playlistInfo()
 	return t
 end
 
+-- Displays available playlists
 local function playlistList()
 
 	local frameWidth = 430
 	local frameHeight = SCREEN_HEIGHT - 60
-
-	local t = Def.ActorFrame{}
-
-	t[#t+1] = Def.Quad{
-		InitCommand = function (self)
-			self:zoomto(frameWidth,frameHeight)
-			self:halign(0):valign(0)
-			self:diffuse(getMainColor("frame"))
-			self:diffusealpha(0.8)
-		end
-	}
-
-	t[#t+1] = LoadFont("Common Bold")..{
-		InitCommand  = function(self)
-			self:xy(5, 10)
-			self:zoom(0.4)
-			self:halign(0)
-			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Available Playlists")
-		end;
-	}
-
-
 	local itemWidth = frameWidth-30
 	local itemHeight = 25
 
@@ -349,35 +336,10 @@ local function playlistList()
 	local itemY = 70+itemHeight/2
 	local itemYSpacing = 5
 
-	t[#t+1] = quadButton(6) .. {
-		Name = "Add Button";
-		InitCommand = function(self)
-			self:xy(frameWidth-50-10, itemY - 30)
-			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
-			self:zoomto(100, 20)
-		end;
-		TopPressedCommand = function(self)
-			-- Doesn't work yet outside of ScreenSelectMusic apparently.
-			addPlaylist()
-			self:finishtweening()
-			self:diffusealpha(1)
-			self:smooth(0.3)
-			self:diffusealpha(0.8)
-		end;
-	}
-
-	t[#t+1] = LoadFont("Common Bold")..{
-		InitCommand  = function(self)
-			self:xy(frameWidth-50-10, itemY - 30)
-			self:zoom(0.4)
-			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("New Playlist")
-		end;
-	}
-
 	local function item(i)
 		local playlist
 		local playlistIndex = (curPage-1)*maxItems+i
+		local hidden = true
 
 		local t = Def.ActorFrame{
 			InitCommand = function(self)
@@ -386,6 +348,7 @@ local function playlistList()
 				self:playcommand("Show")
 			end;
 			ShowCommand = function(self)
+				hidden = false
 				self:y(itemY + (i-1)*(itemHeight+itemYSpacing)-10)
 				self:diffusealpha(0)
 				self:finishtweening()
@@ -395,10 +358,10 @@ local function playlistList()
 				self:diffusealpha(1)
 			end;
 			HideCommand = function(self)
+				hidden = true
 				self:stoptweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
-				self:y(SCREEN_HEIGHT*10) -- Throw it offscreen
 			end;
 			UpdateListMessageCommand = function(self) -- Pack List updates (e.g. new page)
 				playlistIndex = (curPage-1)*10+i
@@ -426,7 +389,7 @@ local function playlistList()
 					self:playcommand("Show")
 				end
 			end;
-			PlaylistChangedMessageCommand = function(self)
+			UpdateStepsListMessageCommand = function(self)
 				if playlist then
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 				end
@@ -440,6 +403,10 @@ local function playlistList()
 				self:zoomto(itemWidth, itemHeight)
 			end;
 			TopPressedCommand = function(self, params)
+				if hidden then
+					return
+				end
+
 				if params.input == "DeviceButton_left mouse button" then
 					if not detail and playlist then
 						detail = true
@@ -541,12 +508,12 @@ local function playlistList()
 				self:zoomto(40, 17)
 			end;
 			TopPressedCommand = function(self)
-				if not (steps and song) then
+				if not (steps and song) or hidden then
 					return
 				end
 				SONGMAN:SetActivePlaylist(playlist:GetName())
 				playlist:AddChart(steps:GetChartKey())
-				MESSAGEMAN:Broadcast("PlaylistChanged")
+				MESSAGEMAN:Broadcast("UpdateStepsList")
 
 				self:finishtweening()
 				self:diffusealpha(1)
@@ -567,6 +534,57 @@ local function playlistList()
 		return t
 	end
 
+	local t = Def.ActorFrame{}
+
+	-- Background box
+	t[#t+1] = Def.Quad{
+		InitCommand = function (self)
+			self:zoomto(frameWidth,frameHeight)
+			self:halign(0):valign(0)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0.8)
+		end
+	}
+
+	-- Box text
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand  = function(self)
+			self:xy(5, 10)
+			self:zoom(0.4)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("Available Playlists")
+		end;
+	}
+
+	-- Add playlist button
+	t[#t+1] = quadButton(6) .. {
+		Name = "Add Button";
+		InitCommand = function(self)
+			self:xy(frameWidth-50-10, itemY - 30)
+			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
+			self:zoomto(100, 20)
+		end;
+		TopPressedCommand = function(self)
+			-- Doesn't work yet outside of ScreenSelectMusic apparently.
+			addPlaylist()
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:smooth(0.3)
+			self:diffusealpha(0.8)
+		end;
+	}
+
+	-- Add playlist button text
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand  = function(self)
+			self:xy(frameWidth-50-10, itemY - 30)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("New Playlist")
+		end;
+	}
+
 	for i=1, maxItems do
 		t[#t+1] = item(i)
 	end
@@ -574,12 +592,10 @@ local function playlistList()
 	return t
 end
 
+-- Displays the steps when a playlist is clicked
 local function playlistStepsList()
 
-
 	local frameWidth = 430
-	local frameHeight = SCREEN_HEIGHT - 60
-
 	local itemWidth = frameWidth-30
 	local itemHeight = 25
 
@@ -588,22 +604,11 @@ local function playlistStepsList()
 	local itemYSpacing = 5
 	local itemCount = maxItems-1
 
-	local t = Def.ActorFrame{
-		ShowPlaylistDetailMessageCommand = function(self, params)
-			playlist = params.playlist
-			maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
-		end;
-		PlaylistChangedMessageCommand = function(self)
-			if playlist then
-				maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
-			end
-		end;
-	}
-
 	local function item(i)
 		local song
 		local steps
 		local rate
+		local hidden = true -- Ignore button inputs if true
 
 		local stepsIndex = (curStepsPage-1)*itemCount+i-1
 
@@ -614,6 +619,7 @@ local function playlistStepsList()
 				self:playcommand("Hide")
 			end;
 			ShowCommand = function(self)
+				hidden = false
 				self:y(itemY + (i-1)*(itemHeight+itemYSpacing)-10)
 				self:diffusealpha(0)
 				self:finishtweening()
@@ -623,23 +629,13 @@ local function playlistStepsList()
 				self:diffusealpha(1)
 			end;
 			HideCommand = function(self)
+				song = nil
+				steps = nil
+				hidden = true
 				self:stoptweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
-				self:y(SCREEN_HEIGHT*10) -- Throw it offscreen
-			end;
-			UpdateStepsListMessageCommand = function(self)
-				stepsIndex = (curStepsPage-1)*itemCount+i-1
-				local key = playlist:GetChartkeys()[stepsIndex]
-				if not key then
-					self:playcommand("Hide")
-					return
-				end
-				song = SONGMAN:GetSongByChartKey(key)
-				steps = SONGMAN:GetStepsByChartKey(key)
 
-				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
-				self:playcommand("Show")
 			end;
 			ShowPlaylistDetailMessageCommand = function(self, params)
 				local key = params.playlist:GetChartkeys()[stepsIndex]
@@ -655,7 +651,7 @@ local function playlistStepsList()
 			HidePlaylistDetailMessageCommand = function(self)
 				self:playcommand("Hide")
 			end;
-			PlaylistChangedMessageCommand = function(self)
+			UpdateStepsListMessageCommand = function(self)
 				if not detail then
 					return
 				end
@@ -665,7 +661,10 @@ local function playlistStepsList()
 				if not key then
 					self:playcommand("Hide")
 					return
+				elseif steps and key == steps:GetChartKey() then
+					return
 				end
+
 				song = SONGMAN:GetSongByChartKey(key)
 				steps = SONGMAN:GetStepsByChartKey(key)
 
@@ -757,12 +756,12 @@ local function playlistStepsList()
 				self:zoomto(40, 17)
 			end;
 			TopPressedCommand = function(self)
-				if not playlist then
+				if not playlist or hidden then
 					return
 				end
 
 				playlist:DeleteChart(stepsIndex)
-				MESSAGEMAN:Broadcast("PlaylistChanged")
+				MESSAGEMAN:Broadcast("UpdateStepsList")
 
 				self:finishtweening()
 				self:diffusealpha(1)
@@ -794,7 +793,7 @@ local function playlistStepsList()
 				self:zoomto(40, 17)
 			end;
 			TopPressedCommand = function(self)
-				if not playlist then
+				if not playlist or hidden then
 					return
 				end
 
@@ -827,6 +826,19 @@ local function playlistStepsList()
 		return t
 	end
 
+	local t = Def.ActorFrame{
+		ShowPlaylistDetailMessageCommand = function(self, params)
+			playlist = params.playlist
+			maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
+		end;
+		UpdateStepsListMessageCommand = function(self)
+			if playlist then
+				maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
+			end
+		end;
+	}
+
+
 	for i=1, itemCount do
 		t[#t+1] = item(i+1)
 	end
@@ -834,6 +846,15 @@ local function playlistStepsList()
 	return t
 end
 
+
+-- Parent actorframe
+local t = Def.ActorFrame{
+	OnCommand = function(self)
+		top = SCREENMAN:GetTopScreen()
+		top:AddInputCallback(input)
+		MESSAGEMAN:Broadcast("UpdateList")
+	end;
+}
 
 t[#t+1] = playlistInfo() .. {
 	InitCommand = function(self)
@@ -852,14 +873,6 @@ t[#t+1] = playlistStepsList() .. {
 		self:xy(320,30)
 	end
 }
-
-
-
-
-
-
-
-
 
 t[#t+1] = LoadActor("../_mouse")
 t[#t+1] = LoadActor("../_frame")
