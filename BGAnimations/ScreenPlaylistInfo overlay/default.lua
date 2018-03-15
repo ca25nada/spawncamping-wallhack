@@ -382,6 +382,7 @@ local function playlistList()
 			end;
 			HideCommand = function(self)
 				hidden = true
+				playlist = nil
 				self:stoptweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
@@ -408,6 +409,7 @@ local function playlistList()
 				end
 			end;
 			HidePlaylistDetailMessageCommand = function(self)
+				playlist = playlists[playlistIndex]
 				if playlist then 
 					self:playcommand("Show")
 				end
