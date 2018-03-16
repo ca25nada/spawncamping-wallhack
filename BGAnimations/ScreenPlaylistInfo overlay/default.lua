@@ -312,7 +312,7 @@ local function playlistInfo()
 			self:zoomto(buttonWidth, buttonHeight)
 		end;
 		TopPressedCommand = function(self)
-			if not playlist and playlist:IsPlayable() then
+			if not playlist or not playlist:IsPlayable() then
 				return
 			end
 
@@ -496,7 +496,9 @@ local function playlistList()
 				self:zoom(0.4)
 			end;
 			SetCommand = function(self)
+				local msd = playlist:GetAverageRating()
 				self:settextf("%5.2f",playlist:GetAverageRating())
+				self:diffuse(getMSDColor(msd))
 			end
 		}
 
@@ -752,7 +754,9 @@ local function playlistStepsList()
 				self:zoom(0.4)
 			end;
 			SetCommand = function(self)
-				self:settextf("%5.2f",steps:GetMSD(1, 1))
+				local msd = steps:GetMSD(1, 1)
+				self:settextf("%5.2f", msd)
+				self:diffuse(getMSDColor(msd))
 			end
 		}
 

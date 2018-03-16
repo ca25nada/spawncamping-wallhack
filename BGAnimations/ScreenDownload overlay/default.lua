@@ -310,7 +310,9 @@ local function packList()
 				self:zoom(0.4)
 			end;
 			SetCommand = function(self)
-				self:settextf("%5.2f",packlist[packIndex]:GetAvgDifficulty())
+				local msd = packlist[packIndex]:GetAvgDifficulty()
+				self:settextf("%5.2f",msd)
+				self:diffuse(getMSDColor(msd))
 			end
 		}
 
