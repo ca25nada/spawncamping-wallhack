@@ -683,17 +683,13 @@ local function scoreList()
 			end;
 		}
 
-		t[#t+1] = Def.Quad{
+		t[#t+1] = getClearTypeLampQuad(3, scoreItemHeight)..{
 			InitCommand = function(self)
 				self:halign(0)
-				self:diffuse(color(colorConfig:get_data().main.highlight))
 				self:diffusealpha(0.8)
-				self:xy(0, 0)
-				self:zoomto(3, scoreItemHeight)
 			end;
 			SetCommand = function(self)
-				local clearType = getClearType(pn,steps,scoreList[scoreIndex])
-				self:diffuse(getClearTypeColor(clearType))
+				self:playcommand("SetClearType", {clearType = getClearType(pn,steps,scoreList[scoreIndex])})
 			end;
 		}
 

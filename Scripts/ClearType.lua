@@ -130,6 +130,7 @@ local function getClearLevel (pn,steps,score)
 		HoldNoteScore_MissedHold = score:GetHoldNoteScore('HoldNoteScore_MissedHold')
 	}
 
+	-- Use notes if there's no CC, taps if there's CC
 	if steps ~= nil then 
 		if GAMESTATE:CountNotesSeparately() then
 			maxNotes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes") or 0
@@ -178,11 +179,12 @@ local function getClearLevel (pn,steps,score)
 
 		if tapNoteScore['TapNoteScore_W3'] == 1 then
 			return 5 -- BF
-		elseif tapNoteScore['TapNoteScore_W2'] < 10 then
+		elseif tapNoteScore['TapNoteScore_W3'] < 10 then
 			return 6 -- SDG
 		else
 			return 7 -- FC
 		end
+
 	elseif missCount == 1 then
 		return 8 -- MF
 	end
@@ -243,3 +245,47 @@ function getHighestClearType(pn,steps,scoreList,ignore)
 	return clearType[highest]
 end
 
+function getClearTypeLampQuad(width, height)
+	local t = Def.ActorFrame{
+		SetClearTypeCommand = function(self, params)
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set", params) end)
+		end;
+	}
+
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:zoomto(width, height)
+		end;
+		SetCommand = function(self, params)
+			if params then
+				self:diffuse(getClearTypeColor(params.clearType))
+			end
+		end;
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:zoomto(width, height)
+		end;
+		SetCommand = function(self, params)
+			if not params then
+				return
+			end
+
+			if getClearTypeLevel(params.clearType) <= 7 then
+				self:diffuseblink()
+				self:effectcolor2(color("1,1,1,0.8"))
+				self:effectcolor1(color("1,1,1,0"))
+				self:effectperiod(0.1)
+			else
+				self:diffuseramp()
+				self:effectcolor2(color("1,1,1,0.6"))
+				self:effectcolor1(color("1,1,1,0"))
+				self:effecttiming(2,1,0,0)
+			end
+		end;
+	}
+
+	return t
+end

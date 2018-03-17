@@ -733,17 +733,14 @@ local function playlistStepsList()
 			end;
 		}
 
-		t[#t+1] = Def.Quad{
-			Name = "Status";
+		t[#t+1] = getClearTypeLampQuad(3, itemHeight)..{
 			InitCommand = function(self)
 				self:halign(0)
-				self:diffuse(color(colorConfig:get_data().main.highlight))
 				self:diffusealpha(0.8)
-				self:xy(0, 0)
-				self:zoomto(3, itemHeight)
 			end;
 			SetCommand = function(self)
-				self:diffuse(getMainColor("highlight"))
+				local scoreList = getScoreTable(pn, '1.0x', steps)
+				self:playcommand("SetClearType", {clearType = getHighestClearType(pn,steps,scoreList)})
 			end;
 		}
 
