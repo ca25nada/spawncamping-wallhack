@@ -33,6 +33,7 @@ local t = Def.ActorFrame{
 	end;
 	PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
 	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Set") end;
+	DisplayLanguageChangedMessageCommand = function(self) self:queuecommand("Set") end;
 };
 
 t[#t+1] = Def.Quad{
