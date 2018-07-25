@@ -1,10 +1,10 @@
 
 
-function input(event)
-	if event.type == "InputEventType_FirstPress" then
+local function input(event)
+	if event.type == "InputEventType_Release" then
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
-		end
+		end q	
 	end
 
 	return false

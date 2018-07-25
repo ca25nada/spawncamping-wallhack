@@ -296,7 +296,7 @@ local function avatarBox(i)
 	return t
 end
 
-function input(event)
+local function input(event)
 	if event.type ~= "InputEventType_Release" then
 
 		-- Screen exits upon first press anyway so no need to check for repeats.
