@@ -285,19 +285,34 @@ local function stepsListRow()
 
 	t[#t+1] = quadButton(6)..{
 		InitCommand = function(self)
-			self:zoomto(frameWidth, frameHeight)
+			self:zoomto(frameWidth/2, frameHeight)
 			self:xy(-topRowFrameWidth/2, topRowFrameHeight)
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
 			self:halign(0)
+			self:faderight(0.5)
 		end;
 		TopPressedCommand = function(self, params)
-			if params.input == "DeviceButton_right mouse button" then
-				MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(1)})
-				self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
-			else
-				MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(-1)})
-				self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
-			end
+			MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(-1)})
+			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
+
+			self:finishtweening()
+			self:diffusealpha(0.2)
+			self:smooth(0.3)
+			self:diffusealpha(0)
+		end;
+	}
+	t[#t+1] = quadButton(6)..{
+		InitCommand = function(self)
+			self:zoomto(frameWidth/2, frameHeight)
+			self:xy(-topRowFrameWidth/2+frameWidth/2, topRowFrameHeight)
+			self:diffuse(color("#FFFFFF")):diffusealpha(0)
+			self:halign(0)
+			self:fadeleft(0.5)
+		end;
+		TopPressedCommand = function(self, params)
+			MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(1)})
+			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
+
 			self:finishtweening()
 			self:diffusealpha(0.2)
 			self:smooth(0.3)
@@ -445,27 +460,43 @@ local function stepsBPMRow()
 		end;
 	}
 
-	t[#t+1] = quadButton(6) .. {
+	t[#t+1] = quadButton(6)..{
 		InitCommand = function(self)
-			self:zoomto(frameWidth, 25)
-			self:xy(topRowFrameWidth/2, topRowFrameHeight)
+			self:zoomto(frameWidth/2, frameHeight)
+			self:xy(topRowFrameWidth/2-frameWidth/2, topRowFrameHeight)
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
 			self:halign(1)
+			self:faderight(0.5)
 		end;
 		TopPressedCommand = function(self, params)
-			if params.input == "DeviceButton_right mouse button" then
-				changeMusicRate(0.05)
-				self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
-			else
-				changeMusicRate(-0.05)
-				self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
-			end
+			changeMusicRate(-0.05)
+			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
+
 			self:finishtweening()
 			self:diffusealpha(0.2)
 			self:smooth(0.3)
 			self:diffusealpha(0)
 		end;
 	}
+	t[#t+1] = quadButton(6)..{
+		InitCommand = function(self)
+			self:zoomto(frameWidth/2, frameHeight)
+			self:xy(topRowFrameWidth/2, topRowFrameHeight)
+			self:diffuse(color("#FFFFFF")):diffusealpha(0)
+			self:halign(1)
+			self:fadeleft(0.5)
+		end;
+		TopPressedCommand = function(self, params)
+			changeMusicRate(0.05)
+			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
+
+			self:finishtweening()
+			self:diffusealpha(0.2)
+			self:smooth(0.3)
+			self:diffusealpha(0)
+		end;
+	}
+
 
 	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
 		Name = "TriangleLeft";
