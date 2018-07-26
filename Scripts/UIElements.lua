@@ -116,6 +116,8 @@ function Actor.isOver(self)
 end;
 
 
+
+-- Basic clickable button implementation with quads
 function quadButton(z)
 	local topName 
 
@@ -140,6 +142,79 @@ function quadButton(z)
 			end
 		end;
 		TopPressedCommand = function(self)
+		end;
+	}
+
+	return t
+end
+
+
+-- Checkboxes
+function checkbox(z, checked)
+
+	local zoom = 0.15
+	local checked = checked
+
+	local t = Def.ActorFrame{
+		InitCommand = function(self)
+			self:playcommand("Toggle")
+		end;
+		ToggleCommand = function(self)
+			if checked then 
+				checked = false
+				self:playcommand("Uncheck")
+				self:RunCommandsOnChildren(function(self) self:playcommand("Uncheck") end)
+			else
+				checked = true
+				self:playcommand("Check")
+				self:RunCommandsOnChildren(function(self) self:playcommand("Check") end)
+			end
+		end;
+		CheckCommand = function(self)
+		end;
+
+		UncheckCommand = function(self)
+		end;
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:zoomto(zoom*100,zoom*100)
+			self:diffuse(color("#000000")):diffusealpha(0.8)
+		end;
+	}
+
+	t[#t+1] = quadButton(z) .. {
+		InitCommand = function(self)
+			self:zoomto(zoom*100,zoom*100)
+			self:diffuse(color("#FFFFFF")):diffusealpha(0)
+		end;
+		TopPressedCommand = function(self, params)
+			if params.input == "DeviceButton_left mouse button" then
+				self:GetParent():playcommand("Toggle")
+				self:finishtweening()
+				self:diffusealpha(0.2)
+				self:smooth(0.3)
+				self:diffusealpha(0)
+			end
+		end;
+	}
+
+	t[#t+1] = LoadActor(THEME:GetPathG("", "_x"))..{
+		InitCommand = function(self)
+			self:zoom(zoom)
+		end;
+		CheckCommand = function(self)
+			self:finishtweening()
+			self:smooth(0.1)
+			self:zoom(zoom)
+			self:diffusealpha(1)
+		end;
+		UncheckCommand = function(self)
+			self:finishtweening()
+			self:smooth(0.1)
+			self:zoom(0)
+			self:diffusealpha(0)
 		end;
 	}
 
