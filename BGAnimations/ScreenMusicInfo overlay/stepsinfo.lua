@@ -22,10 +22,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:zoom(0.3)
 		self:settextf("ChartKey: %s","")
-	end;
+	end,
 	SetStepsMessageCommand = function(self, params)
 		self:settextf("ChartKey: %s",params.steps:GetChartKey())
-	end;
+	end
 }
 
 
@@ -44,7 +44,7 @@ for i,v in ipairs(parameters) do
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.4)
 			self:settext(v[1])
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -52,14 +52,14 @@ for i,v in ipairs(parameters) do
 			self:xy((-frameWidth/2)+frameWidth/(#parameters+1)*i,3)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.3)
-		end;
+		end,
 		SetStepsMessageCommand = function(self, params)
 			self:settext(params.steps:GetRadarValues(pn):GetValue(v[2]))
 			self:finishtweening()
 			self:diffusealpha(0):y(0)
 			self:easeOut(1)
 			self:diffusealpha(1):y(3)
-		end;
+		end
 	}
 
 end

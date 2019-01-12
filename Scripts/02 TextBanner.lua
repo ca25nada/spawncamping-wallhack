@@ -1,10 +1,10 @@
-local mainMaxWidth = capWideScale(get43size(280),280); -- zoom w/subtitle is 0.75 (multiply by 1.25)
-local subMaxWidth = capWideScale(get43size(280),280); -- zoom is 0.6 (multiply zoom,1 value by 1.4)
-local artistMaxWidth = capWideScale(get43size(280),280);
+local mainMaxWidth = capWideScale(get43size(280),280) -- zoom w/subtitle is 0.75 (multiply by 1.25)
+local subMaxWidth = capWideScale(get43size(280),280) -- zoom is 0.6 (multiply zoom,1 value by 1.4)
+local artistMaxWidth = capWideScale(get43size(280),280)
 
-local mainMaxWidthHighScore = 192; -- zoom w/subtitle is 0.75 (multiply by 1.25)
-local subMaxWidthHighScore = 280; -- zoom is 0.6 (multiply zoom,1 value by 1.4)
-local artistMaxWidthHighScore = 280/0.8;
+local mainMaxWidthHighScore = 192 -- zoom w/subtitle is 0.75 (multiply by 1.25)
+local subMaxWidthHighScore = 280 -- zoom is 0.6 (multiply zoom,1 value by 1.4)
+local artistMaxWidthHighScore = 280/0.8
 
 --[[
 -- The old (cmd(blah))(Actor) syntax is hard to read.

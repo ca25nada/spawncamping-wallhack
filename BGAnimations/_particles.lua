@@ -12,7 +12,7 @@ local function isInScreen(particle)
 	local x = particle:GetX()
 	local y = particle:GetY()
 	return (x > -100-half and x < SCREEN_WIDTH+100+half) and (y > 0-half and y < SCREEN_HEIGHT+half)
-end;
+end
 
 local function resetPosition(particle)
 	particle:x(math.random(0,SCREEN_WIDTH))
@@ -20,14 +20,14 @@ local function resetPosition(particle)
 	--particle:y(math.random(0,SCREEN_HEIGHT))
 	particle:rotationz(math.random()*360)
 	return
-end;
+end
 
 
 local posX = {SCREEN_WIDTH,0}
 local posY = {SCREEN_HEIGHT,0}
 local function makeParticle(index)
 	return Def.Quad{
-		Name="Particle"..index;
+		Name="Particle"..index,
 		BeginCommand=function (self)
 			self:sleep(index*0.1)
 			local size = math.random(20,50)
@@ -40,19 +40,19 @@ local function makeParticle(index)
 			alpha[index] = math.random()*4
 			self:diffusealpha(alpha[index])
 			self:queuecommand('Move')
-		end;
+		end,
 		MoveCommand = function(self,params)
 			self:finishtweening()
 			self:addy(dy[index]*((SCREEN_CENTER_Y-self:GetY())/2000))
 			if self:GetDiffuseAlpha() <= 0 then
 				self:sleep(1)
 				self:queuecommand('ResetPosition')
-			end;
+			end
 			self:diffusealpha(clamp(alpha[index],0,0.8))
 			self:sleep(1/200)
 			self:queuecommand('Move')
 			alpha[index] = alpha[index] - 0.005
-		end;
+		end,
 		ResetPositionCommand = function(self)
 			alpha[index] = math.random()*2+2
 			dy[index] = math.random()*10+1
@@ -61,18 +61,18 @@ local function makeParticle(index)
 				self:x(math.random(0,SCREEN_WIDTH))
 				self:y(SCREEN_HEIGHT)
 			self:queuecommand('Move')
-		end;
-	};
-end;
+		end
+	}
+end
 
 if enabled then
 	for i=1,particleAmount do
-		t[#t+1] = makeParticle(i);
+		t[#t+1] = makeParticle(i)
 		dx[#dx+1] = 0
 		dy[#dy+1] = 0
 		alpha[#alpha+1] = 0
-	end;
-end;
+	end
+end
 
 
 return t

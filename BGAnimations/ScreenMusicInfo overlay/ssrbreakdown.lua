@@ -38,7 +38,7 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:settext("MSD Breakdown")
-	end;
+	end
 }
 
 local sepAngle = 360/#SkillSets-1
@@ -52,18 +52,18 @@ local function makeMSDPoints(i)
 			self:xy(x,y)
 			self:zoom(0.3)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
+		end,
 		SetStepsMessageCommand = function(self, params)
 			local steps = params.steps
 			local MSD = steps:GetMSD(getCurRateValue(), i+1)
 			self:settextf("%s\n%0.2f",SkillSets[i], MSD)
 			self:AddAttribute(#SkillSets[i], {Length = -1, Diffuse = getMSDColor(MSD)})
-		end;
+		end
 	}
 end
 
 t[#t+1] = Def.ActorMultiVertex{
-	Name= "SSR_MAX_Graph";
+	Name= "SSR_MAX_Graph",
 	InitCommand = function(self)
 		local x,y
 		for i=1, #SkillSets do
@@ -79,27 +79,27 @@ t[#t+1] = Def.ActorMultiVertex{
 		self:SetDrawState{First= 1, Num= -1}
 		self:SetDrawState{Mode="DrawMode_QuadStrip"}
 		self:playcommand("Set")
-	end;
+	end,
 	SetCommand = function(self)
 		self:diffusealpha(0.2)
 		self:SetVertices(maxVerts)
 		self:SetDrawState{First= 1, Num= -1}
-	end;
+	end
 }
 
 t[#t+1] = Def.ActorMultiVertex{
-	Name= "SSR_Graph";
+	Name= "SSR_Graph",
 	InitCommand = function(self)
 		self:SetDrawState{Mode="DrawMode_QuadStrip"}
 		self:queuecommand("Set")
 		self:diffusealpha(0.5)
-	end;
+	end,
 	SetCommand = function(self)
 		self:finishtweening()
 		self:easeOut(1)
 		self:SetVertices(verts)
 		self:SetDrawState{First= 1, Num= -1}
-	end;
+	end,
 	SetStepsMessageCommand = function(self, params)
 		verts = {}
 		local steps = params.steps
@@ -118,7 +118,7 @@ t[#t+1] = Def.ActorMultiVertex{
 		verts[#verts+1] = {{0,0,0},color("#FFFFFF")}
 
 		self:playcommand("Set")
-	end;
+	end
 }
 
 for i=1, #SkillSets do
@@ -132,13 +132,13 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(1)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:settext("Overall:")
-	end;
+	end,
 	SetStepsMessageCommand = function(self, params)
 		local steps = params.steps
 		local MSD = steps:GetMSD(getCurRateValue(), 1)
 		self:settextf("Overall: %0.2f", MSD)
 		self:AddAttribute(8, {Length = -1, Diffuse = getMSDColor(MSD)})
-	end;
+	end
 }
 
 

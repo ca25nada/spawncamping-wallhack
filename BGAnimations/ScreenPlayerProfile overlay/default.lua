@@ -17,7 +17,7 @@ local t = Def.ActorFrame {
 	OnCommand = function(self)
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
-	end;
+	end
 }
 
 t[#t+1] = LoadActor("../_mouse")
@@ -30,10 +30,10 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2)
 		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT-tab.height/2)
-	end;
+	end,
 	OffCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
-	end;
+	end,
 	TabPressedMessageCommand = function(self, params)
 	end
 }

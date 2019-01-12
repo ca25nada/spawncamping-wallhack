@@ -44,7 +44,7 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:settext("Top Scores")
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
@@ -54,10 +54,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:settextf("Sorted by: %s",SkillSets[1])
-	end;
+	end,
 	UpdateRankingMessageCommand = function(self, params)
 		self:settextf("Sorted by: %s",params.SSRType)
-	end;
+	end,
 	DisplaySongMessageCommand = function(self, params)
 		self:visible(false)
 	end
@@ -69,7 +69,7 @@ local function scoreSSRTypes(i)
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:playcommand("Tween")
-		end;
+		end,
 		TweenCommand = function(self)
 			self:finishtweening()
 			self:xy(scoreSSRItemX, scoreSSRItemY + (i-1)*(scoreSSRItemHeight+scoreSSRItemYSpacing)-10)
@@ -78,7 +78,7 @@ local function scoreSSRTypes(i)
 			self:easeOut(0.5)
 			self:diffusealpha(1)
 			self:xy(scoreSSRItemX, scoreSSRItemY + (i-1)*(scoreSSRItemHeight+scoreSSRItemYSpacing))
-		end;
+		end,
 		DisplaySongMessageCommand = function(self, params)
 			self:visible(false)
 			self:y(SCREEN_HEIGHT*10)
@@ -89,14 +89,14 @@ local function scoreSSRTypes(i)
 		InitCommand = function(self)
 			self:diffusealpha(0.2)
 			self:zoomto(scoreSSRItemWidth, scoreSSRItemHeight)
-		end;
+		end,
 		TopPressedCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
 			self:diffusealpha(0.2)
 			MESSAGEMAN:Broadcast("UpdateRanking",{SSRType = SkillSets[i]})
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -105,7 +105,7 @@ local function scoreSSRTypes(i)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext(SkillSets[i])
 			self:zoom(0.4)
-		end;
+		end
 	}
 
 	return t
@@ -127,7 +127,7 @@ local function scoreListItem(i)
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:playcommand("Tween")
-		end;
+		end,
 		TweenCommand = function(self)
 			self:finishtweening()
 			self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing)-10)
@@ -136,7 +136,7 @@ local function scoreListItem(i)
 			self:easeOut(1)
 			self:diffusealpha(1)
 			self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing))
-		end;
+		end,
 		UpdateRankingMessageCommand = function(self, params)
 			SCOREMAN:SortSSRs(params.SSRType)
 			skillset = params.SSRType
@@ -146,7 +146,7 @@ local function scoreListItem(i)
 			steps = SONGMAN:GetStepsByChartKey(chartKey)
 			self:playcommand("Tween")
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
-		end;
+		end,
 		DisplaySongMessageCommand = function(self, params)
 			self:visible(false)
 			self:y(SCREEN_HEIGHT*10) -- Send it off screen so buttons don't overlap.
@@ -158,7 +158,7 @@ local function scoreListItem(i)
 			self:halign(0)
 			self:diffusealpha(0.2)
 			self:zoomto(scoreItemWidth, scoreItemHeight)
-		end;
+		end,
 		TopPressedCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
@@ -167,7 +167,7 @@ local function scoreListItem(i)
 			--MESSAGEMAN:Broadcast("DisplaySong",{score = ths})
 			SCREENMAN:GetTopScreen():Cancel()
 			MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
-		end;
+		end,
 		SetCommand = function(self)
 			if ths:GetEtternaValid() then
 				self:diffuse(color("#FFFFFF"))
@@ -175,7 +175,7 @@ local function scoreListItem(i)
 				self:diffuse(color(colorConfig:get_data().clearType.ClearType_Invalid))
 			end
 			self:diffusealpha(0.2)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -186,10 +186,10 @@ local function scoreListItem(i)
 			self:xy(30, 0)
 			self:zoomto(2, scoreItemHeight)
 			self:playcommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			self:diffuse(color(colorConfig:get_data().difficulty[steps:GetDifficulty()]))
-		end;
+		end
 	}
 
 
@@ -199,12 +199,12 @@ local function scoreListItem(i)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.4)
 			self:playcommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			local rating = ths:GetSkillsetSSR(skillset)
 			self:settextf("%0.2f", rating)
 			self:diffuse(getMSDColor(rating))
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -214,7 +214,7 @@ local function scoreListItem(i)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.4)
 			self:playcommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			self:settextf("%s (x%0.2f)",song:GetMainTitle(),ths:GetMusicRate())
 		end
@@ -227,7 +227,7 @@ local function scoreListItem(i)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.3)
 			self:playcommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			self:settextf("// %s",song:GetDisplayArtist())
 		end
@@ -240,14 +240,14 @@ local function scoreListItem(i)
 			self:wag()
 			self:diffuse(Color.Yellow)
 			self:playcommand("Set")
-		end;
+		end,
 		SetCommand = function(self,params)
 			if song:IsFavorited() then
 				self:visible(true)
 			else
 				self:visible(false)
 			end
-		end;
+		end
 	}
 
 	return t
@@ -268,7 +268,7 @@ local function songDisplay()
 		InitCommand = function(self)
 			self:visible(false)
 			self:xy(songDisplayX, SCREEN_HEIGHT*10)
-		end;
+		end,
 		DisplaySongMessageCommand = function(self, params)
 			self:xy(songDisplayX, songDisplayY)
 			self:visible(true)
@@ -277,8 +277,8 @@ local function songDisplay()
 			steps = SONGMAN:GetStepsByChartKey(chartKey)
 			song = SONGMAN:GetSongByChartKey(chartKey)
 
-			self:RunCommandsOnChildren(cmd(queuecommand, "Set"))
-		end;
+			self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)
+		end
 	}
 
 	t[#t+1] = quadButton(6) .. {
@@ -286,7 +286,7 @@ local function songDisplay()
 			self:halign(0)
 			self:diffusealpha(0.2)
 			self:zoomto(songDisplayWidth, songDisplayHeight)
-		end;
+		end,
 		TopPressedCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
@@ -294,9 +294,9 @@ local function songDisplay()
 			self:diffusealpha(0.2)
 			SCREENMAN:GetTopScreen():Cancel()
 			MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
-		end;
+		end,
 		SetCommand = function(self)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -311,7 +311,7 @@ local function songDisplay()
 	t[#t+1] = Def.Sprite {
 		SetCommand = function(self)
 			if song:HasJacket() then
-				self:visible(true);
+				self:visible(true)
 				self:Load(song:GetJacketPath())
 			elseif song:HasBackground() then
 				self:visible(true)
@@ -321,7 +321,7 @@ local function songDisplay()
 			end
 			self:diffusealpha(0.8)
 			self:scaletofit(10, -songDisplayHeight/2, (songDisplayHeight-20)/3*4+10 , songDisplayHeight/2)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -331,7 +331,7 @@ local function songDisplay()
 			self:diffusealpha(0.2)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.5)
-		end;
+		end,
 		SetCommand = function(self)
 			local diff = getDifficulty(steps:GetDifficulty())
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
@@ -345,7 +345,7 @@ local function songDisplay()
 				self:settext(diff.." "..meter)
 			end
 			self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -355,23 +355,23 @@ local function songDisplay()
 			self:diffusealpha(0.2)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.4)
-		end;
+		end,
 		SetCommand = function(self)
 			local length = song:GetStepsSeconds()
 			local notecount = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 			self:settext(string.format("%0.2f %s",notecount/length,THEME:GetString("ScreenSelectMusic","SimfileInfoAvgNPS")))
 			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())),0.3))
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name="MSDAvailability";
+		Name="MSDAvailability",
 		InitCommand = function(self)
 			self:xy(songDisplayWidth-5,-songDisplayHeight/2+30)
 			self:zoom(0.3)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
+		end,
 		SetCommand = function(self)
 			local meter = math.floor(steps:GetMSD(getCurRateValue(),1))
 			if meter == 0 then
@@ -381,61 +381,61 @@ local function songDisplay()
 				self:settext("MSD")
 				self:diffuse(color(colorConfig:get_data().main.enabled))
 			end
-		end;
-	};
+		end
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-	Name = "Song Title";
+	Name = "Song Title",
 		InitCommand = function(self)
 			self:xy(songDisplayHeight+40,-15)
 			self:zoom(0.6)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
+		end,
 		SetCommand = function(self)
 			self:settext(song:GetDisplayMainTitle())
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:GetParent():GetChild("Song Length"):x(songDisplayHeight+40+(self:GetWidth()*0.60))
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name = "Song Length";
+		Name = "Song Length",
 		InitCommand = function(self)
 			self:xy(songDisplayHeight+40,-18)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
+		end,
 		SetCommand = function(self)
 			local length = song:GetStepsSeconds()
 			self:settext(string.format("%s",SecondsToMSS(length)))
 			self:diffuse(getSongLengthColor(length))
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name = "Song SubTitle";
+		Name = "Song SubTitle",
 		InitCommand = function(self)
 			self:xy(songDisplayHeight+40,0)
 			self:zoom(0.4)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
+		end,
 		SetCommand = function(self)
 			self:settext(song:GetDisplaySubTitle())
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name = "Song Artist";
+		Name = "Song Artist",
 		InitCommand = function(self)
 			self:xy(songDisplayHeight+40,13)
 			self:zoom(0.4)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
+		end,
 		SetCommand = function(self)
 			self:settext(song:GetDisplayArtist())
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
@@ -444,7 +444,7 @@ local function songDisplay()
 			else
 				self:y(13)
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadActor(THEME:GetPathG("", "round_star")) .. {
@@ -453,14 +453,14 @@ local function songDisplay()
 			self:zoom(0.3)
 			self:wag()
 			self:diffuse(Color.Yellow)
-		end;
+		end,
 		SetCommand = function(self)
 			if song:IsFavorited() then
 				self:visible(true)
 			else
 				self:visible(false)
 			end
-		end;
+		end
 	}
 
 	return t

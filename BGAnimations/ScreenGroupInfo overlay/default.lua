@@ -78,27 +78,27 @@ local function topRow()
 		InitCommand = function(self)
 			self:zoomto(frameWidth, frameHeight)
 			self:diffuse(color("#000000")):diffusealpha(0.8)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Banner{
-		Name = "Banner";
+		Name = "Banner",
 		InitCommand = function(self)
 			self:x(-frameWidth/2 + 5)
 			self:halign(0)
 			self:scaletoclipped(96, 30)
 			self:LoadFromSongGroup(group)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common BLarge") .. {
-		Name = "SongTitle";
+		Name = "SongTitle",
 		InitCommand = function(self)
 			self:xy(-frameWidth/2 + 96 +10, -2)
 			self:zoom(0.3)
 			self:halign(0)
 			self:settext(group)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
@@ -107,10 +107,10 @@ local function topRow()
 			self:zoom(0.35)
 			self:halign(1)
 			self:playcommand("Set")
-		end;
+		end,
 		YieldMessageCommand = function(self, params)
 			self:settextf("%d Songs / %d Steps", params.numSongs, params.numSteps)
-		end;
+		end
 	}
 
 	return t
@@ -128,10 +128,10 @@ local function barGraphBars(i)
 			self:y(-5)
 			self:diffuse(getMSDColor(i))
 			self:valign(1)
-		end;
+		end,
 		YieldMessageCommand = function(self)
 			self:zoomto(10,MSDTable[i]/barCurMaxValue*barMaxHeight)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
@@ -139,7 +139,7 @@ local function barGraphBars(i)
 			self:zoom(0.4)
 			self:diffuse(color("#000000"))
 			self:settextf("%d", MSDTable[i])
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
@@ -154,7 +154,7 @@ local function barGraphBars(i)
 			else
 				self:settextf("%d", i-1)
 			end
-		end;
+		end
 	}
 
 	return t
@@ -170,13 +170,13 @@ local t = Def.ActorFrame {
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
 		co = coroutine.create(updateFromGroup)
-	end;
+	end
 }
 
 t[#t+1] = topRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
-	end;
+	end
 }
 
 for i=1, maxMSD+1 do
@@ -195,10 +195,10 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2)
 		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT-tab.height/2)
-	end;
+	end,
 	OffCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
-	end;
+	end,
 	TabPressedMessageCommand = function(self, params)
 	end
 }

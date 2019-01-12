@@ -34,8 +34,8 @@ function LoadProfileCustom(profile, dir)
 		playerProfile = PROFILEMAN:GetProfile(v)
 		if playerProfile:GetGUID() == profile:GetGUID() then
 			pn = v
-		end;
-	end; 
+		end
+	end
 
 	if pn then
 		playerConfig:load(pn_to_profile_slot(pn))
@@ -50,8 +50,8 @@ function SaveProfileCustom(profile, dir)
 		playerProfile = PROFILEMAN:GetProfile(v)
 		if playerProfile:GetGUID() == profile:GetGUID() then
 			pn = v
-		end;
-	end; 
+		end
+	end
 
 	if pn then
 		playerConfig:set_dirty(pn_to_profile_slot(pn))

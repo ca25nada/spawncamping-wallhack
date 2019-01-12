@@ -7,12 +7,12 @@ local wheel
 local t = Def.ActorFrame{
 	InitCommand = function(self) 
 		self:delayedFadeIn(4)
-	end;
+	end,
 	OffCommand = function(self)
 		self:stoptweening()
 		self:smooth(0.2)
 		self:diffusealpha(0)
-	end;
+	end,
 	OnCommand = function(self) 
 		topScreen = SCREENMAN:GetTopScreen()
 		song = GAMESTATE:GetCurrentSong()
@@ -20,7 +20,7 @@ local t = Def.ActorFrame{
 			wheel = topScreen:GetMusicWheel()
 		end
 		self:playcommand("Set")
-	end;
+	end,
 	SetCommand = function(self)
 		song = GAMESTATE:GetCurrentSong()
 		group = wheel:GetSelectedSection()
@@ -30,11 +30,11 @@ local t = Def.ActorFrame{
 		self:GetChild("CDTitle"):playcommand("Set")
 		self:GetChild("songTitle"):playcommand("Set")
 		self:GetChild("songLength"):playcommand("Set")
-	end;
-	PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
-	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Set") end;
-	DisplayLanguageChangedMessageCommand = function(self) self:queuecommand("Set") end;
-};
+	end,
+	PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end,
+	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Set") end,
+	DisplayLanguageChangedMessageCommand = function(self) self:queuecommand("Set") end
+}
 
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
@@ -50,7 +50,7 @@ t[#t+1] = quadButton(1)..{
 		self:xy(SCREEN_CENTER_X/2,120)
 		self:zoomto(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 		self:visible(false)
-	end;
+	end,
 	TopPressedCommand = function(self, params)
 		if params.input == "DeviceButton_left mouse button" then
 					
@@ -64,15 +64,15 @@ t[#t+1] = quadButton(1)..{
 		end
 
 
-	end;
+	end
 }
 
 -- Song banner
 t[#t+1] = Def.Banner{
-	Name = "Banner";
+	Name = "Banner",
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2,120)
-	end;
+	end,
 	SetCommand = function(self)
 		if topScreen:GetName() == "ScreenSelectMusic" or topScreen:GetName() == "ScreenNetSelectMusic" then
 			if song then
@@ -82,17 +82,17 @@ t[#t+1] = Def.Banner{
 			end
 			self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 		end
-	end;
+	end
 }
 
 t[#t+1] = Def.Sprite {
-	Name = "CDTitle";
+	Name = "CDTitle",
 	InitCommand = function(self)
 		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)-40)
 		self:y(120-(capWideScale(get43size(120),120)/2)+30)
 		self:wag():effectmagnitude(0,0,5)
 		self:diffusealpha(0.8)
-	end;
+	end,
 	SetCommand = function(self)
 		self:finishtweening()
 		if song then
@@ -104,11 +104,11 @@ t[#t+1] = Def.Sprite {
 			end
 		else
 			self:visible(false)
-		end;
+		end
 		self:playcommand("AdjustSize")
 		self:smooth(0.5)
 		self:diffusealpha(1)
-	end;
+	end,
 	AdjustSizeCommand = function(self)
 		local height = self:GetHeight()
 		local width = self:GetWidth()
@@ -125,23 +125,23 @@ t[#t+1] = Def.Sprite {
 		else
 			self:zoom(1)
 		end
-	end;
+	end,
 	CurrentSongChangedMessageCommand = function(self)
 		self:finishtweening()
 		self:smooth(0.5)
 		self:diffusealpha(0)
 	end
-};
+}
 
 t[#t+1] = LoadFont("Common Bold") .. {
-	Name="curStage";
+	Name="curStage",
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2+5,120-12-capWideScale(get43size(60),60))
 		self:halign(0)
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)
 		self:diffuse(color(colorConfig:get_data().selectMusic.BannerText))
-	end;
+	end,
 	SetCommand = function(self)
 		if GAMESTATE:IsEventMode() then
 			self:settextf("%s Stage",FormatNumberAndSuffix(GAMESTATE:GetCurrentStageIndex()+1))
@@ -152,18 +152,18 @@ t[#t+1] = LoadFont("Common Bold") .. {
 			end
 		end
 	end
-};
+}
 
 -- Song title // Artist on top of the banner
 t[#t+1] = LoadFont("Common Bold") .. {
-	Name="songTitle";
+	Name="songTitle",
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2+5,132+capWideScale(get43size(60),60))
 		self:halign(0)
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)
 		self:diffuse(color(colorConfig:get_data().selectMusic.BannerText))
-	end;
+	end,
 	SetCommand = function(self)
 
 		if song then
@@ -180,13 +180,13 @@ t[#t+1] = LoadFont("Common Bold") .. {
 
 -- Song length
 t[#t+1] = LoadFont("Common Normal") .. {
-	Name="songLength";
+	Name="songLength",
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2-5,132+capWideScale(get43size(60),60))
 		self:halign(1)
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)	
-	end;	
+	end,	
 	SetCommand = function(self)
 		local length = 0
 		if song then
@@ -194,9 +194,9 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		end
 		self:settextf("%s",SecondsToMSS(length))
 		self:diffuse(getSongLengthColor(length))
-	end;
-	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
-};
+	end,
+	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
+}
 
 
 t[#t+1] = Def.Quad{
@@ -208,7 +208,7 @@ t[#t+1] = Def.Quad{
 		self:halign(1)
 		self:valign(1)
 		self:fadetop(1)
-	end;
+	end,
 	SetCommand = function(self)
 		if getCurRateValue() == 1 then
 			self:stoptweening()
@@ -219,28 +219,28 @@ t[#t+1] = Def.Quad{
 			self:smooth(0.2)
 			self:diffusealpha(0.6)
 		end
-	end;
-	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
+	end,
+	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
 }
 
 -- Rate text
 t[#t+1] = LoadFont("Common Bold") .. {
-	Name="songTitle";
+	Name="songTitle",
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2-5,110+capWideScale(get43size(60),60))
 		self:halign(1)
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)
 		self:diffuse(color(colorConfig:get_data().selectMusic.BannerText))
-	end;
+	end,
 	SetCommand = function(self)
 		if getCurRateValue() == 1 then
 			self:settext("")
 		else
 			self:settext(getCurRateDisplayString())
 		end
-	end;
-	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
+	end,
+	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
 }
 
 

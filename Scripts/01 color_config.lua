@@ -4,7 +4,7 @@ local defaultConfig = {
 		frame = "#000000",
 		highlight = "#00AEEF",
 		background = "#FFFFFF",
-		warning = "#EEBB00";
+		warning = "#EEBB00",
 		enabled = "#4CBB17",
 		disabled = "#666666",
 		negative = "#FF9999",
@@ -157,15 +157,15 @@ function getMainColor(type)
 end
 
 function getGradeColor (grade)
-	return color(colorConfig:get_data().grade[grade]) or color(colorConfig:get_data().grade['Grade_None']);
+	return color(colorConfig:get_data().grade[grade]) or color(colorConfig:get_data().grade['Grade_None'])
 end
 
 function getDifficultyColor(diff)
-	return color(colorConfig:get_data().difficulty[diff]) or color("#ffffff");
+	return color(colorConfig:get_data().difficulty[diff]) or color("#ffffff")
 end
 
 function getPaceMakerColor(type)
-	return color(colorConfig:get_data().gameplay["Pacemaker"..type]) or color("#ffffff");
+	return color(colorConfig:get_data().gameplay["Pacemaker"..type]) or color("#ffffff")
 end
 
 function getSongLengthColor(s)
@@ -224,7 +224,7 @@ function getBorderColor()
 	return HSV(Hour()*360/12, 0.7, 1)
 end
 
-function TapNoteScoreToColor(tns) return color(colorConfig:get_data().judgment[tns]) or color("#ffffff"); end;
+function TapNoteScoreToColor(tns) return color(colorConfig:get_data().judgment[tns]) or color("#ffffff") end
 
 -- a tad-bit desaturated with a wider color range vs til death
 function getMSDColor(MSD)

@@ -16,8 +16,8 @@ for k,v in pairs(judges) do
 end
 
 local bareBone = isBareBone()
-local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer(); -- For relocating graph/judgecount frame
-local center1P = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")); -- For relocating graph/judgecount frame
+local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() -- For relocating graph/judgecount frame
+local center1P = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")) -- For relocating graph/judgecount frame
 
 local judgeTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType
 local judgeTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType
@@ -68,7 +68,7 @@ local function judgeCounter(pn)
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:xy(position[pn].X, position[pn].Y)
-		end;
+		end,
 		JudgmentMessageCommand = function(self, params)
 			if params.Player == pn then
 				self:GetChild(pn.."Grade"):playcommand("Set", params)
@@ -84,7 +84,7 @@ local function judgeCounter(pn)
 					self:GetChild(pn..params.TapNoteScore.."Count"):queuecommand("Set")
 				end
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{ -- Judgecount Background
@@ -95,12 +95,12 @@ local function judgeCounter(pn)
 	}
 
 	t[#t+1] = LoadFont("Common Bold") .. { --grade
-		Name=pn.."Grade";
+		Name=pn.."Grade",
 		InitCommand = function(self)
 			self:xy(5,8+(#judges*spacing)):halign(0)
 			self:zoom(gradeFontSize)
 			self:playcommand("Set")
-		end;
+		end,
 		SetCommand = function(self, params)
 			if not params then
 				self:settext(getGradeStrings("Grade_Tier07"))
@@ -109,18 +109,18 @@ local function judgeCounter(pn)
 			self:settext(getGradeStrings(getWifeGradeTier(params.WifePercent)))
 
 			
-		end;
+		end
 	}
 
 	for k,v in ipairs(judges) do
 
 		if highlight then
 			t[#t+1] = Def.Quad{ --JudgeHighlight
-				Name=pn..v.."Highlight";
+				Name=pn..v.."Highlight",
 				InitCommand = function(self)
 					self:xy(0,5+((k-1)*spacing)):zoomto(frameWidth,5):halign(0):valign(0)
 					self:diffuse(color(colorConfig:get_data().judgment[v])):diffusealpha(0)
-				end;
+				end,
 				SetCommand=function(self)
 					self:stoptweening()
 					self:linear(0.1)
@@ -140,28 +140,28 @@ local function judgeCounter(pn)
 				else
 					self:settext(getShortJudgeStrings(v))
 				end
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal") .. {
-			Name=pn..v.."Count";
+			Name=pn..v.."Count",
 			InitCommand = function(self)
 				self:xy(frameWidth-5,7+((k-1)*spacing)):zoom(judgeFontSize):halign(1)
 				self:settext(0)
-			end;
+			end,
 			SetCommand=function(self)
 				if k > 6 then -- HoldNoteScores
 					self:settext(pss:GetHoldNoteScores(v))
 				else
 					self:settext(pss:GetTapNoteScores(v))
 				end
-			end;
+			end
 		}
 
 	end
 
 	return t
-end;
+end
 
 if enabled1P then
 	t[#t+1] = judgeCounter(PLAYER_1)

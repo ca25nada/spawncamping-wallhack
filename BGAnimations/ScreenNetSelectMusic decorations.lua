@@ -6,7 +6,7 @@ t[#t+1] = LoadActor("_chatbox")
 t[#t+1] = Def.Banner{
 	InitCommand=function(self)
 		self:x(10):y(60):halign(0):valign(0)
-	end;
+	end,
 	SetMessageCommand=function(self)
 		local top = SCREENMAN:GetTopScreen()
 		if top:GetName() == "ScreenSelectMusic" then
@@ -19,7 +19,7 @@ t[#t+1] = Def.Banner{
 				self:LoadFromCourse(song)
 			elseif group then
 				self:LoadFromSongGroup(group)
-			end;
+			end
 		elseif top:GetName() == "ScreenNetSelectMusic" then
 			local song = GAMESTATE:GetCurrentSong()
 			local course = GAMESTATE:GetCurrentCourse()
@@ -30,30 +30,30 @@ t[#t+1] = Def.Banner{
 				self:LoadFromCourse(song)
 			elseif group then
 				self:LoadFromSongGroup(group)
-			end;
-		end;
+			end
+		end
 		self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
-	end;
+	end,
 	CurrentSongChangedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
-};
+	end
+}
 
 
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
 		self:xy(10,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10)):zoomto(capWideScale(get43size(384),384),capWideScale(get43size(20),20)):halign(0):diffuse(color("#000000")):diffusealpha(0.7)
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	Name="songTitle";
+	Name="songTitle",
 	InitCommand=function(self)
 		self:xy(15,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10)):visible(true):halign(0):zoom(capWideScale(get43size(0.45),0.45)):maxwidth(capWideScale(get43size(340),340)/capWideScale(get43size(0.45),0.45))
-	end;
+	end,
 	BeginCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	SetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		if song ~= nil then
@@ -61,20 +61,20 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		else
 			self:settext("")
 		end
-	end;
+	end,
 	CurrentSongChangedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
-};
+	end
+}
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	Name="songLength";
+	Name="songLength",
 	InitCommand=function(self)
 		self:xy(5+(capWideScale(get43size(384),384)),60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10)):visible(true):halign(1):zoom(capWideScale(get43size(0.45),0.45)):maxwidth(capWideScale(get43size(360),360)/capWideScale(get43size(0.45),0.45))
-	end;
+	end,
 	BeginCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	SetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		local seconds = 0
@@ -85,20 +85,20 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		else
 			self:settext("")
 		end
-	end;
+	end,
 	CurrentSongChangedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
-};
+	end
+}
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	Name="songTitle";
+	Name="songTitle",
 	InitCommand=function(self)
 		self:xy(15,60+capWideScale(get43size(120),120)-capWideScale(get43size(10),10)):visible(true):halign(0):zoom(capWideScale(get43size(0.45),0.45)):maxwidth(capWideScale(get43size(340),340)/capWideScale(get43size(0.45),0.45))
-	end;
+	end,
 	BeginCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	SetCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong()
 		if song ~= nil then
@@ -106,19 +106,19 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		else
 			self:settext("")
 		end
-	end;
+	end,
 	CurrentSongChangedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
-};
+	end
+}
 
 t[#t+1] = LoadFont("Common Normal")..{
-		Name="StepsAndMeter";
+		Name="StepsAndMeter",
 		InitCommand = function(self)
 			self:xy(10+(capWideScale(get43size(384),384)),50)
 			self:zoom(0.5)
 			self:halign(1)
-		end;
+		end,
 		SetCommand = function(self)
 			local pn = GAMESTATE:GetEnabledPlayers()[1]
 			local steps = GAMESTATE:GetCurrentSteps(pn)
@@ -141,10 +141,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 				end
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
 			end
-		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:queuecommand('Set') end;
-	};
+		end,
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end,
+		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end
+	}
 
 return t

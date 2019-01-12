@@ -158,7 +158,7 @@ end
 
 local function npsDisplay(pn)
 	local t = Def.ActorFrame{
-	Name = "npsDisplay"..pn;
+	Name = "npsDisplay"..pn,
 	-- Whenever a MessageCommand is broadcasted,
 	-- a table contanining parameters can also be passed along. 
 	JudgmentMessageCommand=function(self,params)
@@ -202,34 +202,34 @@ local function npsDisplay(pn)
 				lastJudgment[pn] = params.TapNoteScore
 			end
 		end
-	end;
+	end
 	}
 	-- the text that will be updated by the update function.
 	if enabled.NPSDisplay[pn] then
 		t[#t+1] = LoadFont("Common Normal")..{
-			Name="Text"; -- sets the name of this actor as "Text". this is a child of the actor "t".
+			Name="Text", -- sets the name of this actor as "Text". this is a child of the actor "t".
 			InitCommand=function(self)
 				self:x(textPos[pn].X):y(textPos[pn].Y):halign(0):zoom(0.40):halign(0):valign(0):shadowlength(1):settext("0.0 NPS")
-			end;
+			end,
 			BeginCommand=function(self)
 				if pn == PLAYER_2 then
 					self:x(SCREEN_WIDTH-5)
 					self:halign(1)
 				end
-			end;
+			end
 		}
 	end
 
 	return t
-end;
+end
 
 local function PLife(pn)
 	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentLife() or 0
-end;
+end
 
 local function npsGraph(pn)
 	local t = Def.ActorFrame{
-		Name = "npsGraph"..pn;
+		Name = "npsGraph"..pn,
 		InitCommand=function(self)
 			self:xy(graphPos[pn].X,graphPos[pn].Y)
 		end

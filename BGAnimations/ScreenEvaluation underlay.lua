@@ -18,16 +18,16 @@ t[#t+1] = LoadActor("_background")
 
 if enabled and bgType == 1 then -- SONG BG
 	t[#t+1] = LoadSongBackground()..{
-		Name="MouseXY";
+		Name="MouseXY",
 		BeginCommand=function(self)
 			if moveBG then
 				self:scaletocover(0-maxDistX/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8)
-				self:diffusealpha(brightness);
+				self:diffusealpha(brightness)
 			else
 				self:scaletocover(0,0,SCREEN_WIDTH,SCREEN_BOTTOM)
-				self:diffusealpha(brightness);
+				self:diffusealpha(brightness)
 			end
-		end;
+		end
 	}
 end
 
@@ -80,22 +80,22 @@ if enabled and bgType > 1 then -- 2 = Grade+Clear, 3 = Grade Only
 	local bgList = filterFileList(bgList,imgTypes)
 
 	t[#t+1] = Def.Sprite {
-		Name="MouseXY";
+		Name="MouseXY",
 		BeginCommand=function(self)
 			if #bgList > 0 then
 				local bg = bgList[math.random(#bgList)]
 				--SCREENMAN:SystemMessage(string.format("Loading %s",bg))
-				self:LoadBackground(bg);
+				self:LoadBackground(bg)
 			end
 			if moveBG then
 				self:scaletocover(0-maxDistX/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8)
-				self:diffusealpha(brightness);
+				self:diffusealpha(brightness)
 			else
 				self:scaletocover(0,0,SCREEN_WIDTH,SCREEN_BOTTOM)
-				self:diffusealpha(brightness);
+				self:diffusealpha(brightness)
 			end
-		end;
-	};
+		end
+	}
 end
 
 t[#t+1] = LoadActor("_particles")
@@ -132,32 +132,32 @@ local function getPosY()
 		offset = math.abs(offset)
 		if offset > 1 then
 			offset = math.min(2*math.sqrt(offset),maxDistY)
-		end;
+		end
 	else
 		neg = false
 		offset = math.abs(offset)
 		if offset > 1 then
 			offset = math.min(2*math.sqrt(offset),maxDistY)
-		end;
-	end;
+		end
+	end
 	if neg then
 		return SCREEN_CENTER_Y+offset
 	else 
 		return SCREEN_CENTER_Y-offset
-	end;
+	end
 end
 
 local function Update(self)
 	t.InitCommand=function(self)
 		self:SetUpdateFunction(Update)
-	end;
+	end
     self:GetChild("MouseXY"):xy(getPosX(),getPosY())
-end; 
+end
 
 if moveBG then
 	t.InitCommand=function(self)
 		self:SetUpdateFunction(Update)
-	end;
-end;
+	end
+end
 
 return t

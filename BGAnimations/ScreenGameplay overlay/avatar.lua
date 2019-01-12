@@ -1,8 +1,8 @@
 --Avatar frames which also includes current additive %score, mods, and the song stepsttype/difficulty.
 
 local t = Def.ActorFrame{
-	Name="Avatars";
-};
+	Name="Avatars"
+}
 
 local bareBone = isBareBone()
 
@@ -25,7 +25,7 @@ local avatarPosition = {
 
 local function PLife(pn)
 	return STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentLife() or 0
-end;
+end
 
 local function avatarFrame(pn)
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
@@ -33,7 +33,7 @@ local function avatarFrame(pn)
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:xy(avatarPosition[pn].X,avatarPosition[pn].Y)
-		end;
+		end
 	}
 	local profile = GetPlayerOrMachineProfile(pn)
 
@@ -47,14 +47,14 @@ local function avatarFrame(pn)
 				self:halign(1):valign(0)
 			end
 			self:queuecommand('Set')
-		end;
+		end,
 		SetCommand=function(self)
-			local steps = GAMESTATE:GetCurrentSteps(pn);
+			local steps = GAMESTATE:GetCurrentSteps(pn)
 			local diff = steps:GetDifficulty()
 			self:diffuse(color("#000000"))
 			self:diffusealpha(0.8)
-		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
+		end,
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -70,26 +70,26 @@ local function avatarFrame(pn)
 			self:zoomto(56,56)
 			self:diffuse(color("#000000"))
 			self:diffusealpha(0.8)
-		end;
+		end,
 		SetCommand = function(self)
 			self:stoptweening()
 			self:smooth(0.5)
 			self:diffuse(getBorderColor())
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = Def.Sprite {
 		InitCommand = function(self)
 			self:halign(0):valign(0)
-		end;
-		BeginCommand = function(self) self:queuecommand('ModifyAvatar') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand=function(self)
-			self:finishtweening();
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
+			self:finishtweening()
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn))
 			self:zoomto(50,50)
-		end;	
-	};
+		end
+	}
 
 
 
@@ -102,8 +102,8 @@ local function avatarFrame(pn)
 				self:xy(-6,12):zoom(0.6):shadowlength(1):halign(1):maxwidth(180/0.6)
 			end
 		    self:settext(name)
-		end;
-	};
+		end
+	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
@@ -112,10 +112,10 @@ local function avatarFrame(pn)
 			else
 				self:xy(-6,26):zoom(0.4):halign(1):maxwidth(180/0.4)
 			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end,
 		SetCommand=function(self)
-			local steps = GAMESTATE:GetCurrentSteps(pn);
+			local steps = GAMESTATE:GetCurrentSteps(pn)
 			local diff = getDifficulty(steps:GetDifficulty())
 			local meter = steps:GetMSD(getCurRateValue(),1)
 			meter = meter == 0 and steps:GetMeter() or math.floor(meter)
@@ -124,9 +124,9 @@ local function avatarFrame(pn)
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 			self:settext(stype.." "..diff.." "..math.floor(meter))
 			self:diffuse(getDifficultyColor(steps:GetDifficulty()))
-		end;
-		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end;
-	};
+		end,
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
+	}
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
@@ -139,7 +139,7 @@ local function avatarFrame(pn)
 				self:halign(1)
 			end
 			self:zoomto(120,10)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -154,10 +154,10 @@ local function avatarFrame(pn)
 			self:zoomto(0,10)
 			self:diffuse(getMainColor("highlight"))
 			self:queuecommand("Set")
-		end;
+		end,
 		JudgmentMessageCommand = function(self)
 			self:queuecommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			self:finishtweening()
 			self:smooth(0.1)
@@ -174,10 +174,10 @@ local function avatarFrame(pn)
 			end
 			self:zoom(0.35)
 			self:queuecommand("Set")
-		end;
+		end,
 		JudgmentMessageCommand = function(self)
 			self:queuecommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			local life = PLife(pn)
 			self:settextf("%0.0f",life*100)
@@ -192,7 +192,7 @@ local function avatarFrame(pn)
 			else
 				self:stopeffect()
 				self:diffuse(color("1,1,1,1"))
-			end;
+			end
 		end
 	}
 
@@ -204,4 +204,4 @@ for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	t[#t+1] = avatarFrame(pn)
 end
 
-return t;
+return t

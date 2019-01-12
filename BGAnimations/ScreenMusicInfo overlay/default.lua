@@ -79,7 +79,7 @@ local t = Def.ActorFrame {
 		MESSAGEMAN:Broadcast("SetSteps",{steps = steps})
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
-	end;
+	end
 }
 
 
@@ -94,11 +94,11 @@ local function topRow()
 		InitCommand = function(self)
 			self:zoomto(frameWidth, frameHeight)
 			self:diffuse(color("#000000")):diffusealpha(0.8)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Banner{
-		Name = "Banner";
+		Name = "Banner",
 		InitCommand = function(self)
 			self:x(-frameWidth/2 + 5)
 			self:halign(0)
@@ -108,7 +108,7 @@ local function topRow()
 	}
 
 	t[#t+1] = LoadFont("Common BLarge") .. {
-		Name = "SongTitle";
+		Name = "SongTitle",
 		InitCommand = function(self)
 			self:xy(-frameWidth/2 + 96 +10, -9)
 			self:zoom(0.25)
@@ -117,7 +117,7 @@ local function topRow()
 			if #song:GetDisplaySubTitle() == 0 then
 				self:zoom(0.35):y(-5)
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
@@ -130,13 +130,13 @@ local function topRow()
 			self:zoom(0.3)
 			self:halign(0)
 			self:playcommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			local length = song:GetStepsSeconds()/getCurRateValue()
 			self:settextf("%s",SecondsToMSS(length))
 			self:diffuse(getSongLengthColor(length))
-		end;
-		CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
+		end,
+		CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
 	}
 
 
@@ -146,7 +146,7 @@ local function topRow()
 			self:zoom(0.35)
 			self:halign(0)
 			self:settext(song:GetDisplaySubTitle())
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
@@ -155,7 +155,7 @@ local function topRow()
 			self:zoom(0.35)
 			self:halign(0)
 			self:settext("// "..song:GetDisplayArtist())
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
@@ -164,7 +164,7 @@ local function topRow()
 			self:zoom(0.5)
 			self:halign(1)
 			self:playcommand("Set", {steps = steps})
-		end;
+		end,
 		SetCommand = function(self, params)
 			local curSteps = params.steps
 			local diff = curSteps:GetDifficulty()
@@ -184,10 +184,10 @@ local function topRow()
 
 			self:settext(ToEnumShortString(stype):gsub("%_"," ").." "..difftext.." "..meter)
 			self:diffuse(getDifficultyColor(GetCustomDifficulty(stype,diff)))
-		end;
+		end,
 		SetStepsMessageCommand = function(self, params)
 			self:playcommand("Set",{steps = params.steps})
-		end;
+		end
 
 	}
 
@@ -198,7 +198,7 @@ local function topRow()
 			self:zoom(0.35)
 			self:halign(1)
 			self:playcommand("Set", {steps = steps})
-		end;
+		end,
 		SetCommand = function(self, params)
 			local curSteps = params.steps
 			local notes = 0
@@ -207,20 +207,20 @@ local function topRow()
 			end
 			self:settextf("%d Notes", notes)
 			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(curSteps:GetStepsType(),curSteps:GetDifficulty())),0.3))
-		end;
+		end,
 		SetStepsMessageCommand = function(self, params)
 			self:playcommand("Set",{steps = params.steps})
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name="MSDAvailability";
+		Name="MSDAvailability",
 		InitCommand = function(self)
 			self:xy(frameWidth/2-5,-11)
 			self:zoom(0.30)
 			self:halign(1)
 			self:playcommand("Set", {steps = steps})
-		end;
+		end,
 		SetCommand = function(self, params)
 			local curSteps = params.steps
 			if curSteps ~= nil then
@@ -234,11 +234,11 @@ local function topRow()
 					self:diffuse(color(colorConfig:get_data().main.enabled))
 				end
 			end
-		end;
+		end,
 		SetStepsMessageCommand = function(self, params)
 			self:playcommand("Set",{steps = params.steps})
-		end;
-	};
+		end
+	}
 
 	t[#t+1] = LoadActor(THEME:GetPathG("", "round_star")) .. {
 		InitCommand = function(self)
@@ -250,7 +250,7 @@ local function topRow()
 			if not song:IsFavorited() then
 				self:visible(false)
 			end
-		end;
+		end
 	}
 
 	return t
@@ -270,7 +270,7 @@ local function stepsListRow()
 			stepsTable = song:GetStepsByStepsType(params.st)
 			table.sort(stepsTable, meterComparator)
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -279,7 +279,7 @@ local function stepsListRow()
 			self:xy(-topRowFrameWidth/2, topRowFrameHeight)
 			self:diffuse(color("#000000")):diffusealpha(0.8)
 			self:halign(0)
-		end;
+		end
 
 	}
 
@@ -290,7 +290,7 @@ local function stepsListRow()
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
 			self:halign(0)
 			self:faderight(0.5)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(-1)})
 			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
@@ -299,7 +299,7 @@ local function stepsListRow()
 			self:diffusealpha(0.2)
 			self:smooth(0.3)
 			self:diffusealpha(0)
-		end;
+		end
 	}
 	t[#t+1] = quadButton(6)..{
 		InitCommand = function(self)
@@ -308,7 +308,7 @@ local function stepsListRow()
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
 			self:halign(0)
 			self:fadeleft(0.5)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(1)})
 			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
@@ -317,38 +317,38 @@ local function stepsListRow()
 			self:diffusealpha(0.2)
 			self:smooth(0.3)
 			self:diffusealpha(0)
-		end;
+		end
 	}
 	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
-		Name = "TriangleLeft";
+		Name = "TriangleLeft",
 		InitCommand = function(self)
 			self:zoom(0.15)
 			self:diffusealpha(0.8)
 			self:xy(-topRowFrameWidth/2+10,topRowFrameHeight)
 			self:rotationz(-90)
-		end;
+		end,
 		TweenCommand = function(self)
 			self:finishtweening()
 			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 			self:smooth(0.5)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
-		Name = "TriangleRight";
+		Name = "TriangleRight",
 		InitCommand = function(self)
 			self:zoom(0.15)
 			self:diffusealpha(0.8)
 			self:xy(-topRowFrameWidth/2+frameWidth-10,topRowFrameHeight)
 			self:rotationz(90)
-		end;
+		end,
 		TweenCommand = function(self)
 			self:finishtweening()
 			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 			self:smooth(0.5)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
-		end;
+		end
 	}
 
 
@@ -356,10 +356,10 @@ local function stepsListRow()
 		InitCommand = function(self)
 			self:zoom(0.4)
 			self:xy(-topRowFrameWidth/2+frameWidth/2,topRowFrameHeight)
-		end;
+		end,
 		SetCommand = function(self)
 			self:settext(ToEnumShortString(stepsType):gsub("%_"," "))
-		end;
+		end
 	}
 
 	for i = 1, maxNumDifficulties do
@@ -372,7 +372,7 @@ local function stepsListRow()
 				self:diffuse(color("#000000")):diffusealpha(0)
 				self:halign(0)
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1)-10)
-			end;
+			end,
 			SetCommand = function(self)
 				local curSteps = stepsTable[i]
 				if curSteps then
@@ -380,7 +380,7 @@ local function stepsListRow()
 				else
 					self:playcommand("Hide")
 				end
-			end;
+			end,
 			ShowCommand = function(self)
 				self:y(topRowFrameHeight)
 				self:finishtweening()
@@ -388,15 +388,15 @@ local function stepsListRow()
 				self:easeOut(1)
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1))
 				self:diffusealpha(0.8)
-			end;
+			end,
 			HideCommand = function(self)
 				self:diffusealpha(0)
 				self:y(SCREEN_HEIGHT*10)
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1)-10)
-			end;
+			end,
 			TopPressedCommand = function(self)
 				MESSAGEMAN:Broadcast("SetSteps", {steps = stepsTable[i]})
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal") .. {
@@ -406,7 +406,7 @@ local function stepsListRow()
 				self:diffusealpha(0)
 				self:xy((-topRowFrameWidth/2)+frameWidth+25+45*(i-1)-10, topRowFrameHeight)
 				self:settext("0")
-			end;
+			end,
 			SetCommand = function(self)
 				local curSteps = stepsTable[i]
 				if curSteps then
@@ -423,20 +423,20 @@ local function stepsListRow()
 				else
 					self:playcommand("Hide")
 				end
-			end;
+			end,
 			ShowCommand = function(self)
 				self:finishtweening()
 				self:sleep((i-1)*0.05)
 				self:easeOut(1)
 				self:x((-topRowFrameWidth/2)+frameWidth+25+45*(i-1))
 				self:diffusealpha(1)
-			end;
+			end,
 			HideCommand = function(self)
 				self:finishtweening()
 				self:easeOut(1)
 				self:x((-topRowFrameWidth/2)+frameWidth+25+45*(i-1)-10)
 				self:diffusealpha(0)
-			end;
+			end
 		}
 	end
 
@@ -457,7 +457,7 @@ local function stepsBPMRow()
 			self:xy(topRowFrameWidth/2, topRowFrameHeight)
 			self:diffuse(color("#000000")):diffusealpha(0.8)
 			self:halign(1)
-		end;
+		end
 	}
 
 	t[#t+1] = quadButton(6)..{
@@ -467,7 +467,7 @@ local function stepsBPMRow()
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
 			self:halign(1)
 			self:faderight(0.5)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			changeMusicRate(-0.05)
 			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
@@ -476,7 +476,7 @@ local function stepsBPMRow()
 			self:diffusealpha(0.2)
 			self:smooth(0.3)
 			self:diffusealpha(0)
-		end;
+		end
 	}
 	t[#t+1] = quadButton(6)..{
 		InitCommand = function(self)
@@ -485,7 +485,7 @@ local function stepsBPMRow()
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
 			self:halign(1)
 			self:fadeleft(0.5)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			changeMusicRate(0.05)
 			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
@@ -494,47 +494,47 @@ local function stepsBPMRow()
 			self:diffusealpha(0.2)
 			self:smooth(0.3)
 			self:diffusealpha(0)
-		end;
+		end
 	}
 
 
 	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
-		Name = "TriangleLeft";
+		Name = "TriangleLeft",
 		InitCommand = function(self)
 			self:zoom(0.15)
 			self:diffusealpha(0.8)
 			self:xy(topRowFrameWidth/2-frameWidth+10,topRowFrameHeight)
 			self:rotationz(-90)
-		end;
+		end,
 		TweenCommand = function(self)
 			self:finishtweening()
 			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 			self:smooth(0.5)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
-		Name = "TriangleRight";
+		Name = "TriangleRight",
 		InitCommand = function(self)
 			self:zoom(0.15)
 			self:diffusealpha(0.8)
 			self:xy(topRowFrameWidth/2-10,topRowFrameHeight)
 			self:rotationz(90)
-		end;
+		end,
 		TweenCommand = function(self)
 			self:finishtweening()
 			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 			self:smooth(0.5)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand = function(self)
 			self:zoom(0.35)
 			self:xy(topRowFrameWidth/2-75,topRowFrameHeight-4)
-		end;
+		end,
 		SetStepsMessageCommand = function(self, params)
 			if params.steps then
 				local bpms = steps:GetTimingData():GetActualBPM()
@@ -544,16 +544,16 @@ local function stepsBPMRow()
 					self:settext(string.format("BPM: %d-%d (%d)",bpms[1]*getCurRateValue(),bpms[2]*getCurRateValue(),getCommonBPM(song:GetTimingData():GetBPMsAndTimes(true),song:GetLastBeat())))
 				end
 			end
-		end;
+		end
 	}
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
 			self:zoom(0.3)
 			self:xy(topRowFrameWidth/2-75,topRowFrameHeight+4)
-		end;
+		end,
 		SetStepsMessageCommand = function(self, params)
 			self:settext(getCurRateDisplayString())
-		end;
+		end
 	}
 
 	return t
@@ -595,17 +595,17 @@ local function scoreList()
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Scores")
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name = "NoScore";
+		Name = "NoScore",
 		InitCommand  = function(self)
 			self:xy(frameWidth/2, frameHeight/2)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.6)
 			self:settext("No scores here!\n(* ` ω´)")
-		end;
+		end,
 		SetCommand = function(self)
 			self:finishtweening()
 			self:y(frameHeight/2-5)
@@ -629,7 +629,7 @@ local function scoreList()
 			InitCommand = function(self)
 				self:diffusealpha(0)
 				self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing)-10)
-			end;
+			end,
 			ShowCommand = function(self)
 				self:y(scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing)-10)
 				self:diffusealpha(0)
@@ -638,13 +638,13 @@ local function scoreList()
 				self:easeOut(1)
 				self:y(scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing))
 				self:diffusealpha(1)
-			end;
+			end,
 			HideCommand = function(self)
 				self:stoptweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
 				self:y(SCREEN_HEIGHT*10) -- Throw it offscreen
-			end;
+			end,
 			UpdateListMessageCommand = function(self)
 				detail = false
 				scoreIndex = (curPage-1)*10+i
@@ -654,7 +654,7 @@ local function scoreList()
 				else
 					self:playcommand("Hide")
 				end
-			end;
+			end,
 			ShowScoreDetailMessageCommand = function(self, params)
 				if params.index == i then
 					detail = true
@@ -665,13 +665,13 @@ local function scoreList()
 				else
 					self:playcommand("Hide")
 				end
-			end;
+			end,
 			HideScoreDetailMessageCommand = function(self)
 				detail = false
 				if scoreList ~= nil and scoreList[scoreIndex] ~= nil then
 					self:playcommand("Show")
 				end
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
@@ -679,10 +679,10 @@ local function scoreList()
 				self:xy(-10,0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("%d", scoreIndex)
-			end;
+			end
 		}
 
 		t[#t+1] = quadButton(6) .. {
@@ -690,7 +690,7 @@ local function scoreList()
 				self:halign(0)
 				self:diffusealpha(0.2)
 				self:zoomto(scoreItemWidth, scoreItemHeight)
-			end;
+			end,
 			TopPressedCommand = function(self, params)
 				self:finishtweening()
 				self:diffusealpha(0.4)
@@ -703,7 +703,7 @@ local function scoreList()
 				elseif params.input == "DeviceButton_right mouse button" then
 					MESSAGEMAN:Broadcast("HideScoreDetail")
 				end
-			end;
+			end,
 			SetCommand = function(self)
 				if scoreList[i]:GetEtternaValid() then
 					self:diffuse(color("#FFFFFF"))
@@ -711,17 +711,17 @@ local function scoreList()
 					self:diffuse(color(colorConfig:get_data().clearType.ClearType_Invalid))
 				end
 				self:diffusealpha(0.2)
-			end;
+			end
 		}
 
 		t[#t+1] = getClearTypeLampQuad(3, scoreItemHeight)..{
 			InitCommand = function(self)
 				self:halign(0)
 				self:diffusealpha(0.8)
-			end;
+			end,
 			SetCommand = function(self)
 				self:playcommand("SetClearType", {clearType = getClearType(pn,steps,scoreList[scoreIndex])})
-			end;
+			end
 		}
 
 
@@ -730,12 +730,12 @@ local function scoreList()
 				self:xy(20,0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
-			end;
+			end,
 			SetCommand = function(self)
 				local ssr = scoreList[scoreIndex]:GetSkillsetSSR("Overall")
 				self:settextf("%0.2f",ssr)
 				self:diffuse(getMSDColor(ssr))
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Bold")..{
@@ -744,7 +744,7 @@ local function scoreList()
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
 				self:halign(0)
-			end;
+			end,
 			SetCommand = function(self)
 				local clearType = getClearType(pn,steps,scoreList[scoreIndex])
 
@@ -754,13 +754,13 @@ local function scoreList()
 		}
 
 		t[#t+1] = LoadFont("Common Bold")..{
-			Name = "Grade";
+			Name = "Grade",
 			InitCommand  = function(self)
 				self:xy(40,5)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
 				self:halign(0)
-			end;
+			end,
 			SetCommand = function(self)
 				local grade = scoreList[scoreIndex]:GetWifeGrade()
 				self:settext(THEME:GetString("Grade",ToEnumShortString(grade)))
@@ -769,13 +769,13 @@ local function scoreList()
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Name = "PercentScore";
+			Name = "PercentScore",
 			InitCommand  = function(self)
 				self:xy(40,5)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
 				self:halign(0)
-			end;
+			end,
 			SetCommand = function(self)
 				local score = scoreList[scoreIndex]:GetWifeScore()
 				local w1 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W1")
@@ -790,13 +790,13 @@ local function scoreList()
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Name = "ReplayAvailability";
+			Name = "ReplayAvailability",
 			InitCommand  = function(self)
 				self:xy(scoreItemWidth-5,5)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
 				self:halign(1)
-			end;
+			end,
 			SetCommand = function(self)
 				if scoreList[scoreIndex]:HasReplayData() then
 					self:settext("Replay Data Available.")
@@ -816,22 +816,22 @@ local function scoreList()
 			InitCommand = function(self)
 				self:diffusealpha(0)
 				self:xy(scoreItemX, scoreItemY+scoreItemYSpacing+scoreItemHeight/2)
-			end;
+			end,
 			HideCommand = function(self)
 				self:stoptweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
-			end;
+			end,
 			ShowScoreDetailMessageCommand = function(self, params)
 				self:finishtweening()
 				self:xy(scoreItemX, (params.index+1)*(scoreItemHeight+scoreItemYSpacing)+100+scoreItemHeight/2)
 				self:easeOut(0.5)
 				self:xy(scoreItemX, scoreItemY+scoreItemYSpacing+scoreItemHeight/2)
 				self:diffusealpha(1)
-			end;
+			end,
 			HideScoreDetailMessageCommand = function(self)
 				self:playcommand("Hide")
-			end;
+			end,
 			UpdateListMessageCommand = function(self)
 				self:playcommand("Hide")
 			end
@@ -842,13 +842,13 @@ local function scoreList()
 				self:diffusealpha(0.2)
 				self:halign(0):valign(0)
 				self:zoomto(scoreItemWidth, frameHeight-80)
-			end;
+			end,
 		}
 
 		t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 			InitCommand = function(self, params)
 				self:xy(5, 55)
-			end;
+			end,
 			ShowScoreDetailMessageCommand = function(self, params)
 
 				if scoreList[params.scoreIndex]:HasReplayData() then
@@ -864,7 +864,7 @@ local function scoreList()
 				else
 					self:RunCommandsOnChildren(function(self) self:playcommand("Update", {width = scoreItemWidth-10, height = frameHeight-140,}) end)
 				end
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
@@ -874,10 +874,10 @@ local function scoreList()
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.6)
 				self:settext("No replay data\n(゜´Д｀゜)")
 
-			end;
+			end,
 			ShowScoreDetailMessageCommand = function(self, params)
 				self:visible(not scoreList[params.scoreIndex]:HasReplayData())
-			end;
+			end
 		}
 
 		return t
@@ -898,49 +898,49 @@ end
 t[#t+1] = Def.Actor{
 	SetStepsMessageCommand = function(self, params)
 		steps = params.steps
-	end;
+	end,
 	CurrentRateChangedMessageCommand = function(self)
 		MESSAGEMAN:Broadcast("SetSteps",{steps = steps})
-	end;
+	end
 }
 
 t[#t+1] = topRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
 		self:delayedFadeIn(0)
-	end;
+	end
 }
 
 t[#t+1] = stepsListRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
 		self:delayedFadeIn(1)
-	end;
+	end
 }
 
 t[#t+1] = stepsBPMRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
 		self:delayedFadeIn(2)
-	end;
+	end
 }
 
 t[#t+1] = LoadActor("stepsinfo") .. {
 	InitCommand = function(self)
 		self:xy(capWideScale(135,160),140)
 		self:delayedFadeIn(3)
-	end;
+	end
 }
 
 t[#t+1] = LoadActor("ssrbreakdown") .. {
 	InitCommand = function(self)
 		self:xy(capWideScale(135,160),315)
 		self:delayedFadeIn(4)
-	end;
+	end
 }
 
 t[#t+1] = scoreList() .. {
-	Name = "ScoreList";
+	Name = "ScoreList",
 	InitCommand = function(self)
 		self:xy(320,110)
 		self:delayedFadeIn(5)
@@ -961,10 +961,10 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2)
 		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT-tab.height/2)
-	end;
+	end,
 	OffCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
-	end;
+	end,
 	TabPressedMessageCommand = function(self, params)
 	end
 }

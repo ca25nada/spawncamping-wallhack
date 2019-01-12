@@ -16,45 +16,45 @@ t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:zoomto(avatarHeight+avatarBorder*2,avatarWidth+avatarBorder*2)
 			self:diffuse(getBorderColor())
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:zoomto(avatarHeight+avatarBorder*2,avatarWidth+avatarBorder*2)
 			self:diffusealpha(0.8)
-		end;
+		end,
 		BeginCommand = function(self)
 			self:diffuseramp()
 			self:effectcolor2(color("1,1,1,0.6"))
 			self:effectcolor1(color("1,1,1,0"))
 			self:effecttiming(2,1,0,0)
-		end;
+		end
 	}
 
 	t[#t+1] = quadButton(3) .. {
 		InitCommand = function(self)
 			self:zoomto(avatarHeight+avatarBorder*2,avatarWidth+avatarBorder*2)
 			self:visible(false)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			if params.input == "DeviceButton_left mouse button" then
 				SCREENMAN:AddNewScreenToTop("ScreenSelectAvatar")
 			end
-		end;
+		end
 	}
 
 	-- Avatar
 	t[#t+1] = Def.Sprite {
-		InitCommand = function (self) self:playcommand("ModifyAvatar") end;
-		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
-		PlayerUnjoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
-		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
+		InitCommand = function (self) self:playcommand("ModifyAvatar") end,
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
+		PlayerUnjoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
+		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn))
 			self:zoomto(avatarHeight,avatarWidth)
-		end;
+		end
 	}
 
 return t

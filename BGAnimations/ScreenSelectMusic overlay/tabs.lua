@@ -55,14 +55,14 @@ local t = Def.ActorFrame{
 		self:diffusealpha(0)
 		self:smooth(0.5)
 		self:diffusealpha(1)
-	end;
+	end,
 	OffCommand = function(self)
 		self:smooth(0.5)
 		self:diffusealpha(0)
-	end;
+	end,
 	StartPlaylistMessageCommand=function(self, params)
 		top:StartPlaylistAsCourse(params.playlist:GetName())
-	end;
+	end
 }
 
 t[#t+1] = LoadActor("../_mouse")
@@ -73,10 +73,10 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2)
 		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT-tab.height/2)
-	end;
+	end,
 	OffCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
-	end;
+	end,
 	TabPressedMessageCommand = function(self, params)
 		if params.name == "Profile" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")

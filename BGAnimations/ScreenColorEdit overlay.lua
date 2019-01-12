@@ -7,7 +7,7 @@ local themeColor = colorConfig:get_data()[selected[1]][selected[2]]
 local colorTable = {}
 for i=2,#themeColor do --First string is a "#", ignore.
 	colorTable[i-1] = themeColor:sub(i,i)
-end;
+end
 
 
 
@@ -21,15 +21,15 @@ local function scroller(index)
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand=function(self)
 			self:xy(SCREEN_CENTER_X-60+index*20,SCREEN_CENTER_Y):zoom(0.8)
-		end;
+		end,
 		OnCommand=function(self)
 			self:settext(string.format("%01X",number or 0))
 			if index == cursor then
 				self:diffuse(color("#FFFFFF"))
 			else
 				self:diffuse(color("#666666"))
-			end;
-		end;
+			end
+		end,
 		CodeMessageCommand=function(self,params)
 			if params.Name == "ColorUp" then
 				if index == cursor then
@@ -66,7 +66,7 @@ local function scroller(index)
 					self:diffuse(color("#666666"))
 				end
 			end
-		end;
+		end
 	}
 
 	return t
@@ -97,26 +97,26 @@ local t = Def.ActorFrame{
 		if params.Name == "ColorLeft" then
 			cursor = ((cursor-2)%(count))+1
 		end
-	end;
+	end
 }
 
 
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
 		self:xy(0,0):halign(0):valign(0):zoomto(SCREEN_WIDTH,SCREEN_HEIGHT):diffuse(getMainColor("frame")):diffusealpha(0.6)
-	end;
-};
+	end
+}
 
-t[#t+1] = LoadActor("_frame");
-t[#t+1] = LoadActor("_mouse");
+t[#t+1] = LoadActor("_frame")
+t[#t+1] = LoadActor("_mouse")
 
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
 		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+40):zoomto(200,30)
-	end;
+	end,
 	OnCommand=function(self)
 		self:diffuse(color(themeColor))
-	end;
+	end,
 	CodeMessageCommand=function(self,params)
 		if params.Name == "ColorUp" then
 			self:queuecommand("SetColor")
@@ -124,30 +124,30 @@ t[#t+1] = Def.Quad{
 		if params.Name == "ColorDown" then
 			self:queuecommand("SetColor")
 		end
-	end;
+	end,
 	SetColorCommand=function(self)
 		self:diffuse(color("#"..table.concat(colorTable)))
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=function(self)
 		self:xy(SCREEN_CENTER_X-60,SCREEN_CENTER_Y):zoom(0.8)
-	end;
+	end,
 	OnCommand=function(self)
 		self:settext("#")
 		self:diffuse(color("#666666"))
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=function(self)
 		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+100):zoom(0.4)
-	end;
+	end,
 	OnCommand=function(self)
 		self:settextf("%s \"%s - %s\".\n\n%s",THEME:GetString("ScreenColorEdit","Description1"),selected[1],selected[2],THEME:GetString("ScreenColorEdit","Description2"))
 		self:diffuse(color("#FFFFFF"))
-	end;
+	end
 }
 
 for i=1,6 do

@@ -32,7 +32,7 @@ end
 local t = Def.ActorFrame{
 	InitCommand = function(self)
 		self:SetUpdateFunction(Update)
-	end;
+	end,
 	-- Reset flags and first/last second at the beginning of each song.
 	CurrentSongChangedMessageCommand = function(self)
 		firstSecond = GAMESTATE:GetCurrentSong():GetFirstSecond()

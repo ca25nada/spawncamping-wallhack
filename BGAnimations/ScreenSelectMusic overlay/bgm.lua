@@ -55,7 +55,7 @@ local t = Def.ActorFrame{
 		if themeConfig:get_data().global.SongPreview ~= 1 then
 			self:SetUpdateFunction(playMusic)
 		end
-	end;
+	end,
 	CurrentSongChangedMessageCommand = function(self)
 		SOUND:StopMusic()
 		deltaSum = 0
@@ -70,7 +70,7 @@ local t = Def.ActorFrame{
 			musicLength = curSong:MusicLengthSeconds()
 			startFromPreview = start == 0
 		end
-	end;
+	end,
 }
 
 return t

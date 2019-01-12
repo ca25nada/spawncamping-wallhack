@@ -5,7 +5,7 @@ local function ScreenFilter()
 	return Def.Quad{
 		InitCommand = function(self)
 			self:visible(false)
-		end;
+		end,
 		PlayerStateSetCommand = function(self,param)
 			local pn = param.PlayerNumber
 			local style = GAMESTATE:GetCurrentStyle(pn)
@@ -35,7 +35,7 @@ local function LaneHighlight()
 		t[#t+1] = Def.Quad{
 			InitCommand = function(self)
 				self:visible(false)
-			end;
+			end,
 			PlayerStateSetCommand = function(self,param)
 				pn = param.PlayerNumber
 
@@ -59,7 +59,7 @@ local function LaneHighlight()
 				self:xy((i-(cols/2)-(1/2))*colWidth,-receptor)
 				self:fadebottom(0.6):fadetop(0.6)
 				self:visible(false)
-			end;
+			end,
 			JudgmentMessageCommand=function(self,params)
 				local enabled = playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlight
 				if not enabled then
@@ -77,15 +77,15 @@ local function LaneHighlight()
 					if enum < judgeThreshold and enum > 3 and
 						i == firstTrack then
 
-						self:stoptweening();
-						self:visible(true);
-						self:diffuse(color(colorConfig:get_data().judgment[params.TapNoteScore]));
+						self:stoptweening()
+						self:visible(true)
+						self:diffuse(color(colorConfig:get_data().judgment[params.TapNoteScore]))
 						self:diffusealpha(alpha)
 						self:easeIn(0.25)
 						self:diffusealpha(0)
-					end;
+					end
 				end
-			end;
+			end
 		}
 	end
 

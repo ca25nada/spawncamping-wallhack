@@ -66,7 +66,7 @@ local t = Def.ActorFrame {
 		top:AddInputCallback(input)
 		self:SetUpdateFunction(update)
 		MESSAGEMAN:Broadcast("UpdateList")
-	end;
+	end
 }
 
 
@@ -92,7 +92,7 @@ local function packInfo()
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Pack Info")
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -110,7 +110,7 @@ local function packInfo()
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("A REALLY LONG SIMFILE PACK TITLE")
-		end;
+		end
 	}
 
 	return t
@@ -123,7 +123,7 @@ local function packList()
 	local t = Def.ActorFrame{
 		DownloadStatusCommand = function(self, params)
 			self:RunCommandsOnChildren(function(self) self:playcommand("DownloadStatus", params) end)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -142,7 +142,7 @@ local function packList()
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Simfile Packs")
-		end;
+		end
 	}
 
 	local packItemWidth = frameWidth-30
@@ -161,7 +161,7 @@ local function packList()
 				self:diffusealpha(0)
 				self:xy(packItemX, packItemY + (i-1)*(packItemHeight+packItemYSpacing)-10)
 				self:playcommand("Show")
-			end;
+			end,
 			ShowCommand = function(self)
 				self:y(packItemY + (i-1)*(packItemHeight+packItemYSpacing)-10)
 				self:diffusealpha(0)
@@ -170,12 +170,12 @@ local function packList()
 				self:easeOut(1)
 				self:y(packItemY + (i-1)*(packItemHeight+packItemYSpacing))
 				self:diffusealpha(1)
-			end;
+			end,
 			HideCommand = function(self)
 				self:stoptweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
-			end;
+			end,
 			UpdateListMessageCommand = function(self) -- Pack List updates (e.g. new page)
 				packIndex = (curPage-1)*10+i
 				if packlist[packIndex] ~= nil then
@@ -184,7 +184,7 @@ local function packList()
 				else
 					self:playcommand("Hide")
 				end
-			end;
+			end,
 			DownloadStatusCommand = function(self, params) -- Download status update from updatefunction
 				if not params.download then
 					return 
@@ -198,7 +198,7 @@ local function packList()
 					self:GetChild("Size"):settextf("Downloading %5.2f MB / %5.2f MB", download:GetKBDownloaded()/1048576, download:GetTotalKB()/1048576)
 					self:GetChild("ProgressBar"):zoomx(download:GetKBDownloaded()/download:GetTotalKB()*packItemWidth)
 				end
-			end;
+			end,
 			StartDownloadCommand = function(self) -- Start download
 				download = packlist[packIndex]:DownloadAndInstall()
 
@@ -207,23 +207,23 @@ local function packList()
 
 				self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
-			end;
+			end,
 			StopDownloadCommand = function(self) -- Stop download
 				download:Stop()
 				downloading = DLMAN:GetDownloadingPacks()
 				self:GetChild("Status"):playcommand("Set")
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
 				self:GetChild("Size"):settextf("Download Cancelled")
-			end;
+			end,
 			FinishDownloadCommand = function(self) -- Download Finished
 				downloading = DLMAN:GetDownloadingPacks()
 				self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.completed)):diffusealpha(0.8)
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.completed)):diffusealpha(0.2)
 				self:GetChild("Size"):settextf("Download Complete!")
-			end;
+			end,
 			PackDownloadedMessageCommand = function(self, params) -- Download Stopped/Finished
 				downloading = DLMAN:GetDownloadingPacks()
-			end;
+			end,
 			DownloadFailedMessageCommand = function(self, params) -- Download Failed
 				if packlist[packIndex]:GetName() == params.pack:GetName() then 
 					downloading = DLMAN:GetDownloadingPacks()
@@ -231,7 +231,7 @@ local function packList()
 					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
 					self:GetChild("Size"):settextf("Download Failed")
 				end
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
@@ -239,33 +239,33 @@ local function packList()
 				self:xy(-10,0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("%d", packIndex)
-			end;
+			end
 		}
 
 		t[#t+1] = Def.Quad{
-			Name = "ProgressBar";
+			Name = "ProgressBar",
 			InitCommand = function(self)
 				self:halign(0)
 				self:diffuse(color(colorConfig:get_data().main.highlight))
 				self:diffusealpha(0)
 				self:xy(0, 0)
 				self:zoomy(packItemHeight)
-			end;
+			end,
 			SetCommand = function(self)
 				self:zoomx(0)
-			end;
+			end
 		}
 
 		t[#t+1] = quadButton(6) .. {
-			Name = "Size";
+			Name = "Size",
 			InitCommand = function(self)
 				self:halign(0)
 				self:diffusealpha(0.2)
 				self:zoomto(packItemWidth, packItemHeight)
-			end;
+			end,
 			TopPressedCommand = function(self)
 				if packlist[packIndex]:IsDownloading() then -- IsDownloading() returns the wrong boolean for some reason.
 					self:GetParent():playcommand("StartDownload")
@@ -277,29 +277,29 @@ local function packList()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
 				self:diffusealpha(0.2)
-			end;
+			end,
 
 			SetCommand = function(self)
 				self:diffusealpha(0.2)
-			end;
+			end
 		}
 
 		t[#t+1] = Def.Quad{
-			Name = "Status";
+			Name = "Status",
 			InitCommand = function(self)
 				self:halign(0)
 				self:diffuse(color(colorConfig:get_data().main.highlight))
 				self:diffusealpha(0.8)
 				self:xy(0, 0)
 				self:zoomto(3, packItemHeight)
-			end;
+			end,
 			SetCommand = function(self)
 				if packExists(packlist[packIndex]:GetName()) then
 					self:diffuse(color(colorConfig:get_data().downloadStatus.downloaded)):diffusealpha(0.8)
 				else
 					self:diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.8)
 				end
-			end;
+			end
 		}
 
 
@@ -308,7 +308,7 @@ local function packList()
 				self:xy(20,0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
-			end;
+			end,
 			SetCommand = function(self)
 				local msd = packlist[packIndex]:GetAvgDifficulty()
 				self:settextf("%5.2f",msd)
@@ -321,19 +321,19 @@ local function packList()
 				self:xy(40,-6):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("%s",packlist[packIndex]:GetName())
 			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Name = "Size";
+			Name = "Size",
 			InitCommand  = function(self)
 				self:xy(40,5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-			end;
+			end,
 			SetCommand = function(self)
 				if packExists(packlist[packIndex]:GetName()) then
 					self:settext("Downloaded (Or a pack with an identical name exists)")
@@ -364,7 +364,7 @@ t[#t+1] = packInfo() .. {
 }
 
 t[#t+1] = packList() .. {
-	Name = "PackList";
+	Name = "PackList",
 	InitCommand = function(self)
 		self:xy(320,30)
 		self:delayedFadeIn(2)

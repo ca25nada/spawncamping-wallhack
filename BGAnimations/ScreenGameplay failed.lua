@@ -2,12 +2,12 @@ local t = Def.ActorFrame{
 	InitCommand = function(self)
 		self:diffusealpha(0)
 		self:diffuse(getMainColor("negative"))
-	end;
+	end,
 	OffCommand = function(self)
 		self:smooth(1)
 		self:diffusealpha(1)
 		self:sleep(1)
-	end;
+	end
 }
 
 t[#t+1] = LoadActor("_background")
@@ -20,13 +20,13 @@ t[#t+1] = Def.Quad{
 		self:smooth(1)
 		self:diffuse(getMainColor("frame"))
 		self:diffusealpha(0.8)
-	end;
+	end,
 	OffCommand = function(self)
 		self:sleep(1)
 		self:smooth(1)
 		self:diffusealpha(0)
 	end
-};
+}
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
@@ -38,12 +38,12 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:diffusealpha(0.8)
 		self:diffuseshift()
 		self:effectcolor1(color("#FFFFFF")):effectcolor2(getMainColor("negative"))
-	end;
+	end,
 	OffCommand = function(self)
 		self:sleep(1)
 		self:smooth(1)
 		self:diffusealpha(0)
 	end
-};
+}
 
 return t

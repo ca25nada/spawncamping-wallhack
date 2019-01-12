@@ -17,7 +17,7 @@ local t = Def.ActorFrame {
 	OnCommand = function(self)
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
-	end;
+	end
 }
 
 t[#t+1] = LoadActor("../_mouse")

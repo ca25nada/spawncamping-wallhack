@@ -19,12 +19,12 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(1)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:queuecommand('Set')
-	end;
+	end,
 	SetCommand = function(self)
 		if profile ~= nil then
 			self:settextf("Lv.%d (%d/%d)",level, currentExp, nextExp)
 		end
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
@@ -34,19 +34,19 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:playcommand('Set')
-	end;
+	end,
 
 	LoginMessageCommand = function(self)
 		self:playcommand('Set')
-	end;
+	end,
 
 	LogOutMessageCommand = function(self)
 		self:playcommand('Set')
-	end;
+	end,
 
 	OnlineUpdateMessageCommand = function(self)
 		self:playcommand('Set')
-	end;
+	end,
 
 	SetCommand = function(self)
 		local rating = 0
@@ -67,7 +67,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		end
 
 		self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})
-	end;
+	end
 }
 
 t[#t+1] = Def.Quad{
@@ -83,7 +83,7 @@ t[#t+1] = Def.Quad{
 		self:zoomto(0, barHeight-2)
 		self:diffuse(color(colorConfig:get_data().main.highlight))
 		self:queuecommand('Set')
-	end;
+	end,
 	SetCommand = function (self)
 		if profile ~= nil then
 			self:easeOut(1)

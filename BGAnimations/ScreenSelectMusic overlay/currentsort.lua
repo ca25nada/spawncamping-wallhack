@@ -39,7 +39,7 @@ local sortTable = {
 	SortOrder_Length 				= 'Song Length',
 	SortOrder_Roulette 				= 'Roulette',
 	SortOrder_Recent 				= 'Recently Played'
-};
+}
 
 local function searchInput(event)
 	local buttonEnum = Enum.Reverse(DeviceButton)[event.DeviceInput.button]
@@ -85,7 +85,7 @@ local t = Def.ActorFrame{
 	InitCommand = function(self)
 		self:xy(frameX,frameY)
 		SCREENMAN:set_input_redirected(PLAYER_1, false)
-	end;
+	end,
 	OnCommand = function(self)
 		
 		top = SCREENMAN:GetTopScreen()
@@ -94,11 +94,11 @@ local t = Def.ActorFrame{
 		self:y(-frameHeight/2)
 		self:smooth(0.5)
 		self:y(frameY)
-	end;
+	end,
 	OffCommand = function(self)
 		self:smooth(0.5)
 		self:y(-frameHeight/2)
-	end;
+	end,
 	StartSearchMessageCommand = function(self)
 		active = true
 		if searchstring == "" then
@@ -108,7 +108,7 @@ local t = Def.ActorFrame{
 			self:GetChild("SortBar"):diffusealpha(1)
 		end
 		SCREENMAN:set_input_redirected(PLAYER_1, true)
-	end;
+	end,
 	EndSearchMessageCommand = function(self)
 		SCREENMAN:set_input_redirected(PLAYER_1, false)
 		active = false
@@ -117,7 +117,7 @@ local t = Def.ActorFrame{
 		else
 			self:GetChild("SortBar"):diffusealpha(alphaInactive)
 		end
-	end;
+	end,
 
 	MoveMusicWheelToSongMessageCommand = function(self, param)
 		if #searchstring > 0 then
@@ -128,34 +128,33 @@ local t = Def.ActorFrame{
 		-- The Message sent from ChangeMusic() in the musicwheel goes to the wrong screen (ScreenPlayerProfiles). 
 		-- So Send one manually to ScreenSelectMusic.
 		top:PostScreenMessage('SM_SongChanged', 0)
-	end;
-};
-
+	end
+}
 
 t[#t+1] = quadButton(4) .. {
-	Name="CurrentSort";
+	Name="CurrentSort",
 	InitCommand = function(self)
 		self:halign(1)
 		self:zoomto(frameWidth,frameHeight)
-		self:diffuse(getMainColor('highlight')):diffusealpha(0.8);
-	end;
+		self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+	end,
 	TopPressedCommand = function(self)
 		MESSAGEMAN:Broadcast("StartSearch")
-	end;
-};
+	end
+}
 
 t[#t+1] = LoadFont("Common Normal") .. {
-	Name="SortBar";
+	Name="SortBar",
 	InitCommand = function (self)
 		self:x(5-frameWidth)
 		self:halign(0)
 		self:zoom(0.45)
 		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 		self:maxwidth((frameWidth-40)/0.45)
-	end;
+	end,
 	SortOrderChangedMessageCommand = function(self)
 		self:queuecommand("SetSortOrder")
-	end;
+	end,
 	SetSortOrderCommand = function(self)
 		if searchstring == "" then
 			if not active then
@@ -181,36 +180,36 @@ t[#t+1] = LoadFont("Common Normal") .. {
 				self:diffusealpha(alphaInactive)
 			end
 		end
-	end;
+	end,
 	SortOrderChangedMessageCommand = function(self)
 		self:queuecommand("SetSortOrder")
-	end;
+	end,
 	CurrentSongChangedMessageCommand = function(self)
 		self:queuecommand("SetSortOrder")
-	end;
-};
+	end
+}
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=function(self)
 		self:x(-5):halign(1):zoom(0.3):maxwidth(40/0.45)
-	end;
+	end,
 	BeginCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	SetCommand=function(self)
 		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 		local top = SCREENMAN:GetTopScreen()
 		if top:GetName() == "ScreenSelectMusic" or top:GetName() == "ScreenNetSelectMusic" then
 			local wheel = top:GetMusicWheel()
 			self:settextf("%d/%d",wheel:GetCurrentIndex()+1,wheel:GetNumItems())
-		end;
-	end;
+		end
+	end,
 	SortOrderChangedMessageCommand = function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	CurrentSongChangedMessageCommand = function(self)
 		self:queuecommand("Set")
-	end;
-};
+	end
+}
 
 return t

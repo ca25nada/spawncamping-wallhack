@@ -1,83 +1,81 @@
 local t = Def.ActorFrame{}
-t[#t+1] = LoadActor("songinfo");
+t[#t+1] = LoadActor("songinfo")
 
 t[#t+1] = Def.ActorFrame {
 	InitCommand=function(self)
 		self:rotationz(-90):xy(SCREEN_CENTER_X/2-WideScale(get43size(150),150),270)
 		self:delayedFadeIn(5)
-	end;
+	end,
 	OffCommand=function(self)
 		self:stoptweening()
 		self:sleep(0.025)
 		self:smooth(0.2)
 		self:diffusealpha(0) 
-	end;
+	end,
 
 	OnCommand=function(self)
-
 		wheel = SCREENMAN:GetTopScreen():GetMusicWheel()
-	end;
+	end,
 	CurrentSongChangedMessageCommand=function(self)
 		self:playcommand("PositionSet")
-	end;
+	end,
 	Def.StepsDisplayList {
-		Name="StepsDisplayListRow";
-
+		Name="StepsDisplayListRow",
 		CursorP1 = Def.ActorFrame {
 			InitCommand=function(self)
 				self:player(PLAYER_1):rotationz(90):diffusealpha(0.6)
-			end;
+			end,
 			PlayerJoinedMessageCommand=function(self, params)
 				if params.Player == PLAYER_1 then
 					self:visible(true)
 					self:zoom(0):bounceend(1):zoom(1)
-				end;
-			end;
+				end
+			end,
 			PlayerUnjoinedMessageCommand=function(self, params)
 				if params.Player == PLAYER_1 then
 					self:visible(true)
 					self:zoom(0):bounceend(1):zoom(1)
-				end;
-			end;
+				end
+			end,
 			Def.Quad{
 				InitCommand=function(self)
 					self:zoomto(65,65):diffuseshift():effectperiod(1):effectcolor1(Alpha(PlayerColor(PLAYER_1), 0.5)):effectcolor2(PlayerColor(PLAYER_1))
-				end;
-			};
-		};
+				end
+			}
+		},
 		CursorP2 = Def.ActorFrame {
 			InitCommand=function(self)
 				self:player(PLAYER_2):diffusealpha(0.6)
-			end;
+			end,
 			PlayerJoinedMessageCommand=function(self, params)
 				if params.Player == PLAYER_2 then
-					self:visible(true);
+					self:visible(true)
 					self:zoom(0):bounceend(1):zoom(1)
-				end;
-			end;
+				end
+			end,
 			PlayerUnjoinedMessageCommand=function(self, params)
 				if params.Player == PLAYER_2 then
-					self:visible(true);
+					self:visible(true)
 					self:zoom(0):bounceend(1):zoom(1)
-				end;
-			end;
+				end
+			end,
 			Def.Quad{
 				InitCommand=function(self)
 					self:zoomto(65,65):sleep(0.5):diffuseshift():effectperiod(1):effectcolor2(Alpha(PlayerColor(PLAYER_2), 0.5)):effectcolor1(PlayerColor(PLAYER_2))
-				end;
-			};
-		};
+				end
+			}
+		},
 		CursorP1Frame = Def.Actor{
 			ChangeCommand=function(self)
 				self:stoptweening():easeOut(0.5)
-			end;
-		};
+			end
+		},
 		CursorP2Frame = Def.Actor{
 			ChangeCommand=function(self)
 				self:stoptweening():easeOut(0.5)
-			end;
-		};
-	};
-};
+			end
+		}
+	}
+}
 
 return t

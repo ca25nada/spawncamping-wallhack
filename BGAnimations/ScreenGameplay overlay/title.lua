@@ -9,12 +9,12 @@ local t = Def.ActorFrame{
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y-50)
 		self:diffusealpha(0)
-	end;
+	end,
 	CurrentSongChangedMessageCommand = function(self)
 		self:easeOut(1)
 		self:diffusealpha(0.8)
 		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y-60)
-	end;
+	end,
 	SongStartingMessageCommand = function(self)
 		self:stoptweening()
 		self:smooth(0.5)
@@ -29,11 +29,11 @@ t[#t+1] = Def.Quad{
 		self:zoomto(bannerWidth+borderWidth*4,bannerHeight+borderWidth*4+30)
 		self:diffuse(color("#000000"))
 		self:diffusealpha(0)
-	end;
+	end,
 	CurrentSongChangedMessageCommand = function(self)
 		self:diffuse(getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()))
-	end;
-};
+	end
+}
 
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
@@ -41,7 +41,7 @@ t[#t+1] = Def.Quad{
 		self:zoomto(bannerWidth+borderWidth*2,bannerHeight+borderWidth*2+30)
 		self:diffuse(color("#000000"))
 		self:diffusealpha(0.8)
-	end;
+	end
 }
 
 t[#t+1] = Def.Banner{
@@ -51,7 +51,7 @@ t[#t+1] = Def.Banner{
 			self:LoadFromSong(song)
 		end
 		self:scaletoclipped(bannerWidth,bannerHeight)
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Bold") .. {
@@ -60,10 +60,10 @@ t[#t+1] = LoadFont("Common Bold") .. {
 		self:zoom(0.6)
 		self:diffusealpha(1)
 		self:maxwidth(bannerWidth/0.6)
-	end;
+	end,
 	CurrentSongChangedMessageCommand = function(self)
 		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle())
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
@@ -72,10 +72,10 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:zoom(0.4)
 		self:diffusealpha(1)
 		self:maxwidth(bannerWidth/0.4)
-	end;
+	end,
 	CurrentSongChangedMessageCommand = function(self)
 		self:settext(GAMESTATE:GetCurrentSong():GetDisplayArtist())
-	end;
+	end
 }
 
 

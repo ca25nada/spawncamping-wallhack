@@ -69,7 +69,7 @@ t[#t+1] = Def.Banner{
 		end
 		self:scaletofit(0,0,256,80)
 		self:xy(SCREEN_CENTER_X,70)
-	end;
+	end
 }
 
 
@@ -81,15 +81,15 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:maxwidth(((SCREEN_WIDTH/2 -5 -266/2)/0.6) - 10)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		self:halign(0):valign(0)
-	end;
+	end,
 	BeginCommand = function(self) 
 		if GAMESTATE:IsCourseMode() then
 			self:settext(course:GetDisplayFullTitle())
 		else
 			self:settext(song:GetDisplayMainTitle()) 
-		end;
-	end;
-};
+		end
+	end
+}
 
 -- Artist and subtitles
 t[#t+1] = LoadFont("Common Normal")..{
@@ -99,7 +99,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:maxwidth(((SCREEN_WIDTH/2 -5 -266/2)/0.4) - 10)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		self:halign(0):valign(0)
-	end;
+	end,
 	BeginCommand = function(self) 
 		if GAMESTATE:IsCourseMode() then
 			self:settext("//"..course:GetScripter())
@@ -109,9 +109,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 			else
 				self:settext("//"..song:GetDisplayArtist())
 			end
-		end;
-	end;
-};
+		end
+	end
+}
 
 
 -- Life graph and the stuff that goes with it
@@ -123,32 +123,32 @@ local function GraphDisplay( pn )
 		Def.GraphDisplay {
 			InitCommand = function(self)
 				self:Load("GraphDisplay")
-			end;
+			end,
 			BeginCommand = function(self)
 				local ss = SCREENMAN:GetTopScreen():GetStageStats()
 				self:Set(ss,pss)
-				self:diffusealpha(0.5);
+				self:diffusealpha(0.5)
 				self:GetChild("Line"):diffusealpha(0)
 				self:y(55)
 			end
-		};
+		},
 
 		LoadFont("Common Large")..{
-			Name = "Grade";
+			Name = "Grade",
 			InitCommand = function(self)
 				self:xy(-frameWidth/2+35,55):zoom(0.7):maxwidth(70/0.8)
-			end;
+			end,
 			BeginCommand=function(self) 
 				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetHighScore():GetWifeGrade()))) 
-			end;
-		};
+			end
+		},
 
 		LoadFont("Common Normal")..{
 			Font= "Common Normal", 
 			InitCommand= function(self)
 				self:y(50):zoom(0.6)
 				self:halign(0)
-			end;
+			end,
 			BeginCommand=function(self) 
 				local wifeScore = pss:GetHighScore():GetWifeScore()
 				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
@@ -158,14 +158,14 @@ local function GraphDisplay( pn )
 				end
 
 				self:settextf("%.2f%%",math.floor((wifeScore)*10000)/100)
-			end;
-		};
+			end
+		},
 
 		LoadFont("Common Normal")..{
 			InitCommand= function(self)
 				self:y(63):zoom(0.4)
 				self:halign(0)
-			end;
+			end,
 			BeginCommand=function(self) 
 				-- Fix when maxwife is available to lua
 				local grade,diff = getNearbyGrade(pn,pss:GetWifeScore()*getMaxNotes(pn)*2,pss:GetGrade())
@@ -176,15 +176,15 @@ local function GraphDisplay( pn )
 				else
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 				end
-			end;
-		};
+			end
+		},
 
 
 
 		LoadFont("Common Normal")..{
 			InitCommand = function(self)
 				self:xy(frameWidth/2-5,60-25+5):zoom(0.4):halign(1):valign(0):diffusealpha(0.7)
-			end;
+			end,
 			BeginCommand=function(self)
 				local text = ""
 				text = string.format("Life: %.0f%%",pss:GetCurrentLife()*100)
@@ -195,9 +195,9 @@ local function GraphDisplay( pn )
 					text = string.format("%s\nPaused %d Time(s)",text,gameplay_pause_count)
 				end
 				self:settext(text)
-			end;
-		};
-	};
+			end
+		}
+	}
 	return t
 end
 
@@ -206,7 +206,7 @@ local function ComboGraph( pn )
 	    Def.ComboGraph {
 	    	InitCommand = function(self)
 				self:Load("ComboGraph"..ToEnumShortString(pn))
-			end;
+			end,
 		    BeginCommand=function(self) 
 		        local ss = SCREENMAN:GetTopScreen():GetStageStats() 
 		        self:Set(ss,ss:GetPlayerStageStats(pn)) 
@@ -214,7 +214,7 @@ local function ComboGraph( pn )
 		}
   	}
   	return t
-end; 
+end
 
 local function scoreBoard(pn)
 	local hsTable = getScoreTable(pn, rate)
@@ -242,7 +242,7 @@ local function scoreBoard(pn)
 			self:y(frameY+100)
 			self:zoom(0.5)
 			self:diffusealpha(0)
-		end;
+		end,
 		OnCommand = function(self)
 			self:RunCommandsOnChildren(function(self) self:queuecommand("Set") end)
 			self:bouncy(0.3)
@@ -268,10 +268,10 @@ local function scoreBoard(pn)
 			self:zoomto(56,56)
 			self:diffuse(color("#000000"))
 			self:diffusealpha(0.8)
-		end;
+		end,
 		SetCommand = function(self)
 			self:diffuse(getBorderColor())
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -290,13 +290,13 @@ local function scoreBoard(pn)
 		InitCommand = function (self) 
 			self:xy(25+10-(frameWidth/2),5)
 			self:visible(true)
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn))
 			self:zoomto(50,50)
 		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name = "DisplayName";
+		Name = "DisplayName",
 		InitCommand  = function(self)
 			self:xy(69-frameWidth/2,9)
 			self:zoom(0.6)
@@ -308,7 +308,7 @@ local function scoreBoard(pn)
 				text = pn == PLAYER_1 and "Player 1" or "Player 2"
 			end
 			self:settext(text)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -317,7 +317,7 @@ local function scoreBoard(pn)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local text = "Lv.%d (%d/%d)"
 			local level = getLevel(getProfileExp(pn))
@@ -329,7 +329,7 @@ local function scoreBoard(pn)
 			end
 
 			self:settextf(text,level, currentExp,nextExp)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -338,10 +338,10 @@ local function scoreBoard(pn)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			self:settextf("Rating: %0.2f",profile:GetPlayerRating())
-		end;
+		end
 	}
 
 
@@ -351,13 +351,13 @@ local function scoreBoard(pn)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(getMainColor("positive"))
-		end;
+		end,
 		SetCommand = function(self)
 			self:settextf("+%d", getExpDiff(pn))
 			self:smooth(4)
 			self:diffusealpha(0)
 			self:addy(-5)
-		end;
+		end
 	}
 
 	--Difficulty
@@ -366,7 +366,7 @@ local function scoreBoard(pn)
 		InitCommand = function(self)
 			self:xy(frameWidth/2-5,5):zoom(0.5):halign(1):valign(0)
 			self:glowshift():effectcolor1(color("1,1,1,0.05")):effectcolor2(color("1,1,1,0")):effectperiod(2)
-		end;
+		end,
 		SetCommand=function(self) 
 			local diff = steps:GetDifficulty()
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
@@ -397,7 +397,7 @@ local function scoreBoard(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self) 
 		 	self:xy(frameWidth/2-5,19):zoom(0.4):halign(1):valign(0):diffusealpha(0.7)
-		end;
+		end,
 		SetCommand=function(self) 
 			
 			local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
@@ -408,8 +408,8 @@ local function scoreBoard(pn)
 			end
 
 			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())),0.3))
-		end;
-	};
+		end
+	}
 
 	--ClearType
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -419,7 +419,7 @@ local function scoreBoard(pn)
 			self:halign(0):valign(1)
 			self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -436,11 +436,11 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-50,107)
 			self:zoom(0.5)
 			self:halign(1):valign(1)
-		end;
+		end,
 		SetCommand = function(self)
 			self:settext(getClearTypeText(clearType))
 			self:diffuse(getClearTypeColor(clearType))
-		end;
+		end
 	}
 
 
@@ -449,13 +449,13 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-50,113)
 			self:zoom(0.35)
 			self:halign(1):valign(0)
-		end;
+		end,
 		SetCommand = function(self)
 			local clearType = getHighestClearType(pn,steps,hsTable,index)
 			self:settext(getClearTypeText(clearType))
 			self:diffuse(getClearTypeColor(clearType))
 			self:diffusealpha(0.5)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -463,7 +463,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-40,106)
 			self:zoom(0.30)
 			self:valign(1)
-		end;
+		end,
 		SetCommand = function(self) 
 			local recCTLevel = getClearTypeLevel(getHighestClearType(pn,steps,hsTable,index))
 			local curCTLevel = getClearTypeLevel(clearType)
@@ -477,7 +477,7 @@ local function scoreBoard(pn)
 				self:settext("-")
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end
-		end;
+		end
 	}
 
 	-- Score
@@ -490,7 +490,7 @@ local function scoreBoard(pn)
 			self:halign(0):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
 			self:settextf("%s - %s",THEME:GetString("ScreenEvaluation","CategoryScore"),getScoreTypeText(1))
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -508,7 +508,7 @@ local function scoreBoard(pn)
 			self:zoom(0.5)
 			self:halign(1):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 			local curScoreValue = getScore(curScore, steps, false)
@@ -516,7 +516,7 @@ local function scoreBoard(pn)
 			local maxScoreValue = notes * 2
 			local percentText = string.format("%05.2f%%",math.floor(curScorePercent*10000)/100)
 			self:settextf("%s (%d/%d)",percentText,curScoreValue,maxScoreValue)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -525,14 +525,14 @@ local function scoreBoard(pn)
 			self:zoom(0.35)
 			self:halign(1):valign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText)):diffusealpha(0.3)
-		end;
+		end,
 		SetCommand = function(self)
 			local recScoreValue = getScore(recScore, steps, true)
 
 			local maxScore = getMaxScore(pn)
 			local percentText = string.format("%05.2f%%",math.floor(recScoreValue*10000)/100)
 			self:settextf("%s (%0.0f/%d)",percentText,recScoreValue*maxScore,maxScore)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -540,7 +540,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-40,136)
 			self:zoom(0.30)
 			self:valign(1)
-		end;
+		end,
 		SetCommand = function(self) 
 			local curScoreValue = getScore(curScore, steps, false)
 			local recScoreValue = getScore(recScore, steps, false)
@@ -556,7 +556,7 @@ local function scoreBoard(pn)
 				self:settext("-")
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -565,7 +565,7 @@ local function scoreBoard(pn)
 			self:zoom(0.30)
 			self:valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-		end;
+		end,
 		SetCommand = function(self) 
 			local curScoreValue = getScore(curScore, steps, false)
 			local recScoreValue = getScore(recScore, steps, false)
@@ -574,9 +574,9 @@ local function scoreBoard(pn)
 			local extra = ""
 			if diff >= 0 then
 				extra = "+"
-			end;
+			end
 			self:settextf("%s%0.2f",extra,diff)
-		end;
+		end
 	}
 
 	-- Misscount
@@ -588,7 +588,7 @@ local function scoreBoard(pn)
 			self:halign(0):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
 			self:settext(THEME:GetString("ScreenEvaluation","CategoryMissCount"))
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -606,11 +606,11 @@ local function scoreBoard(pn)
 			self:zoom(0.5)
 			self:halign(1):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local missCount = getScoreMissCount(curScore)
 			self:settext(missCount)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -619,7 +619,7 @@ local function scoreBoard(pn)
 			self:zoom(0.35)
 			self:halign(1):valign(0)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText)):diffusealpha(0.3)
-		end;
+		end,
 		SetCommand = function(self)
 			local score = getBestMissCount(pn,index, rate)
 			local missCount = getScoreMissCount(score)
@@ -629,7 +629,7 @@ local function scoreBoard(pn)
 			else
 				self:settext("-")
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -637,7 +637,7 @@ local function scoreBoard(pn)
 			self:xy(frameWidth/2-40,166)
 			self:zoom(0.30)
 			self:valign(1)
-		end;
+		end,
 		SetCommand = function(self) 
 
 			local score = getBestMissCount(pn,index, rate)
@@ -660,8 +660,8 @@ local function scoreBoard(pn)
 			else
 				self:settext("-")
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-			end;
-		end;
+			end
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -670,7 +670,7 @@ local function scoreBoard(pn)
 			self:zoom(0.30)
 			self:valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-		end;
+		end,
 		SetCommand = function(self) 
 			local score = getBestMissCount(pn,index, rate)
 			local recMissCount = getScoreMissCount(score)
@@ -682,12 +682,12 @@ local function scoreBoard(pn)
 				diff = curMissCount - recMissCount
 				if diff >= 0 then
 					extra = "+"
-				end;
+				end
 				self:settext(extra..diff)
 			else
 				self:settext("+"..curMissCount)
-			end;
-		end;
+			end
+		end
 	}
 
 	-- Tap judgments
@@ -699,7 +699,7 @@ local function scoreBoard(pn)
 			self:halign(0):valign(1)
 			self:settext(THEME:GetString("ScreenEvaluation","CategoryJudgment"))
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -718,14 +718,14 @@ local function scoreBoard(pn)
 				self:zoom(0.4)
 				self:settext(getJudgeStrings(v))
 				self:diffuse(TapNoteScoreToColor(v))
-			end;
-		};
+			end
+		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),225)
 				self:zoom(0.35)
-			end;
+			end,
 			SetCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
 				if tostring(percent) == tostring(0/0) then
@@ -740,7 +740,7 @@ local function scoreBoard(pn)
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),235)
 				self:zoom(0.30)
-			end;
+			end,
 			SetCommand=function(self) 
 				local percent = pss:GetPercentageOfTaps(v)
 				if tostring(percent) == tostring(0/0) then
@@ -764,15 +764,15 @@ local function scoreBoard(pn)
 					text = "Hold "..text
 				end
 				self:settext(text)
-			end;
-		};
+			end
+		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),275)
 				self:zoom(0.35)
 		    	self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-			end;
+			end,
 			SetCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
 				if tostring(percent) == tostring(0/0) then
@@ -788,7 +788,7 @@ local function scoreBoard(pn)
 				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),285)
 				self:zoom(0.30)
 		    	self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-			end;
+			end,
 			SetCommand=function(self) 
 				local percent = pss:GetHoldNoteScores(v)/(pss:GetRadarPossible():GetValue('RadarCategory_Holds')+pss:GetRadarPossible():GetValue('RadarCategory_Rolls'))
 				if tostring(percent) == tostring(0/0) then
@@ -806,15 +806,15 @@ local function scoreBoard(pn)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			self:settext("Mines Hit")
-		end;
-	};
+		end
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand= function(self)
 			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),275)
 			self:zoom(0.35)
 		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-		end;
+		end,
 		SetCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
 			if tostring(percent) == tostring(0/0) then
@@ -830,7 +830,7 @@ local function scoreBoard(pn)
 			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),285)
 			self:zoom(0.30)
 		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-		end;
+		end,
 		SetCommand=function(self) 
 			local percent = pss:GetTapNoteScores('TapNoteScore_HitMine')/(pss:GetRadarPossible():GetValue('RadarCategory_Mines'))*100
 			if tostring(percent) == tostring(0/0) then
@@ -842,7 +842,7 @@ local function scoreBoard(pn)
 	}
 
 	return t
-end;
+end
 
 for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	t[#t+1] = scoreBoard(pn)
@@ -866,7 +866,7 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 								offset = pss:GetOffsetVector()}
 				self:playcommand("Update", params) end
 			)
-		end;
+		end
 	}
 end
 

@@ -25,20 +25,20 @@ local t = Def.ActorFrame{
 
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
-	end;
+	end,
 	OffCommand = function(self)
 		BUTTON:resetPressedActors()
-	end;
+	end,
 	MouseLeftClickMessageCommand = function(self)
 		self:queuecommand("PlayTopPressedActor")
-	end;
+	end,
 	MouseRightClickMessageCommand = function(self)
 		self:queuecommand("PlayTopPressedActor")
-	end;
+	end,
 	PlayTopPressedActorCommand = function(self)
 		BUTTON:playTopPressedActor()
 		BUTTON:resetPressedActors()
-	end;
+	end,
 	ExitScreenMessageCommand = function(self, params)
 		if params.screen == top:GetName() then
 			top:StartTransitioningScreen("SM_GoToPrevScreen")

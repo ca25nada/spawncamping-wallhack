@@ -147,11 +147,11 @@ local function playlistInfo()
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
-		end;
+		end,
 		ShowPlaylistDetailMessageCommand = function(self, params)
 			playlist = params.playlist
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -177,14 +177,14 @@ local function playlistInfo()
 			self:xy(frameWidth/2, 80+50+10)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		end;
+		end,
 		SetCommand = function(self)
 			if playlist then
 				self:settext(playlist:GetName())
 			else
 				self:settext("No Playlist Selected")
 			end
-		end;
+		end
 	}
 
 
@@ -195,16 +195,16 @@ local function playlistInfo()
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Playlist Info")
-		end;
+		end
 	}
 
 	-- Delete Button
 	t[#t+1] = quadButton(6) .. {
-		Name = "Delete Button";
+		Name = "Delete Button",
 		InitCommand = function(self)
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2-10)
 			self:zoomto(buttonWidth, buttonHeight)
-		end;
+		end,
 		TopPressedCommand = function(self)
 			if not playlist then
 				return
@@ -216,14 +216,14 @@ local function playlistInfo()
 			self:diffusealpha(1)
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
-		end;
+		end,
 		SetCommand = function(self)
 			if playlist then
 				self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Bold")..{
@@ -232,15 +232,15 @@ local function playlistInfo()
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Delete Playlist")
-		end;
+		end
 	}
 
 	t[#t+1] = quadButton(6) .. {
-		Name = "Rename Button";
+		Name = "Rename Button",
 		InitCommand = function(self)
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2*3-10*2)
 			self:zoomto(buttonWidth, buttonHeight)
-		end;
+		end,
 		TopPressedCommand = function(self)
 			if not playlist then
 				return
@@ -249,14 +249,14 @@ local function playlistInfo()
 			self:diffusealpha(1)
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
-		end;
+		end,
 		SetCommand = function(self)
 			if playlist then
 				self:diffuse(color(colorConfig:get_data().main.warning)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Bold")..{
@@ -265,15 +265,15 @@ local function playlistInfo()
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Rename Playlist")
-		end;
+		end
 	}
 
 	t[#t+1] = quadButton(6) .. {
-		Name = "Add Button";
+		Name = "Add Button",
 		InitCommand = function(self)
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2*5-10*3)
 			self:zoomto(buttonWidth, buttonHeight)
-		end;
+		end,
 		TopPressedCommand = function(self)
 			if not playlist then
 				return
@@ -286,14 +286,14 @@ local function playlistInfo()
 			self:diffusealpha(1)
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
-		end;
+		end,
 		SetCommand = function(self)
 			if playlist then
 				self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Bold")..{
@@ -302,15 +302,15 @@ local function playlistInfo()
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Add to Playlist")
-		end;
+		end
 	}
 
 	t[#t+1] = quadButton(6) .. {
-		Name = "Play Button";
+		Name = "Play Button",
 		InitCommand = function(self)
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2*7-10*4)
 			self:zoomto(buttonWidth, buttonHeight)
-		end;
+		end,
 		TopPressedCommand = function(self)
 			if not playlist or not playlist:IsPlayable() then
 				return
@@ -322,17 +322,17 @@ local function playlistInfo()
 			self:diffusealpha(1)
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
-		end;
+		end,
 		UpdateStepsListMessageCommand = function(self)
 			self:playcommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			if playlist and playlist:IsPlayable() then
 				self:diffuse(color(colorConfig:get_data().main.positive)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Bold")..{
@@ -341,7 +341,7 @@ local function playlistInfo()
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Play Playlist")
-		end;
+		end
 	}
 
 	return t
@@ -369,7 +369,7 @@ local function playlistList()
 				self:diffusealpha(0)
 				self:xy(itemX, itemY + (i-1)*(itemHeight+itemYSpacing)-10)
 				self:playcommand("Show")
-			end;
+			end,
 			ShowCommand = function(self)
 				hidden = false
 				self:y(itemY + (i-1)*(itemHeight+itemYSpacing)-10)
@@ -379,11 +379,11 @@ local function playlistList()
 				self:easeOut(1)
 				self:y(itemY + (i-1)*(itemHeight+itemYSpacing))
 				self:diffusealpha(1)
-			end;
+			end,
 			HideCommand = function(self)
 				hidden = true
 				self:y(SCREEN_HEIGHT*10)
-			end;
+			end,
 			UpdateListMessageCommand = function(self) -- Pack List updates (e.g. new page)
 				playlistIndex = (curPage-1)*10+i
 				playlist = playlists[playlistIndex]
@@ -397,7 +397,7 @@ local function playlistList()
 					self:diffusealpha(0)
 					self:queuecommand("Hide")
 				end
-			end;
+			end,
 			ShowPlaylistDetailMessageCommand = function(self, params)
 				if params.index == i then
 					self:finishtweening()
@@ -410,17 +410,17 @@ local function playlistList()
 					self:diffusealpha(0)
 					self:playcommand("Hide")
 				end
-			end;
+			end,
 			HidePlaylistDetailMessageCommand = function(self)
 				if playlist then 
 					self:playcommand("Show")
 				end
-			end;
+			end,
 			UpdateStepsListMessageCommand = function(self)
 				if playlist then
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 				end
-			end;
+			end
 		}
 
 		t[#t+1] = quadButton(6) .. {
@@ -428,7 +428,7 @@ local function playlistList()
 				self:halign(0)
 				self:diffusealpha(0.2)
 				self:zoomto(itemWidth, itemHeight)
-			end;
+			end,
 			TopPressedCommand = function(self, params)
 				if hidden then
 					return
@@ -449,11 +449,11 @@ local function playlistList()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
 				self:diffusealpha(0.2)
-			end;
+			end,
 
 			SetCommand = function(self)
 				self:diffusealpha(0.2)
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
@@ -461,32 +461,32 @@ local function playlistList()
 				self:xy(-10,0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("%d", playlistIndex)
-			end;
+			end,
 			ShowPlaylistDetailMessageCommand = function(self)
 				self:easeOut(0.5)
 				self:diffusealpha(0)
-			end;
+			end,
 			HidePlaylistDetailMessageCommand = function(self)
 				self:easeOut(0.5)
 				self:diffusealpha(1)
-			end;
+			end
 		}
 
 		t[#t+1] = Def.Quad{
-			Name = "Status";
+			Name = "Status",
 			InitCommand = function(self)
 				self:halign(0)
 				self:diffuse(color(colorConfig:get_data().main.highlight))
 				self:diffusealpha(0.8)
 				self:xy(0, 0)
 				self:zoomto(3, itemHeight)
-			end;
+			end,
 			SetCommand = function(self)
 				self:diffuse(getMainColor("highlight"))
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Bold")..{
@@ -494,7 +494,7 @@ local function playlistList()
 				self:xy(20,0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
-			end;
+			end,
 			SetCommand = function(self)
 				local msd = playlist:GetAverageRating()
 				self:settextf("%5.2f",playlist:GetAverageRating())
@@ -507,26 +507,26 @@ local function playlistList()
 				self:xy(40,-6):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("%s",playlist:GetName())
 			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Name = "Size";
+			Name = "Size",
 			InitCommand  = function(self)
 				self:xy(40,5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("%s Steps",#playlist:GetStepslist())
 			end
 		}
 
 		t[#t+1] = quadButton(7) .. {
-			Name = "Add";
+			Name = "Add",
 			InitCommand = function(self)
 				self:xy(itemWidth-5-20, 0)
 				if song and steps then
@@ -535,7 +535,7 @@ local function playlistList()
 					self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
 				end
 				self:zoomto(40, 17)
-			end;
+			end,
 			TopPressedCommand = function(self)
 				if not (steps and song) or hidden then
 					return
@@ -548,7 +548,7 @@ local function playlistList()
 				self:diffusealpha(1)
 				self:smooth(0.3)
 				self:diffusealpha(0.8)
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
@@ -557,7 +557,7 @@ local function playlistList()
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
 				self:settextf("Add")
-			end;
+			end
 		}
 
 		return t
@@ -583,17 +583,17 @@ local function playlistList()
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Available Playlists")
-		end;
+		end
 	}
 
 	-- Add playlist button
 	t[#t+1] = quadButton(6) .. {
-		Name = "Add Button";
+		Name = "Add Button",
 		InitCommand = function(self)
 			self:xy(frameWidth-50-10, itemY - 30)
 			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 			self:zoomto(100, 20)
-		end;
+		end,
 		TopPressedCommand = function(self)
 			-- Doesn't work yet outside of ScreenSelectMusic apparently.
 			addPlaylist()
@@ -601,7 +601,7 @@ local function playlistList()
 			self:diffusealpha(1)
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
-		end;
+		end
 	}
 
 	-- Add playlist button text
@@ -611,7 +611,7 @@ local function playlistList()
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("New Playlist")
-		end;
+		end
 	}
 
 	for i=1, maxItems do
@@ -646,7 +646,7 @@ local function playlistStepsList()
 				self:diffusealpha(0)
 				self:xy(itemX, itemY + (i-1)*(itemHeight+itemYSpacing)-10)
 				self:playcommand("Hide")
-			end;
+			end,
 			ShowCommand = function(self)
 				hidden = false
 				self:y(itemY + (i-1)*(itemHeight+itemYSpacing)-10)
@@ -656,13 +656,13 @@ local function playlistStepsList()
 				self:easeOut(1)
 				self:y(itemY + (i-1)*(itemHeight+itemYSpacing))
 				self:diffusealpha(1)
-			end;
+			end,
 			HideCommand = function(self)
 				song = nil
 				steps = nil
 				hidden = true
 				self:y(SCREEN_HEIGHT*10)
-			end;
+			end,
 			ShowPlaylistDetailMessageCommand = function(self, params)
 				local key = params.playlist:GetChartkeys()[stepsIndex]
 				if not key then
@@ -673,13 +673,13 @@ local function playlistStepsList()
 
 				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 				self:playcommand("Show")
-			end;
+			end,
 			HidePlaylistDetailMessageCommand = function(self)
 				self:stoptweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
 				self:queuecommand("Hide")
-			end;
+			end,
 			UpdateStepsListMessageCommand = function(self)
 				if not detail then
 					return
@@ -702,7 +702,7 @@ local function playlistStepsList()
 
 				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 				self:playcommand("Show")
-			end;
+			end
 		}
 
 		t[#t+1] = quadButton(6) .. {
@@ -710,16 +710,16 @@ local function playlistStepsList()
 				self:halign(0)
 				self:diffusealpha(0.2)
 				self:zoomto(itemWidth, itemHeight)
-			end;
+			end,
 			TopPressedCommand = function(self, params)
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
 				self:diffusealpha(0.2)
-			end;
+			end,
 			SetCommand = function(self)
 				self:diffusealpha(0.2)
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
@@ -727,21 +727,21 @@ local function playlistStepsList()
 				self:xy(-10,0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("%d", stepsIndex)
-			end;
+			end
 		}
 
 		t[#t+1] = getClearTypeLampQuad(3, itemHeight)..{
 			InitCommand = function(self)
 				self:halign(0)
 				self:diffusealpha(0.8)
-			end;
+			end,
 			SetCommand = function(self)
 				local scoreList = getScoreTable(pn, '1.0x', steps)
 				self:playcommand("SetClearType", {clearType = getHighestClearType(pn,steps,scoreList)})
-			end;
+			end
 		}
 
 		t[#t+1] = LoadFont("Common Bold")..{
@@ -749,7 +749,7 @@ local function playlistStepsList()
 				self:xy(20,0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
-			end;
+			end,
 			SetCommand = function(self)
 				local msd = steps:GetMSD(1, 1)
 				self:settextf("%5.2f", msd)
@@ -762,30 +762,30 @@ local function playlistStepsList()
 				self:xy(40,-6):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("%s",song:GetMainTitle())
 			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Name = "Size";
+			Name = "Size",
 			InitCommand  = function(self)
 				self:xy(40,5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-			end;
+			end,
 			SetCommand = function(self)
 				self:settextf("// %s",song:GetDisplayArtist())
 			end
 		}
 
 		t[#t+1] = quadButton(7) .. {
-			Name = "Remove";
+			Name = "Remove",
 			InitCommand = function(self)
 				self:xy(itemWidth-5-20, 0)
 				self:zoomto(40, 17)
-			end;
+			end,
 			TopPressedCommand = function(self)
 				if not playlist or hidden then
 					return
@@ -798,7 +798,7 @@ local function playlistStepsList()
 				self:diffusealpha(1)
 				self:smooth(0.3)
 				self:diffusealpha(0.8)
-			end;
+			end,
 			SetCommand = function(self)
 				if song and steps then
 					self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
@@ -814,15 +814,15 @@ local function playlistStepsList()
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
 				self:settextf("Remove")
-			end;
+			end
 		}
 
 		t[#t+1] = quadButton(7) .. {
-			Name = "Play";
+			Name = "Play",
 			InitCommand = function(self)
 				self:xy(itemWidth-10-60, 0)
 				self:zoomto(40, 17)
-			end;
+			end,
 			TopPressedCommand = function(self)
 				if not playlist or hidden then
 					return
@@ -835,7 +835,7 @@ local function playlistStepsList()
 				self:diffusealpha(1)
 				self:smooth(0.3)
 				self:diffusealpha(0.8)
-			end;
+			end,
 			SetCommand = function(self)
 				if song and steps then
 					self:diffuse(color(colorConfig:get_data().main.positive)):diffusealpha(0.8)
@@ -851,7 +851,7 @@ local function playlistStepsList()
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
 				self:settextf("Play")
-			end;
+			end
 		}
 
 		return t
@@ -861,12 +861,12 @@ local function playlistStepsList()
 		ShowPlaylistDetailMessageCommand = function(self, params)
 			playlist = params.playlist
 			maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
-		end;
+		end,
 		UpdateStepsListMessageCommand = function(self)
 			if playlist then
 				maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
 			end
-		end;
+		end
 	}
 
 
@@ -884,7 +884,7 @@ local t = Def.ActorFrame{
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
 		MESSAGEMAN:Broadcast("UpdateList")
-	end;
+	end
 }
 
 t[#t+1] = playlistInfo() .. {

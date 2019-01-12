@@ -10,7 +10,7 @@ local t = Def.ActorFrame{
 			local params = {width = 0, height = 0, song = nil, steps = nil, noterow = {}, offset = {}}
 			self:playcommand("Update", params) end
 		)
-	end;
+	end
 }
 
 t[#t+1] = Def.Quad{
@@ -18,10 +18,10 @@ t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:halign(0):valign(0)
 		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
-	end;
+	end,
 	UpdateCommand = function(self, params)
 		self:zoomto(params.width, params.height)
-	end;
+	end
 }
 
 t[#t+1] = Def.Quad{
@@ -29,11 +29,11 @@ t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:halign(0):valign(0)
 		self:diffusealpha(0.4)
-	end;
+	end,
 	UpdateCommand = function(self, params)
 		self:xy(0,params.height/2)
 		self:zoomto(params.width,1)
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
@@ -94,7 +94,7 @@ t[#t+1] = Def.ActorMultiVertex{
 
 		self:SetVertices(verts)
 		self:SetDrawState{Mode="DrawMode_Quads", First = 1, Num = #verts}
-	end;
+	end
 }
 
 

@@ -17,13 +17,13 @@ local outputHeight = THEME:GetMetric("ScreenNetSelectBase","ChatOutputLines")*16
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
 		self:xy(inputX-border,inputY-border):zoomto(inputWidth+border*2,inputHeight+border*2):halign(0):valign(0):diffuse(color("#00000099"))
-	end;
+	end
 }
 
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
 		self:xy(outputX-border,outputY-border):zoomto(outputWidth+border*2,outputHeight+border*2):halign(0):valign(0):diffuse(color("#00000099"))
-	end;
+	end
 }
 
 return t

@@ -237,7 +237,7 @@ function getUsedRates(rtTable)
 	if rtTable ~= nil then
 		for k,v in pairs(rtTable) do
 			rates[#rates+1] = k
-		end;
+		end
 		table.sort(rates,function(a,b) a=a:gsub("x","") b=b:gsub("x","") return a<b end)
 		for i=1,#rates do
 			if rates[i] == "1.0x" or rates[i] == "All" then
@@ -323,11 +323,11 @@ function getBestMissCount(pn,ignore, rate)
 				end
 			end
 			i = i+1
-		end;
-	end;
+		end
+	end
 
 	return bestScore
-end;
+end
 
 function getBestScore(pn, ignore, rate, percent)
 	if not rate then rate = "1.0x" end

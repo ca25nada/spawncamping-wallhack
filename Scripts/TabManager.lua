@@ -23,12 +23,12 @@ function TAB.makeTabActors(tab)
 				self:zoomto(tab.width, tab.height)
 				self:x(tab.width*(i-1))
 				self:diffuse(color("#333333"))
-			end;
+			end,
 			TopPressedCommand = function(self, params)
 				if params.input == "DeviceButton_left mouse button" then
 					MESSAGEMAN:Broadcast("TabPressed",{name = v})
 				end
-			end;
+			end
 		}
 
 		t[#t+1] = quadButton(3)..{
@@ -37,7 +37,7 @@ function TAB.makeTabActors(tab)
 			self:zoomto(tab.width, tab.height)
 			self:x(tab.width*(i-1))
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			if params.input == "DeviceButton_left mouse button" then
 				MESSAGEMAN:Broadcast("TabPressed",{name = v})
@@ -46,7 +46,7 @@ function TAB.makeTabActors(tab)
 				self:smooth(0.3)
 				self:diffusealpha(0)
 			end
-		end;
+		end
 	}
 
 		t[#t+1] = LoadFont("Common Bold") .. {
@@ -54,7 +54,7 @@ function TAB.makeTabActors(tab)
 				self:x((tab.width/2)+(tab.width*(i-1)))
 				self:zoom(0.4)
 				self:settext(v)
-			end;
+			end
 		}
 	end
 

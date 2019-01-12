@@ -16,13 +16,13 @@ t[#t+1] = Def.Quad{
 t[#t+1] = LoadActor("avatar") .. {
 	InitCommand = function(self)
 		self:xy(50,0)
-	end;
+	end
 }
 
 t[#t+1] = LoadActor("expbar") .. {
 	InitCommand = function(self)
 		self:xy(100,5)
-	end;
+	end
 }
 
 
@@ -41,10 +41,10 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:zoom(0.4)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.4)
 		self:queuecommand('Set')
-	end;
+	end,
 	SetCommand = function(self)
 		self:settext("Update")
-	end;
+	end
 }
 
 t[#t+1] = quadButton(3)..{
@@ -57,7 +57,7 @@ t[#t+1] = quadButton(3)..{
 		else
 			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 		end
-	end;
+	end,
 
 	-- Login
 	StartLoginCommand = function(self)
@@ -69,7 +69,7 @@ t[#t+1] = quadButton(3)..{
 
 		easyInputStringWithFunction("Password:", 50, true, password)
 		easyInputStringWithFunction("Username:",50, false, username)
-	end;
+	end,
 
 	-- Save config upon successful login
 	LoginMessageCommand = function(self)
@@ -79,12 +79,12 @@ t[#t+1] = quadButton(3)..{
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
 		SCREENMAN:SystemMessage("Login Successful!")
-	end;
+	end,
 
 	-- Do nothing on failed login
 	LoginFailedMessageCommand = function(self)
 		SCREENMAN:SystemMessage("Login Failed!")
-	end;
+	end,
 
 	-- delete config upon logout
 	StartLogoutCommand = function(self)
@@ -93,7 +93,7 @@ t[#t+1] = quadButton(3)..{
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
 		DLMAN:Logout()
-	end;
+	end,
 
 	LogOutMessageCommand=function(self)
 		self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
@@ -111,7 +111,7 @@ t[#t+1] = quadButton(3)..{
 		self:diffusealpha(1)
 		self:smooth(0.3)
 		self:diffusealpha(0.8)
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Bold")..{
@@ -124,11 +124,11 @@ t[#t+1] = LoadFont("Common Bold")..{
 		else
 			self:settext("Login")
 		end
-	end;
+	end,
 
 	LoginMessageCommand = function(self)
 		self:settext("Logout")
-	end;
+	end,
 
 	LogOutMessageCommand=function(self)
 		self:settext("Login")
@@ -145,9 +145,9 @@ t[#t+1] = LoadFont("Common BLarge")..{
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:queuecommand('Set')
-	end;
-	LoginMessageCommand = function(self) self:queuecommand('Set') end;
-	LogOutMessageCommand = function(self) self:queuecommand('Set') end;
+	end,
+	LoginMessageCommand = function(self) self:queuecommand('Set') end,
+	LogOutMessageCommand = function(self) self:queuecommand('Set') end,
 
 	SetCommand = function(self)
 		local text = ""
@@ -159,7 +159,7 @@ t[#t+1] = LoadFont("Common BLarge")..{
 		end
 
 		self:settext(text)
-	end;
+	end
 }
 
 return t

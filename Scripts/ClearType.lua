@@ -236,8 +236,8 @@ function getHighestClearType(pn,steps,scoreList,ignore)
 				hScore = scoreList[i]
 				if hScore ~= nil then
 					highest = math.min(highest,getClearLevel(pn,steps,hScore))
-				end;
-			end;
+				end
+			end
 			i = i+1
 		end
 	end
@@ -249,25 +249,25 @@ function getClearTypeLampQuad(width, height)
 	local t = Def.ActorFrame{
 		SetClearTypeCommand = function(self, params)
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set", params) end)
-		end;
+		end
 	}
 
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:zoomto(width, height)
-		end;
+		end,
 		SetCommand = function(self, params)
 			if params then
 				self:diffuse(getClearTypeColor(params.clearType))
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:zoomto(width, height)
-		end;
+		end,
 		SetCommand = function(self, params)
 			if not params then
 				return
@@ -284,7 +284,7 @@ function getClearTypeLampQuad(width, height)
 				self:effectcolor1(color("1,1,1,0"))
 				self:effecttiming(2,1,0,0)
 			end
-		end;
+		end
 	}
 
 	return t

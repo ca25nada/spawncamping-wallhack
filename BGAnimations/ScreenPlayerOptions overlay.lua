@@ -7,8 +7,8 @@ local borderWidth = 4
 
 
 local t = Def.ActorFrame{
-	Name="PlayerAvatar";
-};
+	Name="PlayerAvatar"
+}
 
 local profileP1
 local profileP2
@@ -41,7 +41,7 @@ t[#t+1] = Def.Actor{
 
 	BeginCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	SetCommand=function(self)
 		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
@@ -59,27 +59,27 @@ t[#t+1] = Def.Actor{
 				playCountP1 = 0
 				playTimeP1 = 0
 				noteCountP1 = 0
-			end; 
+			end
 		else
 			profileNameP1 = "No Profile"
 			playCountP1 = 0
 			playTimeP1 = 0
 			noteCountP1 = 0
-		end;
-	end;
+		end
+	end,
 	PlayerJoinedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	PlayerUnjoinedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end
 }
 
 -- P2 Avatar
 t[#t+1] = Def.Actor{
 	BeginCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	SetCommand=function(self)
 		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
 			profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
@@ -97,93 +97,93 @@ t[#t+1] = Def.Actor{
 				playCountP2 = 0
 				playTimeP2 = 0
 				noteCountP2 = 0
-			end;
+			end
 		else
 			profileNameP2 = "No Profile"
 			playCountP2 = 0
 			playTimeP2 = 0
 			noteCountP2 = 0
-		end;
-	end;
+		end
+	end,
 	PlayerJoinedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	PlayerUnjoinedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end
 }
 
 
 t[#t+1] = Def.ActorFrame{
-	Name="Avatar"..PLAYER_1;
+	Name="Avatar"..PLAYER_1,
 	BeginCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	SetCommand=function(self)
 		if profileP1 == nil then
 			self:visible(false)
 		else
 			self:visible(true)
-		end;
-	end;
+		end
+	end,
 	PlayerJoinedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	PlayerUnjoinedMessageCommand=function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 
 	Def.Sprite {
-		Name="Image";
+		Name="Image",
 		InitCommand=function(self)
 			self:visible(true):halign(0):valign(0):xy(AvatarXP1,AvatarYP1)
-		end;
+		end,
 		BeginCommand=function(self)
 			self:queuecommand("ModifyAvatar")
-		end;
+		end,
 		PlayerJoinedMessageCommand=function(self)
 			self:queuecommand("ModifyAvatar")
-		end;
+		end,
 		PlayerUnjoinedMessageCommand=function(self)
 			self:queuecommand("ModifyAvatar")
-		end;
+		end,
 		ModifyAvatarCommand=function(self)
-			self:finishtweening();
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(PLAYER_1));
+			self:finishtweening()
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(PLAYER_1))
 			self:zoomto(30,30)
-		end;
-	};
+		end
+	},
 	LoadFont("Common Normal") .. {
 		InitCommand=function(self)
 			self:xy(AvatarXP1+33,AvatarYP1+6):halign(0):zoom(0.45)
-		end;
+		end,
 		BeginCommand=function(self)
 			self:queuecommand("Set")
-		end;
+		end,
 		SetCommand=function(self)
 			self:settext(profileNameP1.."'s Scroll Speed:")
-		end;
+		end,
 		PlayerJoinedMessageCommand=function(self)
 			self:queuecommand("Set")
-		end;
+		end,
 		PlayerUnjoinedMessageCommand=function(self)
 			self:queuecommand("Set")
-		end;
-	};
+		end
+	},
 	LoadFont("Common Normal") .. {
 		InitCommand=function(self)
 			self:xy(AvatarXP1+33,AvatarYP1+19):halign(0):zoom(0.40)
-		end;
+		end,
 		BeginCommand=function(self)
 			local speed, mode= GetSpeedModeAndValueFromPoptions(PLAYER_1)
 			self:playcommand("SpeedChoiceChanged", {pn= PLAYER_1, mode= mode, speed= speed})
-		end;
+		end,
 		PlayerJoinedMessageCommand=function(self)
 			self:queuecommand("Set")
-		end;
+		end,
 		PlayerUnjoinedMessageCommand=function(self)
 			self:queuecommand("Set")
-		end;
+		end,
 		SpeedChoiceChangedMessageCommand=function(self,param)
 			if param.pn == PLAYER_1 then
 				local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Current'):MusicRate() or 1
@@ -210,108 +210,7 @@ t[#t+1] = Def.ActorFrame{
 				end
 				self:settext(text)
 			end
-		end;
-	}
-}
-
--- P2 Avatar
-t[#t+1] = Def.ActorFrame{
-	Name="Avatar"..PLAYER_2;
-	BeginCommand=function(self)
-		self:queuecommand("Set")
-	end;
-	SetCommand=function(self)
-		if profileP2 == nil then
-			self:visible(false)
-		else
-			self:visible(true)
-		end;
-	end;
-	PlayerJoinedMessageCommand=function(self)
-		self:queuecommand("Set")
-	end;
-	PlayerUnjoinedMessageCommand=function(self)
-		self:queuecommand("Set")
-	end;
-
-	Def.Sprite {
-		Name="Image";
-		InitCommand=function(self)
-			self:visible(true):halign(0):valign(0):xy(AvatarXP2,AvatarYP2)
-		end;
-		BeginCommand=function(self)
-			self:queuecommand("ModifyAvatar")
-		end;
-		PlayerJoinedMessageCommand=function(self)
-			self:queuecommand("ModifyAvatar")
-		end;
-		PlayerUnjoinedMessageCommand=function(self)
-			self:queuecommand("ModifyAvatar")
-		end;
-		ModifyAvatarCommand=function(self)
-			self:finishtweening();
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(PLAYER_2));
-			self:zoomto(30,30)
-		end;	
-	};
-	LoadFont("Common Normal") .. {
-		InitCommand=function(self)
-			self:xy(AvatarXP2-3,AvatarYP2+7):halign(1):zoom(0.45)
-		end;
-		BeginCommand=function(self)
-			self:queuecommand("Set")
-		end;
-		SetCommand=function(self)
-			self:settext(profileNameP2.."'s Scroll Speed:")
-		end;
-		PlayerJoinedMessageCommand=function(self)
-			self:queuecommand("Set")
-		end;
-		PlayerUnjoinedMessageCommand=function(self)
-			self:queuecommand("Set")
-		end;
-	};
-	LoadFont("Common Normal") .. {
-		InitCommand=function(self)
-			self:xy(AvatarXP2-3,AvatarYP2+19):halign(1):zoom(0.45)
-		end;
-		BeginCommand=function(self)
-			local speed, mode= GetSpeedModeAndValueFromPoptions(PLAYER_2)
-			self:playcommand("SpeedChoiceChanged", {pn= PLAYER_2, mode= mode, speed= speed})
-		end;
-		PlayerJoinedMessageCommand=function(self)
-			self:queuecommand("Set")
-		end;
-		PlayerUnjoinedMessageCommand=function(self)
-			self:queuecommand("Set")
-		end;
-		SpeedChoiceChangedMessageCommand=function(self,param)
-			if param.pn == PLAYER_2 then
-				local text = ""
-				local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Current'):MusicRate() or 1
-				if param.mode == "x" then
-					if not bpms[1] then
-						text = "??? - ???"
-					elseif bpms[1] == bpms[2] then
-						text = math.round(bpms[1]*rate*param.speed/100)
-					else
-						text = string.format("%d - %d",math.round(bpms[1]*rate*param.speed/100),math.round(bpms[2]*rate*param.speed/100))
-					end
-				elseif param.mode == "C" then
-					text = param.speed
-				else
-					if not bpms[1] then
-						text = "??? - "..param.speed
-					elseif bpms[1] == bpms[2] then
-						text = param.speed
-					else
-						local factor = param.speed/bpms[2]
-						text = string.format("%d - %d",math.round(bpms[1]*factor),param.speed)
-					end
-				end
-				self:settext(text)
-			end
-		end;
+		end
 	}
 }
 

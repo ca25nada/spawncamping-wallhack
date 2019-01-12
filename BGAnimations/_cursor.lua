@@ -7,10 +7,10 @@ local curIndex = 0
 
 function cursorClick(index)
 	return LoadActor(THEME:GetPathG("","_circle")) .. {
-		Name="CursorClick";
+		Name="CursorClick",
 		InitCommand=function(self)
 			self:diffusealpha(0)
-		end;
+		end,
 		MouseLeftClickMessageCommand=function(self)
 			if index == curIndex then
 				self:finishtweening()
@@ -21,12 +21,12 @@ function cursorClick(index)
 				self:diffusealpha(0)
 				self:zoom(1)
 			end
-		end;
+		end
 	}
 end
 
 local t = Def.ActorFrame{
-	Name="Cursor";
+	Name="Cursor"
 }
 
 for i=0,maxChild do
@@ -34,32 +34,32 @@ for i=0,maxChild do
 end
 
 t[#t+1] = Def.Quad{
-	Name="Cursor";
+	Name="Cursor",
 	InitCommand=function(self)
 		self:xy(0,0):zoomto(4,4):rotationz(45)
-	end;
+	end,
 	MouseLeftClickMessageCommand=function(self)
 		curIndex = (curIndex+1)%20
 	end
-};
+}
 
 local function Update(self)
 	t.InitCommand=function(self)
 		self:SetUpdateFunction(Update)
-	end;
+	end
     
     if not GHETTOGAMESTATE:isWindowed() then
    		self:GetChild("Cursor"):xy(INPUTFILTER:GetMouseX(),INPUTFILTER:GetMouseY())
    		self:GetChild("Cursor"):visible(true)
    	else
    		self:GetChild("Cursor"):visible(false)
-   	end;
+   	end
 
    	return false
 
-end; 
+end
 t.InitCommand=function(self)
 	self:SetUpdateFunction(Update)
-end;
+end
 
 return t

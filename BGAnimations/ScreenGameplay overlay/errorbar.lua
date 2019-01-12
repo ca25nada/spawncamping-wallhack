@@ -32,10 +32,10 @@ local currentbar = 1 -- Index to be updated
 
 local function proTimingTicks(pn,index)
 	return Def.Quad{
-		Name = tostring(index);
+		Name = tostring(index),
 		InitCommand = function(self)
 			self:zoomto(tickWidth,frameHeight):diffusealpha(0)
-		end;
+		end,
 		UpdateTickCommand = function(self,params)
 			local enumVal = Enum.Reverse(TapNoteScore)[params.TapNoteScore]
 
@@ -63,7 +63,7 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=function(self)
 			self:zoomto(frameWidth,frameHeight):diffuse(color("#666666")):diffusealpha(backgroundOpacity)
-		end;
+		end
 	}
 
 	for i=1,barcount do
@@ -86,30 +86,30 @@ if enabled then
 	t[#t+1] = Def.Quad{
 		InitCommand=function(self)
 			self:zoomto(2,frameHeight):diffuse(color("#FFFFFF")):diffusealpha(0.5)
-		end;
+		end
 	}
 
 	if not bareBone then
 		t[#t+1] = LoadFont("Common Normal") .. {
 	        InitCommand=function(self)
 	        	self:x(frameWidth/4):zoom(0.35)
-	        end;
+	        end,
 	        BeginCommand=function(self)
 	        	self:settext("Late"):diffusealpha(0):smooth(0.5):diffusealpha(0.5):sleep(1.5):smooth(0.5):diffusealpha(0)
-	        end;
+	        end
 	    }
 
 	    t[#t+1] = LoadFont("Common Normal") .. {
 	        InitCommand=function(self)
 	        	self:x(-frameWidth/4):zoom(0.35)
-	        end;
+	        end,
 	        BeginCommand=function(self)
 	        	self:settext("Early"):diffusealpha(0):smooth(0.5):diffusealpha(0.5):sleep(1.5):smooth(0.5):diffusealpha(0)
-	        end;
+	        end
 	    }
 	end
 
-end;
+end
 
 
 

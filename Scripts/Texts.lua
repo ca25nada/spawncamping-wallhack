@@ -74,7 +74,7 @@ function getShortDifficulty(diff)
 	else
 		return "ED"
 	end
-end;
+end
 
 function getDifficulty(diff)
 	local text = DiffName[diff]
@@ -83,31 +83,31 @@ function getDifficulty(diff)
 	else
 		return "Edit"
 	end
-end;
+end
 
 function getGradeStrings(diff)
 	if diff ~= nil then
 		return gradeString[diff] or diff
 	end
-end;
+end
 
 function getJudgeStrings(judge)
 	if judge ~= nil then
 		return judgeString[judge] or judge
 	end
-end;
+end
 
 
 function getShortJudgeStrings(judge)
 	if judge ~= nil then
 		return shortJudgeString[judge] or judge
 	end
-end;
+end
 
 function getScoreTypeText(scoreType)
 	if scoreType == 0 then
 		return scoreTypeText[themeConfig:get_data().global.DefaultScoreType]
 	else
 		return scoreTypeText[scoreType]
-	end;
-end;
+	end
+end
