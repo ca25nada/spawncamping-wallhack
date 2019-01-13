@@ -19,37 +19,29 @@ local song
 local course
 
 local steps = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local trail = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local profile = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local topScore = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local hsTable = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local function generalFrame(pn)
 	local t = Def.ActorFrame{
 		SetCommand = function(self)
 			self:xy(frameX,frameY)
-			if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-				self:x(SCREEN_WIDTH-frameX)
-			end
 			self:visible(GAMESTATE:IsPlayerEnabled(pn))
 		end,
 
@@ -68,7 +60,6 @@ local function generalFrame(pn)
 		PlayerUnjoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
 		CurrentSongChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
 		CurrentStepsP1ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
-		CurrentStepsP2ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
 		CurrentRateChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end
 	}
 
@@ -579,8 +570,5 @@ local function generalFrame(pn)
 end
 
 t[#t+1] = generalFrame(PLAYER_1)
-t[#t+1] = generalFrame(PLAYER_2)
-
-
 
 return t

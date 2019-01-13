@@ -16,10 +16,6 @@ local graphPos = {  -- Position of the NPS graph
 	PlayerNumber_P1 = {
 		X = 0,
 		Y = 100
-	},
-	PlayerNumber_P2 = {
-		X = SCREEN_WIDTH-graphWidth,
-		Y = 100
 	}
 }
 
@@ -27,40 +23,31 @@ local textPos = { -- Position of the NPS text
 	PlayerNumber_P1 = {
 		X = 5,
 		Y = 84
-	},
-	PlayerNumber_P2 = {
-		X = SCREEN_WIDTH-graphWidth,
-		Y = 84
 	}
 }
 
 local enabled = {
 	NPSDisplay = {
 		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSDisplay,
-		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSDisplay
 	},
 	NPSGraph = {
 		PlayerNumber_P1 = GAMESTATE:IsPlayerEnabled(PLAYER_1) and playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).NPSGraph,
-		PlayerNumber_P2 = GAMESTATE:IsPlayerEnabled(PLAYER_2) and playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).NPSGraph
 	}
 }
 
 local npsWindow = {
-	PlayerNumber_P1 = maxWindow,
-	PlayerNumber_P2 = maxWindow,
+	PlayerNumber_P1 = maxWindow
 }
 
 -- This table holds the timestamp of each judgment for each player.
 -- being considered for the moving average and the size of the chord.
 -- (let's just call this notes for simplicity)
 local noteTable = {
-	PlayerNumber_P1 = {},
-	PlayerNumber_P2 = {},
+	PlayerNumber_P1 = {}
 }
 
 local lastJudgment = {
-	PlayerNumber_P1 = 'TapNoteScore_None',
-	PlayerNumber_P2 = 'TapNoteScore_None'
+	PlayerNumber_P1 = 'TapNoteScore_None'
 }
 
 -- Total sum of notes inside the moving average window for each player.
@@ -68,13 +55,11 @@ local lastJudgment = {
 -- This allows us to get the total sum of notes that were hit without
 -- iterating through the entire noteTable to get the sum. 
 local noteSum = {
-	PlayerNumber_P1 = 0,
-	PlayerNumber_P2 = 0, 
+	PlayerNumber_P1 = 0 
 }
 
 local peakNPS = {
-	PlayerNumber_P1 = 0,
-	PlayerNumber_P2 = 0, 
+	PlayerNumber_P1 = 0
 }
 
 
@@ -210,12 +195,6 @@ local function npsDisplay(pn)
 			Name="Text", -- sets the name of this actor as "Text". this is a child of the actor "t".
 			InitCommand=function(self)
 				self:x(textPos[pn].X):y(textPos[pn].Y):halign(0):zoom(0.40):halign(0):valign(0):shadowlength(1):settext("0.0 NPS")
-			end,
-			BeginCommand=function(self)
-				if pn == PLAYER_2 then
-					self:x(SCREEN_WIDTH-5)
-					self:halign(1)
-				end
 			end
 		}
 	end
@@ -310,8 +289,7 @@ end
 
 local t = Def.ActorFrame{
 	OnCommand=function(self)
-		if enabled.NPSDisplay[PLAYER_1] or enabled.NPSDisplay[PLAYER_2] or
-		 	enabled.NPSGraph[PLAYER_1] or enabled.NPSGraph[PLAYER_2] then
+		if enabled.NPSDisplay[PLAYER_1] or enabled.NPSGraph[PLAYER_1] then
 			self:SetUpdateFunction(Update)
 		end
 	end

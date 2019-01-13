@@ -7,18 +7,12 @@ local t = Def.ActorFrame{
 local bareBone = isBareBone()
 
 local profileP1
-local profileP2
 
 local profileNameP1 = "No Profile"
-local profileNameP2 = "No Profile"
 
 local avatarPosition = {
 	PlayerNumber_P1 = {
 		X = 10,
-		Y = 10
-	},
-	PlayerNumber_P2 = {
-		X = SCREEN_WIDTH-60,
 		Y = 10
 	}
 }

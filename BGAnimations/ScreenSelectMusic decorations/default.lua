@@ -44,26 +44,6 @@ t[#t+1] = Def.ActorFrame {
 			}
 		},
 		CursorP2 = Def.ActorFrame {
-			InitCommand=function(self)
-				self:player(PLAYER_2):diffusealpha(0.6)
-			end,
-			PlayerJoinedMessageCommand=function(self, params)
-				if params.Player == PLAYER_2 then
-					self:visible(true)
-					self:zoom(0):bounceend(1):zoom(1)
-				end
-			end,
-			PlayerUnjoinedMessageCommand=function(self, params)
-				if params.Player == PLAYER_2 then
-					self:visible(true)
-					self:zoom(0):bounceend(1):zoom(1)
-				end
-			end,
-			Def.Quad{
-				InitCommand=function(self)
-					self:zoomto(65,65):sleep(0.5):diffuseshift():effectperiod(1):effectcolor2(Alpha(PlayerColor(PLAYER_2), 0.5)):effectcolor1(PlayerColor(PLAYER_2))
-				end
-			}
 		},
 		CursorP1Frame = Def.Actor{
 			ChangeCommand=function(self)
@@ -71,9 +51,6 @@ t[#t+1] = Def.ActorFrame {
 			end
 		},
 		CursorP2Frame = Def.Actor{
-			ChangeCommand=function(self)
-				self:stoptweening():easeOut(0.5)
-			end
 		}
 	}
 }

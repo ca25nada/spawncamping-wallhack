@@ -297,24 +297,6 @@ t[#t+1] = Def.ActorFrame{
 			end,
 			children = LoadPlayerStuff(PLAYER_1)
 		},
-		Def.ActorFrame {
-			Name = 'P2Frame',
-			InitCommand=function(self)
-				self:x(SCREEN_CENTER_X+160):y(SCREEN_CENTER_Y)
-			end,
-			OnCommand=function(self)
-				self:zoom(0):bounceend(0.35):zoom(1)
-			end,
-			OffCommand=function(self)
-				self:bouncebegin(0.35):zoom(0)
-			end,
-			PlayerJoinedMessageCommand=function(self,param)
-				if param.Player == PLAYER_2 then
-					self:zoom(1.15):bounceend(0.175):zoom(1.0)
-				end
-			end,
-			children = LoadPlayerStuff(PLAYER_2)
-		},
 		-- sounds
 		LoadActor( THEME:GetPathS("Common","start") )..{
 			StartButtonMessageCommand=function(self)

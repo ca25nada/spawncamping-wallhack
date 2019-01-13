@@ -1,10 +1,7 @@
 local moveUpP1 = false
 local moveDownP1 = false
-local moveUpP2 = false
-local moveDownP2 = false
 
 local lockSpeedP1 = false
-local lockSpeedP2 = false
 
 local laneColor = color(colorConfig:get_data().gameplay.LaneCover)
 
@@ -83,8 +80,6 @@ local t = Def.ActorFrame{
 	CodeMessageCommand = function(self, params)
 		moveDownP1 = false
 		moveUpP1 = false
-		moveDownP2 = false
-		moveUpP2 = false
 		if params.PlayerNumber == PLAYER_1 then
 			if params.Name == "LaneUp" then
 				moveUpP1 = true
@@ -93,16 +88,6 @@ local t = Def.ActorFrame{
 			else
 				moveDownP1 = false
 				moveUpP1 = false
-			end
-		end
-		if params.PlayerNumber == PLAYER_2 then
-			if params.Name == "LaneUp" then
-				moveUpP2 = true
-			elseif params.Name == "LaneDown" then
-				moveDownP2 = true
-			else
-				moveDownP2 = false
-				moveUpP2 = false
 			end
 		end
 		self:playcommand("SavePrefs")

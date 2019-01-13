@@ -1,8 +1,7 @@
 -- STEPMANIA RPG - MINUS THE ROLEPLAY PART
 
 local curExp = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 

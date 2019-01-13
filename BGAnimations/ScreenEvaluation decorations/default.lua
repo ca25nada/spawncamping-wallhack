@@ -151,11 +151,7 @@ local function GraphDisplay( pn )
 			end,
 			BeginCommand=function(self) 
 				local wifeScore = pss:GetHighScore():GetWifeScore()
-				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
-				else
-					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
-				end
+				self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 
 				self:settextf("%.2f%%",math.floor((wifeScore)*10000)/100)
 			end
@@ -171,11 +167,7 @@ local function GraphDisplay( pn )
 				local grade,diff = getNearbyGrade(pn,pss:GetWifeScore()*getMaxNotes(pn)*2,pss:GetGrade())
 				diff = diff >= 0 and string.format("+%0.2f", diff) or string.format("%0.2f", diff)
 				self:settextf("%s %s",THEME:GetString("Grade",ToEnumShortString(grade)),diff)
-				if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
-				else
-					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
-				end
+				self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 			end
 		},
 
@@ -399,10 +391,6 @@ local function scoreBoard(pn)
 			
 			local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
 			self:settextf("%d Notes",notes)
-
-			if GAMESTATE:GetNumPlayersEnabled() == 1 and GAMESTATE:IsPlayerEnabled(PLAYER_2)then
-				self:x(-(SCREEN_CENTER_X*1.65)+(SCREEN_CENTER_X*0.35)+WideScale(get43size(140),140)-5)
-			end
 
 			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())),0.3))
 		end

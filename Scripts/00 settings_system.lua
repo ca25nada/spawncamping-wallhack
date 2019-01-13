@@ -234,7 +234,8 @@ function lua_table_to_string(t, indent, line_pos)
 end
 
 local slot_conversion= {
-	[PLAYER_1]= "ProfileSlot_Player1", [PLAYER_2]= "ProfileSlot_Player2",}
+	[PLAYER_1]= "ProfileSlot_Player1"
+}
 function pn_to_profile_slot(pn)
 	return slot_conversion[pn] or "ProfileSlot_Invalid"
 end

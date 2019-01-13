@@ -20,7 +20,6 @@ local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() -- For relocating gr
 local center1P = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")) -- For relocating graph/judgecount frame
 
 local judgeTypeP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType
-local judgeTypeP2 = playerConfig:get_data(pn_to_profile_slot(PLAYER_2)).JudgeType
 
 
 local spacing = 12 -- Spacing between the judgetypes
@@ -36,22 +35,16 @@ local position = {
 	PlayerNumber_P1 = {
 		X = 20,
 		Y = (SCREEN_HEIGHT*0.62)-5
-	},
-	PlayerNumber_P2 = {
-		X = SCREEN_WIDTH-20-frameWidth,
-		Y = (SCREEN_HEIGHT*0.62)-5
 	}
 }
 
 --adjust for non-widescreen users.
 if ((not center1P) and (not IsUsingWideScreen())) then
 	position.PlayerNumber_P1.X = SCREEN_CENTER_X+20
-	position.PlayerNumber_P2.X = SCREEN_CENTER_X-20-frameWidth
 end
 
 -- tl;dr: if theres no room, don't show.
 local enabled1P = (GAMESTATE:IsPlayerEnabled(PLAYER_1) and judgeTypeP1 ~= 0) and (IsUsingWideScreen() or (GAMESTATE:GetNumPlayersEnabled() == 1 and cols <= 6))
-local enabled2P = (GAMESTATE:IsPlayerEnabled(PLAYER_2) and judgeTypeP2 ~= 0) and (IsUsingWideScreen() or (GAMESTATE:GetNumPlayersEnabled() == 1 and cols <= 6))
 
 --=========================================================================--
 --=========================================================================--
@@ -166,10 +159,6 @@ end
 if enabled1P then
 	t[#t+1] = judgeCounter(PLAYER_1)
 end
-
-if enabled2P then
-	t[#t+1] = judgeCounter(PLAYER_2)
-end	
 
 
 return t

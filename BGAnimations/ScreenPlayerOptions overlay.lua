@@ -11,23 +11,14 @@ local t = Def.ActorFrame{
 }
 
 local profileP1
-local profileP2
 
 local profileNameP1 = "No Profile"
 local playCountP1 = 0
 local playTimeP1 = 0
 local noteCountP1 = 0
 
-local profileNameP2 = "No Profile"
-local playCountP2 = 0
-local playTimeP2 = 0
-local noteCountP2 = 0
-
-
 local AvatarXP1 = 100
 local AvatarYP1 = 50
-local AvatarXP2 = SCREEN_WIDTH-130
-local AvatarYP2 = 50
 
 local bpms = {}
 if GAMESTATE:GetCurrentSong() then
@@ -74,45 +65,6 @@ t[#t+1] = Def.Actor{
 		self:queuecommand("Set")
 	end
 }
-
--- P2 Avatar
-t[#t+1] = Def.Actor{
-	BeginCommand=function(self)
-		self:queuecommand("Set")
-	end,
-	SetCommand=function(self)
-		if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-			profileP2 = GetPlayerOrMachineProfile(PLAYER_2)
-			if profileP2 ~= nil then
-				if profileP2 == PROFILEMAN:GetMachineProfile() then
-					profileNameP2 = "Machine Profile"
-				else
-					profileNameP2 = profileP2:GetDisplayName()
-				end
-				playCountP2 = profileP2:GetTotalNumSongsPlayed()
-				playTimeP2 = profileP2:GetTotalSessionSeconds()
-				noteCountP2 = profileP2:GetTotalTapsAndHolds()
-			else 
-				profileNameP2 = "No Profile"
-				playCountP2 = 0
-				playTimeP2 = 0
-				noteCountP2 = 0
-			end
-		else
-			profileNameP2 = "No Profile"
-			playCountP2 = 0
-			playTimeP2 = 0
-			noteCountP2 = 0
-		end
-	end,
-	PlayerJoinedMessageCommand=function(self)
-		self:queuecommand("Set")
-	end,
-	PlayerUnjoinedMessageCommand=function(self)
-		self:queuecommand("Set")
-	end
-}
-
 
 t[#t+1] = Def.ActorFrame{
 	Name="Avatar"..PLAYER_1,

@@ -19,9 +19,7 @@ local t = Def.ActorFrame{
 	OnCommand = function(self)
 		BUTTON:resetPressedActors()
 
-		for _, pn in pairs({PLAYER_1, PLAYER_2}) do
-			SCREENMAN:set_input_redirected(pn, false)
-		end
+		SCREENMAN:set_input_redirected(PLAYER_1, false)
 
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)

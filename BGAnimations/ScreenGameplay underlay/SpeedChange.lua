@@ -29,8 +29,6 @@ local t = Def.ActorFrame{
 		--Grab actors for the optionlines beside the profile avatar
 		if pn == PLAYER_1 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
 			avatarOption = topScreen:GetChildren().Overlay:GetChildren().Avatars:GetChildren().P1Avatar:GetChildren().P1AvatarOption
-		elseif pn == PLAYER_2 and GAMESTATE:IsPlayerEnabled(PLAYER_2) then
-			avatarOption = topScreen:GetChildren().Overlay:GetChildren().Avatars:GetChildren().P2Avatar:GetChildren().P2AvatarOption
 		end
 
 		--Check type of speedmod used. if something goes wrong, default to xmod.
