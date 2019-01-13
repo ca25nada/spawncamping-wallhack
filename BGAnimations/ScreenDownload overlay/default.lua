@@ -1,6 +1,7 @@
 local top
 
-local packlist = DLMAN:GetPackList()
+local initpacklist = PackList:new()
+local packlist = initpacklist:GetPackTable()
 local downloading = DLMAN:GetDownloadingPacks()
 
 -- make lookup table for installed packs
