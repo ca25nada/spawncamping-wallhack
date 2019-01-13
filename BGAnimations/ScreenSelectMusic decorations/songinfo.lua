@@ -36,6 +36,7 @@ local t = Def.ActorFrame{
 	DisplayLanguageChangedMessageCommand = function(self) self:queuecommand("Set") end
 }
 
+-- The frame around the banner
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2,120)
@@ -45,6 +46,7 @@ t[#t+1] = Def.Quad{
 	end
 }
 
+-- This makes the banner a button to access song info
 t[#t+1] = quadButton(1)..{
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2,120)
@@ -85,6 +87,7 @@ t[#t+1] = Def.Banner{
 	end
 }
 
+-- The CD title
 t[#t+1] = Def.Sprite {
 	Name = "CDTitle",
 	InitCommand = function(self)
@@ -133,6 +136,7 @@ t[#t+1] = Def.Sprite {
 	end
 }
 
+-- Label for how many stages we have played
 t[#t+1] = LoadFont("Common Bold") .. {
 	Name="curStage",
 	InitCommand = function(self)
@@ -143,14 +147,7 @@ t[#t+1] = LoadFont("Common Bold") .. {
 		self:diffuse(color(colorConfig:get_data().selectMusic.BannerText))
 	end,
 	SetCommand = function(self)
-		if GAMESTATE:IsEventMode() then
-			self:settextf("%s Stage",FormatNumberAndSuffix(GAMESTATE:GetCurrentStageIndex()+1))
-		else
-			if topScreen then
-				self:settextf("%s Stage",StageToLocalizedString(GAMESTATE:GetCurrentStage()))
-				self:diffuse(StageToColor(GAMESTATE:GetCurrentStage()))
-			end
-		end
+		self:settextf("%s Stage",FormatNumberAndSuffix(GAMESTATE:GetCurrentStageIndex()+1))
 	end
 }
 
@@ -198,7 +195,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
 }
 
-
+-- Gradient over banner when rate is not 1.0
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2,120+capWideScale(get43size(60),60))
