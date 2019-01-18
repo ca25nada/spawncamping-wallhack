@@ -45,6 +45,13 @@ local function input(event)
 			movePage(1)
 		end
 
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			MESSAGEMAN:Broadcast("WheelUpSlow")
+		end
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			MESSAGEMAN:Broadcast("WheelDownSlow")
+		end
+
 	end
 
 	return false
@@ -137,15 +144,27 @@ local function packList()
 		end
 	}
 
+	-- The background quad for the Packs section
 	t[#t+1] = Def.Quad{
 		InitCommand = function (self)
 			self:zoomto(frameWidth,frameHeight)
 			self:halign(0):valign(0)
 			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
+		end,
+		WheelUpSlowMessageCommand = function(self)
+			if self:isOver() then
+				movePage(-1)
+			end
+		end,
+		WheelDownSlowMessageCommand = function(self)
+			if self:isOver() then
+				movePage(1)
+			end
 		end
 	}
 
+	-- The text in the top left of the Packs section
 	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand  = function(self)
 			self:xy(5, 10)
@@ -233,7 +252,7 @@ local function packList()
 				downloading = DLMAN:GetDownloadingPacks()
 			end,
 			DownloadFailedMessageCommand = function(self, params) -- Download Failed
-				if packlist[packIndex]:GetName() == params.pack:GetName() then 
+				if packlist[packIndex] ~= nil and packlist[packIndex]:GetName() == params.pack:GetName() then 
 					downloading = DLMAN:GetDownloadingPacks()
 					self:GetChild("Status"):playcommand("Set")
 					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
@@ -275,9 +294,9 @@ local function packList()
 				self:zoomto(packItemWidth, packItemHeight)
 			end,
 			TopPressedCommand = function(self)
-				if packlist[packIndex]:IsDownloading() then -- IsDownloading() returns the wrong boolean for some reason.
+				if packlist[packIndex] ~= nil and packlist[packIndex]:IsDownloading() then -- IsDownloading() returns the wrong boolean for some reason.
 					self:GetParent():playcommand("StartDownload")
-				else
+				elseif packlist[packIndex] ~= nil then
 					self:GetParent():playcommand("StopDownload")
 				end
 
