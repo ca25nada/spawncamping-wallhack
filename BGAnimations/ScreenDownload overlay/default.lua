@@ -6,9 +6,12 @@ local downloading = DLMAN:GetDownloadingPacks()
 
 -- make lookup table for installed packs
 local installedPacks = {}
-for k,v in pairs(SONGMAN:GetSongGroupNames()) do
-	installedPacks[v] = true
+local function refreshInstalledPacks()
+	for k,v in pairs(SONGMAN:GetSongGroupNames()) do
+		installedPacks[v] = true
+	end
 end
+refreshInstalledPacks()
 
 local maxItems = 10
 local maxPages = math.ceil(#packlist/maxItems)
@@ -141,7 +144,12 @@ local function packList()
 	local t = Def.ActorFrame{
 		DownloadStatusCommand = function(self, params)
 			self:RunCommandsOnChildren(function(self) self:playcommand("DownloadStatus", params) end)
-		end
+		end,
+		DFRFinishedMessageCommand = function(self) -- Download Finished, a Diff Reload happens (forced by the game)
+			refreshInstalledPacks()
+			downloading = DLMAN:GetDownloadingPacks()
+			MESSAGEMAN:Broadcast("UpdateList")
+		end,
 	}
 
 	-- The background quad for the Packs section
@@ -232,21 +240,14 @@ local function packList()
 			StartDownloadCommand = function(self) -- Start download
 				download = packlist[packIndex]:DownloadAndInstall()
 				downloading = DLMAN:GetDownloadingPacks()
-				self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
-				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
+				if not packExists(packlist[packIndex]:GetName()) then
+					self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
+					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
+				end
 			end,
 			StopDownloadCommand = function(self) -- Stop download
 				download:Stop()
 				downloading = DLMAN:GetDownloadingPacks()
-				self:GetChild("Status"):playcommand("Set")
-				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
-				self:GetChild("Size"):settextf("Download Cancelled")
-			end,
-			FinishDownloadCommand = function(self) -- Download Finished
-				downloading = DLMAN:GetDownloadingPacks()
-				self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.completed)):diffusealpha(0.8)
-				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.completed)):diffusealpha(0.2)
-				self:GetChild("Size"):settextf("Download Complete!")
 			end,
 			PackDownloadedMessageCommand = function(self, params) -- Download Stopped/Finished
 				downloading = DLMAN:GetDownloadingPacks()
@@ -256,7 +257,7 @@ local function packList()
 					downloading = DLMAN:GetDownloadingPacks()
 					self:GetChild("Status"):playcommand("Set")
 					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
-					self:GetChild("Size"):settextf("Download Failed")
+					self:GetChild("Size"):settextf("Download Failed or Cancelled")
 				end
 			end
 		}
@@ -272,6 +273,7 @@ local function packList()
 			end
 		}
 
+		-- The download progress bar (background of the pack buttons)
 		t[#t+1] = Def.Quad{
 			Name = "ProgressBar",
 			InitCommand = function(self)
@@ -286,6 +288,7 @@ local function packList()
 			end
 		}
 
+		-- The pack button
 		t[#t+1] = quadButton(6) .. {
 			Name = "Size",
 			InitCommand = function(self)
@@ -311,6 +314,7 @@ local function packList()
 			end
 		}
 
+		-- Color of the tab for the pack (downloaded/not downloaded)
 		t[#t+1] = Def.Quad{
 			Name = "Status",
 			InitCommand = function(self)
@@ -329,7 +333,7 @@ local function packList()
 			end
 		}
 
-
+		-- MSD average for the pack
 		t[#t+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
 				self:xy(20,0)
@@ -343,6 +347,7 @@ local function packList()
 			end
 		}
 
+		-- Pack name
 		t[#t+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
 				self:xy(40,-6):halign(0)
@@ -351,9 +356,14 @@ local function packList()
 			end,
 			SetCommand = function(self)
 				self:settextf("%s",packlist[packIndex]:GetName())
+
+				-- The pack names can get really long. Set the max width to double the button width
+				-- because not setting it to double the width makes the text half the width ????
+				self:maxwidth(packItemWidth * 2)
 			end
 		}
 
+		-- Pack file size
 		t[#t+1] = LoadFont("Common Normal")..{
 			Name = "Size",
 			InitCommand  = function(self)
@@ -363,7 +373,7 @@ local function packList()
 			end,
 			SetCommand = function(self)
 				if packExists(packlist[packIndex]:GetName()) then
-					self:settext("Downloaded (Or a pack with an identical name exists)")
+					self:settext("Installed (Or a pack with an identical name exists)")
 				else
 					self:settextf("Download %5.2f MB",packlist[packIndex]:GetSize()/1048576)
 				end
