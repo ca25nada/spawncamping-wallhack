@@ -64,18 +64,59 @@ local function sortPacks()
 	end
 end
 
+local curInput = ""
+local inputting = false
 
 local function movePage(n)
-	if n > 0 then 
-		curPage = ((curPage+n-1) % maxPages + 1)
-	else
-		curPage = ((curPage+n+maxPages-1) % maxPages+1)
+	if maxPages > 1 then
+		if n > 0 then 
+			curPage = ((curPage+n-1) % maxPages + 1)
+		else
+			curPage = ((curPage+n+maxPages-1) % maxPages+1)
+		end
 	end
+	MESSAGEMAN:Broadcast("UpdateList")
+end
+
+local function updateFilter()
+	initpacklist:FilterAndSearch(
+		tostring(curInput), 0, 0, 0, 0
+	)
+	packlist = initpacklist:GetPackTable()
+	maxPages = math.ceil(#packlist/maxItems)
 	MESSAGEMAN:Broadcast("UpdateList")
 end
 
 local function input(event)
 	if event.type == "InputEventType_FirstPress" then
+		if inputting then
+			if event.button == "Start" then
+				curInput = ""
+				inputting = false
+				updateFilter()
+			elseif event.button == "Back" then
+				inputting = false
+			elseif event.DeviceInput.button == "DeviceButton_backspace" then
+				curInput = curInput:sub(1, -2)
+				updateFilter()
+			elseif event.DeviceInput.button == "DeviceButton_delete" then
+				curInput = ""
+				updateFilter()
+			elseif event.DeviceInput.button == "DeviceButton_space" then
+				curInput = curInput .. " "
+				updateFilter()
+			elseif event.DeviceInput.button == "DeviceButton_left mouse button" or event.DeviceInput.button == "DeviceButton_right mouse button" then
+				inputting = false
+			else
+				if event.char and event.char:match('[%%%+%-%!%@%#%$%^%&%*%(%)%=%_%.%,%:%;%\'%"%>%<%?%/%~%|%w]') and event.char ~= "" then
+					curInput = curInput .. event.char
+					updateFilter()
+				end
+			end
+			MESSAGEMAN:Broadcast("UpdateText")
+			return true
+		end
+
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
 		end
@@ -295,6 +336,45 @@ local function packList()
 			self:zoom(0.4)
 			self:settext("Toggle Ascending", sorts[curSort])
 			self:maxwidth(packItemWidth / 3 + 15)
+		end
+	}
+
+	-- The search-by-name box
+	t[#t+1] = quadButton(6) .. {
+		Name = "Search",
+		InitCommand = function(self)
+			self:xy(packItemX + 128, packItemY - packItemHeight - packItemYSpacing)
+			self:halign(0)
+			self:zoomto(packItemWidth - 128, packItemHeight - packItemYSpacing)
+			self:diffusealpha(0.2)
+		end,
+		TopPressedCommand = function(self)
+			self:diffusealpha(0.4)
+			inputting = true
+		end,
+		UpdateTextMessageCommand = function(self)
+			if inputting then
+				self:diffusealpha(0.4)
+			else
+				self:diffusealpha(0.2)
+			end
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand = function(self)
+			self:xy(packItemX + 131, packItemY - packItemHeight - packItemYSpacing):halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:zoom(0.4)
+			self:settext("Click to Start Typing")
+			self:maxwidth(packItemWidth * 1.65)
+		end,
+		UpdateListMessageCommand = function(self)
+			if curInput ~= "" then
+				self:settextf("%s", curInput)
+			else
+				self:settext("Click to Start Typing")
+			end
 		end
 	}
 	
