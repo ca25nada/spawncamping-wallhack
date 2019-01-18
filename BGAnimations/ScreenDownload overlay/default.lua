@@ -13,10 +13,56 @@ local function refreshInstalledPacks()
 end
 refreshInstalledPacks()
 
+local function packExists(group)
+	if installedPacks[group] then
+		return true
+	end
+end
+
 local maxItems = 10
 local maxPages = math.ceil(#packlist/maxItems)
 local curPage = 1
 
+local sorts = {
+	"ABC",
+	"MSD",
+	"Size",
+	"Installed"
+}
+local curSort = 1
+local ascending = true
+
+local function moveSortForward()
+	curSort = (curSort % 4) + 1
+end
+
+local function sortPacks()
+	local rawsort = false
+	if sorts[curSort] == "ABC" then
+		initpacklist:SortByName()
+	elseif sorts[curSort] == "MSD" then
+		initpacklist:SortByDiff()
+	elseif sorts[curSort] == "Size" then
+		initpacklist:SortBySize()
+	else
+		ascending = not ascending
+		table.sort(packlist, function(left, right)
+			if not packExists(left:GetName()) and not packExists(right:GetName()) then
+				return left:GetName() < right:GetName()
+			else
+				if ascending then
+					return packExists(left:GetName()) and not packExists(right:GetName())
+				else
+					return not packExists(left:GetName()) and packExists(right:GetName())
+				end
+			end
+		end)
+		rawsort = true
+	end
+	if not rawsort then
+		packlist = initpacklist:GetPackTable()
+	end
+end
 
 
 local function movePage(n)
@@ -26,12 +72,6 @@ local function movePage(n)
 		curPage = ((curPage+n+maxPages-1) % maxPages+1)
 	end
 	MESSAGEMAN:Broadcast("UpdateList")
-end
-
-local function packExists(group)
-	if installedPacks[group] then
-		return true
-	end
 end
 
 local function input(event)
@@ -141,6 +181,15 @@ local function packList()
 	local frameWidth = 430
 	local frameHeight = SCREEN_HEIGHT - 60
 
+	-- Pack item information
+	local packItemWidth = frameWidth-30
+	local packItemHeight = 25
+
+	local packItemX = 20
+	local packItemY = 70+packItemHeight/2
+	local packItemYSpacing = 5
+	----
+
 	local t = Def.ActorFrame{
 		DownloadStatusCommand = function(self, params)
 			self:RunCommandsOnChildren(function(self) self:playcommand("DownloadStatus", params) end)
@@ -183,12 +232,72 @@ local function packList()
 		end
 	}
 
-	local packItemWidth = frameWidth-30
-	local packItemHeight = 25
+	-- The sort toggle button
+	t[#t+1] = quadButton(6) .. {
+		Name = "Sort",
+		InitCommand = function(self)
+			self:xy(packItemX - 15, packItemY - packItemHeight - packItemYSpacing)
+			self:halign(0)
+			self:diffusealpha(0.2)
+			self:zoomto(packItemWidth / 6, packItemHeight - packItemYSpacing)
+		end,
+		TopPressedCommand = function(self)
+			self:finishtweening()
+			self:diffusealpha(0.4)
+			self:smooth(0.3)
+			self:diffusealpha(0.2)
+			moveSortForward()
+			sortPacks()
+			curPage = 1
+			MESSAGEMAN:Broadcast("UpdateList")
+		end
+	}
 
-	local packItemX = 20
-	local packItemY = 70+packItemHeight/2
-	local packItemYSpacing = 5
+	-- The sort text
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand = function(self)
+			self:xy(packItemX - 12, packItemY - packItemHeight - packItemYSpacing):halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:zoom(0.4)
+			self:settextf("Sort: %s", sorts[curSort])
+			self:maxwidth(packItemWidth / 3 + 15)
+		end,
+		UpdateListMessageCommand = function(self)
+			self:settextf("Sort: %s", sorts[curSort])
+		end
+	}
+
+	-- Sort Ascending/Descending button
+	t[#t+1] = quadButton(6) .. {
+		Name = "ToggleAscending",
+		InitCommand = function(self)
+			self:xy(packItemX + packItemWidth / 6 - 10, packItemY - packItemHeight - packItemYSpacing)
+			self:halign(0)
+			self:diffusealpha(0.2)
+			self:zoomto(packItemWidth / 6, packItemHeight - packItemYSpacing)
+		end,
+		TopPressedCommand = function(self)
+			self:finishtweening()
+			self:diffusealpha(0.4)
+			self:smooth(0.3)
+			self:diffusealpha(0.2)
+			sortPacks()
+			curPage = 1
+			MESSAGEMAN:Broadcast("UpdateList")
+		end
+	}
+
+	-- The toggle ascending/descending text
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand = function(self)
+			self:xy(packItemX + 60, packItemY - packItemHeight - packItemYSpacing):halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:zoom(0.4)
+			self:settext("Toggle Ascending", sorts[curSort])
+			self:maxwidth(packItemWidth / 3 + 15)
+		end
+	}
+	
 
 	local function packItem(i)
 		local download
