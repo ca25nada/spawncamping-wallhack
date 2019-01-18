@@ -100,6 +100,16 @@ local function packInfo()
 		InitCommand = function (self)
 			self:zoomto(256,80)
 			self:xy(frameWidth/2, 50):valign(0)
+			self:diffuse(getMainColor("background"))
+			self:diffusealpha(0.8)
+		end
+	}
+
+	t[#t+1] = Def.Sprite{
+		InitCommand = function (self)
+			self:Load(THEME:GetPathG("Common", "fallback banner"))
+			self:zoomto(256,80)
+			self:xy(frameWidth/2, 50):valign(0)
 			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
 		end
@@ -110,7 +120,7 @@ local function packInfo()
 			self:xy(frameWidth/2, 80+50+10)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("A REALLY LONG SIMFILE PACK TITLE")
+			self:settext("This is a placeholder section for Pack Information.")
 		end
 	}
 
@@ -202,10 +212,7 @@ local function packList()
 			end,
 			StartDownloadCommand = function(self) -- Start download
 				download = packlist[packIndex]:DownloadAndInstall()
-
-				-- Will crash the game if the pack is already downloaded for the time being.
 				downloading = DLMAN:GetDownloadingPacks()
-
 				self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
 			end,
