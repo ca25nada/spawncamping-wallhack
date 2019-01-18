@@ -89,6 +89,22 @@ end
 
 local function input(event)
 	if event.type == "InputEventType_FirstPress" then
+
+		if event.button == "MenuLeft" then
+			movePage(-1)
+		end
+
+		if event.button == "MenuRight" then
+			movePage(1)
+		end
+
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			MESSAGEMAN:Broadcast("WheelUpSlow")
+		end
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			MESSAGEMAN:Broadcast("WheelDownSlow")
+		end
+		
 		if inputting then
 			if event.button == "Start" then
 				curInput = ""
@@ -119,21 +135,6 @@ local function input(event)
 
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
-		end
-
-		if event.button == "MenuLeft" then
-			movePage(-1)
-		end
-
-		if event.button == "MenuRight" then
-			movePage(1)
-		end
-
-		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
-			MESSAGEMAN:Broadcast("WheelUpSlow")
-		end
-		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
-			MESSAGEMAN:Broadcast("WheelDownSlow")
 		end
 
 	end
@@ -451,6 +452,7 @@ local function packList()
 			end
 		}
 
+		-- Pack index number
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand  = function(self)
 				self:xy(-10,0)
