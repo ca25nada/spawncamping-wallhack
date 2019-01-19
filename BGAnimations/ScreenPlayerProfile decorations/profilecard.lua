@@ -67,8 +67,8 @@ t[#t+1] = quadButton(3)..{
 			DLMAN:Login(user, pass)
 		end
 
-		easyInputStringWithFunction("Password:", 50, true, password)
-		easyInputStringWithFunction("Username:",50, false, username)
+		easyInputStringWithFunction("Password:", 255, true, password)
+		easyInputStringWithFunction("Username:", 255, false, username)
 	end,
 
 	-- Save config upon successful login
