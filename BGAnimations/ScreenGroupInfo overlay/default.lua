@@ -188,7 +188,7 @@ end
 t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
-
+--[[
 local tab = TAB:new({"Difficulty Distribution"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
@@ -202,6 +202,7 @@ t[#t+1] = tab:makeTabActors() .. {
 	TabPressedMessageCommand = function(self, params)
 	end
 }
+]]
 
 t[#t+1] = LoadActor("../_cursor")
 
