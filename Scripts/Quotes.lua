@@ -5,7 +5,7 @@
 -- Also (hopefully helpful) tips regarding the game/theme,etc.
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
-local Tips = {""}
+local Tips = {"Can someone remind me to fill these out?"}
 
 
 
