@@ -2,8 +2,27 @@
 
 GHETTOGAMESTATE = {
 	lastSelectedFolder = "",
-	lastPlayedSecond = 0
+	lastPlayedSecond = 0,
+	musicwheel = nil,
+	musicsearch = ""
 }
+
+-- very bad cheaty way to get the music wheel across overlay screens
+function GHETTOGAMESTATE.setMusicWheel(self, screen)
+	self.musicwheel = screen:GetMusicWheel()
+end
+
+function GHETTOGAMESTATE.getMusicWheel(self)
+	return self.musicwheel
+end
+
+-- store and retrieve the music filter strings when closing and reopening the overlay
+function GHETTOGAMESTATE.setMusicSearch(self, given)
+	self.musicsearch = given
+end
+function GHETTOGAMESTATE.getMusicSearch(self)
+	return self.musicsearch
+end
 
 --returns current autoplay type. returns a integer between 0~2 corresponding to
 --human, autoplay and autoplay cpu respectively.

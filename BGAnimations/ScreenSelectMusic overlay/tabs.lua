@@ -67,7 +67,12 @@ local t = Def.ActorFrame{
 
 t[#t+1] = LoadActor("../_mouse")
 
-local tab = TAB:new({"Profile", "Song Info", "Group Info", "Playlist", "Downloads", "Other"})
+-- Profile contains: Profile breakdown (local and online)
+-- Song Info contains: MSD, Scores, Chart Preview
+-- Group info contains: misc info (tags in this pack?)
+-- Filtering contains: search, filters, tags
+-- Downloads contains: Downloads, Bundles
+local tab = TAB:new({"Profile", "Song Info", "Group Info", "Filtering", "Downloads"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -80,21 +85,22 @@ t[#t+1] = tab:makeTabActors() .. {
 	TabPressedMessageCommand = function(self, params)
 		if params.name == "Profile" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
-
 		elseif params.name == "Song Info" then
-
 			if GAMESTATE:GetCurrentSong() then
 				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 			end
-
 		elseif params.name == "Group Info" then
 			SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
-
 		elseif params.name == "Downloads" then
 			SCREENMAN:AddNewScreenToTop("ScreenDownload")
+		elseif params.name == "Filtering" then
+			GHETTOGAMESTATE:setMusicWheel(top)
+			SCREENMAN:AddNewScreenToTop("ScreenFiltering")
 
-		elseif params.name == "Playlist" then
+		--[[ -- Removed playlists for now. They are broken not just in this theme.
+			elseif params.name == "Playlist" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlaylistInfo")
+		]]
 
 		end
 	end
