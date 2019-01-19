@@ -28,7 +28,7 @@ local function playMusic(self, delta)
 	deltaSum = deltaSum + delta
 	if deltaSum > delay and sampleEvent then
 		local s = SCREENMAN:GetTopScreen()
-		if s:GetMusicWheel() ~= nil then
+		if s:GetName() == "ScreenSelectMusic" then
 			if s:GetMusicWheel():IsSettled() then
 				deltaSum = 0
 				if curSong and curPath then
