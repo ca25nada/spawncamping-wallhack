@@ -5,38 +5,8 @@ local inputting = false
 local function input(event)
 	
 	if event.type == "InputEventType_FirstPress" then
-		if inputting then
-			local yeet = curInput
-			local CtrlPressed = INPUTFILTER:IsBeingPressed("left ctrl") or INPUTFILTER:IsBeingPressed("right ctrl")
-			if event.button == "Start" then
-				inputting = false
-			elseif event.button == "Back" then
-				inputting = false
-			elseif event.DeviceInput.button == "DeviceButton_v" and CtrlPressed then
-				curInput = curInput .. HOOKS:GetClipboard()
-			elseif event.DeviceInput.button == "DeviceButton_backspace" then
-				curInput = curInput:sub(1, -2)
-			elseif event.DeviceInput.button == "DeviceButton_delete" then
-				curInput = ""
-			elseif event.DeviceInput.button == "DeviceButton_space" then
-				curInput = curInput .. " "
-			elseif event.DeviceInput.button == "DeviceButton_left mouse button" or event.DeviceInput.button == "DeviceButton_right mouse button" then
-				inputting = false
-			else
-				if event.char and event.char:match('[%%%+%-%!%@%#%$%^%&%*%(%)%=%_%.%,%:%;%\'%"%>%<%?%/%~%|%w]') and event.char ~= "" then
-					curInput = curInput .. event.char
-				end
-			end
-			MESSAGEMAN:Broadcast("UpdateText")
-			GHETTOGAMESTATE:setMusicSearch(curInput)
-			if yeet ~= curInput or curInput == "" then
-				GHETTOGAMESTATE:getMusicWheel():SongSearch(curInput)
-			end
-			return true
-		else
-			if event.button == "Back" or event.button == "Start" then
-				SCREENMAN:GetTopScreen():Cancel()
-			end
+		if event.button == "Back" or event.button == "Start" then
+			SCREENMAN:GetTopScreen():Cancel()
 		end
 	end
 	return false
@@ -66,7 +36,7 @@ t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
 
--- The top left container (The Search Menu)
+-- The top left container (The Info Section)
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
 		self:xy(10,30)
@@ -86,56 +56,19 @@ t[#t+1] = Def.ActorFrame {
 			self:zoom(0.4)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Search for Installed Files")
+			self:settext("General Information")
 		end
 	},
 	LoadFont("Common Normal") .. {
 		InitCommand = function(self)
-			self:xy(5,leftUpperSectionHeight - 15)
+			self:xy(5, 75)
 			self:zoom(0.35)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("*Has Clipboard Support\n*Supports Standard US Layout Only")
-		end
-	},
-	quadButton(6) .. {
-		Name = "SearchBox",
-		InitCommand = function(self)
-			self:xy(5, leftUpperSectionHeight / 2)
-			self:halign(0)
-			self:zoomto(leftSectionWidth - 10, 30)
-			self:diffusealpha(0.2)
-		end,
-		TopPressedCommand = function(self)
-			self:diffusealpha(0.4)
-			inputting = true
-		end,
-		UpdateTextMessageCommand = function(self)
-			if inputting then
-				self:diffusealpha(0.4)
-			else
-				self:diffusealpha(0.2)
-			end
-		end
-	},
-	LoadFont("Common Bold") .. {
-		InitCommand = function(self)
-			self:xy(7, leftUpperSectionHeight / 2)
-			self:halign(0)
-			self:zoom(0.4)
-			if curInput == "" then
-				self:settext("Click to Start Typing")
-			else
-				self:settextf("%s", curInput)
-			end
-			self:maxwidth(leftSectionWidth * 2.355)
-		end,
-		UpdateTextMessageCommand = function(self)
-			if curInput ~= "" then
-				self:settextf("%s", curInput)
-			else
-				self:settext("Click to Start Typing")
-			end
+			local finalString = "Searching:\nSearch by clicking the sort in the top right or by pressing Ctrl + 4\nPress Start or Back to stop typing\nSupports clipboard."
+			finalString = finalString .. "\n\nFiltering:\nEnter numbers only. The boxes create a range if both are filled"
+			finalString = finalString .. "\n\nTagging:\nLeft click a Tag to enable or disable filtering.\nRight click a Tag to delete"
+			self:settext(finalString)
 		end
 	}
 
