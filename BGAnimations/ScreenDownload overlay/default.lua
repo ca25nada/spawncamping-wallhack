@@ -107,11 +107,12 @@ local function input(event)
 		
 		if inputting then
 			if event.button == "Start" then
-				curInput = ""
 				inputting = false
 				updateFilter()
 			elseif event.button == "Back" then
+				curInput = ""
 				inputting = false
+				updateFilter()
 			elseif event.DeviceInput.button == "DeviceButton_backspace" then
 				curInput = curInput:sub(1, -2)
 				updateFilter()
