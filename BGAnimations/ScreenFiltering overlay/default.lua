@@ -65,9 +65,9 @@ t[#t+1] = Def.ActorFrame {
 			self:zoom(0.35)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			local finalString = "Searching:\nSearch by clicking the sort in the top right or by pressing Ctrl + 4\nPress Start or Back to stop typing\nSupports clipboard."
+			local finalString = "Searching:\nSearch by clicking the sort in the top right or by pressing Ctrl + 4\nPress Start or Back to stop typing\nSupports clipboard"
 			finalString = finalString .. "\n\nFiltering:\nEnter numbers only. The boxes create a range if both are filled"
-			finalString = finalString .. "\n\nTagging:\nLeft click a Tag to enable or disable filtering.\nRight click a Tag to delete"
+			finalString = finalString .. "\n\nTagging:\nLeft click a Tag to enable or disable filtering\nRight click a Tag to delete"
 			self:settext(finalString)
 		end
 	}
