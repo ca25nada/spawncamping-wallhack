@@ -45,6 +45,7 @@ local function searchInput(event)
 	local buttonEnum = Enum.Reverse(DeviceButton)[event.DeviceInput.button]
 
 	if event.type ~= "InputEventType_Release" and active then
+		local CtrlPressed = INPUTFILTER:IsBeingPressed("left ctrl") or INPUTFILTER:IsBeingPressed("right ctrl")
 		if event.button == "Back" then
 			searchstring = ""
 			wheel:SongSearch(searchstring)
@@ -69,9 +70,12 @@ local function searchInput(event)
 		elseif event.DeviceInput.button == "DeviceButton_="  then
 			searchstring = searchstring.."="
 
+		elseif event.DeviceInput.button == "DeviceButton_v" and CtrlPressed then
+			searchstring = searchstring .. HOOKS:GetClipboard()
+
 		else
-			if buttonEnum > 96 and buttonEnum < 123 then
-				searchstring = searchstring..event.DeviceInput.button:sub(-1)
+			if event.char and event.char:match('[%%%+%-%!%@%#%$%^%&%*%(%)%=%_%.%,%:%;%\'%"%>%<%?%/%~%|%w]') and event.char ~= "" then
+				searchstring = searchstring .. event.char
 			end
 		end
 		if lastsearchstring ~= searchstring then
