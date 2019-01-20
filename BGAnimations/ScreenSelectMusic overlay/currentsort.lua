@@ -42,7 +42,6 @@ local sortTable = {
 }
 
 local function searchInput(event)
-	local buttonEnum = Enum.Reverse(DeviceButton)[event.DeviceInput.button]
 
 	if event.type ~= "InputEventType_Release" and active then
 		local CtrlPressed = INPUTFILTER:IsBeingPressed("left ctrl") or INPUTFILTER:IsBeingPressed("right ctrl")
@@ -74,6 +73,9 @@ local function searchInput(event)
 			searchstring = searchstring .. HOOKS:GetClipboard()
 
 		else
+			if CtrlPressed then
+				return false
+			end
 			if event.char and event.char:match('[%%%+%-%!%@%#%$%^%&%*%(%)%=%_%.%,%:%;%\'%"%>%<%?%/%~%|%w]') and event.char ~= "" then
 				searchstring = searchstring .. event.char
 			end

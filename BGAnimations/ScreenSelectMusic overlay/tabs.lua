@@ -1,12 +1,14 @@
+local inSongSearch = false
+
 local function input(event)
 
 	if event.type == "InputEventType_FirstPress" then
 
-		if event.button == "EffectUp" then
+		if event.button == "EffectUp" and not inSongSearch then
 			changeMusicRate(0.05)
 		end
 
-		if event.button == "EffectDown" then
+		if event.button == "EffectDown" and not inSongSearch then
 			changeMusicRate(-0.05)
 		end
 
@@ -22,6 +24,29 @@ local function input(event)
 
 		if event.DeviceInput.button == "DeviceButton_middle mouse button" then
 			lastY = INPUTFILTER:GetMouseY()
+		end
+
+		local CtrlPressed = INPUTFILTER:IsBeingPressed("left ctrl") or INPUTFILTER:IsBeingPressed("right ctrl")
+		local numpad = event.DeviceInput.button == "DeviceButton_KP "..event.char
+		if not numpad and event.char and tonumber(event.char) and not inSongSearch then
+			if tonumber(event.char) == 1 then
+				SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
+			elseif tonumber(event.char) == 2 then
+				if GAMESTATE:GetCurrentSong() then
+					SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+				end
+			elseif tonumber(event.char) == 3 then
+				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
+			elseif tonumber(event.char) == 4 then
+				if CtrlPressed then
+					MESSAGEMAN:Broadcast("StartSearch")
+				else
+					GHETTOGAMESTATE:setMusicWheel(SCREENMAN:GetTopScreen())
+					SCREENMAN:AddNewScreenToTop("ScreenFiltering")
+				end
+			elseif tonumber(event.char) == 5 then
+				SCREENMAN:AddNewScreenToTop("ScreenDownload")
+			end
 		end
 
 	end
@@ -62,15 +87,21 @@ local t = Def.ActorFrame{
 	end,
 	StartPlaylistMessageCommand=function(self, params)
 		top:StartPlaylistAsCourse(params.playlist:GetName())
+	end,
+	StartSearchMessageCommand = function(self)
+		inSongSearch = true
+	end,
+	EndSearchMessageCommand = function(self)
+		inSongSearch = false
 	end
 }
 
 t[#t+1] = LoadActor("../_mouse")
 
 -- Profile contains: Profile breakdown (local and online)
--- Song Info contains: MSD, Scores, Chart Preview
+-- Song Info contains: MSD, Scores, Chart Preview, (and something to let you tag the song)
 -- Group info contains: misc info (tags in this pack?)
--- Filtering contains: search, filters, tags
+-- Filtering contains: filters, tags
 -- Downloads contains: Downloads, Bundles
 local tab = TAB:new({"Profile", "Song Info", "Group Info", "Filtering", "Downloads"})
 t[#t+1] = tab:makeTabActors() .. {
@@ -83,6 +114,9 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2)
 	end,
 	TabPressedMessageCommand = function(self, params)
+		if inSongSearch then
+			return
+		end
 		if params.name == "Profile" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 		elseif params.name == "Song Info" then
