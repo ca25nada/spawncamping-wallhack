@@ -28,16 +28,18 @@ local td = GAMESTATE:GetCurrentSteps(PLAYER_1):GetTimingData()
 
 local handspecific = false
 local left = false
+local setWidth = 0
+local setHeight = 0
 
 local function fitX(x) -- Scale time values to fit within plot width.
 	if finalSecond == 0 then
 		return 0
 	end
-	return x / finalSecond * plotWidth - plotWidth / 2
+	return x / finalSecond * setWidth - setWidth / 2
 end
 
 local function fitY(y) -- Scale offset values to fit within plot height
-	return -1 * y / maxOffset * plotHeight / 2
+	return -1 * y / maxOffset * setHeight / 2
 end
 local function setOffsetVerts(vt, x, y, c)
 	vt[#vt + 1] = {{x - dotWidth/2, y + dotWidth/2, 0}, c}
@@ -46,6 +48,8 @@ local function setOffsetVerts(vt, x, y, c)
 	vt[#vt + 1] = {{x - dotWidth/2, y - dotWidth/2, 0}, c}
 end
 -----
+
+local baralpha = 0.4
 
 local t = Def.ActorFrame{
 	InitCommand = function(self)
@@ -63,6 +67,8 @@ t[#t+1] = Def.Quad{
 		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 	end,
 	UpdateCommand = function(self, params)
+		setWidth = params.width
+		setHeight = params.height
 		self:zoomto(params.width, params.height)
 	end
 }
@@ -71,13 +77,40 @@ t[#t+1] = Def.Quad{
 	Name = "Center Line",
 	InitCommand = function(self)
 		self:halign(0):valign(0)
-		self:diffusealpha(0.4)
+		self:diffusealpha(baralpha)
 	end,
 	UpdateCommand = function(self, params)
 		self:xy(0,params.height/2)
 		self:zoomto(params.width,1)
 	end
 }
+
+local fantabars = {22.5, 45, 90, 135}
+local bantafars = {"TapNoteScore_W2", "TapNoteScore_W3", "TapNoteScore_W4", "TapNoteScore_W5"}
+for i = 1, #fantabars do
+	t[#t + 1] =
+		Def.Quad {
+		InitCommand = function(self)
+			self:halign(0):valign(0)
+		end,
+		UpdateCommand = function(self, params)
+			self:zoomto(params.width, 1):diffuse(byJudgment(bantafars[i])):diffusealpha(baralpha)
+			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows[judges[i]] or tso * fantabars[i]
+			self:y(fitY(fit) + params.height/2)
+		end
+	}
+	t[#t + 1] =
+		Def.Quad {
+		InitCommand = function(self)
+			self:halign(0):valign(0)
+		end,
+		UpdateCommand = function(self, params)
+			self:zoomto(params.width, 1):diffuse(byJudgment(bantafars[i])):diffusealpha(baralpha)
+			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows[judges[i]] or tso * fantabars[i]
+			self:y(fitY(-fit) + params.height/2)
+		end
+	}
+end
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=function(self)
@@ -109,6 +142,10 @@ t[#t+1] = Def.ActorMultiVertex{
 			return
 		end
 
+		for i = 1, #params.nrv do
+			wuab[i] = td:GetElapsedTimeFromNoteRow(params.nrv[i])
+		end
+
 		local songLength = params.song:GetLastSecond()
 
 		for i=1, #params.nrv do
@@ -119,8 +156,10 @@ t[#t+1] = Def.ActorMultiVertex{
 				(enabledCustomWindows and judge ~= 0) and customOffsetToJudgeColor(params.dvt[i], customWindow.judgeWindows) or
 				offsetToJudgeColor(params.dvt[i], tst[judge])
 
-			local x = (timestamp/songLength) * params.width
-			local y = (offset/W5Window/2/timingWindowScale) * params.height + (params.height/2)
+			local x = fitX(wuab[i]) + params.width / 2
+			local y = fitY(params.dvt[i]) + params.height / 2
+			--local x = (timestamp/songLength) * params.width
+			--local y = (offset/W5Window/2/timingWindowScale) * params.height + (params.height/2)
 
 			if math.abs(offset) > (W5Window * timingWindowScale) then
 				-- Misses

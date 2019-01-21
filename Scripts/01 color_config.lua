@@ -262,11 +262,66 @@ function offsetToJudgeColorAlpha(offset, scale)
 	end
 end
 
+-- 30% hardcoded, should var but lazy atm -mina
+function customOffsetToJudgeColor(offset, windows)
+	local offset = math.abs(offset)
+	if offset <= windows.marv then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W1"] .. "48")
+	elseif offset <= windows.perf then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W2"] .. "48")
+	elseif offset <= windows.great then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W3"] .. "48")
+	elseif offset <= windows.good then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W4"] .. "48")
+	elseif offset <= math.max(windows.boo, 0.180) then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W5"] .. "48")
+	else
+		return color(colorConfig:get_data().judgment["TapNoteScore_Miss"] .. "48")
+	end
+end
+
 function getBorderColor()
 	return HSV(Hour()*360/12, 0.7, 1)
 end
 
 function TapNoteScoreToColor(tns) return color(colorConfig:get_data().judgment[tns]) or color("#ffffff") end
+
+function byJudgment(judge)
+	return color(colorConfig:get_data().judgment[judge])
+end
+
+function byDifficulty(diff)
+	return color(colorConfig:get_data().difficulty[diff])
+end
+
+-- i guess if i'm going to use this naming convention it might as well be complete and standardized which means redundancy -mina
+function byGrade(grade)
+	return color(colorConfig:get_data().grade[grade]) or color(colorConfig:get_data().grade["Grade_None"])
+end
+
+-- Colorized stuff
+function byMSD(x)
+	if x then
+		return HSV(math.max(95 - (x / 40) * 150, -50), 0.9, 0.9)
+	end
+	return HSV(0, 0.9, 0.9)
+end
+
+function byMusicLength(x)
+	if x then
+		x = math.min(x, 600)
+		return HSV(math.max(95 - (x / 900) * 150, -50), 0.9, 0.9)
+	end
+	return HSV(0, 0.9, 0.9)
+end
+
+function byFileSize(x)
+	if x then
+		x = math.min(x, 600)
+		return HSV(math.max(95 - (x / 1025) * 150, -50), 0.9, 0.9)
+	end
+	return HSV(0, 0.9, 0.9)
+end
 
 -- a tad-bit desaturated with a wider color range vs til death
 function getMSDColor(MSD)
