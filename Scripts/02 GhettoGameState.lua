@@ -4,7 +4,8 @@ GHETTOGAMESTATE = {
 	lastSelectedFolder = "",
 	lastPlayedSecond = 0,
 	musicwheel = nil,
-	musicsearch = ""
+	musicsearch = "",
+	onlineStatus = "Invalid"
 }
 
 -- very bad cheaty way to get the music wheel across overlay screens
@@ -14,6 +15,23 @@ end
 
 function GHETTOGAMESTATE.getMusicWheel(self)
 	return self.musicwheel
+end
+
+
+function GHETTOGAMESTATE.setOnlineStatus(self, given)
+	if given ~= nil then
+		self.onlineStatus = given
+		return
+	end
+	if self.onlineStatus == "Invalid" or self.onlineStatus == "Online" then
+		self.onlineStatus = "Local"
+	else
+		self.onlineStatus = "Online"
+	end
+end
+
+function GHETTOGAMESTATE.getOnlineStatus(self)
+	return self.onlineStatus
 end
 
 -- store and retrieve the music filter strings when closing and reopening the overlay

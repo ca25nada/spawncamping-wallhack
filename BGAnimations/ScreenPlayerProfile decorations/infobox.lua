@@ -58,6 +58,15 @@ t[#t+1] = LoadFont("Common Normal")..{
 	UpdateRankingMessageCommand = function(self, params)
 		self:settextf("Sorted by: %s",params.SSRType)
 	end,
+	OnlineTogglePressedMessageCommand = function(self)
+		self:settext("Sorted by: Overall")
+	end,
+	LoginMessageCommand = function(self)
+		self:settext("Sorted by: Overall")
+	end,
+	LogOutMessageCommand = function(self)
+		self:settext("Sorted by: Overall")
+	end,
 	DisplaySongMessageCommand = function(self, params)
 		self:visible(false)
 	end
@@ -123,6 +132,7 @@ local function scoreListItem(i)
 	local chartKey = ths:GetChartKey()
 	local steps = SONGMAN:GetStepsByChartKey(chartKey)
 	local song = SONGMAN:GetSongByChartKey(chartKey)
+	local onlineScore = DLMAN:GetTopSkillsetScore(i, "Overall")
 
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
@@ -138,12 +148,60 @@ local function scoreListItem(i)
 			self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing))
 		end,
 		UpdateRankingMessageCommand = function(self, params)
-			SCOREMAN:SortSSRs(params.SSRType)
-			skillset = params.SSRType
-			ths = SCOREMAN:GetTopSSRHighScore(i, params.SSRType)
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+				onlineScore = DLMAN:GetTopSkillsetScore(i, params.SSRType)
+				if not onlineScore then
+					self:visible(false)
+				else
+					self:visible(true)
+				end
+			else
+				SCOREMAN:SortSSRs(params.SSRType)
+				skillset = params.SSRType
+				ths = SCOREMAN:GetTopSSRHighScore(i, params.SSRType)
+				chartKey = ths:GetChartKey()
+				song = SONGMAN:GetSongByChartKey(chartKey)
+				steps = SONGMAN:GetStepsByChartKey(chartKey)
+				self:visible(true)
+			end
+			self:playcommand("Tween")
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+		end,
+		LoginMessageCommand = function(self)
+			GHETTOGAMESTATE:setOnlineStatus("Online")
+			self:visible(false)
+			self:playcommand("Tween")
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+		end,
+		LogOutMessageCommand = function(self)
+			GHETTOGAMESTATE:setOnlineStatus("Local")
+			SCOREMAN:SortSSRs("Overall")
+			skillset = "Overall"
+			ths = SCOREMAN:GetTopSSRHighScore(i, "Overall")
 			chartKey = ths:GetChartKey()
 			song = SONGMAN:GetSongByChartKey(chartKey)
 			steps = SONGMAN:GetStepsByChartKey(chartKey)
+			self:visible(true)
+			self:playcommand("Tween")
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+		end,
+		OnlineTogglePressedMessageCommand = function(self)
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+				onlineScore = DLMAN:GetTopSkillsetScore(i, SkillSets[1])
+				if not onlineScore then
+					self:visible(false)
+				else
+					self:visible(true)
+				end
+			else
+				SCOREMAN:SortSSRs("Overall")
+				skillset = "Overall"
+				ths = SCOREMAN:GetTopSSRHighScore(i, "Overall")
+				chartKey = ths:GetChartKey()
+				song = SONGMAN:GetSongByChartKey(chartKey)
+				steps = SONGMAN:GetStepsByChartKey(chartKey)
+				self:visible(true)
+			end
 			self:playcommand("Tween")
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end,
@@ -188,7 +246,11 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self)
-			self:diffuse(color(colorConfig:get_data().difficulty[steps:GetDifficulty()]))
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+				self:diffuse(color("#AAAAAA"))
+			else
+				self:diffuse(color(colorConfig:get_data().difficulty[steps:GetDifficulty()]))
+			end
 		end
 	}
 
@@ -201,9 +263,16 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self)
-			local rating = ths:GetSkillsetSSR(skillset)
-			self:settextf("%0.2f", rating)
-			self:diffuse(getMSDColor(rating))
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+				if onlineScore then
+					self:settextf("%0.2f", onlineScore.ssr)
+					self:diffuse(getMSDColor(rating))
+				end
+			else
+				local rating = ths:GetSkillsetSSR(skillset)
+				self:settextf("%0.2f", rating)
+				self:diffuse(getMSDColor(rating))
+			end
 		end
 	}
 
@@ -216,7 +285,13 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self)
-			self:settextf("%s (x%0.2f)",song:GetMainTitle(),ths:GetMusicRate())
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+				if onlineScore then
+					self:settextf("%s (x%0.2f)", onlineScore.songName, onlineScore.rate)
+				end
+			else
+				self:settextf("%s (x%0.2f)",song:GetMainTitle(),ths:GetMusicRate())
+			end
 		end
 	}
 
@@ -229,7 +304,11 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self)
-			self:settextf("// %s",song:GetDisplayArtist())
+			if GHETTOGAMESTATE:getOnlineStatus() ~= "Online" then
+				self:settextf("// %s",song:GetDisplayArtist())
+			else
+				self:settext("")
+			end
 		end
 	}
 
@@ -242,7 +321,7 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self,params)
-			if song:IsFavorited() then
+			if song:IsFavorited() and GHETTOGAMESTATE:getOnlineStatus() ~= "Online" then
 				self:visible(true)
 			else
 				self:visible(false)

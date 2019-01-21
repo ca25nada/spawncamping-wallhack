@@ -1,5 +1,6 @@
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = PROFILEMAN:GetProfile(pn)
+local onlineStatus = GHETTOGAMESTATE:getOnlineStatus()
 
 local t = Def.ActorFrame{
 
@@ -25,12 +26,50 @@ t[#t+1] = LoadActor("expbar") .. {
 	end
 }
 
+local function toggleOnlineStatus(given)
+	if DLMAN:IsLoggedIn() then
+		if given ~= nil then
+			GHETTOGAMESTATE:setOnlineStatus(given)
+		else
+			GHETTOGAMESTATE:setOnlineStatus()
+		end
+		onlineStatus = GHETTOGAMESTATE:getOnlineStatus()
+	else
+		GHETTOGAMESTATE:setOnlineStatus("Local")
+		onlineStatus = "Local"
+	end
+end
+
 
 t[#t+1] = quadButton(3)..{
 	InitCommand = function (self)
 		self:xy(145,30)
 		self:zoomto(90,20)
-		self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+		self:diffuse(color(colorConfig:get_data().main.disabled))
+		if DLMAN:IsLoggedIn() then
+			self:diffusealpha(0.8)
+		else
+			self:diffusealpha(0.2)
+		end
+	end,
+	TopPressedCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:smooth(0.3)
+			self:diffusealpha(0.8)
+			toggleOnlineStatus()
+			MESSAGEMAN:Broadcast("OnlineTogglePressed")
+		end
+	end,
+	LoginMessageCommand = function(self)
+		self:diffusealpha(0.8)
+	end,
+	LoginFailedMessageCommand = function(self)
+		--self:diffusealpha(0.8)
+	end,
+	LogOutMessageCommand = function(self)
+		self:diffusealpha(0.2)
 	end
 }
 
@@ -39,11 +78,27 @@ t[#t+1] = LoadFont("Common Bold")..{
 	InitCommand  = function(self)
 		self:xy(145,30)
 		self:zoom(0.4)
-		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		if not DLMAN:IsLoggedIn() then
+			self:diffusealpha(0.4)
+		end
 		self:queuecommand('Set')
 	end,
 	SetCommand = function(self)
-		self:settext("Update")
+		self:settextf("%s", onlineStatus)
+	end,
+	LogOutMessageCommand = function(self)
+		toggleOnlineStatus("Local")
+		self:diffusealpha(0.4)
+		self:queuecommand("Set")
+	end,
+	LoginMessageCommand = function(self)
+		self:diffusealpha(1)
+		toggleOnlineStatus("Online")
+		self:queuecommand("Set")
+	end,
+	OnlineTogglePressedMessageCommand = function(self)
+		self:queuecommand("Set")
 	end
 }
 

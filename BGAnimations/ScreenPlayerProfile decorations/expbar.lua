@@ -48,11 +48,15 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:playcommand('Set')
 	end,
 
+	OnlineTogglePressedMessageCommand = function(self)
+		self:playcommand('Set')
+	end,
+
 	SetCommand = function(self)
 		local rating = 0
 		local rank = 0
 
-		if DLMAN:IsLoggedIn() then
+		if GHETTOGAMESTATE:getOnlineStatus() == "Online" and DLMAN:IsLoggedIn() then
 			rank = DLMAN:GetSkillsetRank("Overall")
 			rating = DLMAN:GetSkillsetRating("Overall")
 

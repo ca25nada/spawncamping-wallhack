@@ -50,7 +50,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:queuecommand("Set")
 	end,
 	SetCommand = function(self)
-		if DLMAN:IsLoggedIn() then
+		if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
 			self:settext("Using server values")
 		else
 			self:settext("Using client values")
@@ -61,6 +61,9 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:queuecommand("Set")
 	end,
 	LogOutMessageCommand = function(self)
+		self:queuecommand("Set")
+	end,
+	OnlineTogglePressedMessageCommand = function(self)
 		self:queuecommand("Set")
 	end
 }
@@ -80,7 +83,7 @@ local function makeSSRPoints(i)
 		end,
 		SetCommand = function(self)
 			local SSR = 0
-			if DLMAN:IsLoggedIn() then
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
 				SSR = DLMAN:GetSkillsetRating(SkillSets[i])
 			else
 				SSR = profile:GetPlayerSkillsetRating(SkillSets[i])
@@ -88,6 +91,15 @@ local function makeSSRPoints(i)
 
 			self:settextf("%s\n%0.2f",SkillSets[i], SSR)
 			self:AddAttribute(#SkillSets[i], {Length = -1, Diffuse = getMSDColor(SSR)})
+		end,
+		OnlineTogglePressedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end,
+		LogOutMessageCommand = function(self)
+			self:queuecommand("Set")
+		end,
+		OnlineUpdateMessageCommand = function(self)
+			self:queuecommand("Set")
 		end
 	}
 end
@@ -137,13 +149,16 @@ t[#t+1] = Def.ActorMultiVertex{
 	LogOutMessageCommand = function(self)
 		self:queuecommand("Set")
 	end,
+	OnlineTogglePressedMessageCommand = function(self)
+		self:queuecommand("Set")
+	end,
 	SetCommand = function(self)
 		verts = {}
 		local x,y
 		for i=1, #SkillSets do
 			local SSR = 0
 			x,y = getPointOffset(circleRadius,sepAngle*(i-1)-90)
-			if DLMAN:IsLoggedIn() then
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
 				SSR = DLMAN:GetSkillsetRating(SkillSets[i])
 			else
 				SSR = profile:GetPlayerSkillsetRating(SkillSets[i])
