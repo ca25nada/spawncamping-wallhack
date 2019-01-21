@@ -266,7 +266,7 @@ local function scoreListItem(i)
 			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
 				if onlineScore then
 					self:settextf("%0.2f", onlineScore.ssr)
-					self:diffuse(getMSDColor(rating))
+					self:diffuse(getMSDColor(onlineScore.ssr))
 				end
 			else
 				local rating = ths:GetSkillsetSSR(skillset)
