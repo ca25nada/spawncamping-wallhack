@@ -884,7 +884,7 @@ local function scoreList()
 			HideScoreDetailMessageCommand = function(self)
 				self:playcommand("Hide")
 			end,
-			UpdatCLBListMessageCommand = function(self)
+			UpdateCLBListMessageCommand = function(self)
 				self:playcommand("Hide")
 			end
 		}
