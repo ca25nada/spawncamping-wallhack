@@ -31,10 +31,13 @@ t[#t+1] = LoadFont("Common Normal")..{
 
 local parameters = {
 	{"Notes","RadarCategory_Notes"},
+	{"Jumps","RadarCategory_Jumps"},
+	{"Hands","RadarCategory_Hands"},
 	{"Holds","RadarCategory_Holds"},
 	{"Rolls","RadarCategory_Rolls"},
 	{"Mines","RadarCategory_Mines"},
 	{"Lifts","RadarCategory_Lifts"},
+	{"Fakes","RadarCategory_Fakes"}
 }
 
 for i,v in ipairs(parameters) do
