@@ -861,6 +861,7 @@ local function scoreList()
 	end
 
 	local function scoreDetail()
+		local scoreIndex
 		local t = Def.ActorFrame{
 			InitCommand = function(self)
 				self:diffusealpha(0)
@@ -872,6 +873,7 @@ local function scoreList()
 				self:diffusealpha(0)
 			end,
 			ShowScoreDetailMessageCommand = function(self, params)
+				scoreIndex = params.scoreIndex
 				self:finishtweening()
 				self:xy(scoreItemX, (params.index+1)*(scoreItemHeight+scoreItemYSpacing)+100+scoreItemHeight/2)
 				self:easeOut(0.5)
@@ -884,6 +886,52 @@ local function scoreList()
 			UpdateListMessageCommand = function(self)
 				self:playcommand("Hide")
 			end
+		}
+
+		-- Watch online replay button
+		t[#t+1] = quadButton(3)..{
+			InitCommand = function (self)
+				self:xy(95/2+3,30)
+				self:zoomto(90,20)
+				self:diffuse(color(colorConfig:get_data().main.disabled))
+			end,
+			ShowScoreDetailMessageCommand = function(self, params)
+				if scoreList[params.scoreIndex]:HasReplayData() then
+					self:diffusealpha(0.8)
+				else
+					self:diffusealpha(0.2)
+				end
+			end,
+
+			TopPressedCommand = function(self)
+				if scoreList[scoreIndex]:HasReplayData() then
+					self:finishtweening()
+					self:diffusealpha(1)
+					self:smooth(0.3)
+					self:diffusealpha(0.8)
+					MESSAGEMAN:Broadcast("TriggerReplayBegin", {score = scoreList[scoreIndex]})
+					SCREENMAN:GetTopScreen():Cancel()
+				end
+			end
+		}
+		t[#t+1] = LoadFont("Common Bold")..{
+			InitCommand  = function(self)
+				self:xy(95/2+3,30)
+				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:diffusealpha(0.4)
+				self:queuecommand('Set')
+			end,
+			SetCommand = function(self)
+				self:settext("Watch")
+			end,
+			ShowScoreDetailMessageCommand = function(self, params)
+				if scoreList[params.scoreIndex]:HasReplayData() then
+					self:diffusealpha(1)
+				else
+					self:diffusealpha(0.4)
+				end
+			end,
 		}
 
 		t[#t+1] = Def.Quad{
