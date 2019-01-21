@@ -283,7 +283,7 @@ local function packInfo()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
 			end,
-			UpdateBundleListMessageCommand = function(self) -- Pack List updates (e.g. new page)
+			UpdateBundleListMessageCommand = function(self) -- Bundle List updates (e.g. new page)
 				bundleIndex = (curPage-1)*10+i
 				if DLMAN:GetCoreBundle(bundlenames[bundleIndex]:lower()) ~= nil then
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
@@ -294,7 +294,7 @@ local function packInfo()
 			end,
 		}
 
-		-- Pack index number
+		-- Bundle index number
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand  = function(self)
 				self:xy(-10,0)
@@ -306,22 +306,7 @@ local function packInfo()
 			end
 		}
 
-		-- The download progress bar (background of the pack buttons)
-		t[#t+1] = Def.Quad{
-			Name = "ProgressBar",
-			InitCommand = function(self)
-				self:halign(0)
-				self:diffuse(color(colorConfig:get_data().main.highlight))
-				self:diffusealpha(0)
-				self:xy(0, 0)
-				self:zoomy(packItemHeight)
-			end,
-			SetCommand = function(self)
-				self:zoomx(0)
-			end
-		}
-
-		-- The pack button
+		-- The Bundle button
 		t[#t+1] = quadButton(6) .. {
 			Name = "Size",
 			InitCommand = function(self)
@@ -344,7 +329,7 @@ local function packInfo()
 			end
 		}
 
-		-- Color of the tab for the pack (downloaded/not downloaded)
+		-- Color of the tab for the bundle (based on MSD)
 		t[#t+1] = Def.Quad{
 			Name = "Status",
 			InitCommand = function(self)
@@ -359,7 +344,7 @@ local function packInfo()
 			end
 		}
 
-		-- MSD average for the pack
+		-- MSD average for the Bundle
 		t[#t+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
 				self:xy(20,0)
@@ -367,6 +352,7 @@ local function packInfo()
 				self:zoom(0.4)
 			end,
 			SetCommand = function(self)
+				-- World's laziest code
 				initpacklist:SetFromCoreBundle(bundlenames[bundleIndex]:lower())
 				packlist = initpacklist:GetPackTable()
 				local msd = packlist.AveragePackDifficulty
@@ -375,11 +361,11 @@ local function packInfo()
 				initpacklist:FilterAndSearch(
 					"", 0, 0, 0, 0
 				)
-				packlist = initpacklist:GetPackTable() -- in a world of excessive laziness.....
+				packlist = initpacklist:GetPackTable()
 			end
 		}
 
-		-- Pack name
+		-- Bundle name
 		t[#t+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
 				self:xy(40,-6):halign(0)
@@ -388,13 +374,11 @@ local function packInfo()
 			end,
 			SetCommand = function(self)
 				self:settext(bundlenames[bundleIndex]:gsub("-Expanded", " (expanded)"))
-				-- The pack names can get really long. Set the max width to double the button width
-				-- because not setting it to double the width makes the text half the width ????
 				self:maxwidth(packItemWidth * 2)
 			end
 		}
 
-		-- Pack file size
+		-- Bundle file size
 		t[#t+1] = LoadFont("Common Normal")..{
 			Name = "Size",
 			InitCommand  = function(self)
