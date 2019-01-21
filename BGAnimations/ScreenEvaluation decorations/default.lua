@@ -210,8 +210,12 @@ local function scoreBoard(pn)
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 	local steps = GAMESTATE:GetCurrentSteps(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
-	local index = getHighScoreIndex(hsTable, pss:GetHighScore())
-
+	local index
+	if hsTable == nil then
+		index = 1
+	else
+		index = getHighScoreIndex(hsTable, pss:GetHighScore())
+	end
 	local recScore = getBestScore(pn, index, rate, true)
 	local curScore = pss:GetHighScore()
 
