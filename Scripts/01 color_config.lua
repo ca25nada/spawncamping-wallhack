@@ -220,6 +220,48 @@ function offsetToJudgeColor(offset)
 	end
 end
 
+-- expecting ms input (153, 13.321, etc) so convert to seconds to compare to judgment windows -mina
+function offsetToJudgeColor(offset, scale)
+	local offset = math.abs(offset / 1000)
+	if not scale then
+		scale = PREFSMAN:GetPreference("TimingWindowScale")
+	end
+	if offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW1") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W1"])
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW2") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W2"])
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW3") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W3"])
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW4") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W4"])
+	elseif offset <= math.max(scale * PREFSMAN:GetPreference("TimingWindowSecondsW5"), 0.180) then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W5"])
+	else
+		return color(colorConfig:get_data().judgment["TapNoteScore_Miss"])
+	end
+end
+
+-- 30% hardcoded, should var but lazy atm -mina
+function offsetToJudgeColorAlpha(offset, scale)
+	local offset = math.abs(offset / 1000)
+	if not scale then
+		scale = PREFSMAN:GetPreference("TimingWindowScale")
+	end
+	if offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW1") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W1"] .. "48")
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW2") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W2"] .. "48")
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW3") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W3"] .. "48")
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW4") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W4"] .. "48")
+	elseif offset <= math.max(scale * PREFSMAN:GetPreference("TimingWindowSecondsW5"), 0.180) then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W5"] .. "48")
+	else
+		return color(colorConfig:get_data().judgment["TapNoteScore_Miss"] .. "48")
+	end
+end
+
 function getBorderColor()
 	return HSV(Hour()*360/12, 0.7, 1)
 end

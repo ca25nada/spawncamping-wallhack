@@ -896,8 +896,10 @@ local function scoreList()
 										height = frameHeight-140, 
 										song = song, 
 										steps = steps, 
-										noterow = scoreList[params.scoreIndex]:GetNoteRowVector(), 
-										offset = scoreList[params.scoreIndex]:GetOffsetVector()}
+										nrv = scoreList[params.scoreIndex]:GetNoteRowVector(),
+										dvt = scoreList[params.scoreIndex]:GetOffsetVector(),
+										ctt = scoreList[params.scoreIndex]:GetTrackVector(),
+										ntt = scoreList[params.scoreIndex]:GetTapNoteTypeVector()}
 						self:playcommand("Update", params) end
 					)
 				else

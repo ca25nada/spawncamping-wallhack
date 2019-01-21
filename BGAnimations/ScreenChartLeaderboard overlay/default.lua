@@ -10,6 +10,7 @@ local curPage = 1
 local currentCountry = "Global"
 
 local lbActor
+local cheatIndex
 
 local validStepsType = {
 	'StepsType_Dance_Single',
@@ -686,7 +687,7 @@ local function scoreList()
 					self:playcommand("Hide")
 				end
 			end,
-			HideScoreDetailMessageCommand = function(self)
+			HideOnlineScoreDetailMessageCommand = function(self)
 				detail = false
 				if scoreList ~= nil and scoreList[scoreIndex] ~= nil then
 					self:playcommand("Show")
@@ -721,7 +722,7 @@ local function scoreList()
 						MESSAGEMAN:Broadcast("ShowOnlineScoreDetail", {index = i, scoreIndex = scoreIndex})
 					end
 				elseif params.input == "DeviceButton_right mouse button" then
-					MESSAGEMAN:Broadcast("HideScoreDetail")
+					MESSAGEMAN:Broadcast("HideOnlineScoreDetail")
 				end
 			end,
 			SetCommand = function(self)
@@ -881,7 +882,7 @@ local function scoreList()
 				self:xy(scoreItemX, scoreItemY+scoreItemYSpacing+scoreItemHeight/2)
 				self:diffusealpha(1)
 			end,
-			HideScoreDetailMessageCommand = function(self)
+			HideOnlineScoreDetailMessageCommand = function(self)
 				self:playcommand("Hide")
 			end,
 			UpdateCLBListMessageCommand = function(self)
@@ -902,20 +903,31 @@ local function scoreList()
 				self:xy(5, 55)
 			end,
 			ShowOnlineScoreDetailMessageCommand = function(self, params)
-
+				cheatIndex = params.scoreIndex
 				if scoreList[params.scoreIndex]:HasReplayData() then
-					self:RunCommandsOnChildren(function(self)
-						local params = 	{width = scoreItemWidth-10, 
-										height = frameHeight-140, 
-										song = song, 
-										steps = steps, 
-										noterow = scoreList[params.scoreIndex]:GetNoteRowVector(), 
-										offset = scoreList[params.scoreIndex]:GetOffsetVector()}
-						self:playcommand("Update", params) end
+					DLMAN:RequestOnlineScoreReplayData(
+						scoreList[params.scoreIndex],
+						function()
+							MESSAGEMAN:Broadcast("DelayedShowOffset")
+							--self:playcommand("DelayedShowOffset")
+						end
 					)
 				else
 					self:RunCommandsOnChildren(function(self) self:playcommand("Update", {width = scoreItemWidth-10, height = frameHeight-140,}) end)
 				end
+			end,
+			DelayedShowOffsetMessageCommand = function(self)
+				self:RunCommandsOnChildren(function(self)
+					local params = 	{width = scoreItemWidth-10, 
+									height = frameHeight-140, 
+									song = song, 
+									steps = steps, 
+									nrv = scoreList[cheatIndex]:GetNoteRowVector(),
+									dvt = scoreList[cheatIndex]:GetOffsetVector(),
+									ctt = scoreList[cheatIndex]:GetTrackVector(),
+									ntt = scoreList[cheatIndex]:GetTapNoteTypeVector()}
+					self:playcommand("Update", params) end
+				)
 			end
 		}
 
@@ -925,10 +937,20 @@ local function scoreList()
 				self:zoom(0.4)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.6)
 				self:settext("No replay data\n(゜´Д｀゜)")
-
 			end,
 			ShowOnlineScoreDetailMessageCommand = function(self, params)
-				self:visible(not scoreList[params.scoreIndex]:HasReplayData())
+				if not scoreList[params.scoreIndex]:HasReplayData() then
+					self:settext("No replay data\n(゜´Д｀゜)")
+					self:visible(true)
+				end
+			end,
+			DelayedShowOffsetMessageCommand = function(self)
+				if scoreList[cheatIndex]:HasReplayData() and scoreList[cheatIndex]:GetNoteRowVector() == nil then
+					self:settext("Missing Noterows from Online Replay\n(゜´Д｀゜)")
+				else
+					self:settext("No replay data\n(゜´Д｀゜)")
+				end
+				self:visible(not scoreList[cheatIndex]:HasReplayData() or scoreList[cheatIndex]:GetNoteRowVector() == nil)
 			end
 		}
 
