@@ -7,11 +7,11 @@ t[#t+1] = Def.Quad{
 		self:diffuse(getMainColor("frame")):diffusealpha(0)
 	end,
 	OnCommand = function(self)
-		self:smooth(0.5)
+		self:smooth(0.2)
 		self:diffusealpha(0.8)
 	end,
 	OffCommand = function(self)
-		self:smooth(0.5)
+		self:smooth(0.2)
 		self:diffusealpha(0)
 	end
 }
