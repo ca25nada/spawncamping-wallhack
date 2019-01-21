@@ -851,8 +851,10 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 								height = 150, 
 								song = song, 
 								steps = steps, 
-								noterow = pss:GetNoteRowVector(), 
-								offset = pss:GetOffsetVector()}
+								nrv = pss:GetNoteRowVector(),
+								dvt = pss:GetOffsetVector(),
+								ctt = pss:GetTrackVector(),
+								ntt = pss:GetTapNoteTypeVector()}
 				self:playcommand("Update", params) end
 			)
 		end
