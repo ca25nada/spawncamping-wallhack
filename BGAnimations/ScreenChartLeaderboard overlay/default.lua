@@ -768,6 +768,11 @@ local function scoreList()
 				self:halign(0)
 			end,
 			SetCommand = function(self)
+				if hs:GetChordCohesion() then
+					self:diffuse(color("#F0EEA6"))
+				else
+					self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				end
 				self:settext(hs:GetDisplayName())
 			end
 			
@@ -785,6 +790,25 @@ local function scoreList()
 				local ratestring = "("..string.format("%.2f", scoreList[scoreIndex]:GetMusicRate()):gsub("%.?0$", "") .. "x)"
 				self:settext(ratestring)
 				self:x(self:GetParent():GetChild("DisplayName"):GetX()+(self:GetParent():GetChild("DisplayName"):GetWidth()*0.4)+5)
+			end
+		}
+		t[#t+1] = LoadFont("Common Normal") .. {
+			Name = "CCON",
+			InitCommand = function(self)
+				self:xy(40,-6)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+				self:halign(0)
+				self:settext("(CC On)")
+			end,
+			SetCommand = function(self)
+				if hs:GetChordCohesion() then
+					self:visible(true)
+				else
+					self:visible(false)
+				end
+				local ratewidth = self:GetParent():GetChild("RateString"):GetX()+(self:GetParent():GetChild("RateString"):GetWidth()*0.4)
+				self:x(ratewidth)
 			end
 		}
 
