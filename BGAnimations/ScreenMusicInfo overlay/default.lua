@@ -76,7 +76,7 @@ local function input(event)
 		if not numpad and event.char and tonumber(event.char) then
 			if tonumber(event.char) == 4 then
 				MESSAGEMAN:Broadcast("EnableChartPreview")
-			elseif tonumber(event.char) == 5 then
+			elseif tonumber(event.char) == 5 and DLMAN:IsLoggedIn() then
 				SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
 			end
 		end
