@@ -834,6 +834,19 @@ local function scoreList()
 			end
 		}
 
+		t[#t+1] = LoadFont("Common Normal") .. {
+			Name = "Date",
+			InitCommand = function(self)
+				self:xy(scoreItemWidth-5,-5)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+				self:halign(1)
+			end,
+			SetCommand = function(self)
+				self:settext(scoreList[scoreIndex]:GetDate())
+			end
+		}
+
 		return t
 	end
 
