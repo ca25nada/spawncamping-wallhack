@@ -889,6 +889,7 @@ local function scoreList()
 	end
 
 	local function scoreDetail()
+		local scoreIndex
 		local t = Def.ActorFrame{
 			InitCommand = function(self)
 				self:diffusealpha(0)
@@ -900,6 +901,7 @@ local function scoreList()
 				self:diffusealpha(0)
 			end,
 			ShowOnlineScoreDetailMessageCommand = function(self, params)
+				scoreIndex = params.scoreIndex
 				self:finishtweening()
 				self:xy(scoreItemX, (params.index+1)*(scoreItemHeight+scoreItemYSpacing)+100+scoreItemHeight/2)
 				self:easeOut(0.5)
@@ -913,6 +915,117 @@ local function scoreList()
 				self:playcommand("Hide")
 			end
 		}
+
+		-- Watch online replay button
+		t[#t+1] = quadButton(3)..{
+			InitCommand = function (self)
+				self:xy(95/2+3,30)
+				self:zoomto(90,20)
+				self:diffuse(color(colorConfig:get_data().main.disabled))
+			end,
+			ShowOnlineScoreDetailMessageCommand = function(self, params)
+				if scoreList[params.scoreIndex]:HasReplayData() then
+					self:diffusealpha(0.8)
+				else
+					self:diffusealpha(0.2)
+				end
+			end,
+
+			TopPressedCommand = function(self)
+				if scoreList[scoreIndex]:HasReplayData() then
+					self:finishtweening()
+					self:diffusealpha(1)
+					self:smooth(0.3)
+					self:diffusealpha(0.8)
+					MESSAGEMAN:Broadcast("TriggerExitFromMI", {score = scoreList[scoreIndex]})
+					SCREENMAN:GetTopScreen():Cancel()
+				end
+			end
+		}
+		t[#t+1] = LoadFont("Common Bold")..{
+			InitCommand  = function(self)
+				self:xy(95/2+3,30)
+				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:diffusealpha(0.4)
+				self:queuecommand('Set')
+			end,
+			SetCommand = function(self)
+				self:settext("Watch")
+			end,
+			ShowOnlineScoreDetailMessageCommand = function(self, params)
+				if scoreList[params.scoreIndex]:HasReplayData() then
+					self:diffusealpha(1)
+				else
+					self:diffusealpha(0.4)
+				end
+			end,
+		}
+
+		-- View Online Profile Button
+		t[#t+1] = quadButton(3)..{
+			InitCommand = function (self)
+				self:xy(95/2+3 + 95,30)
+				self:zoomto(90,20)
+				self:diffuse(color(colorConfig:get_data().main.disabled))
+			end,
+			ShowOnlineScoreDetailMessageCommand = function(self, params)
+				self:diffusealpha(0.8)
+			end,
+
+			TopPressedCommand = function(self)
+				self:finishtweening()
+				self:diffusealpha(1)
+				self:smooth(0.3)
+				self:diffusealpha(0.8)
+				local urlstring = "https://etternaonline.com/user/" .. scoreList[scoreIndex]:GetDisplayName()
+				GAMESTATE:ApplyGameCommand("urlnoexit," .. urlstring)
+			end
+		}
+		t[#t+1] = LoadFont("Common Bold")..{
+			InitCommand  = function(self)
+				self:xy(95/2+3 + 95,30)
+				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:queuecommand('Set')
+			end,
+			SetCommand = function(self)
+				self:settext("View Profile")
+			end
+		}
+
+		-- View Score On EtternaOnline Button
+		t[#t+1] = quadButton(3)..{
+			InitCommand = function (self)
+				self:xy(95/2+3 + 95 + 95,30)
+				self:zoomto(90,20)
+				self:diffuse(color(colorConfig:get_data().main.disabled))
+			end,
+			ShowOnlineScoreDetailMessageCommand = function(self, params)
+				self:diffusealpha(0.8)
+			end,
+
+			TopPressedCommand = function(self)
+				self:finishtweening()
+				self:diffusealpha(1)
+				self:smooth(0.3)
+				self:diffusealpha(0.8)
+				local urlstring = "https://etternaonline.com/score/view/" .. scoreList[scoreIndex]:GetScoreid() .. scoreList[scoreIndex]:GetUserid()
+				GAMESTATE:ApplyGameCommand("urlnoexit," .. urlstring)
+			end
+		}
+		t[#t+1] = LoadFont("Common Bold")..{
+			InitCommand  = function(self)
+				self:xy(95/2+3 + 95 + 95,30)
+				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:queuecommand('Set')
+			end,
+			SetCommand = function(self)
+				self:settext("View Online")
+			end
+		}
+
 
 		t[#t+1] = Def.Quad{
 			InitCommand = function(self)

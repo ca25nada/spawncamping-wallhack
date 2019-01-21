@@ -7,6 +7,7 @@ if isAutoLogin() then
 	DLMAN:Login(user, pass)
 end
 
+local replayScore
 
 local t = Def.ActorFrame{
 	LoginFailedMessageCommand = function(self)
@@ -19,6 +20,16 @@ local t = Def.ActorFrame{
 
 	LogOutMessageCommand=function(self)
 		SCREENMAN:SystemMessage("Logged Out!")
+	end,
+
+	TriggerReplayBeginMessageCommand = function(self, params)
+		replayScore = params.score
+		self:sleep(0.1)
+		self:queuecommand("DelayedReplayBegin")
+	end,
+
+	DelayedReplayBeginCommand = function(self)
+		SCREENMAN:GetTopScreen():PlayReplay(replayScore)
 	end
 }
 

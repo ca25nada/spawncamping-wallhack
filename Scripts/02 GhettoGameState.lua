@@ -5,7 +5,8 @@ GHETTOGAMESTATE = {
 	lastPlayedSecond = 0,
 	musicwheel = nil,
 	musicsearch = "",
-	onlineStatus = "Invalid"
+	onlineStatus = "Invalid",
+	SSM = nil
 }
 
 -- very bad cheaty way to get the music wheel across overlay screens
@@ -15,6 +16,14 @@ end
 
 function GHETTOGAMESTATE.getMusicWheel(self)
 	return self.musicwheel
+end
+
+function GHETTOGAMESTATE.setSSM(self, screen)
+	self.SSM = screen
+end
+
+function GHETTOGAMESTATE.getSSM(self)
+	return self.SSM
 end
 
 

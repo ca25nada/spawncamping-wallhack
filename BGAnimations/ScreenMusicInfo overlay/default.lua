@@ -88,6 +88,7 @@ local function input(event)
 end
 
 local top
+local replayScore
 
 local t = Def.ActorFrame {
 	OnCommand = function(self)
@@ -95,6 +96,15 @@ local t = Def.ActorFrame {
 		MESSAGEMAN:Broadcast("SetSteps",{steps = steps})
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
+	end,
+	TriggerExitFromMIMessageCommand = function(self, params)
+		self:sleep(0.1)
+		replayScore = params.score
+		self:queuecommand("DelayedExitMI")
+	end,
+	DelayedExitMICommand = function(self)
+		MESSAGEMAN:Broadcast("TriggerReplayBegin", {score = replayScore})
+		SCREENMAN:GetTopScreen():Cancel()
 	end
 }
 
