@@ -7,6 +7,9 @@ local scoreList = {}
 local maxItems = 10
 local maxPages = math.ceil(#scoreList/maxItems)
 local curPage = 1
+local currentCountry = "Global"
+
+local lbActor
 
 local validStepsType = {
 	'StepsType_Dance_Single',
@@ -17,6 +20,9 @@ local maxNumDifficulties = 0
 for _,st in pairs(validStepsType) do
 	maxNumDifficulties = math.max(maxNumDifficulties, #song:GetStepsByStepsType(st))
 end
+
+local filts = {"All Rates", "Current Rate"}
+local topfilts = {"Top Scores", "All Scores"}
 
 local function getNextStepsType(n)
 	for i = 1, #validStepsType do
@@ -33,7 +39,7 @@ local function movePage(n)
 	else
 		curPage = ((curPage+n+maxPages-1) % maxPages+1)
 	end
-	MESSAGEMAN:Broadcast("UpdateList")
+	MESSAGEMAN:Broadcast("UpdateCLBList")
 end
 
 local function meterComparator(stepA, stepB)
@@ -43,7 +49,23 @@ local function meterComparator(stepA, stepB)
 	return Enum.Reverse(Difficulty)[diffA] < Enum.Reverse(Difficulty)[diffB]
 end
 
+local function updateLeaderBoardForCurrentChart()
+	if steps then
+		DLMAN:RequestChartLeaderBoardFromOnline(
+			steps:GetChartKey(),
+			function(leaderboard)
+				lbActor:queuecommand("SetFromLeaderboard", leaderboard)
+			end
+		)
+	else
+		lbActor:queuecommand("SetFromLeaderboard", {})
+		ms.ok("asas")
+	end
+end
+
+
 local function input(event)
+	
 	if event.type == "InputEventType_FirstPress" then
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
@@ -71,33 +93,17 @@ local function input(event)
 		if event.button == "MenuRight" then
 			movePage(1)
 		end
-
-		local numpad = event.DeviceInput.button == "DeviceButton_KP "..event.char
-		if not numpad and event.char and tonumber(event.char) then
-			if tonumber(event.char) == 4 then
-				MESSAGEMAN:Broadcast("EnableChartPreview")
-			elseif tonumber(event.char) == 5 then
-				SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
-			end
-		end
-
 	end
-
 	return false
 
 end
 
 local top
+local frameWidth = 430
+local frameHeight = 340
 
-local t = Def.ActorFrame {
-	OnCommand = function(self)
-		MESSAGEMAN:Broadcast("SetStepsType",{st = stepsType})
-		MESSAGEMAN:Broadcast("SetSteps",{steps = steps})
-		top = SCREENMAN:GetTopScreen()
-		top:AddInputCallback(input)
-	end
-}
-
+local verticalSpacing = 7
+local horizontalSpacing = 10
 
 local function topRow()
 	local frameWidth = SCREEN_WIDTH - 20
@@ -271,7 +277,6 @@ local function topRow()
 
 	return t
 end
-
 
 local function stepsListRow()
 	local frameWidth = 150
@@ -456,12 +461,11 @@ local function stepsListRow()
 		}
 	end
 
-
 	return t
 end
 
 local function stepsBPMRow()
-	local topRowFrameWidth = SCREEN_WIDTH - 20
+	local topRowFrameWidth = 0
 	local topRowFrameHeight = 40
 	local frameWidth = 150
 	local frameHeight = 25
@@ -470,7 +474,7 @@ local function stepsBPMRow()
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:zoomto(frameWidth, 25)
-			self:xy(topRowFrameWidth/2, topRowFrameHeight)
+			self:xy(topRowFrameWidth, topRowFrameHeight + frameHeight)
 			self:diffuse(color("#000000")):diffusealpha(0.8)
 			self:halign(1)
 		end
@@ -479,7 +483,7 @@ local function stepsBPMRow()
 	t[#t+1] = quadButton(6)..{
 		InitCommand = function(self)
 			self:zoomto(frameWidth/2, frameHeight)
-			self:xy(topRowFrameWidth/2-frameWidth/2, topRowFrameHeight)
+			self:xy(topRowFrameWidth/2-frameWidth/2, topRowFrameHeight + frameHeight)
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
 			self:halign(1)
 			self:faderight(0.5)
@@ -497,7 +501,7 @@ local function stepsBPMRow()
 	t[#t+1] = quadButton(6)..{
 		InitCommand = function(self)
 			self:zoomto(frameWidth/2, frameHeight)
-			self:xy(topRowFrameWidth/2, topRowFrameHeight)
+			self:xy(topRowFrameWidth/2, topRowFrameHeight + frameHeight)
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
 			self:halign(1)
 			self:fadeleft(0.5)
@@ -519,7 +523,7 @@ local function stepsBPMRow()
 		InitCommand = function(self)
 			self:zoom(0.15)
 			self:diffusealpha(0.8)
-			self:xy(topRowFrameWidth/2-frameWidth+10,topRowFrameHeight)
+			self:xy(topRowFrameWidth/2-frameWidth+10,topRowFrameHeight + frameHeight)
 			self:rotationz(-90)
 		end,
 		TweenCommand = function(self)
@@ -535,7 +539,7 @@ local function stepsBPMRow()
 		InitCommand = function(self)
 			self:zoom(0.15)
 			self:diffusealpha(0.8)
-			self:xy(topRowFrameWidth/2-10,topRowFrameHeight)
+			self:xy(topRowFrameWidth/2-10,topRowFrameHeight + frameHeight)
 			self:rotationz(90)
 		end,
 		TweenCommand = function(self)
@@ -549,7 +553,7 @@ local function stepsBPMRow()
 	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand = function(self)
 			self:zoom(0.35)
-			self:xy(topRowFrameWidth/2-75,topRowFrameHeight-4)
+			self:xy(topRowFrameWidth/2-75,topRowFrameHeight-4 + frameHeight)
 		end,
 		SetStepsMessageCommand = function(self, params)
 			if params.steps then
@@ -565,7 +569,7 @@ local function stepsBPMRow()
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
 			self:zoom(0.3)
-			self:xy(topRowFrameWidth/2-75,topRowFrameHeight+4)
+			self:xy(topRowFrameWidth/2-75,topRowFrameHeight+4 + frameHeight)
 		end,
 		SetStepsMessageCommand = function(self, params)
 			self:settext(getCurRateDisplayString())
@@ -581,46 +585,33 @@ local function scoreList()
 	local t = Def.ActorFrame{
 		SetStepsMessageCommand = function(self, params)
 			steps = params.steps
-			scoreList = getScoreTable(pn, getCurRate(), steps)
+			scoreList = DLMAN:GetChartLeaderBoard(steps:GetChartKey(), currentCountry)
+			if #scoreList == 0 then
+				updateLeaderBoardForCurrentChart()
+			end
 			curPage = 1
 			if scoreList ~= nil then
 				maxPages = math.ceil(#scoreList/maxItems)
-				MESSAGEMAN:Broadcast("UpdateList")
+				MESSAGEMAN:Broadcast("UpdateCLBList")
 				self:GetChild("NoScore"):visible(false)
 			else
 				maxPages = 1
 				self:RunCommandsOnChildren(function(self) self:playcommand("Hide") end)
 				self:GetChild("NoScore"):visible(true):playcommand("Set")
 			end
-		end
-	}
-
-	t[#t+1] = Def.Quad{
-		InitCommand = function (self)
-			self:zoomto(frameWidth,frameHeight)
-			self:halign(0):valign(0)
-			self:diffuse(getMainColor("frame"))
-			self:diffusealpha(0.8)
 		end,
-		WheelUpSlowMessageCommand = function(self)
-			if self:isOver() and SCREENMAN:GetTopScreen():GetName() == "ScreenMusicInfo" then
-				movePage(-1)
+		SetFromLeaderboardCommand = function(self, leaderboard)
+			scoreList = DLMAN:GetChartLeaderBoard(steps:GetChartKey(), currentCountry)
+			curPage = 1
+			if scoreList ~= nil then
+				maxPages = math.ceil(#scoreList/maxItems)
+				MESSAGEMAN:Broadcast("UpdateCLBList")
+				self:GetChild("NoScore"):visible(false)
+			else
+				maxPages = 1
+				self:RunCommandsOnChildren(function(self) self:playcommand("Hide") end)
+				self:GetChild("NoScore"):visible(true):playcommand("Set")
 			end
-		end,
-		WheelDownSlowMessageCommand = function(self)
-			if self:isOver() and SCREENMAN:GetTopScreen():GetName() == "ScreenMusicInfo" then
-				movePage(1)
-			end
-		end
-	}
-
-	t[#t+1] = LoadFont("Common Bold")..{
-		InitCommand  = function(self)
-			self:xy(5, 10)
-			self:zoom(0.4)
-			self:halign(0)
-			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Scores")
 		end
 	}
 
@@ -650,6 +641,7 @@ local function scoreList()
 	local function scoreListItem(i)
 		local scoreIndex = (curPage-1)*10+i
 		local detail = false
+		local hs
 
 		local t = Def.ActorFrame{
 			InitCommand = function(self)
@@ -671,9 +663,11 @@ local function scoreList()
 				self:diffusealpha(0)
 				self:y(SCREEN_HEIGHT*10) -- Throw it offscreen
 			end,
-			UpdateListMessageCommand = function(self)
+			UpdateCLBListMessageCommand = function(self)
 				detail = false
 				scoreIndex = (curPage-1)*10+i
+				hs = scoreList[scoreIndex]
+
 				if scoreList ~= nil and scoreList[scoreIndex] ~= nil then
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 					self:playcommand("Show")
@@ -681,7 +675,7 @@ local function scoreList()
 					self:playcommand("Hide")
 				end
 			end,
-			ShowScoreDetailMessageCommand = function(self, params)
+			ShowOnlineScoreDetailMessageCommand = function(self, params)
 				if params.index == i then
 					detail = true
 					self:finishtweening()
@@ -724,7 +718,7 @@ local function scoreList()
 				self:diffusealpha(0.2)
 				if params.input == "DeviceButton_left mouse button" then
 					if not detail then
-						MESSAGEMAN:Broadcast("ShowScoreDetail", {index = i, scoreIndex = scoreIndex})
+						MESSAGEMAN:Broadcast("ShowOnlineScoreDetail", {index = i, scoreIndex = scoreIndex})
 					end
 				elseif params.input == "DeviceButton_right mouse button" then
 					MESSAGEMAN:Broadcast("HideScoreDetail")
@@ -765,6 +759,7 @@ local function scoreList()
 		}
 
 		t[#t+1] = LoadFont("Common Bold")..{
+			Name = "DisplayName",
 			InitCommand  = function(self)
 				self:xy(40,-6)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
@@ -772,10 +767,23 @@ local function scoreList()
 				self:halign(0)
 			end,
 			SetCommand = function(self)
-				local clearType = getClearType(pn,steps,scoreList[scoreIndex])
+				self:settext(hs:GetDisplayName())
+			end
+			
+		}
 
-				self:settext(getClearTypeText(clearType))
-				self:diffuse(getClearTypeColor(clearType))
+		t[#t+1] = LoadFont("Common Normal") .. {
+			Name = "RateString",
+			InitCommand = function(self)
+				self:xy(40,-6)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+				self:halign(0)
+			end,
+			SetCommand = function(self)
+				local ratestring = "("..string.format("%.2f", scoreList[scoreIndex]:GetMusicRate()):gsub("%.?0$", "") .. "x)"
+				self:settext(ratestring)
+				self:x(self:GetParent():GetChild("DisplayName"):GetX()+(self:GetParent():GetChild("DisplayName"):GetWidth()*0.4)+5)
 			end
 		}
 
@@ -804,13 +812,18 @@ local function scoreList()
 			end,
 			SetCommand = function(self)
 				local score = scoreList[scoreIndex]:GetWifeScore()
+				score = math.floor(score*1000000)/10000
 				local w1 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W1")
 				local w2 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W2")
 				local w3 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W3")
 				local w4 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W4")
 				local w5 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W5")
 				local miss = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_Miss")
-				self:settextf("%0.2f%% - %d / %d / %d / %d / %d / %d",math.floor(score*10000)/100, w1, w2, w3, w4, w5, miss)
+				if score >= 99.5 then
+					self:settextf("%0.4f%% - %d / %d / %d / %d / %d / %d",score, w1, w2, w3, w4, w5, miss)
+				else
+					self:settextf("%0.2f%% - %d / %d / %d / %d / %d / %d",score, w1, w2, w3, w4, w5, miss)
+				end
 				self:x(self:GetParent():GetChild("Grade"):GetX()+(self:GetParent():GetChild("Grade"):GetWidth()*0.4)+5)
 			end
 		}
@@ -848,7 +861,7 @@ local function scoreList()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
 			end,
-			ShowScoreDetailMessageCommand = function(self, params)
+			ShowOnlineScoreDetailMessageCommand = function(self, params)
 				self:finishtweening()
 				self:xy(scoreItemX, (params.index+1)*(scoreItemHeight+scoreItemYSpacing)+100+scoreItemHeight/2)
 				self:easeOut(0.5)
@@ -858,7 +871,7 @@ local function scoreList()
 			HideScoreDetailMessageCommand = function(self)
 				self:playcommand("Hide")
 			end,
-			UpdateListMessageCommand = function(self)
+			UpdatCLBListMessageCommand = function(self)
 				self:playcommand("Hide")
 			end
 		}
@@ -875,7 +888,7 @@ local function scoreList()
 			InitCommand = function(self, params)
 				self:xy(5, 55)
 			end,
-			ShowScoreDetailMessageCommand = function(self, params)
+			ShowOnlineScoreDetailMessageCommand = function(self, params)
 
 				if scoreList[params.scoreIndex]:HasReplayData() then
 					self:RunCommandsOnChildren(function(self)
@@ -901,7 +914,7 @@ local function scoreList()
 				self:settext("No replay data\n(゜´Д｀゜)")
 
 			end,
-			ShowScoreDetailMessageCommand = function(self, params)
+			ShowOnlineScoreDetailMessageCommand = function(self, params)
 				self:visible(not scoreList[params.scoreIndex]:HasReplayData())
 			end
 		}
@@ -920,15 +933,22 @@ local function scoreList()
 
 end
 
--- NO CLUE WHY THE PARENT ACTOR WON'T RECIEVE THESE BROADCASTS
-t[#t+1] = Def.Actor{
-	SetStepsMessageCommand = function(self, params)
-		steps = params.steps
-	end,
-	CurrentRateChangedMessageCommand = function(self)
+local t = Def.ActorFrame {
+	OnCommand = function(self)
+		top = SCREENMAN:GetTopScreen()
+		MESSAGEMAN:Broadcast("SetStepsType",{st = stepsType})
 		MESSAGEMAN:Broadcast("SetSteps",{steps = steps})
+		scoreList = DLMAN:GetChartLeaderBoard(steps:GetChartKey(), currentCountry)
+		if #scoreList == 0 then
+			updateLeaderBoardForCurrentChart()
+		end
+		top:AddInputCallback(input)
 	end
 }
+
+t[#t+1] = LoadActor("../_mouse")
+
+t[#t+1] = LoadActor("../_frame")
 
 t[#t+1] = topRow() .. {
 	InitCommand = function(self)
@@ -946,59 +966,189 @@ t[#t+1] = stepsListRow() .. {
 
 t[#t+1] = stepsBPMRow() .. {
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X, 50)
+		self:xy(160, 58)
 		self:delayedFadeIn(2)
 	end
 }
 
-t[#t+1] = LoadActor("stepsinfo") .. {
+-- The main, central container (Online Leaderboard)
+t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
-		self:xy(capWideScale(135,160),140)
-		self:delayedFadeIn(3)
-	end
+		self:xy(SCREEN_CENTER_X / 2, 110)
+	end,
+
+	Def.Quad {
+		InitCommand = function (self)
+			self:zoomto(frameWidth,frameHeight)
+			self:halign(0):valign(0)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0.8)
+		end,
+		WheelUpSlowMessageCommand = function(self)
+			if self:isOver() then
+				movePage(-1)
+			end
+		end,
+		WheelDownSlowMessageCommand = function(self)
+			if self:isOver() then
+				movePage(1)
+			end
+		end
+	},
+	LoadFont("Common Bold") .. {
+		InitCommand = function(self)
+			self:xy(5,10)
+			self:zoom(0.4)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("Online Scores")
+		end
+	},
+	LoadFont("Common Normal") .. {
+		Name = "RequestStatus",
+		InitCommand = function(self)
+			self:xy(5,30)
+			self:zoom(0.4)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("")
+		end,
+		UpdateCLBListMessageCommand = function(self)
+			if #scoreList == 0 then
+				self:settext("Online scores not tracked or no scores recorded...")
+			else
+				self:settext("")
+			end
+		end
+	}
+
 }
 
-t[#t+1] = LoadActor("ssrbreakdown") .. {
+-- Current Rate/All Rates Toggle Button
+t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
-		self:xy(capWideScale(135,160),315)
-		self:delayedFadeIn(4)
-	end
+		self:xy(10,155)
+	end,
+
+	Def.Quad {
+		InitCommand = function(self)
+			self:diffuse(color("#000000"))
+			self:xy(0,0)
+			self:halign(0)
+			self:diffusealpha(0.8)
+			self:zoomto(150,25)
+		end
+	},
+
+	quadButton(6) .. {
+		Name = "ToggleRateFilter",
+		InitCommand = function(self)
+			self:diffuse(color("#FFFFFF"))
+			self:xy(0, 0)
+			self:halign(0)
+			self:diffusealpha(0)
+			self:zoomto(150, 25)
+		end,
+		TopPressedCommand = function(self)
+			self:finishtweening()
+			self:diffusealpha(0.4)
+			self:smooth(0.3)
+			self:diffusealpha(0.0)
+			MESSAGEMAN:Broadcast("ToggleRateFilter")
+			updateLeaderBoardForCurrentChart()
+		end
+	},
+
+	LoadFont("Common Bold")..{
+		InitCommand = function(self)
+			self:xy(75, 0)
+			--self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:zoom(0.4)
+			self:playcommand("Set")
+		end,
+		SetCommand = function(self)
+			if DLMAN:GetCurrentRateFilter() then
+				self:settext(filts[2])
+			else
+				self:settext(filts[1])
+			end
+		end,
+		ToggleRateFilterMessageCommand = function(self)
+			DLMAN:ToggleRateFilter()
+			self:playcommand("Set")
+		end
+	}
 }
+
+
+-- Top Scores/All Scores Toggle Button
+t[#t+1] = Def.ActorFrame {
+	InitCommand = function(self)
+		self:xy(10,185)
+	end,
+
+	Def.Quad {
+		InitCommand = function(self)
+			self:diffuse(color("#000000"))
+			self:xy(0,0)
+			self:halign(0)
+			self:diffusealpha(0.8)
+			self:zoomto(150,25)
+		end
+	},
+
+	quadButton(6) .. {
+		Name = "TopScoreToggle",
+		InitCommand = function(self)
+			self:diffuse(color("#FFFFFF"))
+			self:xy(0, 0)
+			self:halign(0)
+			self:diffusealpha(0)
+			self:zoomto(150, 25)
+		end,
+		TopPressedCommand = function(self)
+			self:finishtweening()
+			self:diffusealpha(0.4)
+			self:smooth(0.3)
+			self:diffusealpha(0.0)
+			MESSAGEMAN:Broadcast("TopScoreToggle")
+			updateLeaderBoardForCurrentChart()
+		end
+	},
+
+	LoadFont("Common Bold")..{
+		InitCommand = function(self)
+			self:xy(75, 0)
+			--self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:zoom(0.4)
+			self:playcommand("Set")
+		end,
+		SetCommand = function(self)
+			if DLMAN:GetTopScoresOnlyFilter() then
+				self:settext(topfilts[1])
+			else
+				self:settext(topfilts[2])
+			end
+		end,
+		TopScoreToggleMessageCommand = function(self)
+			DLMAN:ToggleTopScoresOnlyFilter()
+			self:playcommand("Set")
+		end
+	}
+}
+
 
 t[#t+1] = scoreList() .. {
 	Name = "ScoreList",
 	InitCommand = function(self)
-		self:xy(320,110)
+		self:xy(SCREEN_CENTER_X / 2, 110)
 		self:delayedFadeIn(5)
+		lbActor = self
 	end
 }
 
-
-
-
-
-t[#t+1] = LoadActor("../_mouse")
-
-t[#t+1] = LoadActor("../_frame")
-
-local tab = TAB:new({"Scores", "Simfile Info", "Graphs", "Preview", "Leaderboard"})
-t[#t+1] = tab:makeTabActors() .. {
-	OnCommand = function(self)
-		self:y(SCREEN_HEIGHT+tab.height/2)
-		self:easeOut(0.5)
-		self:y(SCREEN_HEIGHT-tab.height/2)
-	end,
-	OffCommand = function(self)
-		self:y(SCREEN_HEIGHT+tab.height/2)
-	end,
-	TabPressedMessageCommand = function(self, params)
-		if params.name == "Preview" then
-			MESSAGEMAN:Broadcast("EnableChartPreview")
-		elseif params.name == "Leaderboard" and DLMAN:IsLoggedIn() then
-			SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
-		end
-	end
-}
 
 t[#t+1] = LoadActor("../_cursor")
 
