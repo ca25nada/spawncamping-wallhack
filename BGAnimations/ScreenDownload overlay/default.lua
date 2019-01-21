@@ -108,7 +108,6 @@ local function input(event)
 		if inputting then
 			if event.button == "Start" then
 				inputting = false
-				updateFilter()
 			elseif event.button == "Back" then
 				curInput = ""
 				inputting = false
@@ -160,6 +159,7 @@ local t = Def.ActorFrame {
 		top:AddInputCallback(input)
 		self:SetUpdateFunction(update)
 		MESSAGEMAN:Broadcast("UpdateList")
+		MESSAGEMAN:Broadcast("UpdateBundleList")
 	end
 }
 
@@ -168,6 +168,29 @@ local t = Def.ActorFrame {
 local function packInfo()
 	local frameWidth = 300
 	local frameHeight = SCREEN_HEIGHT - 60
+
+	local packItemWidth = frameWidth-30
+	local packItemHeight = 25
+
+	local packItemX = 20
+	local packItemY = 70+packItemHeight/2
+	local packItemYSpacing = 5
+
+	local bundlenames = {
+		"Novice",
+		"Novice-Expanded",
+		"Beginner",
+		"Beginner-Expanded",
+		"Intermediate",
+		"Intermediate-Expanded",
+		"Advanced",
+		"Advanced-Expanded",
+		"Expert",
+		"Expert-Expanded"
+	}
+
+	local diffcolors = {"#66ccff", "#099948", "#ddaa00", "#ff6666", "#c97bff"}
+
 	local t = Def.ActorFrame{}
 
 	t[#t+1] = Def.Quad{
@@ -185,37 +208,213 @@ local function packInfo()
 			self:zoom(0.4)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Pack Info")
+			self:settext("Simfile Pack Bundles")
 		end
 	}
 
-	t[#t+1] = Def.Quad{
-		InitCommand = function (self)
-			self:zoomto(256,80)
-			self:xy(frameWidth/2, 50):valign(0)
-			self:diffuse(getMainColor("background"))
-			self:diffusealpha(0.8)
-		end
-	}
-
-	t[#t+1] = Def.Sprite{
-		InitCommand = function (self)
-			self:Load(THEME:GetPathG("Common", "fallback banner"))
-			self:zoomto(256,80)
-			self:xy(frameWidth/2, 50):valign(0)
-			self:diffuse(getMainColor("frame"))
-			self:diffusealpha(0.8)
-		end
-	}
-
-	t[#t+1] = LoadFont("Common Bold")..{
+	-- The extra text in the Bundles section
+	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
-			self:xy(frameWidth/2, 80+50+10)
+			self:xy(5, 25)
 			self:zoom(0.4)
+			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("This is a placeholder section for Pack Information.")
+			self:settext("Click to filter the packs for each bundle.")
 		end
 	}
+
+	-- The Reset Filter Button
+	t[#t+1] = quadButton(6) .. {
+		Name = "ResetFilter",
+		InitCommand = function(self)
+			self:xy(packItemX, packItemY - packItemHeight - packItemYSpacing)
+			self:halign(0)
+			self:diffusealpha(0.2)
+			self:zoomto(packItemWidth / 4, packItemHeight - packItemYSpacing)
+		end,
+		TopPressedCommand = function(self)
+			self:finishtweening()
+			self:diffusealpha(0.4)
+			self:smooth(0.3)
+			self:diffusealpha(0.2)
+			curPage = 1
+			initpacklist:FilterAndSearch(
+					"", 0, 0, 0, 0
+				)
+			packlist = initpacklist:GetPackTable()
+			maxPages = math.ceil(#packlist/maxItems)
+			curInput = ""
+			MESSAGEMAN:Broadcast("UpdateList")
+
+		end
+	}
+
+	-- The Reset Filter Button Text
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand = function(self)
+			self:xy(packItemX + packItemWidth / 8, packItemY - packItemHeight - packItemYSpacing)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:zoom(0.4)
+			self:settextf("Reset Filter")
+		end
+	}
+
+	local function bundleItem(i)
+		local bundle
+		local bundleIndex = (curPage-1)*10+i
+
+		local t = Def.ActorFrame{
+			InitCommand = function(self)
+				self:diffusealpha(0)
+				self:xy(packItemX, packItemY + (i-1)*(packItemHeight+packItemYSpacing)-10)
+				self:playcommand("Show")
+			end,
+			ShowCommand = function(self)
+				self:y(packItemY + (i-1)*(packItemHeight+packItemYSpacing)-10)
+				self:diffusealpha(0)
+				self:finishtweening()
+				self:sleep((i-1)*0.03)
+				self:easeOut(1)
+				self:y(packItemY + (i-1)*(packItemHeight+packItemYSpacing))
+				self:diffusealpha(1)
+			end,
+			HideCommand = function(self)
+				self:stoptweening()
+				self:easeOut(0.5)
+				self:diffusealpha(0)
+			end,
+			UpdateBundleListMessageCommand = function(self) -- Pack List updates (e.g. new page)
+				bundleIndex = (curPage-1)*10+i
+				if DLMAN:GetCoreBundle(bundlenames[bundleIndex]:lower()) ~= nil then
+					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+					self:playcommand("Show")
+				else
+					self:playcommand("Hide")
+				end
+			end,
+		}
+
+		-- Pack index number
+		t[#t+1] = LoadFont("Common Normal")..{
+			InitCommand  = function(self)
+				self:xy(-10,0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+			end,
+			SetCommand = function(self)
+				self:settextf("%d", bundleIndex)
+			end
+		}
+
+		-- The download progress bar (background of the pack buttons)
+		t[#t+1] = Def.Quad{
+			Name = "ProgressBar",
+			InitCommand = function(self)
+				self:halign(0)
+				self:diffuse(color(colorConfig:get_data().main.highlight))
+				self:diffusealpha(0)
+				self:xy(0, 0)
+				self:zoomy(packItemHeight)
+			end,
+			SetCommand = function(self)
+				self:zoomx(0)
+			end
+		}
+
+		-- The pack button
+		t[#t+1] = quadButton(6) .. {
+			Name = "Size",
+			InitCommand = function(self)
+				self:halign(0)
+				self:diffusealpha(0.2)
+				self:zoomto(packItemWidth, packItemHeight)
+			end,
+			TopPressedCommand = function(self)
+				initpacklist:SetFromCoreBundle(bundlenames[bundleIndex]:lower())
+				packlist = initpacklist:GetPackTable()
+				self:finishtweening()
+				self:diffusealpha(0.4)
+				self:smooth(0.3)
+				self:diffusealpha(0.2)
+				maxPages = math.ceil(#packlist/maxItems)
+				MESSAGEMAN:Broadcast("UpdateList")
+			end,
+			SetCommand = function(self)
+				self:diffusealpha(0.2)
+			end
+		}
+
+		-- Color of the tab for the pack (downloaded/not downloaded)
+		t[#t+1] = Def.Quad{
+			Name = "Status",
+			InitCommand = function(self)
+				self:halign(0)
+				self:diffuse(color(colorConfig:get_data().main.highlight))
+				self:diffusealpha(0.8)
+				self:xy(0, 0)
+				self:zoomto(3, packItemHeight)
+			end,
+			SetCommand = function(self)
+				self:diffuse(byMSD(packlist.AveragePackDifficulty)):diffusealpha(0.8)
+			end
+		}
+
+		-- MSD average for the pack
+		t[#t+1] = LoadFont("Common Bold")..{
+			InitCommand  = function(self)
+				self:xy(20,0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.4)
+			end,
+			SetCommand = function(self)
+				initpacklist:SetFromCoreBundle(bundlenames[bundleIndex]:lower())
+				packlist = initpacklist:GetPackTable()
+				local msd = packlist.AveragePackDifficulty
+				self:settextf("%5.2f",msd)
+				self:diffuse(getMSDColor(msd))
+				initpacklist:FilterAndSearch(
+					"", 0, 0, 0, 0
+				)
+				packlist = initpacklist:GetPackTable() -- in a world of excessive laziness.....
+			end
+		}
+
+		-- Pack name
+		t[#t+1] = LoadFont("Common Bold")..{
+			InitCommand  = function(self)
+				self:xy(40,-6):halign(0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.4)
+			end,
+			SetCommand = function(self)
+				self:settext(bundlenames[bundleIndex]:gsub("-Expanded", " (expanded)"))
+				-- The pack names can get really long. Set the max width to double the button width
+				-- because not setting it to double the width makes the text half the width ????
+				self:maxwidth(packItemWidth * 2)
+			end
+		}
+
+		-- Pack file size
+		t[#t+1] = LoadFont("Common Normal")..{
+			Name = "Size",
+			InitCommand  = function(self)
+				self:xy(40,5):halign(0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+			end,
+			SetCommand = function(self)
+				local bundle = DLMAN:GetCoreBundle(bundlenames[bundleIndex]:lower())
+				self:settextf("%d MB", bundle["TotalSize"])
+			end
+		}
+
+
+		return t
+	end
+
+	for i=1, #bundlenames do
+		t[#t+1] = bundleItem(i)
+	end
 
 	return t
 end
@@ -272,6 +471,17 @@ local function packList()
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Simfile Packs")
+		end
+	}
+
+	-- The extra text in the Packs section
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(5, 25)
+			self:zoom(0.4)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("Click to download a pack. Searching for a pack resets the bundle filter.")
 		end
 	}
 
