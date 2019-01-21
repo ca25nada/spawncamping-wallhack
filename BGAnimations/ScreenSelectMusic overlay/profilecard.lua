@@ -405,8 +405,8 @@ local function generalFrame(pn)
 					meter = steps[pn]:GetMeter()
 				end
 				meter = math.max(1,meter)
-				self:settext(math.floor(meter))
-				self:x((math.min(1,meter/maxMeter))*(frameWidth-10)-frameWidth/2-3)
+				self:settextf("%0.2f", meter)
+				self:x((math.min(1,meter/maxMeter))*(frameWidth-15)-frameWidth/2-3)
 			else
 				self:settext(0)
 			end
