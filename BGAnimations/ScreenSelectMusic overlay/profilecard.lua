@@ -163,22 +163,25 @@ local function generalFrame(pn)
 		SetCommand = function(self)
 			local rating = 0
 			local rank = 0
+			local localrating = 0
 
 			if DLMAN:IsLoggedIn() then
 				rank = DLMAN:GetSkillsetRank("Overall")
 				rating = DLMAN:GetSkillsetRating("Overall")
+				localrating = profile[pn]:GetPlayerRating()
 
-				self:settextf("Skill Rating: %0.2f (#%d)", rating, rank)
-
-			else		
+				self:settextf("Skill Rating: %0.2f  (%0.2f #%d Online)", localrating, rating, rank)
+				self:AddAttribute(#"Skill Rating:", {Length = 7, Zoom =0.3 ,Diffuse = getMSDColor(localrating)})
+				self:AddAttribute(#"Skill Rating: 00.00  ", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})
+			else
 				if profile[pn] ~= nil then
-					rating = profile[pn]:GetPlayerRating()
-					self:settextf("Skill Rating: %0.2f",rating)
+					localrating = profile[pn]:GetPlayerRating()
+					self:settextf("Skill Rating: %0.2f",localrating)
+					self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(localrating)})
 				end
 
 			end
 
-			self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})
 		end,
 		BeginCommand = function(self) self:queuecommand('Set') end,
 		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end,
