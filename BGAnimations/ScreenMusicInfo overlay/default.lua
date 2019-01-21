@@ -955,7 +955,7 @@ t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
 
-local tab = TAB:new({"Scores", "Simfile Info", "Graphs"})
+local tab = TAB:new({"Scores", "Simfile Info", "Graphs", "Preview", "Leaderboard"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -966,6 +966,11 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2)
 	end,
 	TabPressedMessageCommand = function(self, params)
+		if params.name == "Preview" then
+			MESSAGEMAN:Broadcast("EnableChartPreview")
+		elseif params.name == "Leaderboard" then
+			SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
+		end
 	end
 }
 

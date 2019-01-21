@@ -99,7 +99,7 @@ local t = Def.ActorFrame{
 t[#t+1] = LoadActor("../_mouse")
 
 -- Profile contains: Profile breakdown (local and online)
--- Song Info contains: MSD, Scores, Chart Preview, (and something to let you tag the song)
+-- Song Info contains: MSD, Scores, Chart Preview, Online Leaderboard, (and something to let you tag the song)
 -- Group info contains: misc info (tags in this pack?)
 -- Filtering contains: filters, tags
 -- Downloads contains: Downloads, Bundles
