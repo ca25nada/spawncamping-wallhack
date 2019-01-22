@@ -75,7 +75,7 @@ local function input(event)
 		local numpad = event.DeviceInput.button == "DeviceButton_KP "..event.char
 		if not numpad and event.char and tonumber(event.char) then
 			if tonumber(event.char) == 4 then
-				MESSAGEMAN:Broadcast("EnableChartPreview")
+				SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
 			elseif tonumber(event.char) == 5 and DLMAN:IsLoggedIn() then
 				SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
 			end
@@ -1066,7 +1066,7 @@ t[#t+1] = tab:makeTabActors() .. {
 	end,
 	TabPressedMessageCommand = function(self, params)
 		if params.name == "Preview" then
-			MESSAGEMAN:Broadcast("EnableChartPreview")
+			SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
 		elseif params.name == "Leaderboard" and DLMAN:IsLoggedIn() then
 			SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
 		end

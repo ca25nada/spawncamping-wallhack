@@ -93,8 +93,8 @@ local t = Def.ActorFrame{
 		SCREENMAN:set_input_redirected(PLAYER_1, false)
 	end,
 	OnCommand = function(self)
-		
 		top = SCREENMAN:GetTopScreen()
+		GHETTOGAMESTATE:setSSM(top)
 		wheel = top:GetMusicWheel()
 		SCREENMAN:GetTopScreen():AddInputCallback(searchInput)
 		self:y(-frameHeight/2)
