@@ -27,7 +27,7 @@ local deltaSum = 0
 local function playMusic(self, delta)
 	deltaSum = deltaSum + delta
 	if deltaSum > delay and sampleEvent then
-		local s = SCREENMAN:GetTopScreen()
+		local s = GHETTOGAMESTATE:getSSM()
 		if s:GetName() == "ScreenSelectMusic" then
 			if s:GetMusicWheel():IsSettled() then
 				deltaSum = 0
