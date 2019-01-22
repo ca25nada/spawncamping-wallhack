@@ -4,6 +4,8 @@ local steps = GAMESTATE:GetCurrentSteps(pn)
 local stepsType = steps:GetStepsType()
 
 local ssm
+local NF
+local NFParent
 
 local validStepsType = {
 	'StepsType_Dance_Single',
@@ -36,6 +38,7 @@ local function input(event)
 	if event.type == "InputEventType_FirstPress" then
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
+			ssm:DeletePreviewNoteField(NFParent)
 		end
 
 		if event.button == "EffectUp" then
@@ -254,77 +257,7 @@ local function stepsListRow()
 			self:diffuse(color("#000000")):diffusealpha(0.8)
 			self:halign(0)
 		end
-
 	}
-
-	t[#t+1] = quadButton(6)..{
-		InitCommand = function(self)
-			self:zoomto(frameWidth/2, frameHeight)
-			self:xy(-topRowFrameWidth/2, topRowFrameHeight)
-			self:diffuse(color("#FFFFFF")):diffusealpha(0)
-			self:halign(0)
-			self:faderight(0.5)
-		end,
-		TopPressedCommand = function(self, params)
-			MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(-1)})
-			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
-
-			self:finishtweening()
-			self:diffusealpha(0.2)
-			self:smooth(0.3)
-			self:diffusealpha(0)
-		end
-	}
-	t[#t+1] = quadButton(6)..{
-		InitCommand = function(self)
-			self:zoomto(frameWidth/2, frameHeight)
-			self:xy(-topRowFrameWidth/2+frameWidth/2, topRowFrameHeight)
-			self:diffuse(color("#FFFFFF")):diffusealpha(0)
-			self:halign(0)
-			self:fadeleft(0.5)
-		end,
-		TopPressedCommand = function(self, params)
-			MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(1)})
-			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
-
-			self:finishtweening()
-			self:diffusealpha(0.2)
-			self:smooth(0.3)
-			self:diffusealpha(0)
-		end
-	}
-	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
-		Name = "TriangleLeft",
-		InitCommand = function(self)
-			self:zoom(0.15)
-			self:diffusealpha(0.8)
-			self:xy(-topRowFrameWidth/2+10,topRowFrameHeight)
-			self:rotationz(-90)
-		end,
-		TweenCommand = function(self)
-			self:finishtweening()
-			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
-			self:smooth(0.5)
-			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
-		end
-	}
-
-	t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
-		Name = "TriangleRight",
-		InitCommand = function(self)
-			self:zoom(0.15)
-			self:diffusealpha(0.8)
-			self:xy(-topRowFrameWidth/2+frameWidth-10,topRowFrameHeight)
-			self:rotationz(90)
-		end,
-		TweenCommand = function(self)
-			self:finishtweening()
-			self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
-			self:smooth(0.5)
-			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
-		end
-	}
-
 
 	t[#t+1] = LoadFont("Common Bold") .. {
 		InitCommand = function(self)
@@ -369,6 +302,7 @@ local function stepsListRow()
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1)-10)
 			end,
 			TopPressedCommand = function(self)
+				ssm:ChangeSteps(i)
 				MESSAGEMAN:Broadcast("SetSteps", {steps = stepsTable[i]})
 			end
 		}
@@ -538,6 +472,9 @@ local t = Def.ActorFrame {
 		MESSAGEMAN:Broadcast("SetStepsType",{st = stepsType})
 		MESSAGEMAN:Broadcast("SetSteps",{steps = steps})
 		top:AddInputCallback(input)
+	end,
+	ExitScreenMessageCommand = function(self)
+		ssm:DeletePreviewNoteField(NFParent)
 	end
 }
 
@@ -565,24 +502,35 @@ t[#t+1] = stepsListRow() .. {
 
 t[#t+1] = stepsBPMRow() .. {
 	InitCommand = function(self)
-		self:xy(160, 58)
+		self:xy(SCREEN_CENTER_X + frameWidth - 13, 25)
 		self:delayedFadeIn(2)
 	end
 }
 
+t[#t+1] = LoadActor("../ScreenMusicInfo overlay/stepsinfo") .. {
+	InitCommand = function(self)
+		self:xy(capWideScale(135,160),140)
+		self:delayedFadeIn(3)
+	end
+}
+
+t[#t+1] = LoadActor("../ScreenMusicInfo overlay/ssrbreakdown") .. {
+	InitCommand = function(self)
+		self:xy(capWideScale(135,160),315)
+		self:delayedFadeIn(4)
+	end
+}
 
 
-local NFParent
-local NF
--- The main, central container (Online Leaderboard)
+-- The main, central container (Preview Notefield)
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X / 1.5, 70)
+		self:xy(SCREEN_CENTER_X / 1.2 - 36, 110)
 	end,
 
 	Def.Quad {
 		InitCommand = function (self)
-			self:zoomto(frameWidth,frameHeight + 50)
+			self:zoomto(frameWidth,frameHeight)
 			self:halign(0):valign(0)
 			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
@@ -610,7 +558,7 @@ t[#t+1] = Def.ActorFrame {
 			if NF == nil then
 				return
 			end
-			NF:zoom(0.65):draworder(100)
+			NF:zoom(0.5):draworder(100)
 			ssm:dootforkfive(NFParent)
 			NF:xy(frameWidth / 2, 50)
 			NFParent:SortByDrawOrder()
