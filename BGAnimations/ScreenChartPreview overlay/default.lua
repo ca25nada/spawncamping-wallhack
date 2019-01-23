@@ -33,6 +33,19 @@ local function meterComparator(stepA, stepB)
 	return Enum.Reverse(Difficulty)[diffA] < Enum.Reverse(Difficulty)[diffB]
 end
 
+local stepsTable = {}
+
+-- I can't believe I have to do this
+local function findCurStepIndex(givenSteps)
+	for i = 1, #stepsTable do
+		if stepsTable[i]:GetChartKey() == givenSteps:GetChartKey() then
+			return i
+		end
+	end
+end
+
+local curStepIndex = 0
+
 local function input(event)
 	
 	if event.type == "InputEventType_FirstPress" then
@@ -202,6 +215,7 @@ local function topRow()
 		SetCommand = function(self, params)
 			local curSteps = params.steps
 			if curSteps ~= nil then
+				curStepIndex = findCurStepIndex(curSteps)
 
 				local meter = math.floor(curSteps:GetMSD(getCurRateValue(),1))
 				if meter == 0 then
@@ -240,8 +254,6 @@ local function stepsListRow()
 	local topRowFrameWidth = SCREEN_WIDTH - 20
 	local topRowFrameHeight = 40
 
-
-	local stepsTable = {}
 	local t = Def.ActorFrame{
 		SetStepsTypeMessageCommand = function(self, params)
 			stepsTable = song:GetStepsByStepsType(params.st)
@@ -302,8 +314,11 @@ local function stepsListRow()
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1)-10)
 			end,
 			TopPressedCommand = function(self)
-				ssm:ChangeSteps(i)
-				MESSAGEMAN:Broadcast("SetSteps", {steps = stepsTable[i]})
+				local dir = i - curStepIndex
+				if dir ~= 0 then
+					ssm:ChangeSteps(dir)
+					MESSAGEMAN:Broadcast("SetSteps", {steps = stepsTable[i]})
+				end
 			end
 		}
 
