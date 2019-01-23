@@ -16,10 +16,12 @@ local t = Def.ActorFrame{
 
 	LoginMessageCommand=function(self)
 		SCREENMAN:SystemMessage("Login Successful!")
+		GHETTOGAMESTATE:setOnlineStatus("Online")
 	end,
 
 	LogOutMessageCommand=function(self)
 		SCREENMAN:SystemMessage("Logged Out!")
+		GHETTOGAMESTATE:setOnlineStatus("Local")
 	end,
 
 	TriggerReplayBeginMessageCommand = function(self, params)
