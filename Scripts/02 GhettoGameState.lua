@@ -5,7 +5,7 @@ GHETTOGAMESTATE = {
 	lastPlayedSecond = 0,
 	musicwheel = nil,
 	musicsearch = "",
-	onlineStatus = "Invalid",
+	onlineStatus = "Local",
 	SSM = nil
 }
 
