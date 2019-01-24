@@ -6,6 +6,7 @@ local loop = themeConfig:get_data().global.SongPreview == 2
 local curPath = ""
 local sampleStart = 0
 local musicLength = 0
+local loops = 0
 
 local sampleEvent = false
 
@@ -29,7 +30,7 @@ local function playMusic(self, delta)
 	if deltaSum > delay and sampleEvent then
 		local s = GHETTOGAMESTATE:getSSM()
 		if s:GetName() == "ScreenSelectMusic" then
-			if s:GetMusicWheel():IsSettled() then
+			if s:GetMusicWheel():IsSettled() and loops <= 1 then
 				deltaSum = 0
 				if curSong and curPath then
 					if startFromPreview then -- When starting from preview point
@@ -50,6 +51,7 @@ local function playMusic(self, delta)
 						end
 
 					end
+					loops = loops + 1
 				end
 			end
 		end
@@ -66,6 +68,7 @@ local t = Def.ActorFrame{
 	end,
 	CurrentSongChangedMessageCommand = function(self)
 		sampleEvent = false
+		loops = 0
 		SOUND:StopMusic()
 		deltaSum = 0
 		curSong = GAMESTATE:GetCurrentSong()
