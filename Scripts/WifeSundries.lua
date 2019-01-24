@@ -46,6 +46,6 @@ function changeMusicRate(amount)
 		GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate(curRate+amount)
 		GAMESTATE:GetSongOptionsObject('ModsLevel_Song'):MusicRate(curRate+amount)
 		GAMESTATE:GetSongOptionsObject('ModsLevel_Current'):MusicRate(curRate+amount)
-		MESSAGEMAN:Broadcast("CurrentRateChanged", {rate = newRate})
+		MESSAGEMAN:Broadcast("CurrentRateChanged", {rate = newRate, oldRate = curRate})
 	end
 end
