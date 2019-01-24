@@ -34,16 +34,18 @@ local function playMusic(self, delta)
 				deltaSum = 0
 				if curSong and curPath then
 					if startFromPreview then -- When starting from preview point
-						SOUND:PlayMusicPart(curPath,sampleStart,musicLength-sampleStart,2,2,loop,true,true)
-						self:SetUpdateFunctionInterval(musicLength-sampleStart)
+						amountOfWait = musicLength - sampleStart
+						SOUND:PlayMusicPart(curPath,sampleStart,amountOfWait,2,2,loop,true,true)
+						self:SetUpdateFunctionInterval(amountOfWait)
 
 						if themeConfig:get_data().global.SongPreview == 3 then 
 							startFromPreview = false
 						end
 
 					else -- When starting from start of from exit point.
-						SOUND:PlayMusicPart(curPath,start,musicLength-start,2,2,false,true,false)
-						self:SetUpdateFunctionInterval(musicLength-start)
+						amountOfWait = musicLength - start
+						SOUND:PlayMusicPart(curPath,start,amountOfWait,2,2,false,true,false)
+						self:SetUpdateFunctionInterval(amountOfWait)
 						start = 0
 
 						if themeConfig:get_data().global.SongPreview == 2 then
@@ -91,6 +93,12 @@ local t = Def.ActorFrame{
 		if themeConfig:get_data().global.SongPreview ~= 1 then
 			self:SetUpdateFunctionInterval(0.002)
 			SOUND:StopMusic()
+		end
+	end,
+	CurrentRateChangedMessageCommand = function(self, params)
+		if themeConfig:get_data().global.SongPreview ~= 1 then
+			amountOfWait = amountOfWait / (1 / params.oldRate) / params.rate -- fun math, this works.
+			self:SetUpdateFunctionInterval(amountOfWait)
 		end
 	end
 }
