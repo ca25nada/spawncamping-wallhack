@@ -63,6 +63,10 @@ local function input(event)
 			changeMusicRate(-0.05)
 		end
 
+		if event.DeviceInput.button == "DeviceButton_right mouse button" then
+			ssm:PausePreviewNoteField()
+		end
+
 	end
 	return false
 
