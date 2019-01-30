@@ -134,6 +134,12 @@ local defaultConfig = {
 		TabContentText = "#FFFFFF",
 		BannerText = "#FFFFFF",
 		StepsDisplayListText = "#FFFFFF"
+	},
+
+	miscellaneous = {
+		PreviewProgress = "#00FF66",
+		PreviewSeek = "#FF3333",
+		ChordGraphGradientDark = "#555555",
 	}
 
 }
@@ -166,6 +172,10 @@ end
 
 function getPaceMakerColor(type)
 	return color(colorConfig:get_data().gameplay["Pacemaker"..type]) or color("#ffffff")
+end
+
+function getMiscColor(type)
+	return color(colorConfig:get_data().miscellaneous[type])
 end
 
 function getSongLengthColor(s)
