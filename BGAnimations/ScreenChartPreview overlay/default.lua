@@ -6,6 +6,7 @@ local stepsType = steps:GetStepsType()
 local ssm
 local NF
 local NFParent
+local musicratio = 1
 
 local validStepsType = {
 	'StepsType_Dance_Single',
@@ -536,6 +537,167 @@ t[#t+1] = LoadActor("../ScreenMusicInfo overlay/ssrbreakdown") .. {
 	end
 }
 
+local function getColorForDensity(density, nColumns)
+	-- Generically (generally? intelligently? i dont know) set a range
+	-- Colors are color(0.1,0.1,0.1) to color(0.7,0.7,0.7)
+	-- The value var describes the level of density.
+	-- Beginning at 0.1 for 0, to 0.7 for nColumns.
+	-- You wouldn't give nColumns = 1 to this function or else something is wrong with you.
+	local value = 0.1 + (nColumns - (density - 1)) * (0.6 / (nColumns - 1))
+	return color(tostring(value)..","..tostring(value)..","..tostring(value))
+end
+
+local function makeABar(vertices, x, y, barWidth, barHeight, thecolor)
+	-- These bars are horizontal, progressively going down the screen
+	-- Their corners are: (x,y), (x+barHeight,y), (x,y+barWidth), (x+barHeight, y+barWidth)
+	vertices[#vertices + 1] = {{x,y-barWidth,0},thecolor}
+	vertices[#vertices + 1] = {{x+barHeight,y-barWidth,0},thecolor}
+	vertices[#vertices + 1] = {{x+barHeight,y,0},thecolor}
+	vertices[#vertices + 1] = {{x,y,0},getMiscColor("ChordGraphGradientDark")}
+end
+
+local function seekOrHighlight(self)
+	local pos = ssm:GetPreviewNoteFieldMusicPosition() / musicratio
+	self:GetChild("PreviewProgress"):zoomto(84, math.min(pos, frameHeight-20))
+	self:queuecommand("Highlight")
+end
+
+-- The container for the density graph and scrollbar
+t[#t+1] = Def.ActorFrame {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X / 1.2 - 36 + frameWidth + horizontalSpacing, 110)
+		self:GetChild("ChordDensityGraph"):queuecommand("GraphUpdate")
+		self:SetUpdateFunction(seekOrHighlight)
+		self:queuecommand("DelayedUpdateHack")
+	end,
+	DelayedUpdateHackCommand = function(self)
+		-- i dunno maybe the song might not be ready in time, just in case bro
+		musicratio = GAMESTATE:GetCurrentSong():GetLastSecond() / (frameHeight - 20)
+	end,
+
+
+	-- container bg
+	Def.Quad {
+		InitCommand = function (self)
+			self:zoomto(84,frameHeight)
+			self:halign(0):valign(0)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0.8)
+		end
+	},
+
+	Def.Quad {
+		Name = "PreviewProgress",
+		InitCommand = function(self)
+			self:xy(84/2, 20)
+			self:zoomto(84, 200)
+			self:diffuse(getMiscColor("PreviewProgress"))
+			self:diffusealpha(0.5)
+			self:valign(0)
+		end
+	},
+
+	Def.ActorMultiVertex {
+		Name = "ChordDensityGraph",
+		SetStepsMessageCommand = function(self, params)
+			if params.steps then
+				self:queuecommand("GraphUpdate")
+			end
+		end,
+		CurrentRateChangedMessageCommand = function(self)
+			if steps then
+				self:queuecommand("GraphUpdate")
+			end
+		end,
+		GraphUpdateCommand = function(self)
+			steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			if steps then
+				local nColumns = steps:GetNumColumns()
+				local rate = math.max(1, getCurRateValue())
+				local graphVectors = steps:GetCDGraphVectors(rate)
+				if graphVectors == nil then
+					self:SetVertices({})
+					self:SetDrawState( {Mode = "DrawMode_Quads", First = 0, Num = 0} )
+					return
+				end
+				local npsVector = graphVectors[1] -- CPS Vector 1 (Taps per second)
+				local numberOfRows = #npsVector
+				local rowWidth = (frameHeight - 20) / numberOfRows * rate
+
+				-- Width scale of graph relative to max nps
+				local mWidth = 0
+				for i = 1, #npsVector do
+					if npsVector[i] * 2 > mWidth then
+						mWidth = npsVector[i] * 2
+					end
+				end
+
+				self:GetParent():GetChild("NPSText"):settext(mWidth / 2 .. " max NPS")
+				mWidth = 84 / mWidth
+				local verts = {}
+				for density = 1, nColumns do
+					for row = 1, numberOfRows do
+						if graphVectors[density][row] > 0 then
+							local barColor = getColorForDensity(density, nColumns)
+							makeABar(verts, 0, 20+math.min(row * rowWidth, frameHeight-20), rowWidth, graphVectors[density][row] * 2 * mWidth, barColor)
+						end
+					end
+				end
+				
+				self:SetVertices(verts)
+				self:SetDrawState( {Mode = "DrawMode_Quads", First = 1, Num = #verts} )
+
+			end
+		end
+	},
+
+	LoadFont("Common Bold") .. {
+		Name = "NPSText",
+		InitCommand = function(self)
+			self:xy(84/2,10)
+			self:zoom(0.4)
+			--self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("")
+			self:maxwidth(84 * 2.2)
+		end
+	},
+
+	-- This handles the seeking through the preview
+	quadButton(6) .. {
+		Name = "PreviewClickable",
+		InitCommand = function(self)
+			self:diffuse(color("#000000"))
+			self:y(20)
+			self:zoomto(84,frameHeight-20)
+			self:halign(0):valign(0)
+			self:diffusealpha(0)
+		end,
+		HighlightCommand = function(self)
+			if isOver(self) then
+				self:GetParent():GetChild("PreviewSeek"):visible(true)
+				self:GetParent():GetChild("PreviewSeek"):y(INPUTFILTER:GetMouseY() - self:GetParent():GetY())
+			else
+				self:GetParent():GetChild("PreviewSeek"):visible(false)
+			end
+		end,
+		TopPressedCommand = function(self)
+			ssm:SetPreviewNoteFieldMusicPosition( (INPUTFILTER:GetMouseY() - self:GetParent():GetY() - 20) * musicratio)
+		end
+	},
+	
+	-- This is the position bar for seeking
+	Def.Quad {
+		Name = "PreviewSeek",
+		InitCommand = function(self)
+			self:y(20)
+			self:zoomto(84, 1)
+			self:diffuse(getMiscColor("PreviewSeek"))
+			self:halign(0)
+		end
+	}
+
+}
 
 -- The main, central container (Preview Notefield)
 t[#t+1] = Def.ActorFrame {
