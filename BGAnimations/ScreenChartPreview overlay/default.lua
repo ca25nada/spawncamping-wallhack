@@ -63,6 +63,14 @@ local function input(event)
 			changeMusicRate(-0.05)
 		end
 
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			MESSAGEMAN:Broadcast("WheelUpSlow")
+		end
+
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			MESSAGEMAN:Broadcast("WheelDownSlow")
+		end
+
 		if event.DeviceInput.button == "DeviceButton_right mouse button" then
 			ssm:PausePreviewNoteField()
 		end
@@ -668,7 +676,7 @@ t[#t+1] = Def.ActorFrame {
 	},
 
 	-- This handles the seeking through the preview
-	quadButton(6) .. {
+	Def.Quad {
 		Name = "PreviewClickable",
 		InitCommand = function(self)
 			self:diffuse(color("#000000"))
@@ -685,8 +693,20 @@ t[#t+1] = Def.ActorFrame {
 				self:GetParent():GetChild("PreviewSeek"):visible(false)
 			end
 		end,
-		TopPressedCommand = function(self)
-			ssm:SetPreviewNoteFieldMusicPosition( (INPUTFILTER:GetMouseY() - self:GetParent():GetY() - 20) * musicratio)
+		MouseLeftClickMessageCommand = function(self)
+			if isOver(self) then
+				ssm:SetPreviewNoteFieldMusicPosition( (INPUTFILTER:GetMouseY() - self:GetParent():GetY() - 20) * musicratio)
+			end
+		end,
+		WheelUpSlowMessageCommand = function(self)
+			if isOver(self) then
+				ssm:SetPreviewNoteFieldMusicPosition( ssm:GetPreviewNoteFieldMusicPosition() - 0.1 )
+			end
+		end,
+		WheelDownSlowMessageCommand = function(self)
+			if isOver(self) then
+				ssm:SetPreviewNoteFieldMusicPosition( ssm:GetPreviewNoteFieldMusicPosition() + 0.1 )
+			end
 		end
 	},
 	
