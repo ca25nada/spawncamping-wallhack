@@ -83,6 +83,7 @@ local function searchInput(event)
 		if lastsearchstring ~= searchstring then
 			wheel:SongSearch(searchstring)
 			lastsearchstring = searchstring
+			GHETTOGAMESTATE:setMusicSearch(searchstring)
 		end
 	end
 end
