@@ -363,6 +363,57 @@ t[#t+1] = Def.ActorFrame {
 		FilterResultsMessageCommand = function(self, msg)
 			self:settextf("%d / %d", msg.Matches, msg.Total)
 		end
+	},
+	quadButton(6) .. {
+		Name = "ModeButton",
+		InitCommand = function(self)
+			self:xy(20, 45 + (boxHeight + boundVerticalSpacing)*(#ms.SkillSets+1))
+			self:zoomto(numBoxWidth, 20)
+			self:diffusealpha(0.2)
+			self:halign(0):valign(0)
+		end,
+		TopPressedCommand = function(self)
+			self:finishtweening()
+			self:diffusealpha(0.4)
+			self:smooth(0.3)
+			self:diffusealpha(0.2)
+			FILTERMAN:ToggleFilterMode()
+			self:GetParent():GetChild("ModeText"):queuecommand("Set")
+			self:GetParent():GetChild("ModeExplanation"):queuecommand("Set")
+			wheelSearch()
+		end
+	},
+	LoadFont("Common Normal") .. {
+		Name = "ModeText",
+		InitCommand = function(self)
+			self:xy(20 + numBoxWidth/10, 50 + (boxHeight + boundVerticalSpacing)*(#ms.SkillSets+1))
+			self:zoom(0.4)
+			self:valign(0):halign(0)
+			self:queuecommand("Set")
+		end,
+		SetCommand = function(self)
+			if FILTERMAN:GetFilterMode() then
+				self:settext("Mode: And")
+			else
+				self:settext("Mode: Or")
+			end
+		end
+	},
+	LoadFont("Common Normal") .. {
+		Name = "ModeExplanation",
+		InitCommand = function(self)
+			self:xy(20 + numBoxWidth + 5, 50 + (boxHeight + boundVerticalSpacing)*(#ms.SkillSets+1))
+			self:zoom(0.4)
+			self:valign(0):halign(0)
+			self:queuecommand("Set")
+		end,
+		SetCommand = function(self)
+			if FILTERMAN:GetFilterMode() then
+				self:settext("Must match all set bounds")
+			else
+				self:settext("May match any set bound")
+			end
+		end
 	}
 }
 
