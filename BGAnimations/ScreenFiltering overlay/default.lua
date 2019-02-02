@@ -112,6 +112,7 @@ local t = Def.ActorFrame {
 		everything = self
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
+		wheelSearch()
 	end
 }
 
@@ -344,6 +345,23 @@ t[#t+1] = Def.ActorFrame {
 			self:xy(leftSectionWidth - (numBoxWidth + boundHorizontalSpacing)/2 - 5, 50)
 			self:zoom(0.4)
 			self:settext("Reset")
+		end
+	},
+	LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(leftSectionWidth - (numBoxWidth + boundHorizontalSpacing)/2 - 15, boxHeight * (#ms.SkillSets+1) + boundVerticalSpacing * #ms.SkillSets)
+			self:settext("Matches")
+			self:zoom(0.4)
+		end
+	},
+	LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(leftSectionWidth - (numBoxWidth + boundHorizontalSpacing)/2 - 15, boxHeight * (#ms.SkillSets+1) + boundVerticalSpacing * #ms.SkillSets + 10)
+			self:settext("?? / ??")
+			self:zoom(0.35)
+		end,
+		FilterResultsMessageCommand = function(self, msg)
+			self:settextf("%d / %d", msg.Matches, msg.Total)
 		end
 	}
 }
