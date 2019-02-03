@@ -112,7 +112,6 @@ local t = Def.ActorFrame {
 		everything = self
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
-		wheelSearch()
 	end
 }
 
