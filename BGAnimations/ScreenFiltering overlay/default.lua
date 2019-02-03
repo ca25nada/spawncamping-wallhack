@@ -281,7 +281,7 @@ t[#t+1] = Def.ActorFrame {
 			self:zoom(0.4)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Filter Files by Rating")
+			self:settext("Filter Files")
 		end
 	},
 	LoadFont("Common Normal") .. {
