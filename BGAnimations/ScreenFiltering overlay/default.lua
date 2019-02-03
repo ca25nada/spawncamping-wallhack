@@ -420,33 +420,183 @@ for i = 1, #filterFields["Lower"] do
 	t[#t+1] = boundBoxes(i)	
 end
 
+local maxTags = 20
+local curPage = 1
+local ptags = tags:get_data().playerTags
+local playertags = {}
+local tagName
+
+local function updateTagsFromData()
+	ptags = tags:get_data().playerTags
+	playertags = {}
+	for k,v in pairs(ptags) do
+		playertags[#playertags+1] = k
+	end
+	table.sort(playertags)
+	curPage = 1
+end
+
 -- The right container (The Tags Menu)
-t[#t+1] = Def.ActorFrame {
-	InitCommand = function(self)
-		self:xy(20 + leftSectionWidth,30)
-	end,
+local function rightContainer()
 
-	Def.Quad {
-		InitCommand = function (self)
-			self:zoomto(rightSectionWidth,rightSectionHeight)
-			self:halign(0):valign(0)
-			self:diffuse(getMainColor("frame"))
-			self:diffusealpha(0.8)
-		end,
-	},
-	LoadFont("Common Bold") .. {
+	local boxHeight = 25
+	local boxWidth = rightSectionWidth / 3
+
+	local t = Def.ActorFrame {
 		InitCommand = function(self)
-			self:xy(5,10)
-			self:zoom(0.4)
-			self:halign(0)
-			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Tag Files and Organize")
-		end
-	},
-}
+			self:xy(20 + leftSectionWidth,30)
+			updateTagsFromData()
+			MESSAGEMAN:Broadcast("UpdateList")
+		end,
+		SaveNewTagCommand = function(self)
+			if tagName ~= "" and ptags[tagName] == nil then
+				tags:get_data().playerTags[tagName] = {}
+				tags:set_dirty()
+				tags:save()
+				updateTagsFromData()
+				MESSAGEMAN:Broadcast("UpdateList")
+			end
+		end,
 
+		Def.Quad {
+			InitCommand = function (self)
+				self:zoomto(rightSectionWidth,rightSectionHeight)
+				self:halign(0):valign(0)
+				self:diffuse(getMainColor("frame"))
+				self:diffusealpha(0.8)
+			end,
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:xy(5,10)
+				self:zoom(0.4)
+				self:halign(0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("Manage Tags")
+			end
+		},
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(25, rightSectionHeight - 30)
+				self:halign(0)
+				self:diffusealpha(0.2)
+				self:zoomto(numBoxWidth, 20)
+			end,
+			TopPressedCommand = function(self)
+				self:finishtweening()
+				self:diffusealpha(0.4)
+				self:smooth(0.3)
+				self:diffusealpha(0.2)
+				local tagname = function(ans) 
+					tagName = ans
+					self:GetParent():queuecommand("SaveNewTag")
+				end
+				easyInputStringWithFunction("Tag Name:", 255, false, tagname)
+			end
+		},
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(25 + numBoxWidth/2,rightSectionHeight - 30)
+				self:zoom(0.4)
+				self:settext("Create Tag")
+			end
+		}
+	}
 
+	-- this is copied straight from the pack downloader screen
+	-- theming is so easy lol
+	local function tagItem(i)
+		local tagIndex = (curPage-1)*20+i
 
+		local r = Def.ActorFrame{
+			InitCommand = function(self)
+				self:diffusealpha(0)
+				self:xy(25 + boxWidth*1.5*((tagIndex-1) % maxTags >= 10 and 1 or 0), 30 + ((i-1) % math.floor(maxTags/2))*(boxHeight+verticalSpacing)-10)
+				self:playcommand("Show")
+			end,
+			ShowCommand = function(self)
+				self:y(30 + ((i-1) % math.floor(maxTags/2))*(boxHeight+verticalSpacing)-10)
+				self:diffusealpha(0)
+				self:finishtweening()
+				self:sleep((i-1)*0.03)
+				self:easeOut(1)
+				self:y(30 + ((i-1) % math.floor(maxTags/2))*(boxHeight+verticalSpacing)+25)
+				self:diffusealpha(1)
+			end,
+			HideCommand = function(self)
+				self:stoptweening()
+				self:easeOut(0.5)
+				self:diffusealpha(0)
+			end,
+			UpdateListMessageCommand = function(self)
+				tagIndex = (curPage-1)*20+i
+				if playertags[tagIndex] ~= nil then
+					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+					self:playcommand("Show")
+				else
+					self:playcommand("Hide")
+				end
+			end
+		}
+
+		-- Tag index number
+		r[#r+1] = LoadFont("Common Normal")..{
+			InitCommand  = function(self)
+				self:xy(-10,0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+			end,
+			SetCommand = function(self)
+				self:settextf("%d", tagIndex)
+			end
+		}
+
+		-- The tag button
+		r[#r+1] = quadButton(6) .. {
+			InitCommand = function(self)
+				self:halign(0)
+				self:diffusealpha(0.2)
+				self:zoomto(boxWidth, boxHeight)
+			end,
+			TopPressedCommand = function(self, params)
+				self:finishtweening()
+				if params.input ~= "DeviceButton_left mouse button" then
+					return
+				end
+				self:diffusealpha(0.4)
+				self:smooth(0.3)
+				self:diffusealpha(0.2)
+				ms.ok(tagIndex)
+			end,
+			SetCommand = function(self)
+				self:diffusealpha(0.2)
+			end
+		}
+
+		-- Tag name
+		r[#r+1] = LoadFont("Common Bold")..{
+			InitCommand  = function(self)
+				self:xy(40,-6):halign(0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.4)
+			end,
+			SetCommand = function(self)
+				self:settextf("%s",playertags[tagIndex])
+				self:maxwidth(boxWidth * 2)
+			end
+		}
+
+		return r
+	end
+
+	for i = 1, maxTags do
+		t[#t+1] = tagItem(i)
+	end
+
+	return t
+end
+
+t[#t+1] = rightContainer()
 
 t[#t+1] = LoadActor("../_cursor")
 
