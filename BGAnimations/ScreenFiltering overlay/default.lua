@@ -7,6 +7,36 @@ filterFields["Upper"] = {}
 local boundSection
 local everything
 
+
+local maxTags = 20
+local maxPages = 1
+local curPage = 1
+local ptags = tags:get_data().playerTags
+local playertags = {}
+local tagName
+
+local function updateTagsFromData()
+	ptags = tags:get_data().playerTags
+	playertags = {}
+	for k,v in pairs(ptags) do
+		playertags[#playertags+1] = k
+	end
+	table.sort(playertags)
+	curPage = 1
+	maxPages = math.ceil(#playertags/maxTags)
+end
+
+local function movePage(n)
+	if maxPages > 1 then
+		if n > 0 then 
+			curPage = ((curPage+n-1) % maxPages + 1)
+		else
+			curPage = ((curPage+n+maxPages-1) % maxPages+1)
+		end
+	end
+	MESSAGEMAN:Broadcast("UpdateList")
+end
+
 local function wheelSearch()
 	GHETTOGAMESTATE:getSSM():GetMusicWheel():SongSearch(GHETTOGAMESTATE:getMusicSearch())
 end
@@ -56,8 +86,18 @@ end
 local function input(event)
 	
 	if event.type == "InputEventType_FirstPress" then
-		if not inputting and (event.button == "Back" or event.button == "Start") then
-			SCREENMAN:GetTopScreen():Cancel()
+		if not inputting then
+			if not inputting and (event.button == "Back" or event.button == "Start") then
+				SCREENMAN:GetTopScreen():Cancel()	
+			elseif event.DeviceInput.button == "DeviceButton_mousewheel up" then
+				MESSAGEMAN:Broadcast("WheelUpSlow")
+			elseif event.DeviceInput.button == "DeviceButton_mousewheel down" then
+				MESSAGEMAN:Broadcast("WheelDownSlow")
+			elseif event.button == "MenuLeft" then
+				movePage(-1)
+			elseif event.button == "MenuRight" then
+				movePage(1)
+			end
 		elseif inputting then
 			local slotValue = tostring(filterFields[activeField[1]][activeField[2]])
 			if event.DeviceInput.button == "DeviceButton_left mouse button"  or event.DeviceInput.button == "DeviceButton_right mouse button" then
@@ -420,21 +460,6 @@ for i = 1, #filterFields["Lower"] do
 	t[#t+1] = boundBoxes(i)	
 end
 
-local maxTags = 20
-local curPage = 1
-local ptags = tags:get_data().playerTags
-local playertags = {}
-local tagName
-
-local function updateTagsFromData()
-	ptags = tags:get_data().playerTags
-	playertags = {}
-	for k,v in pairs(ptags) do
-		playertags[#playertags+1] = k
-	end
-	table.sort(playertags)
-	curPage = 1
-end
 
 -- The right container (The Tags Menu)
 local function rightContainer()
@@ -458,6 +483,7 @@ local function rightContainer()
 			end
 		end,
 
+		-- The container quad
 		Def.Quad {
 			InitCommand = function (self)
 				self:zoomto(rightSectionWidth,rightSectionHeight)
@@ -465,6 +491,12 @@ local function rightContainer()
 				self:diffuse(getMainColor("frame"))
 				self:diffusealpha(0.8)
 			end,
+			WheelUpSlowMessageCommand = function(self)
+				movePage(-1)
+			end,
+			WheelDownSlowMessageCommand = function(self)
+				movePage(1)
+			end
 		},
 		LoadFont("Common Bold") .. {
 			InitCommand = function(self)
