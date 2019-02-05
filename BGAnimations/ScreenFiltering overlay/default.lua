@@ -13,7 +13,13 @@ local maxPages = 1
 local curPage = 1
 local ptags = tags:get_data().playerTags
 local playertags = {}
+local filterTags = GHETTOGAMESTATE:getFilterTags()
 local tagName
+
+for i = 1, #ms.SkillSets + 1 do -- the +1 is for the length field
+	filterFields["Lower"][i] = FILTERMAN:GetSSFilter(i, 0)
+	filterFields["Upper"][i] = FILTERMAN:GetSSFilter(i, 1)
+end
 
 local function updateTagsFromData()
 	ptags = tags:get_data().playerTags
@@ -38,7 +44,8 @@ local function movePage(n)
 end
 
 local function wheelSearch()
-	GHETTOGAMESTATE:getSSM():GetMusicWheel():SongSearch(GHETTOGAMESTATE:getMusicSearch())
+	local search = GHETTOGAMESTATE:getMusicSearch()
+	GHETTOGAMESTATE:getSSM():GetMusicWheel():SongSearch(search)
 end
 
 local function updateFilter()
@@ -59,9 +66,25 @@ local function resetFilter()
 	wheelSearch()
 end
 
-for i = 1, #ms.SkillSets + 1 do -- the +1 is for the length field
-	filterFields["Lower"][i] = FILTERMAN:GetSSFilter(i, 0)
-	filterFields["Upper"][i] = FILTERMAN:GetSSFilter(i, 1)
+-- From Til Death: The "OR" filter for tags
+local function updateTagFilter()
+	ptags = tags:get_data().playerTags
+	local charts = {}
+	if next(filterTags) then
+		toFilterTags = {}
+		for k, v in pairs(filterTags) do
+			toFilterTags[#toFilterTags + 1] = k
+		end
+		for k, v in pairs(toFilterTags) do
+			for key, val in pairs(ptags[v]) do
+				if charts[key] == nil then
+					charts[#charts + 1] = key
+				end
+			end
+		end
+	end
+	GHETTOGAMESTATE:getSSM():GetMusicWheel():FilterByStepKeys(charts)
+	wheelSearch()
 end
 
 local function updateSelected()
@@ -591,14 +614,21 @@ local function rightContainer()
 				self:zoomto(boxWidth, boxHeight)
 			end,
 			TopPressedCommand = function(self, params)
-				self:finishtweening()
-				if params.input ~= "DeviceButton_left mouse button" then
-					return
+				if playertags[tagIndex] ~= nil then
+					self:finishtweening()
+					if params.input ~= "DeviceButton_left mouse button" then
+						return
+					end
+					self:diffusealpha(0.4)
+					self:smooth(0.3)
+					self:diffusealpha(0.2)
+					if filterTags[playertags[tagIndex]] then
+						filterTags[playertags[tagIndex]] = nil
+					else
+						filterTags[playertags[tagIndex]] = 1
+					end
+					updateTagFilter()
 				end
-				self:diffusealpha(0.4)
-				self:smooth(0.3)
-				self:diffusealpha(0.2)
-				ms.ok(tagIndex)
 			end,
 			SetCommand = function(self)
 				self:diffusealpha(0.2)
