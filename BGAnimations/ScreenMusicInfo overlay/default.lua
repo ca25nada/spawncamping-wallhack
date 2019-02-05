@@ -74,7 +74,9 @@ local function input(event)
 
 		local numpad = event.DeviceInput.button == "DeviceButton_KP "..event.char
 		if not numpad and event.char and tonumber(event.char) then
-			if tonumber(event.char) == 4 then
+			if tonumber(event.char) == 3 then
+				SCREENMAN:AddNewScreenToTop("ScreenFileTagManager")
+			elseif tonumber(event.char) == 4 then
 				SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
 			elseif tonumber(event.char) == 5 and DLMAN:IsLoggedIn() then
 				SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
@@ -1054,7 +1056,7 @@ t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
 
-local tab = TAB:new({"Scores", "Simfile Info", "Graphs", "Preview", "Leaderboard"})
+local tab = TAB:new({"Scores", "Simfile Info", "Manage Tags", "Preview", "Leaderboard"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -1065,7 +1067,9 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2)
 	end,
 	TabPressedMessageCommand = function(self, params)
-		if params.name == "Preview" then
+		if params.name == "Manage Tags" then
+			SCREENMAN:AddNewScreenToTop("ScreenFileTagManager")
+		elseif params.name == "Preview" then
 			SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
 		elseif params.name == "Leaderboard" and DLMAN:IsLoggedIn() then
 			SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
