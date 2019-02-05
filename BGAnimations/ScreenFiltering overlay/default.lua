@@ -480,7 +480,7 @@ local function rightContainer()
 				self:xy(25, rightSectionHeight - 30)
 				self:halign(0)
 				self:diffusealpha(0.2)
-				self:zoomto(numBoxWidth, 20)
+				self:zoomto(numBoxWidth + 15, 35)
 			end,
 			TopPressedCommand = function(self)
 				self:finishtweening()
@@ -496,7 +496,7 @@ local function rightContainer()
 		},
 		LoadFont("Common Normal") .. {
 			InitCommand = function(self)
-				self:xy(25 + numBoxWidth/2,rightSectionHeight - 30)
+				self:xy(25 + (numBoxWidth+15)/2,rightSectionHeight - 30)
 				self:zoom(0.4)
 				self:settext("Create Tag")
 			end
@@ -576,7 +576,7 @@ local function rightContainer()
 		-- Tag name
 		r[#r+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
-				self:xy(40,-6):halign(0)
+				self:xy(10,0):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
 			end,
