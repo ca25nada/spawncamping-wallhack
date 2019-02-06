@@ -7,6 +7,7 @@ local filterTags = GHETTOGAMESTATE:getFilterTags()
 local tagName
 local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
 local ck = steps:GetChartKey()
+local song = GAMESTATE:GetCurrentSong()
 
 local function updateTagsFromData()
 	ptags = tags:get_data().playerTags
@@ -84,6 +85,181 @@ local boundVerticalSpacing = 2
 t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
+
+local frameWidth = 430
+local frameHeight = 340
+local function topRow()
+	local frameWidth = SCREEN_WIDTH - 20
+	local frameHeight = 40
+
+	local t = Def.ActorFrame{
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:zoomto(frameWidth, frameHeight)
+			self:diffuse(color("#000000")):diffusealpha(0.8)
+		end
+	}
+
+	t[#t+1] = Def.Banner{
+		Name = "Banner",
+		InitCommand = function(self)
+			self:x(-frameWidth/2 + 5)
+			self:halign(0)
+			self:LoadFromSong(song)
+			self:scaletoclipped(96, 30)
+		end
+	}
+
+	t[#t+1] = LoadFont("Common BLarge") .. {
+		Name = "SongTitle",
+		InitCommand = function(self)
+			self:xy(-frameWidth/2 + 96 +10, -9)
+			self:zoom(0.25)
+			self:halign(0)
+			self:settext(song:GetMainTitle())
+			if #song:GetDisplaySubTitle() == 0 then
+				self:zoom(0.35):y(-5)
+			end
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			local actor = self:GetParent():GetChild("SongTitle")
+			local x = actor:GetX() + actor:GetWidth()*actor:GetZoomX() + 2
+			local y = actor:GetY() - 2
+
+			self:xy(x,y)
+			self:zoom(0.3)
+			self:halign(0)
+			self:playcommand("Set")
+		end,
+		SetCommand = function(self)
+			local length = song:GetStepsSeconds()/getCurRateValue()
+			self:settextf("%s",SecondsToMSS(length))
+			self:diffuse(getSongLengthColor(length))
+		end,
+		CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
+	}
+
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(-frameWidth/2 + 96 +10, 1)
+			self:zoom(0.35)
+			self:halign(0)
+			self:settext(song:GetDisplaySubTitle())
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(-frameWidth/2 + 96 +10, 9)
+			self:zoom(0.35)
+			self:halign(0)
+			self:settext("// "..song:GetDisplayArtist())
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(frameWidth/2-5,-1)
+			self:zoom(0.5)
+			self:halign(1)
+			self:playcommand("Set", {steps = steps})
+		end,
+		SetCommand = function(self, params)
+			local curSteps = params.steps
+			local diff = curSteps:GetDifficulty()
+			local stype = curSteps:GetStepsType()
+			local meter = math.floor(curSteps:GetMSD(getCurRateValue(),1))
+			if meter == 0 then
+				meter = curSteps:GetMeter()
+			end
+
+			local difftext
+			if diff == 'Difficulty_Edit' then
+				difftext = curSteps:GetDescription()
+				difftext = difftext == '' and getDifficulty(diff) or difftext
+			else
+				difftext = getDifficulty(diff)
+			end
+
+			self:settext(ToEnumShortString(stype):gsub("%_"," ").." "..difftext.." "..meter)
+			self:diffuse(getDifficultyColor(GetCustomDifficulty(stype,diff)))
+		end,
+		SetStepsMessageCommand = function(self, params)
+			self:playcommand("Set",{steps = params.steps})
+		end
+
+	}
+
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(frameWidth/2-5,9)
+			self:zoom(0.35)
+			self:halign(1)
+			self:playcommand("Set", {steps = steps})
+		end,
+		SetCommand = function(self, params)
+			local curSteps = params.steps
+			local notes = 0
+			if curSteps ~= nil then
+				notes = curSteps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+			end
+			self:settextf("%d Notes", notes)
+			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(curSteps:GetStepsType(),curSteps:GetDifficulty())),0.3))
+		end,
+		SetStepsMessageCommand = function(self, params)
+			self:playcommand("Set",{steps = params.steps})
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		Name="MSDAvailability",
+		InitCommand = function(self)
+			self:xy(frameWidth/2-5,-11)
+			self:zoom(0.30)
+			self:halign(1)
+			self:playcommand("Set", {steps = steps})
+		end,
+		SetCommand = function(self, params)
+			local curSteps = params.steps
+			if curSteps ~= nil then
+
+				local meter = math.floor(curSteps:GetMSD(getCurRateValue(),1))
+				if meter == 0 then
+					self:settext("Default")
+					self:diffuse(color(colorConfig:get_data().main.disabled))
+				else
+					self:settext("MSD")
+					self:diffuse(color(colorConfig:get_data().main.enabled))
+				end
+			end
+		end,
+		SetStepsMessageCommand = function(self, params)
+			self:playcommand("Set",{steps = params.steps})
+		end
+	}
+
+	t[#t+1] = LoadActor(THEME:GetPathG("", "round_star")) .. {
+		InitCommand = function(self)
+			self:xy(-frameWidth/2+1,-frameHeight/2+1)
+			self:zoom(0.3)
+			self:wag()
+			self:diffuse(Color.Yellow)
+
+			if not song:IsFavorited() then
+				self:visible(false)
+			end
+		end
+	}
+
+	return t
+end
 
 -- The lower left container (The Filter Menu)
 t[#t+1] = Def.ActorFrame {
@@ -306,6 +482,13 @@ local function rightContainer()
 
 	return t
 end
+
+t[#t+1] = topRow() .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X, 50)
+		self:delayedFadeIn(0)
+	end
+}
 
 t[#t+1] = rightContainer()
 
