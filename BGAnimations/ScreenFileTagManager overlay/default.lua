@@ -15,7 +15,11 @@ local function updateTagsFromData()
 		playertags[#playertags+1] = k
 	end
 	table.sort(playertags, function(left, right)
-		return ptags[left][ck] ~= nil and ptags[right][ck] == nil
+		if ptags[left][ck] == ptags[right][ck] then
+			return left:lower() < right:lower()
+		else
+			return ptags[left][ck] ~= nil and ptags[right][ck] == nil
+		end
 	end)
 	curPage = 1
 	maxPages = math.ceil(#playertags/maxTags)

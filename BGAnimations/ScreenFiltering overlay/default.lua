@@ -27,7 +27,9 @@ local function updateTagsFromData()
 	for k,v in pairs(ptags) do
 		playertags[#playertags+1] = k
 	end
-	table.sort(playertags)
+	table.sort(playertags, function(left, right)
+		return left:lower() < right:lower()
+	end)
 	curPage = 1
 	maxPages = math.ceil(#playertags/maxTags)
 end
