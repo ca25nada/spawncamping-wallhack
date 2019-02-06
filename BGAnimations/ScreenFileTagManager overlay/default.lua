@@ -269,7 +269,7 @@ t[#t+1] = Def.ActorFrame {
 
 	Def.Quad {
 		InitCommand = function (self)
-			self:zoomto(leftSectionWidth,leftLowerSectionHeight)
+			self:zoomto(leftSectionWidth,leftLowerSectionHeight/2)
 			self:halign(0):valign(0)
 			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
@@ -300,12 +300,12 @@ t[#t+1] = Def.ActorFrame {
 			self:halign(0)
 			self:valign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Left click a Tag to Assign this file that tag.\n\nRight click a Tag to delete.\n\nYou can filter songs by Tag in the Filtering menu.\n\nAssigned tags have a distinct color from others.")
+			self:settext("Left click a Tag to assign this file that tag.\nRight click a Tag to delete it permanently.\nYou can filter songs by Tag in the Filtering menu.\nAssigned tags have a distinct color from others.")
 		end
 	},
 	quadButton(6) .. {
 		InitCommand = function(self)
-			self:xy(25, leftLowerSectionHeight - 30)
+			self:xy(15, leftLowerSectionHeight/2 - 30)
 			self:halign(0)
 			self:diffusealpha(0.2)
 			self:zoomto(numBoxWidth + 15, 35)
@@ -324,7 +324,7 @@ t[#t+1] = Def.ActorFrame {
 	},
 	LoadFont("Common Normal") .. {
 		InitCommand = function(self)
-			self:xy(25 + (numBoxWidth+15)/2,leftLowerSectionHeight - 30)
+			self:xy(15 + (numBoxWidth+15)/2,leftLowerSectionHeight/2 - 30)
 			self:zoom(0.4)
 			self:settext("Create Tag")
 		end
@@ -363,10 +363,14 @@ local function rightContainer()
 				self:diffusealpha(0.8)
 			end,
 			WheelUpSlowMessageCommand = function(self)
-				movePage(-1)
+				if self:isOver() then
+					movePage(-1)
+				end
 			end,
 			WheelDownSlowMessageCommand = function(self)
-				movePage(1)
+				if self:isOver() then
+					movePage(1)
+				end
 			end
 		},
 		LoadFont("Common Bold") .. {

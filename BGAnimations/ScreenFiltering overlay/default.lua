@@ -333,7 +333,7 @@ t[#t+1] = Def.ActorFrame {
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			local finalString = "Searching:\nSearch by clicking the sort in the top right or by pressing Ctrl + 4\nPress Start or Back to stop typing\nSupports clipboard"
 			finalString = finalString .. "\n\nFiltering:\nEnter numbers only. The boxes create a range if both are filled"
-			finalString = finalString .. "\n\nTagging:\nLeft click a Tag to enable or disable filtering\nRight click a Tag to delete"
+			finalString = finalString .. "\n\nTagging:\nLeft click a Tag to enable or disable filtering\nRight click a Tag to delete it permanently"
 			self:settext(finalString)
 		end
 	}
@@ -540,10 +540,14 @@ local function rightContainer()
 				self:diffusealpha(0.8)
 			end,
 			WheelUpSlowMessageCommand = function(self)
-				movePage(-1)
+				if self:isOver() then
+					movePage(-1)
+				end
 			end,
 			WheelDownSlowMessageCommand = function(self)
-				movePage(1)
+				if self:isOver() then
+					movePage(1)
+				end
 			end
 		},
 		LoadFont("Common Bold") .. {
