@@ -7,7 +7,8 @@ GHETTOGAMESTATE = {
 	musicsearch = "",
 	onlineStatus = "Local",
 	SSM = nil,
-	filterTags = {}
+	filterTags = {},
+	tagFilterMode = false -- false means OR
 }
 
 -- very bad cheaty way to get the music wheel across overlay screens
@@ -33,6 +34,14 @@ end
 
 function GHETTOGAMESTATE.getFilterTags(self)
 	return self.filterTags
+end
+
+function GHETTOGAMESTATE.setTagFilterMode(self, given)
+	self.tagFilterMode = given
+end
+
+function GHETTOGAMESTATE.getTagFilterMode(self)
+	return self.tagFilterMode
 end
 
 

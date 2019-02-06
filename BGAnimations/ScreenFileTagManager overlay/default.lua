@@ -300,7 +300,7 @@ t[#t+1] = Def.ActorFrame {
 			self:halign(0)
 			self:valign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Left click a Tag to Assign this file that tag.\n\nRight click a Tag to delete.\n\nYou can filter songs by Tag in the Filtering menu.\n\nAssigned tags show up darker than others.")
+			self:settext("Left click a Tag to Assign this file that tag.\n\nRight click a Tag to delete.\n\nYou can filter songs by Tag in the Filtering menu.\n\nAssigned tags have a distinct color from others.")
 		end
 	},
 	quadButton(6) .. {
@@ -453,7 +453,7 @@ local function rightContainer()
 			end,
 			SetCommand = function(self)
 				if ptags[playertags[tagIndex]][ck] then
-					self:diffusealpha(0.7)
+					self:diffusealpha(0.4)
 				else
 					self:diffusealpha(0.2)
 				end
@@ -470,6 +470,25 @@ local function rightContainer()
 			SetCommand = function(self)
 				self:settextf("%s",playertags[tagIndex])
 				self:maxwidth(boxWidth * 2)
+			end
+		}
+
+		-- Color for the button to show assign status
+		r[#r+1] = Def.Quad{
+			Name = "Status",
+			InitCommand = function(self)
+				self:halign(0)
+				self:diffuse(color(colorConfig:get_data().main.highlight))
+				self:diffusealpha(0.8)
+				self:xy(0, 0)
+				self:zoomto(4, boxHeight)
+			end,
+			SetCommand = function(self)
+				if ptags[playertags[tagIndex]][ck] then
+					self:diffuse(getMiscColor("TagPositive")):diffusealpha(0.8)
+				else
+					self:diffuse(getMiscColor("TagNegative")):diffusealpha(0.8)
+				end
 			end
 		}
 

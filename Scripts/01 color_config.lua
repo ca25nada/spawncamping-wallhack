@@ -140,6 +140,8 @@ local defaultConfig = {
 		PreviewProgress = "#00FF66",
 		PreviewSeek = "#FF3333",
 		ChordGraphGradientDark = "#555555",
+		TagPositive = "#5555BB",
+		TagNegative = "#BB5555",
 	}
 
 }

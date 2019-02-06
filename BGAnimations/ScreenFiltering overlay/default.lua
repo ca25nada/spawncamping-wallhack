@@ -15,6 +15,7 @@ local ptags = tags:get_data().playerTags
 local playertags = {}
 local filterTags = GHETTOGAMESTATE:getFilterTags()
 local tagName
+local tagFilterMode = GHETTOGAMESTATE:getTagFilterMode()
 
 for i = 1, #ms.SkillSets + 1 do -- the +1 is for the length field
 	filterFields["Lower"][i] = FILTERMAN:GetSSFilter(i, 0)
@@ -28,7 +29,11 @@ local function updateTagsFromData()
 		playertags[#playertags+1] = k
 	end
 	table.sort(playertags, function(left, right)
-		return left:lower() < right:lower()
+		if filterTags[left] == filterTags[right] then
+			return left:lower() < right:lower()
+		else
+			return filterTags[left] ~= nil and filterTags[right] == nil
+		end
 	end)
 	curPage = 1
 	maxPages = math.ceil(#playertags/maxTags)
@@ -68,7 +73,7 @@ local function resetFilter()
 	wheelSearch()
 end
 
--- From Til Death: The "OR" filter for tags
+-- From Til Death: The "OR" and "AND" filter for tags
 local function updateTagFilter()
 	ptags = tags:get_data().playerTags
 	local charts = {}
@@ -77,14 +82,33 @@ local function updateTagFilter()
 		for k, v in pairs(filterTags) do
 			toFilterTags[#toFilterTags + 1] = k
 		end
-		for k, v in pairs(toFilterTags) do
-			for key, val in pairs(ptags[v]) do
-				if charts[key] == nil then
-					charts[#charts + 1] = key
+		if tagFilterMode then
+			local inCharts = {}
+			for k, v in pairs(ptags[toFilterTags[1]]) do
+				inCharts[k] = 1
+			end
+			toFilterTags[1] = nil
+			for k, v in pairs(toFilterTags) do
+				for key, val in pairs(inCharts) do
+					if ptags[v][key] == nil then
+						inCharts[key] = nil
+					end
+				end
+			end
+			for k, v in pairs(inCharts) do
+				charts[#charts + 1] = k
+			end
+		else
+			for k, v in pairs(toFilterTags) do
+				for key, val in pairs(ptags[v]) do
+					if charts[key] == nil then
+						charts[#charts + 1] = key
+					end
 				end
 			end
 		end
 	end
+	GHETTOGAMESTATE:setFilterTags(filterTags)
 	GHETTOGAMESTATE:getSSM():GetMusicWheel():FilterByStepKeys(charts)
 	wheelSearch()
 end
@@ -442,8 +466,7 @@ t[#t+1] = Def.ActorFrame {
 			self:smooth(0.3)
 			self:diffusealpha(0.2)
 			FILTERMAN:ToggleFilterMode()
-			self:GetParent():GetChild("ModeText"):queuecommand("Set")
-			self:GetParent():GetChild("ModeExplanation"):queuecommand("Set")
+			self:GetParent():queuecommand("Set")
 			wheelSearch()
 		end
 	},
@@ -557,6 +580,86 @@ local function rightContainer()
 				self:zoom(0.4)
 				self:settext("Create Tag")
 			end
+		},
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(25 + horizontalSpacing + numBoxWidth + 15, rightSectionHeight - 30)
+				self:halign(0)
+				self:diffusealpha(0.2)
+				self:zoomto(numBoxWidth + 15, 35)
+			end,
+			TopPressedCommand = function(self)
+				self:finishtweening()
+				self:diffusealpha(0.4)
+				self:smooth(0.3)
+				self:diffusealpha(0.2)
+				filterTags = {}
+				updateTagFilter()
+				updateTagsFromData()
+				MESSAGEMAN:Broadcast("UpdateList")
+			end
+		},
+		LoadFont("Common Normal") .. {
+			Name = "TagModeButtonText",
+			InitCommand = function(self)
+				self:xy(25 + horizontalSpacing + numBoxWidth + 15 + (numBoxWidth+15)/2,rightSectionHeight - 30)
+				self:zoom(0.4)
+				self:settext("Reset\nTag Filter")
+			end
+		},
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(25 + horizontalSpacing*2 + (numBoxWidth + 15)*2, rightSectionHeight - 30)
+				self:halign(0)
+				self:diffusealpha(0.2)
+				self:zoomto(numBoxWidth + 15, 35)
+			end,
+			TopPressedCommand = function(self)
+				self:finishtweening()
+				self:diffusealpha(0.4)
+				self:smooth(0.3)
+				self:diffusealpha(0.2)
+				if tagFilterMode then
+					tagFilterMode = false
+					GHETTOGAMESTATE:setTagFilterMode(false)
+				else
+					tagFilterMode = true
+					GHETTOGAMESTATE:setTagFilterMode(true)
+				end
+				self:GetParent():queuecommand("Set")
+			end
+		},
+		LoadFont("Common Normal") .. {
+			Name = "TagModeButtonText",
+			InitCommand = function(self)
+				self:xy(25 + horizontalSpacing*2 + (numBoxWidth + 15)*2 + (numBoxWidth+15)/2,rightSectionHeight - 30)
+				self:zoom(0.4)
+				self:queuecommand("Set")
+			end,
+			SetCommand = function(self)
+				if tagFilterMode then
+					self:settext("Mode: And")
+				else
+					self:settext("Mode: Or")
+				end
+			end
+		},
+		LoadFont("Common Normal") .. {
+			Name = "TagModeExplanation",
+			InitCommand = function(self)
+				self:xy(25 + horizontalSpacing*3 + (numBoxWidth + 15)*3, rightSectionHeight - 30)
+				self:zoom(0.4)
+				self:halign(0)
+				self:queuecommand("Set")
+				self:maxwidth(numBoxWidth * 5)
+			end,
+			SetCommand = function(self)
+				if tagFilterMode then
+					self:settext("Matches have all chosen Tags")
+				else
+					self:settext("Matches have any chosen Tag")
+				end
+			end
 		}
 	}
 
@@ -630,10 +733,8 @@ local function rightContainer()
 						filterTags[playertags[tagIndex]] = 1
 					end
 					updateTagFilter()
+					self:GetParent():GetChild("Status"):queuecommand("Set")
 				end
-			end,
-			SetCommand = function(self)
-				self:diffusealpha(0.2)
 			end
 		}
 
@@ -647,6 +748,25 @@ local function rightContainer()
 			SetCommand = function(self)
 				self:settextf("%s",playertags[tagIndex])
 				self:maxwidth(boxWidth * 2)
+			end
+		}
+
+		-- Color for the button to show filter status
+		r[#r+1] = Def.Quad{
+			Name = "Status",
+			InitCommand = function(self)
+				self:halign(0)
+				self:diffuse(color(colorConfig:get_data().main.highlight))
+				self:diffusealpha(0.8)
+				self:xy(0, 0)
+				self:zoomto(4, boxHeight)
+			end,
+			SetCommand = function(self)
+				if filterTags[playertags[tagIndex]] then
+					self:diffuse(getMiscColor("TagPositive")):diffusealpha(0.8)
+				else
+					self:diffuse(getMiscColor("TagNegative")):diffusealpha(0.8)
+				end
 			end
 		}
 
