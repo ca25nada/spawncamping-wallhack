@@ -215,8 +215,8 @@ local function rightContainer()
 				self:y(30 + ((i-1) % math.floor(maxTags/2))*(boxHeight+verticalSpacing)-10)
 				self:diffusealpha(0)
 				self:finishtweening()
-				self:sleep((i-1)*0.03)
-				self:easeOut(1)
+				self:sleep((i-1)*0.01)
+				self:easeOut(0.3)
 				self:y(30 + ((i-1) % math.floor(maxTags/2))*(boxHeight+verticalSpacing)+25)
 				self:diffusealpha(1)
 			end,
@@ -257,13 +257,9 @@ local function rightContainer()
 			end,
 			TopPressedCommand = function(self, params)
 				if playertags[tagIndex] ~= nil then
-					self:finishtweening()
 					if params.input ~= "DeviceButton_left mouse button" then
 						return
 					end
-					self:diffusealpha(0.4)
-					self:smooth(0.3)
-					self:diffusealpha(0.2)
 					if ptags[playertags[tagIndex]][ck] then
 						tags:get_data().playerTags[playertags[tagIndex]][ck] = nil
 					else
@@ -272,10 +268,15 @@ local function rightContainer()
 					tags:set_dirty()
 					tags:save()
 					updateTagsFromData()
+					MESSAGEMAN:Broadcast("UpdateList")
 				end
 			end,
 			SetCommand = function(self)
-				self:diffusealpha(0.2)
+				if ptags[playertags[tagIndex]][ck] then
+					self:diffusealpha(0.7)
+				else
+					self:diffusealpha(0.2)
+				end
 			end
 		}
 
