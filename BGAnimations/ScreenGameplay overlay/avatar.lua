@@ -80,7 +80,7 @@ local function avatarFrame(pn)
 		BeginCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand=function(self)
 			self:finishtweening()
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn))
+			self:LoadBackground(assetFolders.avatar .. avatarConfig:get_data().avatar[profile:GetGUID()])
 			self:zoomto(50,50)
 		end
 	}

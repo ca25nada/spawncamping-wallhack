@@ -46,7 +46,7 @@ function GetLocalProfiles(pn)
 				end,
 				ModifyAvatarCommand=function(self)
 					self:finishtweening()
-					self:LoadBackground(PROFILEMAN:GetAvatarPathFromProfileID(ProfileID))
+					self:Load(getAssetPathFromProfileID("avatar", profileID))
 					self:zoomto(30,30)
 				end	
 			}

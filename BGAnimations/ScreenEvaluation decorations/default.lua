@@ -283,7 +283,7 @@ local function scoreBoard(pn)
 		InitCommand = function (self) 
 			self:xy(25+10-(frameWidth/2),5)
 			self:visible(true)
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn))
+			self:LoadBackground(assetFolders.avatar .. avatarConfig:get_data().avatar[PROFILEMAN:GetProfile(PLAYER_1):GetGUID()])
 			self:zoomto(50,50)
 		end
 	}
