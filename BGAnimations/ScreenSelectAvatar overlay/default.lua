@@ -7,10 +7,11 @@ local frameHeight = 40								-- Height of the top bar
 
 local curPage = 1									-- Current Page index
 local curIndex = 1									-- Current Cursor Index
-local curName = PROFILEMAN:GetAvatarName(pn)		-- String with the current avatar's filename
+local GUID = profile:GetGUID()
+local curName = avatarConfig:get_data().avatar[GUID]		-- String with the current avatar's filename
 local lastClickedIndex = 0							-- Last clicked index for double-click detection
 
-local avatarTable = PROFILEMAN:GetAllAvatarNames() -- Table containing the filename of all installed avatars
+local avatarTable = FILEMAN:GetDirListing(assetFolders.avatar) -- Table containing the filename of all installed avatars
 local avatarWidth = 50								-- Self explanatory
 local avatarHeight = 50
 local maxCols = math.floor(capWideScale(7,11))		-- Maximum columns depending on screen aspect ratio.
@@ -95,7 +96,7 @@ local function topRow()
 		InitCommand = function (self) 
 			self:x(-frameWidth/2 + 5)
 			self:halign(0)
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn))
+			self:LoadBackground(assetFolders.avatar .. avatarConfig:get_data().avatar[GUID])
 			self:zoomto(30,30)
 		end
 	}
@@ -114,6 +115,9 @@ local function topRow()
 			self:xy(-frameWidth/2 + 30 +10, 7)
 			self:zoom(0.35)
 			self:halign(0)
+			self:settextf("%s", avatarTable[getAvatarIndex()])
+		end,
+		UpdateAvatarMessageCommand = function(self, params)
 			self:settextf("%s", avatarTable[getAvatarIndex()])
 		end,
 		CursorMovedMessageCommand = function(self, params)
@@ -183,7 +187,7 @@ local function avatarBox(i)
 					avatarName = avatarTable[i+((curPage-1)*maxCols*maxRows)]
 
 					-- Load the avatar image
-					self:GetChild("Avatar"):LoadBackground(ProfileManager:GetAvatarFolderPath()..avatarName)
+					self:GetChild("Avatar"):LoadBackground(assetFolders.avatar..avatarName)
 					if i == curIndex then
 						self:GetChild("Avatar"):zoomto(avatarHeight+8,avatarWidth+8)
 						self:GetChild("Border"):zoomto(avatarHeight+12,avatarWidth+12)
@@ -255,7 +259,9 @@ local function avatarBox(i)
 			if params.input == "DeviceButton_left mouse button" then
 				-- Save and exit upon double clicking
 				if lastClickedIndex == i then
-					PROFILEMAN:SaveAvatar(pn, avatarTable[getAvatarIndex()])
+					avatarConfig:get_data().avatar[GUID] = avatarTable[getAvatarIndex()]
+					avatarConfig:set_dirty()
+					avatarConfig:save()
 					SCREENMAN:GetTopScreen():Cancel()
 				end
 
@@ -305,7 +311,9 @@ local function input(event)
 		end
 
 		if event.button == "Start" then
-			PROFILEMAN:SaveAvatar(pn, avatarTable[getAvatarIndex()])
+			avatarConfig:get_data().avatar[GUID] = avatarTable[getAvatarIndex()]
+			avatarConfig:set_dirty()
+			avatarConfig:save()
 			SCREENMAN:GetTopScreen():Cancel()
 		end
 
