@@ -263,6 +263,7 @@ local function avatarBox(i)
 					avatarConfig:set_dirty()
 					avatarConfig:save()
 					SCREENMAN:GetTopScreen():Cancel()
+					MESSAGEMAN:Broadcast("AvatarChanged")
 				end
 
 				lastClickedIndex = i
@@ -315,6 +316,7 @@ local function input(event)
 			avatarConfig:set_dirty()
 			avatarConfig:save()
 			SCREENMAN:GetTopScreen():Cancel()
+			MESSAGEMAN:Broadcast("AvatarChanged")
 		end
 
 		-- We want repeats for these events anyway
