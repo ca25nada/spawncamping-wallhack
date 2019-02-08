@@ -15,12 +15,7 @@ Branch.PlayerOptions= function()
 end
 
 Branch.AfterSelectProfile = function()
-	if (THEME:GetMetric("Common","AutoSetStyle") == true) then
-		-- use SelectStyle in online...
-		return IsNetConnected() and "ScreenSelectStyle" or "ScreenSelectMusic"
-	else
-		return "ScreenSelectMusic"
-	end
+	return "ScreenSelectMusic"
 end
 
 Branch.AfterProfileLoad = function()
