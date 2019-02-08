@@ -51,6 +51,16 @@ local function generalFrame(pn)
 				profile[pn] = GetPlayerOrMachineProfile(pn)
 				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
 				topScore[pn] = getBestScore(pn, 0, getCurRate())
+				if song and steps[pn] then
+					ptags = tags:get_data().playerTags
+					chartkey = steps[pn]:GetChartKey()
+					ctags = {}
+					for k,v in pairs(ptags) do
+						if ptags[k][chartkey] then
+							ctags[#ctags + 1] = k
+						end
+					end
+				end
 			end
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end,
@@ -565,6 +575,60 @@ local function generalFrame(pn)
 		end,
 		SetCommand = function(self)
 			self:settextf("Ranking: %d/%d",0,0)
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(260 - frameWidth/5, frameHeight-40)
+			self:zoom(0.4)
+			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and ctags[1] then
+				self:settext(ctags[1])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(260 - frameWidth/5, frameHeight-28)
+			self:zoom(0.4)
+			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and ctags[2] then
+				self:settext(ctags[2])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(260 - frameWidth/5, frameHeight-16)
+			self:zoom(0.4)
+			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and ctags[3] then
+				self:settext(ctags[3])
+			else
+				self:settext("")
+			end
 		end,
 		BeginCommand = function(self) self:queuecommand('Set') end
 	}
