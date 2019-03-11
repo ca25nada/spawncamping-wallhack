@@ -355,7 +355,7 @@ local function scoreBoard(pn)
 		end
 	}
 
-	--Difficulty
+	--Diff & MSD
 	t[#t+1] = LoadFont("Common Normal")..{
 
 		InitCommand = function(self)
@@ -367,7 +367,7 @@ local function scoreBoard(pn)
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
 
 			local meter = steps:GetMSD(getCurRateValue(),1)
-			meter = meter == 0 and steps:GetMeter() or math.floor(meter)
+			meter = meter == 0 and steps:GetMeter() or meter
 
 			local difftext
 			if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
@@ -378,27 +378,27 @@ local function scoreBoard(pn)
 			end
 
 			if IsUsingWideScreen() then
-				self:settext(stype.." "..difftext.." "..meter)
+				self:settextf("%s %s %5.2f", stype, difftext, meter)
+				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
+				self:AddAttribute(#stype + #difftext + 2, {Length = -1, Diffuse = byMSD(meter)})
 			else
-				self:settext(difftext.." "..meter)
+				self:settextf("%s %5.2f", difftext, meter)
+				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
+				self:AddAttribute(#difftext + 1, {Length = -1, Diffuse = byMSD(meter)})
 			end
-
-			self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
-
 		end
 	}
 
-	-- Notecount
+	-- SSR
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self) 
-		 	self:xy(frameWidth/2-5,19):zoom(0.4):halign(1):valign(0):diffusealpha(0.7)
+		 	self:xy(frameWidth/2-5,19):zoom(0.4):halign(1):valign(0)
 		end,
 		SetCommand=function(self) 
 			
-			local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-			self:settextf("%d Notes",notes)
-
-			self:diffuse(Saturation(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())),0.3))
+			local meter = curScore:GetSkillsetSSR("Overall")
+			self:settextf("Score Specific Rating   %5.2f", meter)
+			self:AddAttribute(#"Score Specific Rating", {Length = -1, Diffuse = byMSD(meter)})
 		end
 	}
 
