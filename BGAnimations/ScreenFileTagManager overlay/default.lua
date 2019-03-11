@@ -304,7 +304,7 @@ t[#t+1] = Def.ActorFrame {
 			self:halign(0)
 			self:valign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Left click a Tag to assign this file that tag.\nRight click a Tag to delete it permanently.\nYou can filter songs by Tag in the Filtering menu.\nAssigned tags have a distinct color from others.")
+			self:settext("Left click a Tag to assign this file that tag.\nRight click a Tag to unassign the tag.\nYou can filter songs by Tag in the Filtering menu.\nAssigned tags have a distinct color from others.")
 		end
 	},
 	quadButton(6) .. {
@@ -445,18 +445,23 @@ local function rightContainer()
 			end,
 			TopPressedCommand = function(self, params)
 				if playertags[tagIndex] ~= nil then
-					if params.input ~= "DeviceButton_left mouse button" then
-						return
+					if params.input == "DeviceButton_left mouse button" then
+						if not ptags[playertags[tagIndex]][ck] then
+							tags:get_data().playerTags[playertags[tagIndex]][ck] = 1
+							tags:set_dirty()
+							tags:save()
+							updateTagsFromData()
+							MESSAGEMAN:Broadcast("UpdateList")
+						end
+					elseif params.input == "DeviceButton_right mouse button" then
+						if ptags[playertags[tagIndex]][ck] then
+							tags:get_data().playerTags[playertags[tagIndex]][ck] = nil
+							tags:set_dirty()
+							tags:save()
+							updateTagsFromData()
+							MESSAGEMAN:Broadcast("UpdateList")
+						end
 					end
-					if ptags[playertags[tagIndex]][ck] then
-						tags:get_data().playerTags[playertags[tagIndex]][ck] = nil
-					else
-						tags:get_data().playerTags[playertags[tagIndex]][ck] = 1
-					end
-					tags:set_dirty()
-					tags:save()
-					updateTagsFromData()
-					MESSAGEMAN:Broadcast("UpdateList")
 				end
 			end,
 			SetCommand = function(self)

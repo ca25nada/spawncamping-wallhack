@@ -725,19 +725,25 @@ local function rightContainer()
 			TopPressedCommand = function(self, params)
 				if playertags[tagIndex] ~= nil then
 					self:finishtweening()
-					if params.input ~= "DeviceButton_left mouse button" then
-						return
+					if params.input == "DeviceButton_left mouse button" then
+						self:diffusealpha(0.4)
+						self:smooth(0.3)
+						self:diffusealpha(0.2)
+						if filterTags[playertags[tagIndex]] then
+							filterTags[playertags[tagIndex]] = nil
+						else
+							filterTags[playertags[tagIndex]] = 1
+						end
+						updateTagFilter()
+						self:GetParent():GetChild("Status"):queuecommand("Set")
+					elseif params.input == "DeviceButton_right mouse button" then
+						tags:get_data().playerTags[playertags[tagIndex]] = nil
+						playertags[tagIndex] = nil
+						tags:set_dirty()
+						tags:save()
+						updateTagsFromData()
+						MESSAGEMAN:Broadcast("UpdateList")
 					end
-					self:diffusealpha(0.4)
-					self:smooth(0.3)
-					self:diffusealpha(0.2)
-					if filterTags[playertags[tagIndex]] then
-						filterTags[playertags[tagIndex]] = nil
-					else
-						filterTags[playertags[tagIndex]] = 1
-					end
-					updateTagFilter()
-					self:GetParent():GetChild("Status"):queuecommand("Set")
 				end
 			end
 		}
