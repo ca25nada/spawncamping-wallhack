@@ -187,8 +187,10 @@ local function getClearLevel (pn,steps,score)
 
 	elseif missCount == 1 then
 		return 8 -- MF
+	elseif missCount < 10 and missCount > 1 then
+		return 9 -- SDCB
 	end
-
+	
 	return 12 -- Clear
 end
 
