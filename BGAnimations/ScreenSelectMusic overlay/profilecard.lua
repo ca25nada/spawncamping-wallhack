@@ -301,11 +301,11 @@ local function generalFrame(pn)
 
 				local diff = steps[pn]:GetDifficulty()
 				local stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-				local meter = math.floor(steps[pn]:GetMSD(getCurRateValue(),1))
+				local meter = steps[pn]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
 					meter = steps[pn]:GetMeter()
 				end
-				meter = math.max(1,meter)
+				meter = math.max(0,meter)
 
 				local difftext
 				if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
@@ -315,9 +315,9 @@ local function generalFrame(pn)
 					difftext = getDifficulty(diff)
 				end
 				if IsUsingWideScreen() then
-					self:settext(stype.." "..difftext.." "..meter)
+				self:settextf("%s %s %5.2f", stype, difftext, meter)
 				else
-					self:settext(difftext.." "..meter)
+					self:settextf("%s %5.2f", difftext, meter)
 				end
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
 			end
