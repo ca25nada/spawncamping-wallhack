@@ -28,31 +28,22 @@ end
 local function LaneHighlight()
 	local t = Def.ActorFrame{}
 	local alpha = 0.4
-	local pn 
-	local judgeThreshold = Enum.Reverse(TapNoteScore)[playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlightMinJudge]
+	local judgeThreshold = Enum.Reverse(TapNoteScore)[playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CBHighlightMinJudge]
 
-	for i=1,16 do
+	local style = GAMESTATE:GetCurrentStyle(PLAYER_1)
+	local width = style:GetWidth(PLAYER_1)
+	local cols = style:ColumnsPerPlayer()
+	local colWidth = width/cols
+	local reverse = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
+	local receptor = reverse and THEME:GetMetric("Player", "ReceptorArrowsYStandard") or THEME:GetMetric("Player", "ReceptorArrowsYReverse")
+	local border = 4
+
+	for i=1,cols do
 		t[#t+1] = Def.Quad{
 			InitCommand = function(self)
 				self:visible(false)
 			end,
 			PlayerStateSetCommand = function(self,param)
-				pn = param.PlayerNumber
-
-				local style = GAMESTATE:GetCurrentStyle(pn)
-				local width = style:GetWidth(pn)
-				local cols = style:ColumnsPerPlayer()
-				local colWidth = width/cols
-				local enabled = playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlight
-				local reverse = GAMESTATE:GetPlayerState(pn):GetCurrentPlayerOptions():UsingReverse()
-				local receptor = reverse and THEME:GetMetric("Player", "ReceptorArrowsYStandard") or THEME:GetMetric("Player", "ReceptorArrowsYReverse")
-				local border = 4
-
-				if i > cols or not enabled then
-					self:visible(false)
-					self:hibernate(math.huge)
-				end
-
 				self:SetWidth(colWidth-border)
 				self:SetHeight(SCREEN_HEIGHT)
 				self:diffusealpha(alpha)
@@ -61,17 +52,10 @@ local function LaneHighlight()
 				self:visible(false)
 			end,
 			JudgmentMessageCommand=function(self,params)
-				local enabled = playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlight
-				if not enabled then
-					self:visible(false)
-					self:hibernate(math.huge)
-					return
-				end
-
 				local notes = params.Notes
 				local firstTrack = params.FirstTrack+1
 
-				if params.Player == pn and params.TapNoteScore then
+				if params.TapNoteScore then
 					local enum  = Enum.Reverse(TapNoteScore)[params.TapNoteScore]
 
 					if enum < judgeThreshold and enum > 3 and
@@ -94,6 +78,10 @@ end
 
 
 t[#t+1] = ScreenFilter()
-t[#t+1] = LaneHighlight()
+
+local highlightEnabled = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CBHighlight
+if highlightEnabled then
+	t[#t+1] = LaneHighlight()
+end
 
 return t
