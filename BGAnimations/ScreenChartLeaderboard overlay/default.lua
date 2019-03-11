@@ -120,12 +120,16 @@ local function topRow()
 		end
 	}
 
-	t[#t+1] = Def.Banner{
+	t[#t+1] = Def.Sprite {
 		Name = "Banner",
 		InitCommand = function(self)
 			self:x(-frameWidth/2 + 5)
 			self:halign(0)
-			self:LoadFromSong(song)
+			local bnpath = song:GetBannerPath()
+			if not bnpath then
+				bnpath = THEME:GetPathG("Common", "fallback banner")
+			end
+			self:LoadBackground(bnpath)
 			self:scaletoclipped(96, 30)
 		end
 	}

@@ -3,35 +3,34 @@ local t = Def.ActorFrame{}
 
 t[#t+1] = LoadActor("_chatbox")
 
-t[#t+1] = Def.Banner{
+t[#t+1] = Def.Sprite {
 	InitCommand=function(self)
 		self:x(10):y(60):halign(0):valign(0)
 	end,
 	SetMessageCommand=function(self)
 		local top = SCREENMAN:GetTopScreen()
+		local bnpath = nil
 		if top:GetName() == "ScreenSelectMusic" then
 			local song = GAMESTATE:GetCurrentSong()
-			local course = GAMESTATE:GetCurrentCourse()
 			local group = top:GetMusicWheel():GetSelectedSection()
 			if song then
-				self:LoadFromSong(song)
-			elseif course then
-				self:LoadFromCourse(song)
+				bnpath = song:GetBannerPath()
 			elseif group then
-				self:LoadFromSongGroup(group)
+				bnpath = SONGMAN:GetSongGroupBannerPath(group)
 			end
 		elseif top:GetName() == "ScreenNetSelectMusic" then
 			local song = GAMESTATE:GetCurrentSong()
-			local course = GAMESTATE:GetCurrentCourse()
 			local group = top:GetChild("MusicWheel"):GetSelectedSection()
 			if song then
-				self:LoadFromSong(song)
-			elseif course then
-				self:LoadFromCourse(song)
+				bnpath = song:GetBannerPath()
 			elseif group then
-				self:LoadFromSongGroup(group)
+				bnpath = SONGMAN:GetSongGroupBannerPath(group)
 			end
 		end
+		if not bnpath or bnpath == "" then
+			bnpath = THEME:GetPathG("Common", "fallback banner")
+		end
+		self:LoadBackground(bnpath)
 		self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 	end,
 	CurrentSongChangedMessageCommand=function(self)

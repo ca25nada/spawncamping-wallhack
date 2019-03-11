@@ -70,18 +70,23 @@ t[#t+1] = quadButton(1)..{
 }
 
 -- Song banner
-t[#t+1] = Def.Banner{
+t[#t+1] = Def.Sprite {
 	Name = "Banner",
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X/2,120)
 	end,
 	SetCommand = function(self)
 		if topScreen:GetName() == "ScreenSelectMusic" or topScreen:GetName() == "ScreenNetSelectMusic" then
+			local bnpath = nil
 			if song then
-				self:LoadFromSong(song)
+				bnpath = song:GetBannerPath()
 			elseif group then
-				self:LoadFromSongGroup(group)
+				bnpath = SONGMAN:GetSongGroupBannerPath(group)
 			end
+			if not bnpath or bnpath == "" then
+				bnpath = THEME:GetPathG("Common", "fallback banner")
+			end
+			self:LoadBackground(bnpath)
 			self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 		end
 	end

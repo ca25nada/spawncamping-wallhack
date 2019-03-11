@@ -94,7 +94,7 @@ t[#t+1] = Def.Quad{
 }
 
 if themeConfig:get_data().global.BannerWheel then
-	t[#t+1] = Def.Banner{
+	t[#t+1] = Def.Sprite {
 		InitCommand = function(self)
 			self:fadeleft(1)
 			self:halign(1)
@@ -104,12 +104,10 @@ if themeConfig:get_data().global.BannerWheel then
 		end,
 		SetMessageCommand = function(self,params)
 			local song = params.Song
-			local course = params.Course
-			if song and not course then
-				self:LoadFromSong(params.Song)
-				self:scaletocover(0,-22,capWideScale(get43size(340),340),22)
-			elseif course and not song then
-				self:LoadFromCourse(params.Course)
+			local bnpath = nil
+			if song then
+				bnpath = params.Song:GetBannerPath()
+				self:LoadBackground(bnpath)
 				self:scaletocover(0,-22,capWideScale(get43size(340),340),22)
 			end
 		end

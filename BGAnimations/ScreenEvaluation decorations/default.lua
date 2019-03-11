@@ -60,12 +60,14 @@ t[#t+1] = Def.Quad{
 }
 
 -- Song banner
-t[#t+1] = Def.Banner{
+t[#t+1] = Def.Sprite {
 	BeginCommand = function(self)
-		if song and not course then
-			self:LoadFromSong(song)
-		elseif course and not song then
-			self:LoadFromCourse(course)
+		if song then
+			local bnpath = song:GetBannerPath()
+			if not bnpath then
+				bnpath = THEME:GetPathG("Common", "fallback banner")
+			end
+			self:LoadBackground(bnpath)
 		end
 		self:scaletofit(0,0,256,80)
 		self:xy(SCREEN_CENTER_X,70)

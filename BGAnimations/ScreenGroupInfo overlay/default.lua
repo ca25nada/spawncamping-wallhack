@@ -81,13 +81,17 @@ local function topRow()
 		end
 	}
 
-	t[#t+1] = Def.Banner{
+	t[#t+1] = Def.Sprite {
 		Name = "Banner",
 		InitCommand = function(self)
 			self:x(-frameWidth/2 + 5)
 			self:halign(0)
 			self:scaletoclipped(96, 30)
-			self:LoadFromSongGroup(group)
+			local bnpath = SONGMAN:GetSongGroupBannerPath(group)
+			if not bnpath or bnpath == "" then
+				bnpath = THEME:GetPathG("Common", "fallback banner")
+			end
+			self:LoadBackground(bnpath)
 		end
 	}
 
