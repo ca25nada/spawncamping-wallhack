@@ -129,6 +129,7 @@ local defaultConfig = {
 		MusicWheelArtistText = "#FFFFFF",
 		MusicWheelSectionCountText = "#FFFFFF",
 		MusicWheelDivider = "#FFFFFF",
+		HasGoalGradient = "#FF66FF",
 		MusicWheelExtraColor = "#FFCCCC",
 		ProfileCardText = "#FFFFFF",
 		TabContentText = "#FFFFFF",
