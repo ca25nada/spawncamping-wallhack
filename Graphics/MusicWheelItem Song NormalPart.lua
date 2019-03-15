@@ -80,19 +80,6 @@ t[#t+1] = Def.Quad{
 	OffCommand = function(self) self:visible(false) end
 }
 
-
-t[#t+1] = Def.Quad{
-	InitCommand= function(self) 
-		self:x(30)
-		self:zoomto(2,32)
-		self:halign(0)
-		self:diffuse(color(colorConfig:get_data().selectMusic.MusicWheelDivider))
-	end,
-
-	BeginCommand = function(self) self:queuecommand('Set') end,
-	OffCommand = function(self) self:visible(false) end
-}
-
 if themeConfig:get_data().global.BannerWheel then
 	t[#t+1] = Def.Sprite {
 		InitCommand = function(self)
