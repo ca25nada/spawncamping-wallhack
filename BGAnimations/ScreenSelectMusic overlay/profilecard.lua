@@ -17,6 +17,7 @@ local frameHeight = 110
 local frameHeightShort = 61
 local song
 local course
+local ctags = {}
 
 local steps = {
 	PlayerNumber_P1
