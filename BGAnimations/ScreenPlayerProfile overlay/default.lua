@@ -3,7 +3,7 @@ local function input(event)
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
 		end
-		if tonumber(event.char) == 3 then
+		if tonumber(event.char) == 1 then
 			SCREENMAN:AddNewScreenToTop("ScreenGoalManager")
 		end
 	end
@@ -35,7 +35,7 @@ t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
 
-local tab = TAB:new({"Scores", "Stats", "Goals"})
+local tab = TAB:new({"Goals", "", ""})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
