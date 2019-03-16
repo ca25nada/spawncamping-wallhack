@@ -56,7 +56,7 @@ local top
 local leftSectionWidth = 300
 local leftSectionHeight = SCREEN_HEIGHT - 60
 local leftUpperSectionHeight = leftSectionHeight / 3
-local leftLowerSectionHeight = leftSectionHeight / 2 + 63
+local leftLowerSectionHeight = SCREEN_HEIGHT / 1.5 - 10
 local rightSectionWidth = SCREEN_WIDTH - 330
 local rightSectionHeight = SCREEN_HEIGHT - 60
 
@@ -79,8 +79,6 @@ local t = Def.ActorFrame {
 
 local boxHeight = 20
 local numBoxWidth = leftSectionWidth / 5
-local boundHorizontalSpacing = 8
-local boundVerticalSpacing = 2
 
 t[#t+1] = LoadActor("../_mouse")
 
@@ -88,6 +86,212 @@ t[#t+1] = LoadActor("../_frame")
 
 local frameWidth = 430
 local frameHeight = 340
+
+-- The upper left container (Minimal Profile Card)
+local function upperLeftContainer()
+
+	local t = Def.ActorFrame {
+		Name = "ProfileCard",
+		InitCommand = function(self)
+			self:xy(10,30)
+		end,
+
+		Def.Quad {
+			InitCommand = function(self)
+				self:halign(0):valign(0)
+				self:zoomto(300,100)
+				self:diffuse(color(colorConfig:get_data().main.frame)):diffusealpha(0.85)
+			end
+		}
+	}
+
+	t[#t+1] = LoadActor("../ScreenPlayerProfile decorations/avatar") .. {
+		InitCommand = function(self)
+			self:xy(50,50)
+		end
+	}
+
+	t[#t+1] = LoadFont("Common BLarge") .. {
+		InitCommand = function(self)
+			self:xy(100,25)
+			self:zoom(0.35)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:queuecommand("Set")
+		end,
+		SetCommand = function(self)
+			self:settext(getCurrentUsername(PLAYER_1))
+		end
+	}
+
+	t[#t+1] = LoadActor("../ScreenPlayerProfile decorations/expbar") .. {
+		InitCommand = function(self)
+			self:xy(100,55)
+		end
+	}
+
+	return t
+end
+
+-- The lower left container (The Tag Editor)
+local function lowerLeftContainer()
+
+	local t = Def.ActorFrame {
+		Name = "EditorContainer",
+		InitCommand = function(self)
+			self:xy(10, leftUpperSectionHeight)
+		end,
+		HideGoalDetailMessageCommand = function(self)
+		end,
+
+		-- The container quad
+		Def.Quad {
+			InitCommand = function(self)
+				self:zoomto(leftSectionWidth, leftLowerSectionHeight)
+				self:halign(0):valign(0)
+				self:diffuse(getMainColor("frame"))
+				self:diffusealpha(0.85)
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:xy(5,10)
+				self:zoom(0.4)
+				self:halign(0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("Edit Goal")
+			end
+		}
+	}
+	local function rateChangeButton()
+		local topRowFrameWidth = SCREEN_WIDTH - 20
+		local topRowFrameHeight = 40
+		local frameWidth = 150
+		local frameHeight = 25
+		local goalIndex
+		local t = Def.ActorFrame {
+			Name = "RateChangeButton",
+			InitCommand = function(self)
+				self:xy(leftSectionWidth/2 + frameWidth/2,150)
+			end,
+			ShowGoalDetailMessageCommand = function(self, params)
+				goalIndex = params.goalIndex
+				self:queuecommand("Set")
+			end
+		}
+
+		t[#t+1] = LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:xy(-frameWidth/2, -22)
+				self:zoom(0.35)
+				self:settext("Change Rate")
+			end
+		}
+
+		t[#t+1] = Def.Quad{
+			InitCommand = function(self)
+				self:zoomto(frameWidth, 25)
+				self:diffuse(color("#000000")):diffusealpha(0.8)
+				self:halign(1)
+			end
+		}
+
+		t[#t+1] = quadButton(6)..{
+			InitCommand = function(self)
+				self:zoomto(frameWidth/2, frameHeight)
+				self:x(-frameWidth/2)
+				self:diffuse(color("#FFFFFF")):diffusealpha(0)
+				self:halign(1)
+				self:faderight(0.5)
+			end,
+			TopPressedCommand = function(self, params)
+				goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() - 0.01)
+				MESSAGEMAN:Broadcast("UpdateGoalDetails")
+				self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
+
+				self:finishtweening()
+				self:diffusealpha(0.2)
+				self:smooth(0.3)
+				self:diffusealpha(0)
+			end
+		}
+		t[#t+1] = quadButton(6)..{
+			InitCommand = function(self)
+				self:zoomto(frameWidth/2, frameHeight)
+				self:diffuse(color("#FFFFFF")):diffusealpha(0.5)
+				self:halign(1)
+				self:fadeleft(0.5)
+			end,
+			TopPressedCommand = function(self, params)
+				goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() + 0.01)
+				MESSAGEMAN:Broadcast("UpdateGoalDetails")
+				self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
+
+				self:finishtweening()
+				self:diffusealpha(0.2)
+				self:smooth(0.3)
+				self:diffusealpha(0)
+			end
+		}
+
+
+		t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+			Name = "TriangleLeft",
+			InitCommand = function(self)
+				self:zoom(0.15)
+				self:x(-frameWidth + 10)
+				self:diffusealpha(0.8)
+				self:rotationz(-90)
+			end,
+			TweenCommand = function(self)
+				self:finishtweening()
+				self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+				self:smooth(0.5)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
+			end
+		}
+
+		t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+			Name = "TriangleRight",
+			InitCommand = function(self)
+				self:zoom(0.15)
+				self:x(-10)
+				self:diffusealpha(0.8)
+				self:rotationz(90)
+			end,
+			TweenCommand = function(self)
+				self:finishtweening()
+				self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+				self:smooth(0.5)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
+			end
+		}
+
+		t[#t+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:x(-frameWidth/2)
+				self:zoom(0.3)
+				self:queuecommand("Set")
+			end,
+			SetCommand = function(self, params)
+				local perc = math.floor(goaltable[goalIndex]:GetPercent() * 10000) / 100
+				ms.ok(perc)
+				if perc < 99 then
+					self:settextf("%.f%%", perc)
+				else
+					self:settextf("%.2f%%", perc)
+				end
+			end
+		}
+
+		return t
+	end
+
+
+	t[#t+1] = rateChangeButton()
+
+	return t
+end
 
 -- The right container (The Tags Menu)
 local function rightContainer()
@@ -108,7 +312,7 @@ local function rightContainer()
 				self:zoomto(rightSectionWidth,rightSectionHeight)
 				self:halign(0):valign(0)
 				self:diffuse(getMainColor("frame"))
-				self:diffusealpha(0.8)
+				self:diffusealpha(0.85)
 			end,
 			WheelUpSlowMessageCommand = function(self)
 				if self:isOver() then
@@ -146,7 +350,7 @@ local function rightContainer()
 			self:halign(0)
 			self:valign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Left click a Goal to jump to the song for it. Right click a Goal to modify it.")
+			self:settext("Left click a Goal to jump to the song for it. Right click a Goal to edit it in the left section.")
 		end
 	}
 	}
@@ -161,6 +365,7 @@ local function rightContainer()
 		local theDetail
 
 		local r = Def.ActorFrame{
+			Name = "GoalItem"..i,
 			InitCommand = function(self)
 				self:diffusealpha(0)
 				self:xy(25, 30 + ((i-1) *(boxHeight+verticalSpacing)-10))
@@ -183,6 +388,7 @@ local function rightContainer()
 			UpdateListMessageCommand = function(self)
 				goalIndex = (curPage-1)*10+i
 				theDetail = false
+				inDetail = false
 				if goaltable[goalIndex] ~= nil then
 					ck = goaltable[goalIndex]:GetChartKey()
 					goalsong = SONGMAN:GetSongByChartKey(ck)
@@ -196,18 +402,21 @@ local function rightContainer()
 			ShowGoalDetailMessageCommand = function(self, params)
 				if params.index == i then
 					theDetail = true
-					self:finishtweening()
-					self:easeOut(0.5)
-					self:y(30 + 25)
-					self:valign(0)
+					self:diffusealpha(1)
 				else
-					self:playcommand("Hide")
+					if goaltable[goalIndex] ~= nil then
+						self:diffusealpha(0.5)
+					end
 				end
 			end,
 			HideGoalDetailMessageCommand = function(self)
 				theDetail = false
+				inDetail = false
 				if goaltable[goalIndex] ~= nil then
-					self:playcommand("Show")
+					self:easeOut(0.5)
+					self:diffusealpha(1)
+				else
+					self:playcommand("Hide")
 				end
 			end
 		}
@@ -282,6 +491,9 @@ local function rightContainer()
 				else
 					self:settextf("%.2f%%", perc)
 				end
+			end,
+			UpdateGoalDetailsMessageCommand = function(self)
+				self:queuecommand("Set")
 			end
 		}
 
@@ -346,6 +558,7 @@ local function rightContainer()
 
 		-- MSD
 		r[#r+1] = LoadFont("Common Bold")..{
+			Name = "MSDString",
 			InitCommand  = function(self)
 				self:xy(boxWidth - 25,0):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
@@ -359,11 +572,15 @@ local function rightContainer()
 				else
 					self:settext("??")
 				end
+			end,
+			UpdateGoalDetailsMessageCommand = function(self)
+				self:queuecommand("Set")
 			end
 		}
 
 		-- Rate
 		r[#r+1] = LoadFont("Common Bold")..{
+			Name = "RateString",
 			InitCommand  = function(self)
 				self:xy(10,-5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
@@ -372,6 +589,9 @@ local function rightContainer()
 			SetCommand = function(self)
 				local ratestring = string.format("%.2f", goaltable[goalIndex]:GetRate()):gsub("%.?0$", "") .. "x"
 				self:settext(ratestring)
+			end,
+			UpdateGoalDetailsMessageCommand = function(self)
+				self:queuecommand("Set")
 			end
 		}
 
@@ -398,71 +618,18 @@ local function rightContainer()
 		return r
 	end
 
-	local function goalDetail()
-		local goalIndex
-		local e = Def.ActorFrame {
-			InitCommand = function(self)
-				self:diffusealpha(0)
-				self:xy(25, 30 + verticalSpacing + boxHeight/2 + 25)
-			end,
-			HideCommand = function(self)
-				self:stoptweening()
-				self:easeOut(0.5)
-				self:diffusealpha(0)
-			end,
-			ShowGoalDetailMessageCommand = function(self, params)
-				goalIndex = params.goalIndex
-				self:finishtweening()
-				self:xy(25, (goalIndex + 1) * (boxHeight + verticalSpacing) + 100 + boxHeight + verticalSpacing*2)
-				self:easeOut(0.5)
-				self:y(30 + verticalSpacing + boxHeight + verticalSpacing*2)
-				self:diffusealpha(1)
-			end,
-			HideGoalDetailMessageCommand = function(self)
-				self:playcommand("Hide")
-				inDetail = false
-			end,
-			UpdateListMessageCommand = function(self)
-				self:playcommand("Hide")
-				inDetail = false
-			end
-		}
-
-		e[#e+1] = Def.Quad{
-			InitCommand = function(self)
-				self:diffusealpha(0.2)
-				self:halign(0):valign(0)
-				self:zoomto(boxWidth, leftSectionHeight-80 - boxHeight)
-			end
-		}
-
-		return e
-	end
-
 	for i = 1, maxGoals do
 		t[#t+1] = goalItem(i)
 	end
 
-	t[#t+1] = goalDetail()
-
 	return t
 end
 
+t[#t+1] = upperLeftContainer()
+
+t[#t+1] = lowerLeftContainer()
+
 t[#t+1] = rightContainer()
-
-t[#t+1] = LoadActor("../ScreenPlayerProfile decorations/profilecard") .. {
-	InitCommand = function(self)
-		self:xy(10,80)
-		self:delayedFadeIn(0)
-	end
-}
-
-t[#t+1] = LoadActor("../ScreenPlayerProfile decorations/ssrbreakdown") .. {
-	InitCommand = function(self)
-		self:xy(160,295)
-		self:delayedFadeIn(1)
-	end
-}
 
 t[#t+1] = LoadActor("../_cursor")
 
