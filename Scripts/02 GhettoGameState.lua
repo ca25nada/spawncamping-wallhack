@@ -45,7 +45,7 @@ function GHETTOGAMESTATE.getLowestGoalTypeBySong(self, song)
 			return 0
 		end
 		for k,v in ipairs(goals) do
-			if not v:IsAchieved() then
+			if not v:IsAchieved() and not v:IsVacuous() then
 				return 1
 			else
 				output = 2
