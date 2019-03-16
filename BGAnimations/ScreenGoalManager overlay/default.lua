@@ -78,7 +78,7 @@ local t = Def.ActorFrame {
 }
 
 local boxHeight = 20
-local numBoxWidth = leftSectionWidth / 5
+local numBoxWidth = leftSectionWidth / 2
 
 t[#t+1] = LoadActor("../_mouse")
 
@@ -205,32 +205,36 @@ local function lowerLeftContainer()
 				self:faderight(0.5)
 			end,
 			TopPressedCommand = function(self, params)
-				goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() - 0.01)
-				MESSAGEMAN:Broadcast("UpdateGoalDetails")
-				self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
+				if inDetail then
+					goaltable[goalIndex]:SetRate(goaltable[goalIndex]:GetRate() - 0.05)
+					MESSAGEMAN:Broadcast("UpdateGoalDetails")
+					self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
 
-				self:finishtweening()
-				self:diffusealpha(0.2)
-				self:smooth(0.3)
-				self:diffusealpha(0)
+					self:finishtweening()
+					self:diffusealpha(0.2)
+					self:smooth(0.3)
+					self:diffusealpha(0)
+				end
 			end
 		}
 		t[#t+1] = quadButton(6)..{
 			InitCommand = function(self)
 				self:zoomto(frameWidth/2, frameHeight)
-				self:diffuse(color("#FFFFFF")):diffusealpha(0.5)
+				self:diffuse(color("#FFFFFF")):diffusealpha(0)
 				self:halign(1)
 				self:fadeleft(0.5)
 			end,
 			TopPressedCommand = function(self, params)
-				goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() + 0.01)
-				MESSAGEMAN:Broadcast("UpdateGoalDetails")
-				self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
+				if inDetail then
+					goaltable[goalIndex]:SetRate(goaltable[goalIndex]:GetRate() + 0.05)
+					MESSAGEMAN:Broadcast("UpdateGoalDetails")
+					self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
 
-				self:finishtweening()
-				self:diffusealpha(0.2)
-				self:smooth(0.3)
-				self:diffusealpha(0)
+					self:finishtweening()
+					self:diffusealpha(0.2)
+					self:smooth(0.3)
+					self:diffusealpha(0)
+				end
 			end
 		}
 
@@ -274,21 +278,202 @@ local function lowerLeftContainer()
 				self:queuecommand("Set")
 			end,
 			SetCommand = function(self, params)
-				local perc = math.floor(goaltable[goalIndex]:GetPercent() * 10000) / 100
-				ms.ok(perc)
-				if perc < 99 then
-					self:settextf("%.f%%", perc)
-				else
-					self:settextf("%.2f%%", perc)
+				if goaltable[goalIndex] then
+					local ratestring = string.format("%.2f", goaltable[goalIndex]:GetRate()):gsub("%.?0$", "") .. "x"
+					self:settext(ratestring)
 				end
+			end,
+			UpdateGoalDetailsMessageCommand = function(self)
+				self:playcommand("Set")
+			end,
+			HideGoalDetailMessageCommand = function(self)
+				self:settext("")
 			end
 		}
 
 		return t
 	end
 
+	local function percentChangeButton()
+		local topRowFrameWidth = SCREEN_WIDTH - 20
+		local topRowFrameHeight = 40
+		local frameWidth = 150
+		local frameHeight = 25
+		local goalIndex
+		local t = Def.ActorFrame {
+			Name = "PercentChangeButton",
+			InitCommand = function(self)
+				self:xy(leftSectionWidth/2 + frameWidth/2,200)
+			end,
+			ShowGoalDetailMessageCommand = function(self, params)
+				goalIndex = params.goalIndex
+				self:queuecommand("Set")
+			end
+		}
+
+		t[#t+1] = LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:xy(-frameWidth/2, -22)
+				self:zoom(0.35)
+				self:settext("Change Goal Percent")
+			end
+		}
+
+		t[#t+1] = Def.Quad{
+			InitCommand = function(self)
+				self:zoomto(frameWidth, 25)
+				self:diffuse(color("#000000")):diffusealpha(0.8)
+				self:halign(1)
+			end
+		}
+
+		t[#t+1] = quadButton(6)..{
+			InitCommand = function(self)
+				self:zoomto(frameWidth/2, frameHeight)
+				self:x(-frameWidth/2)
+				self:diffuse(color("#FFFFFF")):diffusealpha(0)
+				self:halign(1)
+				self:faderight(0.5)
+			end,
+			TopPressedCommand = function(self, params)
+				if inDetail then
+					goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() - 0.01)
+					MESSAGEMAN:Broadcast("UpdateGoalDetails")
+					self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
+
+					self:finishtweening()
+					self:diffusealpha(0.2)
+					self:smooth(0.3)
+					self:diffusealpha(0)
+				end
+			end
+		}
+		t[#t+1] = quadButton(6)..{
+			InitCommand = function(self)
+				self:zoomto(frameWidth/2, frameHeight)
+				self:diffuse(color("#FFFFFF")):diffusealpha(0)
+				self:halign(1)
+				self:fadeleft(0.5)
+			end,
+			TopPressedCommand = function(self, params)
+				if inDetail then
+					goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() + 0.01)
+					MESSAGEMAN:Broadcast("UpdateGoalDetails")
+					self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
+
+					self:finishtweening()
+					self:diffusealpha(0.2)
+					self:smooth(0.3)
+					self:diffusealpha(0)
+				end
+			end
+		}
+
+
+		t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+			Name = "TriangleLeft",
+			InitCommand = function(self)
+				self:zoom(0.15)
+				self:x(-frameWidth + 10)
+				self:diffusealpha(0.8)
+				self:rotationz(-90)
+			end,
+			TweenCommand = function(self)
+				self:finishtweening()
+				self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+				self:smooth(0.5)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
+			end
+		}
+
+		t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+			Name = "TriangleRight",
+			InitCommand = function(self)
+				self:zoom(0.15)
+				self:x(-10)
+				self:diffusealpha(0.8)
+				self:rotationz(90)
+			end,
+			TweenCommand = function(self)
+				self:finishtweening()
+				self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+				self:smooth(0.5)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
+			end
+		}
+
+		t[#t+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:x(-frameWidth/2)
+				self:zoom(0.3)
+				self:queuecommand("Set")
+			end,
+			SetCommand = function(self, params)
+				if goaltable[goalIndex] then
+					local perc = math.floor(goaltable[goalIndex]:GetPercent() * 10000) / 100
+					if perc < 99 then
+						self:settextf("%.f%%", perc)
+					else
+						self:settextf("%.2f%%", perc)
+					end
+				end
+			end,
+			UpdateGoalDetailsMessageCommand = function(self)
+				self:playcommand("Set")
+			end,
+			HideGoalDetailMessageCommand = function(self)
+				self:settext("")
+			end
+		}
+
+		return t
+	end
+
+	local function deleteButton()
+		local goalIndex
+		local t = Def.ActorFrame {
+			quadButton(6) .. {
+				InitCommand = function(self)
+					self:xy(15, leftLowerSectionHeight/2 - 30)
+					self:halign(0)
+					self:diffusealpha(0.2)
+					self:zoomto(numBoxWidth + 15, 35)
+				end,
+				ShowGoalDetailMessageCommand = function(self, params)
+					goalIndex = params.goalIndex
+				end,
+				TopPressedCommand = function(self)
+					if goaltable[goalIndex] then
+						goaltable[goalIndex]:Delete()
+						updateGoalsFromData()
+						MESSAGEMAN:Broadcast("HideGoalDetails")
+					end
+					self:finishtweening()
+					self:diffusealpha(0.4)
+					self:smooth(0.3)
+					self:diffusealpha(0.2)
+				end
+			},
+			LoadFont("Common Normal") .. {
+				InitCommand = function(self)
+					self:xy(15 + (numBoxWidth+15)/2,leftLowerSectionHeight/2 - 30)
+					self:zoom(0.4)
+					self:settext("Delete Goal")
+				end
+			}
+		}
+		return t
+	end
+
+	t[#t+1] = deleteButton() .. {
+		InitCommand = function(self)
+			self:xy(-15 + leftSectionWidth/2 - (numBoxWidth+15)/2, leftLowerSectionHeight/2)
+		end
+	}
 
 	t[#t+1] = rateChangeButton()
+
+	t[#t+1] = percentChangeButton()
 
 	return t
 end
@@ -483,6 +668,7 @@ local function rightContainer()
 				self:xy(10,5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
+				self:maxwidth(boxWidth / 6)
 			end,
 			SetCommand = function(self)
 				local perc = math.floor(goaltable[goalIndex]:GetPercent() * 10000) / 100
