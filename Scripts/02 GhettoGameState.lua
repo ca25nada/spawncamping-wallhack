@@ -25,6 +25,10 @@ function GHETTOGAMESTATE.resetGoalTable(self)
 	end
 end
 
+function GHETTOGAMESTATE.getGoalsByChartKey(self)
+	return self.goalsByChartKey
+end
+
 function GHETTOGAMESTATE.getLowestGoalTypeBySong(self, song)
 	-- outputs 0, 1, 2
 	-- these are based on song, not just chart key

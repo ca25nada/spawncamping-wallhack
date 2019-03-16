@@ -60,7 +60,6 @@ local function updateLeaderBoardForCurrentChart()
 		)
 	else
 		lbActor:queuecommand("SetFromLeaderboard", {})
-		ms.ok("asas")
 	end
 end
 
