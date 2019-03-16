@@ -2,7 +2,6 @@ local profile = PROFILEMAN:GetProfile(PLAYER_1)
 local maxGoals = 11
 local curPage = 1
 local song = GAMESTATE:GetCurrentSong()
-profile:SortByName()
 local goaltable = profile:GetGoalTable()
 local maxPages = math.ceil(#goaltable/maxGoals)
 
