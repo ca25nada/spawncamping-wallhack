@@ -8,8 +8,48 @@ GHETTOGAMESTATE = {
 	onlineStatus = "Local",
 	SSM = nil,
 	filterTags = {},
-	tagFilterMode = false -- false means OR
+	tagFilterMode = false, -- false means OR
+	goalsByChartKey = {}
 }
+
+function GHETTOGAMESTATE.resetGoalTable(self)
+	self.goalsByChartKey = {}
+	for k,v in ipairs(PROFILEMAN:GetProfile(PLAYER_1):GetGoalTable()) do
+		local key = v:GetChartKey()
+		local goals = self.goalsByChartKey[key]
+		if not goals then
+			goals = {}
+			self.goalsByChartKey[key] = goals
+		end
+		goals[#goals + 1] = v
+	end
+end
+
+function GHETTOGAMESTATE.getLowestGoalTypeBySong(self, song)
+	-- outputs 0, 1, 2
+	-- these are based on song, not just chart key
+	-- the entire chart and its associated diffs are checked because they are fit into a single musicwheel item
+	-- 0 = no goals
+	-- 1 = at least 1 unfinished goal
+	-- 2 = has goals and all are finished
+	local steps = song:GetAllSteps()
+	local output = 0
+	for i = 1, #steps do
+		local key = steps[i]:GetChartKey()
+		local goals = self.goalsByChartKey[key]
+		if goals == nil then
+			return 0
+		end
+		for k,v in ipairs(goals) do
+			if not v:IsAchieved() then
+				return 1
+			else
+				output = 2
+			end
+		end
+	end
+	return output
+end
 
 -- very bad cheaty way to get the music wheel across overlay screens
 function GHETTOGAMESTATE.setMusicWheel(self, screen)

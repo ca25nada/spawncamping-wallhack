@@ -22,11 +22,16 @@ return Def.ActorFrame{
 
 		BeginCommand = function(self) self:queuecommand('Set') end,
 		OffCommand = function(self) self:visible(false) end,
-		SetGradeCommand = function(self, params)
-			if params.HasGoal then
-				self:diffusebottomedge(color(colorConfig:get_data().selectMusic.HasGoalGradient))
-			else
-				self:diffusebottomedge(color(colorConfig:get_data().selectMusic.MusicWheelDivider))
+		SetCommand = function(self, params)
+			if params.Song then
+				local goalType = GHETTOGAMESTATE:getLowestGoalTypeBySong(params.Song)
+				if goalType == 0 then -- No goals
+					self:diffusebottomedge(color(colorConfig:get_data().selectMusic.MusicWheelDivider))
+				elseif goalType == 1 then -- Unfinished goals
+					self:diffusebottomedge(color(colorConfig:get_data().selectMusic.UnfinishedGoalGradient))
+				elseif goalType == 2 then -- All goals are finished
+					self:diffusebottomedge(color(colorConfig:get_data().selectMusic.CompletedGoalGradient))
+				end
 			end
 		end
 	}
