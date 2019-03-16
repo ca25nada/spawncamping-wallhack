@@ -424,6 +424,7 @@ local function rightContainer()
 			end,
 			UpdateListMessageCommand = function(self)
 				self:playcommand("Hide")
+				inDetail = false
 			end
 		}
 
