@@ -4,6 +4,7 @@ local curPage = 1
 local song = GAMESTATE:GetCurrentSong()
 local goaltable = profile:GetGoalTable()
 local maxPages = math.ceil(#goaltable/maxGoals)
+local inDetail = false
 
 local function updateGoalsFromData()
 	profile:SortByName()
@@ -118,6 +119,15 @@ local function rightContainer()
 				if self:isOver() then
 					movePage(1)
 				end
+			end,
+			MouseRightClickMessageCommand = function(self)
+				if inDetail and isOver(self) then
+					self:sleep(0.05)
+					self:queuecommand("DelayedHide")
+				end
+			end,
+			DelayedHideCommand = function(self)
+				MESSAGEMAN:Broadcast("HideGoalDetail")
 			end
 		},
 		LoadFont("Common Bold") .. {
@@ -148,6 +158,7 @@ local function rightContainer()
 		local goalsong
 		local goalsteps
 		local ck
+		local theDetail
 
 		local r = Def.ActorFrame{
 			InitCommand = function(self)
@@ -171,6 +182,7 @@ local function rightContainer()
 			end,
 			UpdateListMessageCommand = function(self)
 				goalIndex = (curPage-1)*10+i
+				theDetail = false
 				if goaltable[goalIndex] ~= nil then
 					ck = goaltable[goalIndex]:GetChartKey()
 					goalsong = SONGMAN:GetSongByChartKey(ck)
@@ -179,6 +191,23 @@ local function rightContainer()
 					self:playcommand("Show")
 				else
 					self:playcommand("Hide")
+				end
+			end,
+			ShowGoalDetailMessageCommand = function(self, params)
+				if params.index == i then
+					theDetail = true
+					self:finishtweening()
+					self:easeOut(0.5)
+					self:y(30 + 25)
+					self:valign(0)
+				else
+					self:playcommand("Hide")
+				end
+			end,
+			HideGoalDetailMessageCommand = function(self)
+				theDetail = false
+				if goaltable[goalIndex] ~= nil then
+					self:playcommand("Show")
 				end
 			end
 		}
@@ -205,7 +234,7 @@ local function rightContainer()
 			TopPressedCommand = function(self, params)
 				if goaltable[goalIndex] ~= nil then
 					if params.input == "DeviceButton_left mouse button" then
-						if goaltable[goalIndex] and goalsong and goalsteps then
+						if goaltable[goalIndex] and goalsong and goalsteps and ((inDetail and theDetail) or not inDetail) then
 							MESSAGEMAN:Broadcast("TriggerExitFromPS",{song = goalsong})
 							GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred"):MusicRate(goaltable[goalIndex]:GetRate())
 							GAMESTATE:GetSongOptionsObject("ModsLevel_Song"):MusicRate(goaltable[goalIndex]:GetRate())
@@ -213,15 +242,12 @@ local function rightContainer()
 							SCREENMAN:GetTopScreen():Cancel()
 						end
 					elseif params.input == "DeviceButton_right mouse button" then
-						if goaltable[goalIndex] then
-							
-							MESSAGEMAN:Broadcast("UpdateList")
+						if goaltable[goalIndex] and not inDetail then
+							inDetail = true
+							MESSAGEMAN:Broadcast("ShowGoalDetail", {index = i, goalIndex = goalIndex})
 						end
 					end
 				end
-			end,
-			SetCommand = function(self)
-				
 			end
 		}
 
@@ -372,9 +398,51 @@ local function rightContainer()
 		return r
 	end
 
+	local function goalDetail()
+		local goalIndex
+		local e = Def.ActorFrame {
+			InitCommand = function(self)
+				self:diffusealpha(0)
+				self:xy(25, 30 + verticalSpacing + boxHeight/2 + 25)
+			end,
+			HideCommand = function(self)
+				self:stoptweening()
+				self:easeOut(0.5)
+				self:diffusealpha(0)
+			end,
+			ShowGoalDetailMessageCommand = function(self, params)
+				goalIndex = params.goalIndex
+				self:finishtweening()
+				self:xy(25, (goalIndex + 1) * (boxHeight + verticalSpacing) + 100 + boxHeight + verticalSpacing*2)
+				self:easeOut(0.5)
+				self:y(30 + verticalSpacing + boxHeight + verticalSpacing*2)
+				self:diffusealpha(1)
+			end,
+			HideGoalDetailMessageCommand = function(self)
+				self:playcommand("Hide")
+				inDetail = false
+			end,
+			UpdateListMessageCommand = function(self)
+				self:playcommand("Hide")
+			end
+		}
+
+		e[#e+1] = Def.Quad{
+			InitCommand = function(self)
+				self:diffusealpha(0.2)
+				self:halign(0):valign(0)
+				self:zoomto(boxWidth, leftSectionHeight-80 - boxHeight)
+			end
+		}
+
+		return e
+	end
+
 	for i = 1, maxGoals do
 		t[#t+1] = goalItem(i)
 	end
+
+	t[#t+1] = goalDetail()
 
 	return t
 end
