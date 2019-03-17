@@ -18,6 +18,9 @@ local function byAchieved(scoregoal)
 	if not scoregoal or scoregoal:IsAchieved() then
 		return getMainColor("positive")
 	end
+	if scoregoal:IsVacuous() then
+		return color("#ffcccc")
+	end
 	return color("#cccccc")
 end
 
