@@ -28,6 +28,14 @@ local function input(event)
 
 		local CtrlPressed = INPUTFILTER:IsBeingPressed("left ctrl") or INPUTFILTER:IsBeingPressed("right ctrl")
 		local numpad = event.DeviceInput.button == "DeviceButton_KP "..event.char
+
+		-- im fired for writing this
+		if event.DeviceInput.button == "DeviceButton_g" and CtrlPressed then
+			GHETTOGAMESTATE:resetGoalTable()
+			wheel:Move(1)
+			wheel:Move(-1)
+			wheel:Move(0)
+		end
 		if not numpad and event.char and tonumber(event.char) and not inSongSearch then
 			if tonumber(event.char) == 1 then
 				SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
