@@ -445,8 +445,10 @@ local function lowerLeftContainer()
 				TopPressedCommand = function(self)
 					if goaltable[goalIndex] then
 						goaltable[goalIndex]:Delete()
+						profile:SetFromAll()
 						updateGoalsFromData()
-						MESSAGEMAN:Broadcast("HideGoalDetails")
+						MESSAGEMAN:Broadcast("HideGoalDetail")
+						MESSAGEMAN:Broadcast("UpdateList")
 					end
 					self:finishtweening()
 					self:diffusealpha(0.4)
@@ -566,8 +568,8 @@ local function rightContainer()
 				self:diffusealpha(1)
 			end,
 			HideCommand = function(self)
-				self:stoptweening()
-				self:easeOut(0.5)
+				self:finishtweening()
+				self:easeOut(0.2)
 				self:diffusealpha(0)
 			end,
 			UpdateListMessageCommand = function(self)
