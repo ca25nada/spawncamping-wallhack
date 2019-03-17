@@ -542,7 +542,16 @@ local function rightContainer()
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Left click a Goal to jump to the song for it. Right click a Goal to edit it in the left section.")
 		end
-	}
+		},
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(100,10)
+				self:zoom(0.35)
+				self:halign(0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("Create a goal for a song by pressing Ctrl + G while on it.")
+			end
+		}
 	}
 
 	-- this is copied straight from the filter screen which is copied from the downloader screen
