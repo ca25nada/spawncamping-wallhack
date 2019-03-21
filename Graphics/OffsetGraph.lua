@@ -18,11 +18,11 @@ local customWindow
 local maxOffset = math.max(180, 180 * tso)
 
 
-local dvt = {}
-local nrt = {}
-local ctt = {}
-local ntt = {}
-local wuab = {}
+local dvt = {} -- offset vector
+local nrt = {} -- noterow vector
+local ctt = {} -- track vector
+local ntt = {} -- tap note type vector
+local wuab = {} -- time corrected tap notes (?)
 local finalSecond = GAMESTATE:GetCurrentSong(PLAYER_1):GetLastSecond()
 local td = GAMESTATE:GetCurrentSteps(PLAYER_1):GetTimingData()
 
@@ -161,12 +161,12 @@ t[#t+1] = Def.ActorMultiVertex{
 			--local x = (timestamp/songLength) * params.width
 			--local y = (offset/W5Window/2/timingWindowScale) * params.height + (params.height/2)
 
-			if math.abs(offset) > (W5Window * timingWindowScale) then
+			if math.abs(offset) >= 1 then
 				-- Misses
-				verts[#verts+1] = {{x-dotWidth/2, params.height,0}, Alpha(color, 0.3)}
-				verts[#verts+1] = {{x+dotWidth/2, params.height,0}, Alpha(color, 0.3)}
-				verts[#verts+1] = {{x+dotWidth/2, 0,0}, Alpha(color, 0.3)}
-				verts[#verts+1] = {{x-dotWidth/2, 0,0}, Alpha(color, 0.3)}
+				verts[#verts+1] = {{x-dotWidth/4, params.height,0}, Alpha(color, 0.3)}
+				verts[#verts+1] = {{x+dotWidth/4, params.height,0}, Alpha(color, 0.3)}
+				verts[#verts+1] = {{x+dotWidth/4, 0,0}, Alpha(color, 0.3)}
+				verts[#verts+1] = {{x-dotWidth/4, 0,0}, Alpha(color, 0.3)}
 			else
 				-- Everything else
 				setOffsetVerts(verts, x, y, color)
