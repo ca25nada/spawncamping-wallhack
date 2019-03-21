@@ -94,8 +94,10 @@ if themeConfig:get_data().global.BannerWheel then
 			local bnpath = nil
 			if song then
 				bnpath = params.Song:GetBannerPath()
-				self:LoadBackground(bnpath)
-				self:scaletocover(0,-22,capWideScale(get43size(340),340),22)
+				if bnpath then
+					self:LoadBackground(bnpath)
+					self:scaletocover(0,-22,capWideScale(get43size(340),340),22)
+				end
 			end
 		end
 	}
