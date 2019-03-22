@@ -19,8 +19,8 @@ local defaultGameplayCoordinates = {
 	LeaderboardY = SCREEN_HEIGHT / 10,
 	PlayerInfoP1X = 2,
 	PlayerInfoP1Y = 20,
-	PracticeCDGraphX = 10,
-	PracticeCDGraphY = 85
+	PracticeCDGraphX = 0,
+	PracticeCDGraphY = 95
 }
 
 local defaultGameplaySizes = {

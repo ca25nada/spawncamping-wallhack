@@ -44,6 +44,8 @@ local function loadValuesTable()
 	MovableValues.PlayerInfoP1Y = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].PlayerInfoP1Y
 	MovableValues.PlayerInfoP1Width = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].PlayerInfoP1Width
 	MovableValues.PlayerInfoP1Height = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].PlayerInfoP1Height
+	MovableValues.PracticeCDGraphX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].PracticeCDGraphX
+	MovableValues.PracticeCDGraphY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].PracticeCDGraphY
 
 	if IsUsingWideScreen() then
 		MovableValues.TargetTrackerY = MovableValues.TargetTrackerY + WIDESCREENWHY
@@ -519,6 +521,30 @@ Movable = {
 		DeviceButton_right = {
 			property = "Width",
 			inc = 0.01
+		}
+	},
+	DeviceButton_z = {
+		name = "PracticeCDGraph",
+		textHeader = "Chord Density Graph Position:",
+		properties = {"X","Y"},
+		element = {},
+		elementTree = "GameplayXYCoordinates",
+		propertyOffsets = nil,
+		DeviceButton_up = {
+			property = "Y",
+			inc = -3
+		},
+		DeviceButton_down = {
+			property = "Y",
+			inc = 3
+		},
+		DeviceButton_left = {
+			property = "X",
+			inc = -3
+		},
+		DeviceButton_right = {
+			property = "X",
+			inc = 3
 		}
 	}
 }

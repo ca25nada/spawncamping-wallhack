@@ -679,9 +679,9 @@ local pm =
 	}
 	--MovableBorder(wodth+3, hidth+3, 1, (wodth)/2, 0)
 }
---[[
+
 -- Load the CDGraph with a forced width parameter.
-pm[#pm + 1] = LoadActorWithParams("../_chorddensitygraph.lua", {width=wodth})
+pm[#pm + 1] = LoadActorWithParams("../_gameplaydensitygraph.lua", {width=wodth})
 
 -- more draw order shenanigans
 pm[#pm + 1] =
@@ -732,6 +732,6 @@ pm[#pm + 1] =
 if practiceMode and not isReplay then
 	t[#t + 1] = pm
 end
-]]
+
 
 return t
