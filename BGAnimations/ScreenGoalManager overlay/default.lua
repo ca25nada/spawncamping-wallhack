@@ -446,17 +446,17 @@ local function lowerLeftContainer()
 					goalIndex = params.goalIndex
 				end,
 				TopPressedCommand = function(self)
-					if goaltable[goalIndex] then
+					if goaltable[goalIndex] and inDetail then
 						goaltable[goalIndex]:Delete()
 						profile:SetFromAll()
 						updateGoalsFromData()
 						MESSAGEMAN:Broadcast("HideGoalDetail")
 						MESSAGEMAN:Broadcast("UpdateList")
+						self:finishtweening()
+						self:diffusealpha(0.4)
+						self:smooth(0.3)
+						self:diffusealpha(0.2)
 					end
-					self:finishtweening()
-					self:diffusealpha(0.4)
-					self:smooth(0.3)
-					self:diffusealpha(0.2)
 				end
 			},
 			LoadFont("Common Normal") .. {
