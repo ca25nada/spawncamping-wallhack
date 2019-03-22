@@ -732,6 +732,7 @@ local function rightContainer()
 				theDetail = false
 				inDetail = false
 				if goaltable[goalIndex] ~= nil then
+					self:finishtweening()
 					self:easeOut(0.5)
 					self:diffusealpha(1)
 				else
