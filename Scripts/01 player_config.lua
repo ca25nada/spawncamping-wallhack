@@ -20,7 +20,7 @@ local defaultGameplayCoordinates = {
 	PlayerInfoP1X = 2,
 	PlayerInfoP1Y = 20,
 	PracticeCDGraphX = 0,
-	PracticeCDGraphY = 95
+	PracticeCDGraphY = SCREEN_HEIGHT - 35
 }
 
 local defaultGameplaySizes = {
