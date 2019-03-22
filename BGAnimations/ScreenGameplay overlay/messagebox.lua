@@ -44,10 +44,10 @@ return Def.ActorFrame {
 				"2: Judgement Text Size",
 				"3: Combo Text Position",
 				"4: Combo Text Size",
-				"5: Error Bar Text Position",
-				"6: Error Bar Text Size",
-				"7: Target Tracker Text Position",
-				"8: Target Tracker Text Size",
+				"5: Error Bar Position",
+				"6: Error Bar Size",
+				"7: Target Tracker Position",
+				"8: Target Tracker Size",
 				"r: Notefield Position",
 				"t: Notefield Size",
 				"y: NPS Display Text Position",
@@ -59,8 +59,8 @@ return Def.ActorFrame {
 				"s: Leaderboard Size",
 				"d: Leaderboard Spacing",
 				"h: Replay Buttons Spacing",
-				"j: PlayerInfo Position",
-				"k: PlayerInfo Size",
+				"j: Player Info Position",
+				"k: Player Info Size",
 			}
 			if playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCover ~= 0 then
 				table.insert(text, "/: Lane Cover Height")
