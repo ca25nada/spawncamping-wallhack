@@ -11,6 +11,7 @@ local defaultConfig = {
 		ProgressBar = 1, -- 0 = off, 1 bottom , 2 top
 		SongPreview = 3, -- 1 = SM style, 2 = osu! Style (new), 3 = osu! style (old)
 		BannerWheel = true,
+		UseAssetsJudgements = false,
 		JudgementTween = true,
 		BareBone = false, -- Still can't beat jousway lel
 	},
@@ -47,3 +48,6 @@ function judgementTween()
 	return themeConfig:get_data().global.JudgementTween
 end
 
+function useAssetsJudgements()
+	return themeConfig:get_data().global.UseAssetsJudgements
+end

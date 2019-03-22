@@ -3,6 +3,7 @@ local c
 local player = Var "Player"
 local bareBone = isBareBone()
 local JTDisabled = not judgementTween()
+local usingAssets = useAssetsJudgements()
 
 local JudgeCmds = {
 	TapNoteScore_W1 = THEME:GetMetric( "Judgment", "JudgmentW1Command" ),
@@ -35,7 +36,8 @@ local t = Def.ActorFrame {
 	InitCommand = function(self)
 		self:draworder(350)
 	end,
-	LoadActor(THEME:GetPathG("Judgment","Normal")) .. {
+	Def.Sprite {
+		Texture = usingAssets and "../../../../" .. getAssetPath("judgement") or THEME:GetPathG("Judgment", "Normal"),
 		Name="Judgment",
 		InitCommand=function(self)
 			self:pause():visible(false):xy(MovableValues.JudgeX, MovableValues.JudgeY)
