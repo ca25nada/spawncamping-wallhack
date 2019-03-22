@@ -1,3 +1,4 @@
+local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomizeGameplay
 local c
 local player = Var "Player"
 local bareBone = isBareBone()
@@ -17,15 +18,44 @@ local NumberMaxZoomAt = THEME:GetMetric("Combo", "NumberMaxZoomAt")
 local LabelMinZoom = THEME:GetMetric("Combo", "LabelMinZoom")
 local LabelMaxZoom = THEME:GetMetric("Combo", "LabelMaxZoom")
 
+local function arbitraryComboX(value) 
+	c.Label:x(value) 
+	c.Number:x(value - 4)
+	c.Border:x(value)
+  end 
+
+local function arbitraryComboZoom(value)
+	c.Label:zoom(value)
+	c.Number:zoom(value - 0.1)
+	if allowedCustomization then
+		c.Border:playcommand("ChangeWidth", {val = c.Number:GetZoomedWidth() + c.Label:GetZoomedWidth()})
+		c.Border:playcommand("ChangeHeight", {val = c.Number:GetZoomedHeight()})
+	end
+end
+
 local t = Def.ActorFrame {
 
 	LoadFont( "Combo", "numbers" ) .. {
 		Name="Number",
-		OnCommand = THEME:GetMetric("Combo", "NumberOnCommand") -- y,240-216-1.5;shadowlength,1;halign,1;valign,1;skewx,-0.125;zoom,0.5;
+		InitCommand = function(self)
+			self:xy(MovableValues.ComboX - 4, MovableValues.ComboY):halign(1):valign(1):skewx(-0.125):visible(
+				false
+			)
+		end,
+		OnCommand = function(self)
+			self:shadowlength(1):halign(1):valign(1):skewx(-0.125):zoom(0.5)
+		end
 	},
 	LoadFont("Common Normal") .. {
 		Name="Label",
-		OnCommand = THEME:GetMetric("Combo", "LabelOnCommand") -- x,6;y,22.5;shadowlength,1;zoom,0.75;diffusebottomedge,color("0.75,0.75,0.75,1");halign,0;valign,1
+		InitCommand = function(self)
+			self:xy(MovableValues.ComboX, MovableValues.ComboY):diffusebottomedge(color("0.75,0.75,0.75,1")):halign(0):valign(
+				1
+			):visible(false)
+		end,
+		OnCommand = function(self)
+			self:shadowlength(1):zoom(0.75):diffusebottomedge(color("0.75,0.75,0.75,1")):halign(0):valign(1)
+		end
 	},
 
 	LoadFont("Common Normal") .. {
@@ -53,8 +83,29 @@ local t = Def.ActorFrame {
 		c.AvgScore:visible(false)
 		self:valign(1)
 		self:draworder(350)
+		if (allowedCustomization) then
+			Movable.DeviceButton_3.element = c
+			Movable.DeviceButton_4.element = c
+			Movable.DeviceButton_3.condition = true
+			Movable.DeviceButton_4.condition = true
+			Movable.DeviceButton_3.Border = self:GetChild("Border")
+			Movable.DeviceButton_3.DeviceButton_left.arbitraryFunction = arbitraryComboX 
+			Movable.DeviceButton_3.DeviceButton_right.arbitraryFunction = arbitraryComboX 
+			Movable.DeviceButton_4.DeviceButton_up.arbitraryFunction = arbitraryComboZoom
+			Movable.DeviceButton_4.DeviceButton_down.arbitraryFunction = arbitraryComboZoom
+		end
 	end,
-
+	OnCommand = function(self)
+		if (allowedCustomization) then
+			c.Label:settext("COMBO")
+			c.Number:visible(true)
+			c.Label:visible(true)
+			c.Number:settext(1000)
+			Movable.DeviceButton_3.propertyOffsets = {self:GetTrueX() -6, self:GetTrueY() + c.Number:GetHeight()*1.5}	-- centered to screen/valigned
+			setBorderAlignment(c.Border, 0.5, 1)
+		end
+		arbitraryComboZoom(MovableValues.ComboZoom)
+	end,
 	JudgmentMessageCommand = function(self, param)
 		local diff = param.WifeDifferential
 		if diff > 0 then
@@ -102,7 +153,7 @@ local t = Def.ActorFrame {
 		c.Number:visible(true)
 		c.Label:visible(true)
 		if ghostType ~= 0 and ghostType ~= nil then 
-			c.GhostScore:visible(true)
+			c.GhostScore:visible(false)
 
 			c.GhostScore:finishtweening()
 			c.GhostScore:diffusealpha(1)
@@ -112,7 +163,7 @@ local t = Def.ActorFrame {
 		end
 
 		if avgScoreType ~= 0 and avgScoreType ~= nil then 
-			c.AvgScore:visible(true)
+			c.AvgScore:visible(false)
 
 			c.AvgScore:finishtweening()
 			c.AvgScore:diffusealpha(1)
@@ -144,7 +195,8 @@ local t = Def.ActorFrame {
 		-- Pulse
 		Pulse( c.Number, param )
 		PulseLabel( c.Label, param )
-	end
+	end,
+	MovableBorder(0, 0, 1, MovableValues.ComboX, MovableValues.ComboY)
 }
 
 return t

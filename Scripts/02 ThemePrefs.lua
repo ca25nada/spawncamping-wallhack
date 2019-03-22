@@ -177,26 +177,28 @@ end
 					SelectType = "SelectOne",
 					OneChoiceForAllPlayers = false,
 					ExportOnChange = true,
-					Choices = { THEME:GetString('OptionNames','Off'),'On'},
+					Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On"), THEME:GetString("OptionNames", "EWMA")},
 					LoadSelections = function(self, list, pn)
 						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar
-						if pref then
-							list[2] = true
-						else
-							list[1] = true
-						end
+						list[pref + 1] = true
 					end,
 					SaveSelections = function(self, list, pn)
 						local value
-						value = list[2]
+						if list[1] == true then
+							value = 0
+						elseif list[2] == true then
+							value = 1
+						else
+							value = 2
+						end
 						playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar = value
 						playerConfig:set_dirty(pn_to_profile_slot(pn))
 						playerConfig:save(pn_to_profile_slot(pn))
 					end
 				}
-				setmetatable( t, t )
+				setmetatable(t, t)
 				return t
-			end	
+			end
 			
 			function PaceMaker()
 				local t = {
@@ -647,6 +649,32 @@ function ProgressBar()
 		end
 	}
 	setmetatable( t, t )
+	return t
+end
+
+function CustomizeGameplay()
+	local t = {
+		Name = "CustomizeGameplay",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = false,
+		ExportOnChange = true,
+		Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On")},
+		LoadSelections = function(self, list, pn)
+			local pref = playerConfig:get_data(pn_to_profile_slot(pn)).CustomizeGameplay
+			if pref then
+				list[2] = true
+			else
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			playerConfig:get_data(pn_to_profile_slot(pn)).CustomizeGameplay = list[2]
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
+		end
+	}
+	setmetatable(t, t)
 	return t
 end
 
