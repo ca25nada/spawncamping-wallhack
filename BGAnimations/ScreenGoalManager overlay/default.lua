@@ -139,6 +139,8 @@ end
 -- The lower left container (The Tag Editor)
 local function lowerLeftContainer()
 
+	local goalIndex -- im really killing the scope here haha
+
 	local t = Def.ActorFrame {
 		Name = "EditorContainer",
 		InitCommand = function(self)
@@ -163,6 +165,124 @@ local function lowerLeftContainer()
 				self:halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:settext("Edit Goal")
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:xy(leftSectionWidth/2,25)
+				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("Title")
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:xy(leftSectionWidth/2,50)
+				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("MSD")
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:xy(leftSectionWidth/2,75)
+				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("Current PB")
+			end
+		},
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(leftSectionWidth/2,34)
+				self:zoom(0.35)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("")
+				self:maxwidth(leftSectionWidth * 2.3)
+			end,
+			SetCommand = function(self)
+				local ck = goaltable[goalIndex]:GetChartKey()
+				local goalsong = SONGMAN:GetSongByChartKey(ck)
+				if goalsong then
+					self:settextf("%s",goalsong:GetDisplayMainTitle())
+				else
+					self:settextf("%s", ck)
+				end
+			end,
+			ShowGoalDetailMessageCommand = function(self, params)
+				goalIndex = params.goalIndex
+				self:queuecommand("Set")
+			end,
+			HideGoalDetailMessageCommand = function(self)
+				self:settext("")
+			end,
+			UpdateGoalDetailsMessageCommand = function(self)
+				self:queuecommand("Set")
+			end
+		},
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(leftSectionWidth/2,59)
+				self:zoom(0.35)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("")
+				self:maxwidth(leftSectionWidth * 2.3)
+			end,
+			SetCommand = function(self)
+				local ck = goaltable[goalIndex]:GetChartKey()
+				local goalsong = SONGMAN:GetSongByChartKey(ck)
+				local goalsteps = SONGMAN:GetStepsByChartKey(ck)
+				if goalsteps and goaltable[goalIndex] then
+					local msd = goalsteps:GetMSD(goaltable[goalIndex]:GetRate(), 1)
+					self:settextf("%5.1f", msd)
+					self:diffuse(byMSD(msd))
+				else
+					self:settext("??")
+				end
+			end,
+			ShowGoalDetailMessageCommand = function(self, params)
+				goalIndex = params.goalIndex
+				self:queuecommand("Set")
+			end,
+			HideGoalDetailMessageCommand = function(self)
+				self:settext("")
+			end,
+			UpdateGoalDetailsMessageCommand = function(self)
+				self:queuecommand("Set")
+			end
+		},
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(leftSectionWidth/2,84)
+				self:zoom(0.35)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:settext("")
+				self:maxwidth(leftSectionWidth * 2.3)
+			end,
+			SetCommand = function(self)
+				local pb = goaltable[goalIndex]:GetPBUpTo()
+				if pb then
+					if pb:GetMusicRate() < goaltable[goalIndex]:GetRate() then
+						local ratestring = string.format("%.2f", pb:GetMusicRate()):gsub("%.?0$", "") .. "x"
+						self:settextf("Best: %5.2f%% (%s)", pb:GetWifeScore() * 100, ratestring)
+					else
+						self:settextf("Best: %5.2f%%", pb:GetWifeScore() * 100)
+					end
+					self:diffuse(getGradeColor(pb:GetWifeGrade()))
+					self:visible(true)
+				else
+					self:settextf("(Best: %5.2f%%)", 0)
+					self:diffuse(byAchieved(goaltable[goalIndex]))
+				end
+			end,
+			ShowGoalDetailMessageCommand = function(self, params)
+				goalIndex = params.goalIndex
+				self:queuecommand("Set")
+			end,
+			HideGoalDetailMessageCommand = function(self)
+				self:settext("")
+			end,
+			UpdateGoalDetailsMessageCommand = function(self)
+				self:queuecommand("Set")
 			end
 		}
 	}
