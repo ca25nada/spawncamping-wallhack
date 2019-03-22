@@ -4,7 +4,7 @@ local profile = GetPlayerOrMachineProfile(pn)
 local user = playerConfig:get_data(pn_to_profile_slot(pn)).Username
 local pass = playerConfig:get_data(pn_to_profile_slot(pn)).Password
 if isAutoLogin() then
-	DLMAN:Login(user, pass)
+	DLMAN:LoginWithToken(user, pass)
 end
 
 local replayScore

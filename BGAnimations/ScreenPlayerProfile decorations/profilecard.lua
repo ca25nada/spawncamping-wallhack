@@ -129,8 +129,8 @@ t[#t+1] = quadButton(3)..{
 	-- Save config upon successful login
 	LoginMessageCommand = function(self)
 		self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
-		playerConfig:get_data(pn_to_profile_slot(pn)).Username = user
-		playerConfig:get_data(pn_to_profile_slot(pn)).Password = pass
+		playerConfig:get_data(pn_to_profile_slot(pn)).Username = DLMAN:GetUsername()
+		playerConfig:get_data(pn_to_profile_slot(pn)).Password = DLMAN:GetToken()
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
 		SCREENMAN:SystemMessage("Login Successful!")
