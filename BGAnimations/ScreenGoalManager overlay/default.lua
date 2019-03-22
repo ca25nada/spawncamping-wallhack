@@ -1,4 +1,5 @@
-local profile = PROFILEMAN:GetProfile(PLAYER_1)
+local profile = GetPlayerOrMachineProfile(PLAYER_1)
+profile:SetFromAll()
 local maxGoals = 11
 local curPage = 1
 local song = GAMESTATE:GetCurrentSong()
