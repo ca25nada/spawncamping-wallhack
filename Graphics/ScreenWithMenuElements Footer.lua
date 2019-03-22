@@ -2,7 +2,6 @@ local screenWithNoTips = {
 	ScreenSelectMusic = true,
 	ScreenMusicInfo = true,
 	ScreenPlayerProfile = true,
-	ScreenGroupInfo = true,
 }
 
 local t = Def.ActorFrame{}
