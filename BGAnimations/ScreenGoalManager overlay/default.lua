@@ -685,11 +685,13 @@ local function rightContainer()
 				self:maxwidth(boxWidth / 6)
 			end,
 			SetCommand = function(self)
-				local perc = math.floor(goaltable[goalIndex]:GetPercent() * 10000) / 100
-				if perc < 99 then
-					self:settextf("%.f%%", perc)
-				else
-					self:settextf("%.2f%%", perc)
+				if goaltable[goalIndex] then
+					local perc = math.floor(goaltable[goalIndex]:GetPercent() * 10000) / 100
+					if perc < 99 then
+						self:settextf("%.f%%", perc)
+					else
+						self:settextf("%.2f%%", perc)
+					end
 				end
 			end,
 			UpdateGoalDetailsMessageCommand = function(self)
@@ -765,7 +767,7 @@ local function rightContainer()
 				self:zoom(0.4)
 			end,
 			SetCommand = function(self)
-				if goalsteps then
+				if goalsteps and goaltable[goalIndex] then
 					local msd = goalsteps:GetMSD(goaltable[goalIndex]:GetRate(), 1)
 					self:settextf("%5.1f", msd)
 					self:diffuse(byMSD(msd))
@@ -787,8 +789,10 @@ local function rightContainer()
 				self:zoom(0.4)
 			end,
 			SetCommand = function(self)
-				local ratestring = string.format("%.2f", goaltable[goalIndex]:GetRate()):gsub("%.?0$", "") .. "x"
-				self:settext(ratestring)
+				if goaltable[goalIndex] then
+					local ratestring = string.format("%.2f", goaltable[goalIndex]:GetRate()):gsub("%.?0$", "") .. "x"
+					self:settext(ratestring)
+				end
 			end,
 			UpdateGoalDetailsMessageCommand = function(self)
 				self:queuecommand("Set")
