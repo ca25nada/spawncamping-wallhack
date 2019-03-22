@@ -13,6 +13,11 @@ local frameY = SCREEN_HEIGHT-height/2
 local opacity = 1
 --=======================================
 
+local location = themeConfig:get_data().global.ProgressBar -- 1 is bottom, 2 is top
+
+if location == 2 then
+    frameY = height/2
+end
 
 local t = Def.ActorFrame {
     OnCommand = function(self)

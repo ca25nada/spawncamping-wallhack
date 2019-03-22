@@ -15,7 +15,9 @@ t[#t+1] = LoadActor("npscalc")
 --t[#t+1] = LoadActor("lifepercent")
 t[#t+1] = LoadActor("lanecover")
 t[#t+1] = LoadActor("WifeJudgmentSpotting")
-t[#t+1] = LoadActor("progressbar")
+if themeConfig:get_data().global.ProgressBar ~= 0 then
+	t[#t+1] = LoadActor("progressbar")
+end
 t[#t+1] = LoadActor("avatar")
 --t[#t+1] = LoadActor("BPMDisplay")
 t[#t+1] = LoadActor("title")
