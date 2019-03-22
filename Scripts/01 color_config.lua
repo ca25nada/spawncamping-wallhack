@@ -11,6 +11,7 @@ local defaultConfig = {
 		positive = "#66ccff",
 		headerText = "#FFFFFF",
 		headerFrameText = "#FFFFFF",
+		transition = "#888888",
 	},
 
 	clearType = {
