@@ -2,6 +2,7 @@ local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1))
 local c
 local player = Var "Player"
 local bareBone = isBareBone()
+local JTDisabled = not judgementTween()
 
 local JudgeCmds = {
 	TapNoteScore_W1 = THEME:GetMetric( "Judgment", "JudgmentW1Command" ),
@@ -79,7 +80,7 @@ local t = Def.ActorFrame {
 
 		c.Judgment:visible( true )
 		c.Judgment:setstate( iFrame )
-		if not bareBone then
+		if not bareBone and not JTDisabled then
 			JudgeCmds[param.TapNoteScore](c.Judgment)
 		end
 
