@@ -1,8 +1,5 @@
 local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomizeGameplay
 --Avatar frames which also includes current additive %score, mods, and the song stepsttype/difficulty.
-
-local bareBone = isBareBone()
-
 local profileP1
 
 local profileNameP1 = "No Profile"

@@ -1,6 +1,4 @@
 -- Most of the scoretracking function calls and message broadcasting are done here.
-
-local bareBone = isBareBone()
 local startFlag = false
 local fcFlag = false
 local fcFlagDelay = 0.5 -- Minimum delay after lastSecond before broadcasting FC message.
