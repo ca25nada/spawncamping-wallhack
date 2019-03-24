@@ -102,11 +102,11 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
 		local diff = getDifficulty(steps:GetDifficulty())
 		local meter = steps:GetMSD(getCurRateValue(),1)
-		meter = meter == 0 and steps:GetMeter() or math.floor(meter)
+		meter = meter == 0 and steps:GetMeter() or meter
 
 
 		local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-		self:settext(stype.." "..diff.." "..math.floor(meter))
+		self:settextf("%s %s %5.2f",stype, diff, meter)
 		self:diffuse(getDifficultyColor(steps:GetDifficulty()))
 	end,
 	CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
