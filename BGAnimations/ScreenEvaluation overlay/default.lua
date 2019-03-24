@@ -11,13 +11,17 @@ local curTab = 1
 local function input(event)
 	if event.type == "InputEventType_FirstPress" then
 		-- For swapping back and forth between scoreboard and offset display.
-		for i=1,2 do
-			if event.DeviceInput.button == "DeviceButton_"..i then
-				if i ~= curTab then
-					curTab = i
-					MESSAGEMAN:Broadcast("TabChanged",{index = i})
-					SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
-				end
+		if event.DeviceInput.button == "DeviceButton_1" then
+			if 1 ~= curTab then
+				curTab = 1
+				MESSAGEMAN:Broadcast("TabChanged",{index = 1})
+				SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
+			end
+		elseif event.DeviceInput.button == "DeviceButton_2" then
+			if 2 ~= curTab then
+				curTab = 2
+				MESSAGEMAN:Broadcast("TabChanged", {index = 2})
+				SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
 			end
 		end
 

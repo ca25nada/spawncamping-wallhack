@@ -244,6 +244,10 @@ local function scoreBoard(pn)
 			self:y(frameY)
 			self:zoom(1)
 			self:diffusealpha(1)
+		end,
+		OffCommand = function(self)
+			self:bouncy(0.3)
+			self:y(500)
 		end
 	}
 
@@ -859,9 +863,31 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 								ntt = pss:GetTapNoteTypeVector()}
 				self:playcommand("Update", params) end
 			)
+		end,
+		TabChangedMessageCommand = function(self, params)
+			if params.index == 1 then
+				self:playcommand("On")
+			else
+				self:playcommand("Off")
+			end
+		end,
+		OnCommand = function(self)
+			self:stoptweening()
+			self:bouncy(0.2)
+			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, 200)
+			self:diffusealpha(1)
+		end,
+		OffCommand = function(self)
+			self:stoptweening()
+			self:bouncy(0.2)
+			self:x(SCREEN_CENTER_X*3/2-frameWidth/2 + 100)
+			self:diffusealpha(0)
 		end
+
 	}
 end
+
+t[#t+1] = LoadActor("scoreboard") .. {}
 
 
 return t
