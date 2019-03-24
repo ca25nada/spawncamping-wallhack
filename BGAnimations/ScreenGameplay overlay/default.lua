@@ -31,14 +31,6 @@ if not inCustomize then
 	HOOKS:ShowCursor(false)
 end
 
-
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=function(self)
-		self:xy(SCREEN_CENTER_X,SCREEN_BOTTOM-10):zoom(0.35):settext(GAMESTATE:GetSongOptions('ModsLevel_Song')):shadowlength(1)
-	end
-}
-
-
 local largeImageText = string.format("%s: %5.2f",profile:GetDisplayName(), profile:GetPlayerRating())
 
 -- Max 64 for title, 32 for artist.

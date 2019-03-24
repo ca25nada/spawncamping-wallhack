@@ -87,7 +87,7 @@ t[#t+1] = Def.Sprite {
 t[#t+1] = LoadFont("Common Bold") .. {
 	InitCommand= function(self)
 		local name = profile:GetDisplayName()
-		self:xy(56,12):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
+		self:xy(56,7):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
 		self:settext(name)
 	end
 }
@@ -95,7 +95,7 @@ t[#t+1] = LoadFont("Common Bold") .. {
 -- diff name
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand = function(self)
-		self:xy(56,26):zoom(0.4):halign(0):maxwidth(180/0.4)
+		self:xy(56,21):zoom(0.4):halign(0):maxwidth(180/0.4)
 	end,
 	BeginCommand = function(self) self:queuecommand('Set') end,
 	SetCommand=function(self)
@@ -117,7 +117,7 @@ t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:zoomto(200,50)
 		self:halign(0)
-		self:xy(57, 40)
+		self:xy(57, 35)
 		self:zoomto(120,10)
 	end
 }
@@ -126,7 +126,7 @@ t[#t+1] = Def.Quad{
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:halign(0)
-		self:xy(57, 40)
+		self:xy(57, 35)
 		self:zoomto(0,10)
 		self:diffuse(getMainColor("highlight"))
 		self:queuecommand("Set")
@@ -144,7 +144,7 @@ t[#t+1] = Def.Quad{
 -- life counter
 t[#t+1] = LoadFont("Common Bold") .. {
 	OnCommand = function(self)
-		self:xy(57+120+10, 40-1)
+		self:xy(57+120+10, 35-1)
 		self:zoom(0.35)
 		self:queuecommand("Set")
 	end,
@@ -167,6 +167,21 @@ t[#t+1] = LoadFont("Common Bold") .. {
 			self:diffuse(color("1,1,1,1"))
 		end
 	end
+}
+
+t[#t+1] = LoadFont("Common Bold") .. {
+	OnCommand = function(self)
+		self:xy(57, 47)
+		self:zoom(0.35)
+		self:queuecommand("Set")
+		self:halign(0)
+		self:maxwidth(200 * 2)
+	end,
+	SetCommand = function(self)
+		local mods = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("ModsLevel_Current")
+		self:settext(mods)
+	end
+
 }
 
 return t
