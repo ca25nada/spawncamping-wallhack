@@ -149,29 +149,31 @@ t[#t+1] = Def.ActorMultiVertex{
 		local songLength = params.song:GetLastSecond()
 
 		for i=1, #params.nrv do
-			local timestamp = params.steps:GetTimingData():GetElapsedTimeFromNoteRow(params.nrv[i])
-			local offset = params.dvt[i]/1000
+			if params.dvt[i] ~= nil then
+				local timestamp = params.steps:GetTimingData():GetElapsedTimeFromNoteRow(params.nrv[i])
+				local offset = params.dvt[i]/1000
 
-			local color =
-				(enabledCustomWindows and judge ~= 0) and customOffsetToJudgeColor(params.dvt[i], customWindow.judgeWindows) or
-				offsetToJudgeColor(params.dvt[i], tst[judge])
+				local color =
+					(enabledCustomWindows and judge ~= 0) and customOffsetToJudgeColor(params.dvt[i], customWindow.judgeWindows) or
+					offsetToJudgeColor(params.dvt[i], tst[judge])
 
-			local x = fitX(wuab[i]) + params.width / 2
-			local y = fitY(params.dvt[i]) + params.height / 2
-			--local x = (timestamp/songLength) * params.width
-			--local y = (offset/W5Window/2/timingWindowScale) * params.height + (params.height/2)
+				local x = fitX(wuab[i]) + params.width / 2
+				local y = fitY(params.dvt[i]) + params.height / 2
+				--local x = (timestamp/songLength) * params.width
+				--local y = (offset/W5Window/2/timingWindowScale) * params.height + (params.height/2)
 
-			if math.abs(offset) >= 1 then
-				-- Misses
-				verts[#verts+1] = {{x-dotWidth/4, params.height,0}, Alpha(color, 0.3)}
-				verts[#verts+1] = {{x+dotWidth/4, params.height,0}, Alpha(color, 0.3)}
-				verts[#verts+1] = {{x+dotWidth/4, 0,0}, Alpha(color, 0.3)}
-				verts[#verts+1] = {{x-dotWidth/4, 0,0}, Alpha(color, 0.3)}
-			else
-				-- Everything else
-				setOffsetVerts(verts, x, y, color)
+				if math.abs(offset) >= 1 then
+					-- Misses
+					verts[#verts+1] = {{x-dotWidth/4, params.height,0}, Alpha(color, 0.3)}
+					verts[#verts+1] = {{x+dotWidth/4, params.height,0}, Alpha(color, 0.3)}
+					verts[#verts+1] = {{x+dotWidth/4, 0,0}, Alpha(color, 0.3)}
+					verts[#verts+1] = {{x-dotWidth/4, 0,0}, Alpha(color, 0.3)}
+				else
+					-- Everything else
+					setOffsetVerts(verts, x, y, color)
+				end
+
 			end
-
 		end
 
 		self:SetVertices(verts)
