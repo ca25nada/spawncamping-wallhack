@@ -50,6 +50,19 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end
 }
 
+-- Mod List
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function(self)
+		self:xy(10,85)
+		self:zoom(0.4)
+		self:halign(0)
+		self:maxwidth(SCREEN_WIDTH - (266/2) - 45)
+		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
+		local mods = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("ModsLevel_Current")
+		self:settextf("Mods: %s", mods)
+	end
+}
+
 -- Background Quad for Song banner
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
