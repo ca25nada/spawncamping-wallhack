@@ -856,10 +856,509 @@ for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 	t[#t+1] = scoreBoard(pn)
 end
 
+
+local player = GAMESTATE:GetEnabledPlayers()[1]
+local song = STATSMAN:GetCurStageStats():GetPlayedSongs()[1]
+local profile = GetPlayerOrMachineProfile(player)
+local steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
+local hsTable = getScoreTable(player, getCurRate())
+local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+local score = pss:GetHighScore()
+local scoreIndex = getHighScoreIndex(hsTable, score)
+
+local lbActor
+local currentCountry = "Global"
+local scoresPerPage = 5
+local maxPages = math.ceil(#hsTable/scoresPerPage)
+local curPage = 1
+
+local function updateLeaderBoardForCurrentChart()
+	if steps then
+		DLMAN:RequestChartLeaderBoardFromOnline(
+			steps:GetChartKey(),
+			function(leaderboard)
+				lbActor:queuecommand("SetFromLeaderboard", leaderboard)
+			end
+		)
+	else
+		lbActor:queuecommand("SetFromLeaderboard", {})
+	end
+end
+
+local function movePage(n)
+	if n > 0 then 
+		curPage = ((curPage+n-1) % maxPages + 1)
+	else
+		curPage = ((curPage+n+maxPages-1) % maxPages+1)
+	end
+	MESSAGEMAN:Broadcast("UpdateScores")
+end
+
+local function scoreboardInput(event)
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			MESSAGEMAN:Broadcast("WheelUpSlow")
+		end
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			MESSAGEMAN:Broadcast("WheelDownSlow")
+		end
+		if event.button == "MenuLeft" then
+			movePage(-1)
+		end
+
+		if event.button == "MenuRight" then
+			movePage(1)
+		end
+
+	end
+end
+
+-- this is the dynamic scoreboard for all the cool scores
+-- bad name dont ask (do ask)
+local function boardOfScores()
+	local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
+	local frameHeight = 150
+	local frameX = SCREEN_WIDTH - frameWidth - WideScale(get43size(40),40)/2
+	local frameY = 154
+	local spacing = 1
+	local isLocal = true
+	local topScoresOnly = true
+	local loggedIn = DLMAN:IsLoggedIn()
+
+	local t = Def.ActorFrame {
+		Name = "ScoreBoardContainer",
+		InitCommand = function(self)
+			lbActor = self
+		end,
+		OnCommand = function(self)
+			SCREENMAN:GetTopScreen():AddInputCallback(scoreboardInput)
+			self:queuecommand("UpdateScores")
+		end,
+		UpdateScoresMessageCommand = function(self, params)
+			if isLocal then
+				scoreList = getScoreTable(player, getCurRate())
+			else
+				scoreList = DLMAN:GetChartLeaderBoard(steps:GetChartKey(), currentCountry)
+				if #scoreList == 0 then
+					updateLeaderBoardForCurrentChart()
+				end
+			end
+			curPage = 1
+			if scoreList ~= nil then
+				maxPages = math.ceil(#scoreList / scoresPerPage)
+			else
+				maxPages = 1
+			end
+			if isLocal or #scoreList ~= 0 then
+				self:queuecommand("Set")
+			end
+
+		end,
+		SetFromLeaderboardCommand = function(self, leaderboard)
+			scoreList = DLMAN:GetChartLeaderBoard(steps:GetChartKey(), currentCountry)
+			curPage = 1
+			if scoreList ~= nil then
+				maxPages = math.ceil(#scoreList / scoresPerPage)
+			else
+				maxPages = 1
+			end
+		end,
+
+		-- the quad for the background of the container
+		Def.Quad {
+			InitCommand = function(self)
+				self:zoomto(frameWidth, frameHeight)
+				self:halign(0):valign(0)
+				self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+			end,
+			WheelUpSlowMessageCommand = function(self)
+				if self:isOver() then
+					movePage(-1)
+				end
+			end,
+			WheelDownSlowMessageCommand = function(self)
+				if self:isOver() then
+					movePage(1)
+				end
+			end
+		},
+
+		-- the sneaky quad for the divider between this container and the one below
+		Def.Quad {
+			InitCommand = function(self)
+				self:y(frameHeight - 1)
+				self:zoomto(frameWidth,1)
+				self:halign(0):valign(0)
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardDivider)):diffusealpha(0.8)
+			end
+		},
+
+		-- the quad for other divider just separating stuff
+		Def.Quad {
+			InitCommand = function(self)
+				self:xy(frameWidth/6, 5)
+				self:zoomto(2,frameHeight - 10)
+				self:halign(0):valign(0)
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardDivider)):diffusealpha(0.8)
+			end
+		},
+
+		-- Local scores button
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(3, 8)
+				self:zoomto(frameWidth/6 - 6, frameHeight / 8)
+				self:halign(0):valign(0)
+				self:diffusealpha(0.1)
+			end,
+			SetCommand = function(self)
+				if not loggedIn then
+					self:diffusealpha(0.05)
+					return
+				end
+				if not isLocal then
+					self:diffusealpha(0.1)
+				else
+					self:diffusealpha(0.4)
+				end
+			end,
+			TopPressedCommand = function(self)
+				if not isLocal and loggedIn then
+					isLocal = true
+					self:GetParent():queuecommand("UpdateScores")
+				end
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:settext("Local")
+				self:zoom(0.45)
+				self:xy(3, 8)
+				self:addx((frameWidth/6 - 6)/2)
+				self:addy((frameHeight / 8)/2)
+			end,
+			SetCommand = function(self)
+				if not loggedIn then
+					self:diffusealpha(0.05)
+					return
+				end
+			end
+		},
+
+		-- Online scores button
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(3, 8 + (frameHeight / 8) + spacing)
+				self:zoomto(frameWidth/6 - 6, frameHeight / 8)
+				self:halign(0):valign(0)
+				self:diffusealpha(0.1)
+			end,
+			SetCommand = function(self)
+				if not loggedIn then
+					self:diffusealpha(0.05)
+					return
+				end
+				if isLocal then
+					self:diffusealpha(0.1)
+				else
+					self:diffusealpha(0.4)
+				end
+			end,
+			TopPressedCommand = function(self)
+				if isLocal and loggedIn then
+					isLocal = false
+					self:GetParent():queuecommand("UpdateScores")
+				end
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:settext("Online")
+				self:zoom(0.45)
+				self:xy(3, 8 + (frameHeight / 8) + spacing)
+				self:addx((frameWidth/6 - 6)/2)
+				self:addy((frameHeight / 8)/2)
+			end,
+			SetCommand = function(self)
+				if not loggedIn then
+					self:diffusealpha(0.05)
+					return
+				end
+			end
+		},
+
+		-- Current rate button
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(3, frameHeight - 8 - (frameHeight/8/2) * 2 - spacing)
+				self:zoomto(frameWidth/6 - 6, frameHeight / 8 / 2)
+				self:halign(0):valign(0)
+				self:diffusealpha(0.1)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:diffusealpha(0.05)
+				else
+					if DLMAN:GetCurrentRateFilter() then
+						self:diffusealpha(0.4)
+					else
+						self:diffusealpha(0.1)
+					end
+				end
+			end,
+			TopPressedCommand = function(self)
+				if not isLocal and loggedIn then
+					if not DLMAN:GetCurrentRateFilter() then
+						DLMAN:ToggleRateFilter()
+						self:GetParent():queuecommand("UpdateScores")
+					end
+				end
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:settext("Current Rate")
+				self:zoom(0.25)
+				self:xy(3, frameHeight - 8 - (frameHeight/8/2) * 2 - spacing)
+				self:addx((frameWidth/6 - 6)/2)
+				self:addy((frameHeight / 8 / 2)/2)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:diffusealpha(0.05)
+				else
+					self:diffusealpha(1)
+				end
+			end
+		},
+
+		-- All rates button
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(3, frameHeight - 8 - (frameHeight/8/2))
+				self:zoomto(frameWidth/6 - 6, frameHeight / 8 / 2)
+				self:halign(0):valign(0)
+				self:diffusealpha(0.1)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:diffusealpha(0.05)
+				else
+					if DLMAN:GetCurrentRateFilter() then
+						self:diffusealpha(0.1)
+					else
+						self:diffusealpha(0.4)
+					end
+				end
+			end,
+			TopPressedCommand = function(self)
+				if not isLocal and loggedIn then
+					if DLMAN:GetCurrentRateFilter() then
+						DLMAN:ToggleRateFilter()
+						self:GetParent():queuecommand("UpdateScores")
+					end
+				end
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:settext("All Rates")
+				self:zoom(0.25)
+				self:xy(3, frameHeight - 8 - (frameHeight/8/2))
+				self:addx((frameWidth/6 - 6)/2)
+				self:addy((frameHeight / 8 / 2)/2)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:diffusealpha(0.05)
+				else
+					self:diffusealpha(1)
+				end
+			end
+		}
+	}
+
+	local scoreItemWidth = frameWidth / 1.7
+	local scoreItemHeight = frameHeight / 8
+	local scoreItemX = frameWidth / 6 + 3 + 2 -- button width + divider width + spacing width
+	local scoreItemY = 8
+	local scoreItemSpacing = spacing
+	-- individual items for the score buttons
+	local function scoreItem(i)
+		local scoreIndex = (curPage - 1) * scoresPerPage + i
+		local selected = false
+
+		local d = Def.ActorFrame {
+			InitCommand = function(self)
+				self:xy(scoreItemX, scoreItemY + (i-1) * (scoreItemHeight + scoreItemSpacing))
+			end
+		}
+
+		-- BG+Button for score item
+		d[#d+1] = quadButton(6) .. {
+			InitCommand = function(self)
+				self:halign(0):valign(0)
+				self:diffusealpha(0.1)
+				self:zoomto(scoreItemWidth, scoreItemHeight)
+			end,
+			TopPressedCommand = function(self)
+				self:finishtweening()
+				self:diffusealpha(0.4)
+				self:smooth(0.3)
+				self:diffusealpha(0.1)
+			end
+		}
+
+		-- grade
+		d[#d+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(22,scoreItemHeight/4)
+				self:zoom(0.3)
+				self:queuecommand("Set")
+			end,
+			SetCommand = function(self)
+				local grade = scoreList[scoreIndex]:GetWifeGrade()
+				self:settext(THEME:GetString("Grade",ToEnumShortString(grade)))
+				self:diffuse(getGradeColor(grade))
+			end
+		}
+		-- cleartype
+		d[#d+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(22,scoreItemHeight/4 * 3)
+				self:zoom(0.3)
+				self:queuecommand("Set")
+				self:maxwidth(135)
+			end,
+			SetCommand = function(self)
+				local clearType = getClearType(PLAYER_1, steps, scoreList[scoreIndex])
+				self:settext(getClearTypeText(clearType))
+				self:diffuse(getClearTypeColor(clearType))
+			end
+		}
+		-- score percent and judgments
+		d[#d+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(45,scoreItemHeight/4)
+				self:halign(0)
+				self:zoom(0.3)
+				self:queuecommand("Set")
+			end,
+			SetCommand = function(self)
+				local score = scoreList[scoreIndex]:GetWifeScore()
+				local w1 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W1")
+				local w2 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W2")
+				local w3 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W3")
+				local w4 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W4")
+				local w5 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W5")
+				local miss = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_Miss")
+				if score >= 0.99 then
+					self:settextf("%0.4f%% / %d - %d - %d - %d - %d - %d",math.floor(score*1000000)/10000, w1, w2, w3, w4, w5, miss)
+					self:AddAttribute(11, {Length = #tostring(w1), Diffuse = byJudgment("TapNoteScore_W1")})
+					self:AddAttribute(14 + #tostring(w1), {Length = #tostring(w2), Diffuse = byJudgment("TapNoteScore_W2")})
+					self:AddAttribute(17 + #tostring(w1) + #tostring(w2), {Length = #tostring(w3), Diffuse = byJudgment("TapNoteScore_W3")})
+					self:AddAttribute(20 + #tostring(w1) + #tostring(w2) + #tostring(w3), {Length = #tostring(w4), Diffuse = byJudgment("TapNoteScore_W4")})
+					self:AddAttribute(23 + #tostring(w1) + #tostring(w2) + #tostring(w3) + #tostring(w4), {Length = #tostring(w5), Diffuse = byJudgment("TapNoteScore_W5")})
+					self:AddAttribute(26 + #tostring(w1) + #tostring(w2) + #tostring(w3) + #tostring(w4) + #tostring(w5), {Length = #tostring(miss), Diffuse = byJudgment("TapNoteScore_Miss")})
+				else
+					self:settextf("%0.2f%% / %d - %d - %d - %d - %d - %d",math.floor(score*10000)/100, w1, w2, w3, w4, w5, miss)
+					self:AddAttribute(9, {Length = #tostring(w1), Diffuse = byJudgment("TapNoteScore_W1")})
+					self:AddAttribute(12 + #tostring(w1), {Length = #tostring(w2), Diffuse = byJudgment("TapNoteScore_W2")})
+					self:AddAttribute(15 + #tostring(w1) + #tostring(w2), {Length = #tostring(w3), Diffuse = byJudgment("TapNoteScore_W3")})
+					self:AddAttribute(18 + #tostring(w1) + #tostring(w2) + #tostring(w3), {Length = #tostring(w4), Diffuse = byJudgment("TapNoteScore_W4")})
+					self:AddAttribute(21 + #tostring(w1) + #tostring(w2) + #tostring(w3) + #tostring(w4), {Length = #tostring(w5), Diffuse = byJudgment("TapNoteScore_W5")})
+					self:AddAttribute(24 + #tostring(w1) + #tostring(w2) + #tostring(w3) + #tostring(w4) + #tostring(w5), {Length = #tostring(miss), Diffuse = byJudgment("TapNoteScore_Miss")})
+				end
+			end
+		}
+		-- date and ssr
+		d[#d+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(45,scoreItemHeight/4 * 3)
+				self:halign(0)
+				self:zoom(0.3)
+				self:queuecommand("Set")
+			end,
+			SetCommand = function(self)
+				local date = scoreList[scoreIndex]:GetDate()
+				local ssr = scoreList[scoreIndex]:GetSkillsetSSR("Overall")
+				self:settextf("%s | %0.2f", date, ssr)
+				self:AddAttribute(#date + #" | ", {Length = -1, Diffuse = byMSD(ssr)})
+			end
+		}
+
+		-- BG quad for score item player info
+		d[#d+1] = Def.Quad {
+			InitCommand = function(self)
+				self:addx(scoreItemWidth + 10)
+				self:halign(0):valign(0)
+				self:diffusealpha(0.1)
+				self:zoomto(frameWidth - scoreItemWidth - scoreItemX - 20, scoreItemHeight)
+			end,
+			TopPressedCommand = function(self)
+				self:finishtweening()
+				self:diffusealpha(0.4)
+				self:smooth(0.3)
+				self:diffusealpha(0.1)
+			end
+		}
+
+		-- player name
+		d[#d+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20)/2,scoreItemHeight/4)
+				self:maxwidth((frameWidth - scoreItemWidth - scoreItemX - 20)*3)
+				self:zoom(0.3)
+				self:queuecommand("Set")
+			end,
+			SetCommand = function(self)
+				local name = profile:GetDisplayName()
+				if not isLocal then
+					name = scoreList[scoreIndex]:GetDisplayName()
+				end
+				self:settext(name)
+			end
+		}
+
+		-- rate
+		d[#d+1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20)/2,scoreItemHeight/4 * 3)
+				self:maxwidth((frameWidth - scoreItemWidth - scoreItemX - 20)*3)
+				self:zoom(0.3)
+				self:queuecommand("Set")
+			end,
+			SetCommand = function(self)
+				local ratestring = "("..string.format("%.2f", scoreList[scoreIndex]:GetMusicRate()):gsub("%.?0$", "") .. "x)"
+				self:settext(ratestring)
+			end
+		}
+
+
+		return d
+
+	end
+
+	for i=1, scoresPerPage do
+		t[#t+1] = scoreItem(i)
+	end
+
+
+	return t
+
+end
+
+t[#t+1] = boardOfScores() .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180 - 150)
+	end
+}
+
 if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 		InitCommand = function(self, params)
-			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, 200)
+			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
+			self:zoom(0.5)
 
 			local pn = GAMESTATE:GetEnabledPlayers()[1]
 			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
@@ -887,7 +1386,8 @@ if GAMESTATE:GetNumPlayersEnabled() == 1 then
 		OnCommand = function(self)
 			self:stoptweening()
 			self:bouncy(0.2)
-			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, 200)
+			self:zoom(1)
+			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
 			self:diffusealpha(1)
 		end,
 		OffCommand = function(self)
