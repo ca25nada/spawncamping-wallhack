@@ -1172,6 +1172,96 @@ local function boardOfScores()
 					self:diffusealpha(1)
 				end
 			end
+		},
+
+		-- Top Scores button
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(3, frameHeight - 8 - (frameHeight/8/2)*3 - spacing*3)
+				self:zoomto(frameWidth/6 - 6, frameHeight / 8 / 2)
+				self:halign(0):valign(0)
+				self:diffusealpha(0.1)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:diffusealpha(0.05)
+				else
+					if DLMAN:GetTopScoresOnlyFilter() then
+						self:diffusealpha(0.4)
+					else
+						self:diffusealpha(0.1)
+					end
+				end
+			end,
+			TopPressedCommand = function(self)
+				if not isLocal and loggedIn then
+					if not DLMAN:GetTopScoresOnlyFilter() then
+						DLMAN:ToggleTopScoresOnlyFilter()
+						self:GetParent():queuecommand("UpdateScores")
+					end
+				end
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:settext("Top Scores")
+				self:zoom(0.25)
+				self:xy(3, frameHeight - 8 - (frameHeight/8/2)*3 - spacing*3)
+				self:addx((frameWidth/6 - 6)/2)
+				self:addy((frameHeight / 8 / 2)/2)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:diffusealpha(0.05)
+				else
+					self:diffusealpha(1)
+				end
+			end
+		},
+
+		-- All Scores button
+		quadButton(6) .. {
+			InitCommand = function(self)
+				self:xy(3, frameHeight - 8 - (frameHeight/8/2)*4 - spacing*4)
+				self:zoomto(frameWidth/6 - 6, frameHeight / 8 / 2)
+				self:halign(0):valign(0)
+				self:diffusealpha(0.1)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:diffusealpha(0.05)
+				else
+					if DLMAN:GetTopScoresOnlyFilter() then
+						self:diffusealpha(0.1)
+					else
+						self:diffusealpha(0.4)
+					end
+				end
+			end,
+			TopPressedCommand = function(self)
+				if not isLocal and loggedIn then
+					if DLMAN:GetTopScoresOnlyFilter() then
+						DLMAN:ToggleTopScoresOnlyFilter()
+						self:GetParent():queuecommand("UpdateScores")
+					end
+				end
+			end
+		},
+		LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:settext("All Scores")
+				self:zoom(0.25)
+				self:xy(3, frameHeight - 8 - (frameHeight/8/2)*4 - spacing*4)
+				self:addx((frameWidth/6 - 6)/2)
+				self:addy((frameHeight / 8 / 2)/2)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:diffusealpha(0.05)
+				else
+					self:diffusealpha(1)
+				end
+			end
 		}
 	}
 
