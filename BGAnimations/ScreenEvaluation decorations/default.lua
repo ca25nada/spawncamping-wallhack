@@ -1672,7 +1672,6 @@ t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 		self:diffusealpha(0)
 	end
 
-t[#t+1] = LoadActor("scoreboard") .. {}
 }
 
 -- Missing noterows text
