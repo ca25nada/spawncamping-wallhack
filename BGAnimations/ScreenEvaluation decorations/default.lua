@@ -863,6 +863,8 @@ local score = pss:GetHighScore()
 local scoreIndex = getHighScoreIndex(hsTable, score)
 
 local lbActor
+local offsetIndex
+local offsetisLocal
 local currentCountry = "Global"
 local scoresPerPage = 5
 local maxPages = math.ceil(#hsTable/scoresPerPage)
@@ -1403,14 +1405,23 @@ local function boardOfScores()
 				self:diffusealpha(0.1)
 				self:zoomto(scoreItemWidth, scoreItemHeight)
 			end,
+			SetCommand = function(self)
+				if offsetIndex == scoreIndex and offsetisLocal == isLocal then
+					self:diffusealpha(0.4)
+				else
+					self:diffusealpha(0.1)
+				end
+			end,
 			TopPressedCommand = function(self)
 				if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
 					return
 				end
+				offsetIndex = scoreIndex
+				offsetisLocal = isLocal
+				MESSAGEMAN:Broadcast("ShowScoreOffset")
 				self:finishtweening()
 				self:diffusealpha(0.4)
-				self:smooth(0.3)
-				self:diffusealpha(0.1)
+				self:GetParent():GetParent():playcommand("Set")
 			end
 		}
 
@@ -1597,53 +1608,88 @@ t[#t+1] = boardOfScores() .. {
 	end
 }
 
-if GAMESTATE:GetNumPlayersEnabled() == 1 then
-	t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
-		InitCommand = function(self, params)
-			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
-			self:zoom(0.5)
+t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
+	InitCommand = function(self, params)
+		self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
+		self:zoom(0.5)
 
-			local pn = GAMESTATE:GetEnabledPlayers()[1]
-			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
-			local steps = GAMESTATE:GetCurrentSteps(pn)
+		local pn = GAMESTATE:GetEnabledPlayers()[1]
+		local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+		local steps = GAMESTATE:GetCurrentSteps(pn)
 
-			self:RunCommandsOnChildren(function(self)
-				local params = 	{width = frameWidth, 
-								height = 150, 
-								song = song, 
-								steps = steps, 
-								nrv = pss:GetNoteRowVector(),
-								dvt = pss:GetOffsetVector(),
-								ctt = pss:GetTrackVector(),
-								ntt = pss:GetTapNoteTypeVector()}
-				self:playcommand("Update", params) end
-			)
-		end,
-		TabChangedMessageCommand = function(self, params)
-			if params.index == 1 then
-				self:playcommand("On")
+		self:RunCommandsOnChildren(function(self)
+			local params = 	{width = frameWidth, 
+							height = 150, 
+							song = song, 
+							steps = steps, 
+							nrv = pss:GetNoteRowVector(),
+							dvt = pss:GetOffsetVector(),
+							ctt = pss:GetTrackVector(),
+							ntt = pss:GetTapNoteTypeVector()}
+			self:playcommand("Update", params) end
+		)
+	end,
+	ShowScoreOffsetMessageCommand = function(self, params)
+		if scoreList[offsetIndex]:HasReplayData() then
+			if not offsetisLocal then
+				DLMAN:RequestOnlineScoreReplayData(
+					scoreList[offsetIndex],
+					function()
+						MESSAGEMAN:Broadcast("DelayedShowOffset")
+					end
+				)
 			else
-				self:playcommand("Off")
+				MESSAGEMAN:Broadcast("DelayedShowOffset")
 			end
-		end,
-		OnCommand = function(self)
-			self:stoptweening()
-			self:bouncy(0.2)
-			self:zoom(1)
-			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
-			self:diffusealpha(1)
-		end,
-		OffCommand = function(self)
-			self:stoptweening()
-			self:bouncy(0.2)
-			self:x(SCREEN_CENTER_X*3/2-frameWidth/2 + 100)
-			self:diffusealpha(0)
+		else
+			self:RunCommandsOnChildren(function(self) self:playcommand("Update", {width = frameWidth, height = 150}) end)
 		end
-
-	}
-end
+	end,
+	DelayedShowOffsetMessageCommand = function(self)
+		self:RunCommandsOnChildren(function(self)
+			local params = 	{width = frameWidth, 
+							height = 150, 
+							song = song, 
+							steps = steps, 
+							nrv = scoreList[offsetIndex]:GetNoteRowVector(),
+							dvt = scoreList[offsetIndex]:GetOffsetVector(),
+							ctt = scoreList[offsetIndex]:GetTrackVector(),
+							ntt = scoreList[offsetIndex]:GetTapNoteTypeVector()}
+			self:playcommand("Update", params) end
+		)
+	end,
+	OnCommand = function(self)
+		self:stoptweening()
+		self:bouncy(0.2)
+		self:zoom(1)
+		self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
+		self:diffusealpha(1)
+	end,
+	OffCommand = function(self)
+		self:stoptweening()
+		self:bouncy(0.2)
+		self:x(SCREEN_CENTER_X*3/2-frameWidth/2 + 100)
+		self:diffusealpha(0)
+	end
 
 t[#t+1] = LoadActor("scoreboard") .. {}
+}
 
-
+-- Missing noterows text
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_WIDTH * 3/4, SCREEN_HEIGHT * 3/4)
+		self:settext("Missing Noterows from Online Replay\n(゜´Д｀゜)")
+		self:zoom(0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.6)
+		self:visible(false)
+	end,
+	DelayedShowOffsetMessageCommand = function(self)
+		if scoreList[offsetIndex]:GetNoteRowVector() == nil then
+			self:visible(true)
+		else
+			self:visible(false)
+		end
+	end
+}
 return t
