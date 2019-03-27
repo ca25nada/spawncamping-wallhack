@@ -887,7 +887,7 @@ local function movePage(n)
 	else
 		curPage = ((curPage+n+maxPages-1) % maxPages+1)
 	end
-	MESSAGEMAN:Broadcast("UpdateScores")
+	MESSAGEMAN:Broadcast("UpdateList")
 end
 
 local function scoreboardInput(event)
@@ -958,6 +958,7 @@ local function boardOfScores()
 			else
 				maxPages = 1
 			end
+			self:queuecommand("UpdateScores")
 		end,
 
 		-- the quad for the background of the container
@@ -1187,6 +1188,33 @@ local function boardOfScores()
 		local d = Def.ActorFrame {
 			InitCommand = function(self)
 				self:xy(scoreItemX, scoreItemY + (i-1) * (scoreItemHeight + scoreItemSpacing))
+			end,
+			ShowCommand = function(self)
+				self:y(scoreItemY + (i-1)*(scoreItemHeight + scoreItemSpacing)-10)
+				self:diffusealpha(0)
+				self:finishtweening()
+				self:sleep((i-1)*0.03)
+				self:easeOut(1)
+				self:y(scoreItemY + (i-1)*(scoreItemHeight + scoreItemSpacing))
+				self:diffusealpha(1)
+			end,
+			HideCommand = function(self)
+				self:stoptweening()
+				self:easeOut(0.5)
+				self:diffusealpha(0)
+				self:y(SCREEN_HEIGHT*10) -- Throw it offscreen
+			end,
+			UpdateListMessageCommand = function(self)
+				self:playcommand("UpdateScores")
+			end,
+			UpdateScoresMessageCommand = function(self)
+				scoreIndex = (curPage - 1) * scoresPerPage + i
+				if scoreList[scoreIndex] ~= nil then
+					self:playcommand("Show")
+				else
+					self:playcommand("Hide")
+				end
+				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 			end
 		}
 
