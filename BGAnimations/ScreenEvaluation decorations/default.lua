@@ -1198,6 +1198,9 @@ local function boardOfScores()
 				self:zoomto(scoreItemWidth, scoreItemHeight)
 			end,
 			TopPressedCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
@@ -1213,6 +1216,9 @@ local function boardOfScores()
 				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
 				local grade = scoreList[scoreIndex]:GetWifeGrade()
 				self:settext(THEME:GetString("Grade",ToEnumShortString(grade)))
 				self:diffuse(getGradeColor(grade))
@@ -1227,6 +1233,9 @@ local function boardOfScores()
 				self:maxwidth(135)
 			end,
 			SetCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
 				local clearType = getClearType(PLAYER_1, steps, scoreList[scoreIndex])
 				self:settext(getClearTypeShortText(clearType))
 				self:diffuse(getClearTypeColor(clearType))
@@ -1241,6 +1250,9 @@ local function boardOfScores()
 				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
 				local score = scoreList[scoreIndex]:GetWifeScore()
 				local w1 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W1")
 				local w2 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W2")
@@ -1276,6 +1288,9 @@ local function boardOfScores()
 				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
 				local date = scoreList[scoreIndex]:GetDate()
 				local ssr = scoreList[scoreIndex]:GetSkillsetSSR("Overall")
 				self:settextf("%s | %0.2f", date, ssr)
@@ -1292,6 +1307,9 @@ local function boardOfScores()
 				self:zoomto(frameWidth - scoreItemWidth - scoreItemX - 20, scoreItemHeight)
 			end,
 			TopPressedCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
@@ -1308,6 +1326,9 @@ local function boardOfScores()
 				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
 				local name = profile:GetDisplayName()
 				if not isLocal then
 					name = scoreList[scoreIndex]:GetDisplayName()
@@ -1325,6 +1346,9 @@ local function boardOfScores()
 				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
 				local ratestring = "("..string.format("%.2f", scoreList[scoreIndex]:GetMusicRate()):gsub("%.?0$", "") .. "x)"
 				self:settext(ratestring)
 			end
