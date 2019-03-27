@@ -921,6 +921,12 @@ local function boardOfScores()
 	local topScoresOnly = true
 	local loggedIn = DLMAN:IsLoggedIn()
 
+	local scoreItemWidth = frameWidth / 1.7
+	local scoreItemHeight = frameHeight / 8
+	local scoreItemX = frameWidth / 6 + 3 + 2 -- button width + divider width + spacing width
+	local scoreItemY = 8
+	local scoreItemSpacing = spacing
+
 	local t = Def.ActorFrame {
 		Name = "ScoreBoardContainer",
 		InitCommand = function(self)
@@ -1038,6 +1044,52 @@ local function boardOfScores()
 						self:settext("Highest online scores for this rate") -- but i wanted to make the distinction
 					end
 				end
+			end
+		},
+
+		-- Basic info text
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:settext("Click for Offset Plot")
+				self:zoom(0.2)
+				self:valign(0)
+				self:xy(scoreItemX + scoreItemWidth/2, (scoreItemHeight + scoreItemSpacing + 1) * scoresPerPage + scoreItemY)
+			end,
+			UpdateListMessageCommand = function(self)
+				local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
+				self:stoptweening()
+				self:diffusealpha(0)
+				self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY - 8)
+				self:sleep((scoresOnThisPage+1)*0.03)
+				self:diffusealpha(1)
+				self:easeOut(0.5)
+				self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY + 2)
+			end,
+			UpdateScoresCommand = function(self)
+				self:playcommand("UpdateList")
+			end
+		},
+
+		-- Basic info text 2
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:settext("Click for Replay")
+				self:zoom(0.2)
+				self:valign(0)
+				self:xy(scoreItemX + scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20)/2, (scoreItemHeight + scoreItemSpacing + 1) * scoresPerPage + scoreItemY)
+			end,
+			UpdateListMessageCommand = function(self)
+				local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
+				self:stoptweening()
+				self:diffusealpha(0)
+				self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY - 8)
+				self:sleep((scoresOnThisPage+1)*0.03)
+				self:diffusealpha(1)
+				self:easeOut(0.5)
+				self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY + 2)
+			end,
+			UpdateScoresCommand = function(self)
+				self:playcommand("UpdateList")
 			end
 		},
 
@@ -1306,11 +1358,6 @@ local function boardOfScores()
 		}
 	}
 
-	local scoreItemWidth = frameWidth / 1.7
-	local scoreItemHeight = frameHeight / 8
-	local scoreItemX = frameWidth / 6 + 3 + 2 -- button width + divider width + spacing width
-	local scoreItemY = 8
-	local scoreItemSpacing = spacing
 	-- individual items for the score buttons
 	local function scoreItem(i)
 		local scoreIndex = (curPage - 1) * scoresPerPage + i
@@ -1357,7 +1404,7 @@ local function boardOfScores()
 				self:zoomto(scoreItemWidth, scoreItemHeight)
 			end,
 			TopPressedCommand = function(self)
-				if scoreList[scoreIndex] == nil then
+				if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
 					return
 				end
 				self:finishtweening()
@@ -1473,6 +1520,23 @@ local function boardOfScores()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
 				self:diffusealpha(0.1)
+			end
+		}
+
+		-- Tiny green box that means the score has replay data
+		d[#d+1] = Def.Quad {
+			InitCommand = function(self)
+				self:addx(scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20) - 5)
+				self:addy(scoreItemHeight * 3/4)
+				self:diffuse(color("#00ff00"))
+				self:zoomto(4,4)
+				self:visible(false)
+			end,
+			SetCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
+				self:visible(scoreList[scoreIndex]:HasReplayData())
 			end
 		}
 
