@@ -13,10 +13,6 @@ local rate = getCurRate()
 -- Reset preview music starting point since song was finished.
 GHETTOGAMESTATE:setLastPlayedSecond(0)
 
--- ApproachSecond time for all rolling numbers in this file.
-local approachSecond = 0.5
-
-
 -- Timing/Judge Difficulty
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
