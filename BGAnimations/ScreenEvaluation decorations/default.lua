@@ -1000,6 +1000,47 @@ local function boardOfScores()
 			end
 		},
 
+		-- Page info text
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:settext("Showing ? - ? of ? scores")
+				self:zoom(0.35)
+				self:xy((frameWidth - (frameWidth/6))/2 + frameWidth/6, frameHeight - 25)
+			end,
+			SetCommand = function(self)
+				self:settextf("Showing %d - %d of %d scores", (curPage-1) * scoresPerPage + 1, math.min((curPage) * scoresPerPage,#scoreList), #scoreList)
+			end,
+			UpdateListMessageCommand = function(self)
+				self:playcommand("Set")
+			end
+		},
+
+		-- Sort info text
+		LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:settext("Placeholder.")
+				self:zoom(0.35)
+				self:xy((frameWidth - (frameWidth/6))/2 + frameWidth/6, frameHeight - 15)
+			end,
+			SetCommand = function(self)
+				if isLocal then
+					self:settext("Highest local scores for this rate")
+				else
+					local allRates = not DLMAN:GetCurrentRateFilter()
+					local allScores = not DLMAN:GetTopScoresOnlyFilter()
+					if allRates and allScores then
+						self:settext("All online scores for all rates")
+					elseif allRates and not allScores then
+						self:settext("Highest online scores for all rates")
+					elseif not allRates and allScores then
+						self:settext("All online scores for this rate") -- this is actually no different from the one below
+					else
+						self:settext("Highest online scores for this rate") -- but i wanted to make the distinction
+					end
+				end
+			end
+		},
+
 		-- Local scores button
 		quadButton(6) .. {
 			InitCommand = function(self)
