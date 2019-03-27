@@ -1228,7 +1228,7 @@ local function boardOfScores()
 			end,
 			SetCommand = function(self)
 				local clearType = getClearType(PLAYER_1, steps, scoreList[scoreIndex])
-				self:settext(getClearTypeText(clearType))
+				self:settext(getClearTypeShortText(clearType))
 				self:diffuse(getClearTypeColor(clearType))
 			end
 		}
