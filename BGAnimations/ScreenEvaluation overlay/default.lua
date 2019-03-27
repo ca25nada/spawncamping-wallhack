@@ -7,29 +7,6 @@ local steps = GAMESTATE:GetCurrentSteps(pn)
 t[#t+1] = LoadActor("../_frame")
 t[#t+1] = LoadActor("../_mouse")
 
-local curTab = 1
-local function input(event)
-	if event.type == "InputEventType_FirstPress" then
-		-- For swapping back and forth between scoreboard and offset display.
-		if event.DeviceInput.button == "DeviceButton_1" then
-			if 1 ~= curTab then
-				curTab = 1
-				MESSAGEMAN:Broadcast("TabChanged",{index = 1})
-				SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
-			end
-		elseif event.DeviceInput.button == "DeviceButton_2" then
-			if 2 ~= curTab then
-				curTab = 2
-				MESSAGEMAN:Broadcast("TabChanged", {index = 2})
-				SOUND:PlayOnce(THEME:GetPathS("","whoosh"),true)
-			end
-		end
-
-	end
-	return false
-end
-
-
 --Group folder name
 local frameWidth = 280
 local frameHeight = 20
