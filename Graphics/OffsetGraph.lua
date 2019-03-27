@@ -118,7 +118,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end,
 	UpdateCommand = function(self)
 		self:xy(5,5)
-		self:settextf("Early (-%d ms)", maxOffset)
+		self:settextf("Late (+%d ms)", maxOffset)
 	end
 }
 
@@ -128,7 +128,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end,
 	UpdateCommand = function(self, params)
 		self:xy(5,params.height-5)
-		self:settextf("Late (+%d ms)", maxOffset)
+		self:settextf("Early (-%d ms)", maxOffset)
 	end
 }
 
