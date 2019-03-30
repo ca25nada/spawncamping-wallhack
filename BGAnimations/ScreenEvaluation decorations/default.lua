@@ -1,5 +1,6 @@
 local t = Def.ActorFrame{}
 local song = GAMESTATE:GetCurrentSong()
+local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
 
 --ScoreBoard
 local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss'}
@@ -9,9 +10,56 @@ local frameY = 150
 local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
 local frameHeight = 300
 local rate = getCurRate()
+local judge = GetTimingDifficulty()
 
 -- Reset preview music starting point since song was finished.
 GHETTOGAMESTATE:setLastPlayedSecond(0)
+
+-- etc timing info
+local nrv = pss:GetNoteRowVector()
+local dvt = pss:GetOffsetVector()
+local ctt = pss:GetTrackVector()
+local ntt = pss:GetTapNoteTypeVector()
+local totalTaps = pss:GetTotalTaps()
+
+local rescoredPercentage
+
+local t = Def.ActorFrame {}
+
+t[#t+1] = Def.ActorFrame {
+	OffsetPlotModificationMessageCommand = function(self, params)
+		local score = pss:GetHighScore()
+		local totalHolds =
+			pss:GetRadarPossible():GetValue("RadarCategory_Holds") + pss:GetRadarPossible():GetValue("RadarCategory_Rolls")
+		local holdsHit =
+			score:GetRadarValues():GetValue("RadarCategory_Holds") + score:GetRadarValues():GetValue("RadarCategory_Rolls")
+		local minesHit =
+			pss:GetRadarPossible():GetValue("RadarCategory_Mines") - score:GetRadarValues():GetValue("RadarCategory_Mines")
+		if enabledCustomWindows then
+			if params.Name == "PrevJudge" then
+				judge = judge < 2 and #customWindows or judge - 1
+				customWindow = timingWindowConfig:get_data()[customWindows[judge]]
+				rescoredPercentage = getRescoredCustomPercentage(dvt, customWindow, totalHolds, holdsHit, minesHit, totalTaps)
+			elseif params.Name == "NextJudge" then
+				judge = judge == #customWindows and 1 or judge + 1
+				customWindow = timingWindowConfig:get_data()[customWindows[judge]]
+				rescoredPercentage = getRescoredCustomPercentage(dvt, customWindow, totalHolds, holdsHit, minesHit, totalTaps)
+			end
+		elseif params.Name == "PrevJudge" and judge > 1 then
+			judge = judge - 1
+			rescoredPercentage = getRescoredWifeJudge(dvt, judge, totalHolds - holdsHit, minesHit, totalTaps)
+		elseif params.Name == "NextJudge" and judge < 9 then
+			judge = judge + 1
+			rescoredPercentage = getRescoredWifeJudge(dvt, judge, totalHolds - holdsHit, minesHit, totalTaps)
+		end
+		if params.Name == "ResetJudge" then
+			judge = enabledCustomWindows and 0 or GetTimingDifficulty()
+			self:GetParent():playcommand("ResetJudge")
+		else
+			self:GetParent():playcommand("SetJudge", params)
+		end
+	end
+}
 
 -- Timing/Judge Difficulty
 t[#t+1] = LoadFont("Common Normal")..{
@@ -20,7 +68,16 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:zoom(0.4)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-		self:settextf("Timing Difficulty: %d",GetTimingDifficulty())
+		self:queuecommand("Set")
+	end,
+	SetCommand = function(self)
+		self:settextf("Timing Difficulty: %d",judge)
+	end,
+	SetJudgeCommand = function(self)
+		self:queuecommand("Set")
+	end,
+	ResetJudgeCommand = function(self)
+		self:queuecommand("Set")
 	end
 }
 
@@ -127,8 +184,6 @@ t[#t+1] = LoadFont("Common Normal")..{
 
 -- Life graph and the stuff that goes with it
 local function GraphDisplay( pn )
-	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
-
 	local t = Def.ActorFrame {
 
 		Def.GraphDisplay {
@@ -151,6 +206,12 @@ local function GraphDisplay( pn )
 			end,
 			BeginCommand=function(self) 
 				self:settext(THEME:GetString("Grade",ToEnumShortString(pss:GetHighScore():GetWifeGrade()))) 
+			end,
+			SetJudgeCommand = function(self)
+				self:settext(THEME:GetString("Grade", ToEnumShortString(getWifeGradeTier(rescoredPercentage))))
+			end,
+			ResetJudgeCommand = function(self)
+				self:playcommand("Begin")
 			end
 		},
 
@@ -169,6 +230,38 @@ local function GraphDisplay( pn )
 				else
 					self:settextf("%.2f%%",math.floor((wifeScore)*10000)/100)
 				end
+			end,
+			SetJudgeCommand = function(self, params)
+				if enabledCustomWindows then
+					self:settextf(
+						"%05.2f%% (%s)",
+						rescoredPercentage,
+						customWindow.name
+					)
+				elseif params.Name == "PrevJudge" and judge >= 1 then
+					self:settextf(
+						"%05.2f%% (%s)",
+						rescoredPercentage,
+						"Wife J" .. judge
+					)
+				elseif params.Name == "NextJudge" and judge <= 9 then
+					if judge == 9 then
+						self:settextf(
+							"%05.2f%% (%s)",
+							rescoredPercentage,
+							"Wife Justice"
+						)
+					else
+						self:settextf(
+							"%05.2f%% (%s)",
+							rescoredPercentage,
+							"Wife J" .. judge
+						)
+					end
+				end
+			end,
+			ResetJudgeCommand = function(self)
+				self:playcommand("Begin")
 			end
 		},
 
@@ -183,6 +276,14 @@ local function GraphDisplay( pn )
 				diff = diff >= 0 and string.format("+%0.2f", diff) or string.format("%0.2f", diff)
 				self:settextf("%s %s",THEME:GetString("Grade",ToEnumShortString(grade)),diff)
 				self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
+			end,
+			OffsetPlotModificationMessageCommand = function(self, params)
+				if params.Name == "ResetJudge" then
+					self:playcommand("Begin")
+					self:diffusealpha(1)
+				elseif params.Name == "NextJudge" or params.Name == "PrevJudge" then
+					self:diffusealpha(0)
+				end
 			end
 		},
 
@@ -425,8 +526,17 @@ local function scoreBoard(pn)
 			self:xy(-frameWidth/2+5,107)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
-			self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
+			self:playcommand("Set")
+		end,
+		SetCommand = function(self)
+			self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
+		end,
+		SetJudgeCommand = function(self)
+			self:settextf("%s (J%d)", THEME:GetString("ScreenEvaluation", "CategoryClearType"), GetTimingDifficulty())
+		end,
+		ResetJudgeCommand = function(self)
+			self:playcommand("Set")
 		end
 	}
 
@@ -497,7 +607,16 @@ local function scoreBoard(pn)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
+			self:playcommand("Set")
+		end,
+		SetCommand = function(self)
 			self:settextf("%s - %s",THEME:GetString("ScreenEvaluation","CategoryScore"),getScoreTypeText(1))
+		end,
+		SetJudgeCommand = function(self)
+			self:settextf("%s - %s J%d", THEME:GetString("ScreenEvaluation", "CategoryScore"), getScoreTypeText(1), GetTimingDifficulty())
+		end,
+		ResetJudgeCommand = function(self)
+			self:playcommand("Set")
 		end
 	}
 
@@ -595,6 +714,9 @@ local function scoreBoard(pn)
 			self:zoom(0.35)
 			self:halign(0):valign(1)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
+			self:playcommand("Set")
+		end,
+		SetCommand = function(self)
 			self:settext(THEME:GetString("ScreenEvaluation","CategoryMissCount"))
 		end
 	}
@@ -741,6 +863,16 @@ local function scoreBoard(pn)
 				end
 				self:diffuse(lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4)))
 				self:settext(pss:GetTapNoteScores(v))
+			end,
+			SetJudgeCommand = function(self)
+				if enabledCustomWindows then
+					self:settext(getRescoredCustomJudge(dvt, customWindow.judgeWindows, k))
+				else
+					self:settext(getRescoredJudge(dvt, judge, k))
+				end
+			end,
+			ResetJudgeCommand = function(self)
+				self:playcommand("Set")
 			end
 		}
 
@@ -756,6 +888,16 @@ local function scoreBoard(pn)
 				end
 				self:diffuse(lerp_color(percent,Saturation(TapNoteScoreToColor(v),0.1),Saturation(TapNoteScoreToColor(v),0.4)))
 				self:settextf("(%.2f%%)",math.floor(percent*10000)/100)
+			end,
+			SetJudgeCommand = function(self)
+				if enabledCustomWindows then
+					self:settextf("(%.2f%%)", getRescoredCustomJudge(dvt, customWindow.judgeWindows, k) / totalTaps * 100)
+				else
+					self:settextf("(%.2f%%)", getRescoredJudge(dvt, judge, k) / totalTaps * 100)
+				end
+			end,
+			ResetJudgeCommand = function(self)
+				self:playcommand("Set")
 			end
 		}
 	end
@@ -1677,10 +1819,10 @@ t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 							height = 150, 
 							song = song, 
 							steps = steps, 
-							nrv = pss:GetNoteRowVector(),
-							dvt = pss:GetOffsetVector(),
-							ctt = pss:GetTrackVector(),
-							ntt = pss:GetTapNoteTypeVector()}
+							nrv = nrv,
+							dvt = dvt,
+							ctt = ctt,
+							ntt = ntt}
 			self:playcommand("Update", params) end
 		)
 	end,
