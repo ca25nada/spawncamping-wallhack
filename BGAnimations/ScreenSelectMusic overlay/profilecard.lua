@@ -298,11 +298,13 @@ local function generalFrame(pn)
 					difftext = getDifficulty(diff)
 				end
 				if IsUsingWideScreen() then
-				self:settextf("%s %s %5.2f", stype, difftext, meter)
+					self:settextf("%s %s %5.2f", stype, difftext, meter)
 				else
 					self:settextf("%s %5.2f", difftext, meter)
 				end
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
+			else
+				self:settext("")
 			end
 		end
 	}
@@ -326,6 +328,8 @@ local function generalFrame(pn)
 					self:settext("MSD")
 					self:diffuse(color(colorConfig:get_data().main.enabled))
 				end
+			else
+				self:settext("")
 			end
 		end
 	}
@@ -442,6 +446,8 @@ local function generalFrame(pn)
 				clearType = getHighestClearType(pn,steps[pn],scoreList,0)
 				self:settext(getClearTypeText(clearType))
 				self:diffuse(getClearTypeColor(clearType))
+			else
+				self:settext("")
 			end
 		end,
 		BeginCommand = function(self) self:queuecommand('Set') end
