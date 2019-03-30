@@ -386,6 +386,25 @@ local function generalFrame(pn)
 		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(frameWidth/2-5,18)
+			self:settext("Negative BPMs")
+			self:zoom(0.4)
+			self:halign(1)
+			self:visible(false)
+		end,
+		SetCommand = function(self)
+			if song and steps and steps[pn] then
+				if steps[pn]:GetTimingData():HasWarps() then
+					self:visible(true)
+					return
+				end
+			end
+			self:visible(false)
+		end
+	}
+
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self)
 			self:y(50):zoom(0.3)
