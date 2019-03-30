@@ -1010,6 +1010,7 @@ local newScoreboardInitialLocalIndex = scoreIndex
 local newScoreboardInitialLocalIndex2 = scoreIndex -- dont ask about this please i dont want to explain myself
 
 local lbActor
+local offsetScoreID
 local offsetIndex
 local offsetisLocal
 local currentCountry = "Global"
@@ -1585,7 +1586,7 @@ local function boardOfScores()
 				self:zoomto(scoreItemWidth, scoreItemHeight)
 			end,
 			SetCommand = function(self)
-				if offsetIndex == scoreIndex and offsetisLocal == isLocal or (isLocal == true and offsetIndex == nil and scoreIndex == newScoreboardInitialLocalIndex) then
+				if scoreList[scoreIndex] ~= nil and scoreList[scoreIndex]:GetScoreid() == offsetScoreID and offsetisLocal == isLocal or (isLocal == true and offsetIndex == nil and scoreIndex == newScoreboardInitialLocalIndex) then
 					self:diffusealpha(0.3)
 				else
 					self:diffusealpha(0.1)
@@ -1597,6 +1598,7 @@ local function boardOfScores()
 				end
 				newScoreboardInitialLocalIndex = 0
 				offsetIndex = scoreIndex
+				offsetScoreID = scoreList[scoreIndex]:GetScoreid()
 				offsetisLocal = isLocal
 				MESSAGEMAN:Broadcast("ShowScoreOffset")
 				self:finishtweening()
