@@ -1,4 +1,6 @@
 local inCustomize = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomizeGameplay
+local inPractice = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingPractice()
+local inReplay = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerController() == "PlayerController_Replay"
 
 local t = Def.ActorFrame {}
 
@@ -24,11 +26,12 @@ t[#t+1] = LoadActor("title")
 
 if inCustomize then
 	t[#t+1] = LoadActor("messagebox")
-	t[#t+1] = LoadActor("../_cursor")
 end
 
-if not inCustomize then
+if not inCustomize and not inPractice and not inReplay then
 	HOOKS:ShowCursor(false)
+else
+	t[#t+1] = LoadActor("../_cursor")
 end
 
 local largeImageText = string.format("%s: %5.2f",profile:GetDisplayName(), profile:GetPlayerRating())
