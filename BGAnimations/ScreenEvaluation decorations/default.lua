@@ -152,11 +152,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(0):valign(0)
 	end,
 	BeginCommand = function(self) 
-		if GAMESTATE:IsCourseMode() then
-			self:settext(course:GetDisplayFullTitle())
-		else
-			self:settext(song:GetDisplayMainTitle()) 
-		end
+		self:settext(song:GetDisplayMainTitle()) 
 	end
 }
 
@@ -170,14 +166,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(0):valign(0)
 	end,
 	BeginCommand = function(self) 
-		if GAMESTATE:IsCourseMode() then
-			self:settext("//"..course:GetScripter())
+		if song:GetDisplaySubTitle() ~= "" then
+			self:settextf("%s\n// %s",song:GetDisplaySubTitle(),song:GetDisplayArtist())
 		else
-			if song:GetDisplaySubTitle() ~= "" then
-				self:settextf("%s\n// %s",song:GetDisplaySubTitle(),song:GetDisplayArtist())
-			else
-				self:settext("//"..song:GetDisplayArtist())
-			end
+			self:settext("//"..song:GetDisplayArtist())
 		end
 	end
 }

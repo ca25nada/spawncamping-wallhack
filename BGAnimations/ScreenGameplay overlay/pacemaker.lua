@@ -12,7 +12,7 @@ local frameX = SCREEN_WIDTH-frameWidth
 local frameY = 0
 
 local barY = 430-- Starting point/bottom of graph
-local barCount = GAMESTATE:IsCourseMode() and 2 or 3 -- Number of graphs
+local barCount = 3 -- Number of graphs
 local barWidth = 0.65
 local barTrim = 0 -- Final width of each graph = ((frameWidth/barCount)*barWidth) - barTrim
 local barHeight = 350 -- Max Height of graphs
@@ -545,11 +545,8 @@ if enabled then
 	t[#t+1] = avgScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 
-	-- Remove Best Graph for Course modes.
-	if not GAMESTATE:IsCourseMode() then
-		t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("Best"))
-		t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("Best"))
-	end
+	t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("Best"))
+	t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("Best"))
 
 	t[#t+1] = targetMaxGraph(math.min(barCount,3),ghostType,getPaceMakerColor("Target"))
 	t[#t+1] = targetScoreGraph(math.min(barCount,3),ghostType,getPaceMakerColor("Target"))

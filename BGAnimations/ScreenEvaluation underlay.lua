@@ -8,7 +8,7 @@ local maxDistY = SCREEN_HEIGHT*magnitude
 -- 3 = the pool will be grade specific bgs only. unless it doesn't exist in which case it will revert to the clear bg pool. 
 -- Fails will only use the Grade_Failed folder.
 local bgType = themeConfig:get_data().eval.SongBGType -- 1 = disabled, 2 = songbg, 3 = playerbg
-local enabled = themeConfig:get_data().global.SongBGEnabled and not(GAMESTATE:IsCourseMode())
+local enabled = themeConfig:get_data().global.SongBGEnabled
 local moveBG = themeConfig:get_data().global.SongBGMouseEnabled and enabled
 local brightness = 0.4
 

@@ -252,38 +252,20 @@ local function generalFrame(pn)
 			local notes,holds,rolls,mines,lifts = 0
 			local difftext = ""
 
-			if GAMESTATE:IsCourseMode() then
-				if course:AllSongsAreFixed() then
-					if trail[pn] ~= nil then
-						notes = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-						holds = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
-						rolls = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-						mines = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
-						lifts = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
-						diff = trail[pn]:GetDifficulty()
-					end
+			if steps[pn] ~= nil then
+				notes = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+				holds = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
+				rolls = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
+				mines = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
+				lifts = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
+				diff = steps[pn]:GetDifficulty()
 
-					stype = ToEnumShortString(trail[pn]:GetStepsType()):gsub("%_"," ")
-					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts)
-				else
-					self:settextf("Disabled for courses containing random songs.")
-				end
+			
+
+				stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
+				self:settextf("Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",notes,holds,rolls,mines,lifts)
 			else
-				if steps[pn] ~= nil then
-					notes = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-					holds = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
-					rolls = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-					mines = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
-					lifts = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
-					diff = steps[pn]:GetDifficulty()
-
-				
-
-					stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-					self:settextf("Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",notes,holds,rolls,mines,lifts)
-				else
-					self:settext("")
-				end
+				self:settext("")
 			end
 		end,
 		BeginCommand = function(self) self:queuecommand('Set') end
