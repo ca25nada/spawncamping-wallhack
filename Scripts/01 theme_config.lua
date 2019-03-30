@@ -14,6 +14,7 @@ local defaultConfig = {
 		UseAssetsJudgements = false,
 		JudgementTween = true,
 		BareBone = false, -- Still can't beat jousway lel
+		EvalScoreboard = true
 	},
 	NPSDisplay = {
 		DynamicWindow = false, -- unused

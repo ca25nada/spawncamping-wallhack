@@ -1604,11 +1604,17 @@ local function boardOfScores()
 
 end
 
-t[#t+1] = boardOfScores() .. {
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180 - 150)
-	end
-}
+local newScoreboard = themeConfig:get_data().global.EvalScoreboard
+if newScoreboard then
+	t[#t+1] = boardOfScores() .. {
+		InitCommand = function(self)
+			self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180 - 150)
+		end
+	}
+else
+	t[#t+1] = LoadActor("scoreboard")
+end
+
 
 t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 	InitCommand = function(self, params)

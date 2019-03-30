@@ -1,9 +1,8 @@
-local lines = 8 -- number of scores to display
+local lines = 5 -- number of scores to display
 local frameWidth = 260
 local frameX = SCREEN_WIDTH-frameWidth-WideScale(get43size(40),40)/2
-local frameY = 154
+local frameY = 115
 local spacing = 34
-
 
 local song = STATSMAN:GetCurStageStats():GetPlayedSongs()[1]
 
@@ -15,27 +14,20 @@ local rtTable
 local scoreIndex
 local score
 local pss
-
-local hasTabChanged = false
-
 local player = GAMESTATE:GetEnabledPlayers()[1]
 
-if GAMESTATE:IsPlayerEnabled(player) then
-	pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
-	profile = GetPlayerOrMachineProfile(player)
-	steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
-	hsTable = getScoreTable(player, getCurRate())
-	score = pss:GetHighScore()
-	scoreIndex = getHighScoreIndex(hsTable, score)
-end;
+pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+profile = GetPlayerOrMachineProfile(player)
+steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
+hsTable = getScoreTable(player, getCurRate())
+score = pss:GetHighScore()
+scoreIndex = getHighScoreIndex(hsTable, score)
+
 
 
 
 local t = Def.ActorFrame{
-	Name="scoreBoard";
-    InitCommand=function(self)
-        SCREENMAN:GetTopScreen():AddInputCallback(input)
-    end
+	Name="scoreBoard"
 }
 
 local function scoreitem(pn,index,scoreIndex,drawindex)
@@ -50,32 +42,22 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 	--
 	local t = Def.ActorFrame {
-		Name="scoreItem"..tostring(drawindex);
+		Name="scoreItem"..tostring(drawindex),
 		InitCommand = function(self)
 			self:diffusealpha(0)
 			self:x(100)
 		end,
         OnCommand = function(self)
-            if hasTabChanged then
-                self:stoptweening()
-                self:bouncy(0.2+index*0.05)
-                self:x(0)
-                self:diffusealpha(1)
-            end
+			self:stoptweening()
+			self:bouncy(0.2+index*0.05)
+			self:x(0)
+			self:diffusealpha(1)
 		end,
 		OffCommand = function(self)
 			self:stoptweening()
 			self:bouncy(0.2+index*0.05)
 			self:x(100)
 			self:diffusealpha(0)
-		end,
-		TabChangedMessageCommand = function(self, params)
-            if params.index == 2 then
-                hasTabChanged = true
-				self:playcommand("On")
-			else
-				self:playcommand("Off")
-			end
 		end,
 
 		--The main quad
@@ -133,7 +115,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX,frameY+(drawindex*spacing)-4):zoomto(8,30):halign(0):valign(0):diffusealpha(0.3):diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
 			end,
 			BeginCommand=function(self)
-				self:visible(GAMESTATE:IsHumanPlayer(pn));
+				self:visible(GAMESTATE:IsHumanPlayer(pn))
 				self:diffuseramp()
 				self:effectoffset(0.03*(lines-drawindex))
 				self:effectcolor2(color("1,1,1,0.6"))
@@ -166,26 +148,26 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--grade and %score
 		LoadFont("Common normal")..{
-			Name="grade";
+			Name="grade",
 			InitCommand=function(self)
 				self:xy(frameX+10,frameY+11+(drawindex*spacing)):zoom(0.35):halign(0):maxwidth((frameWidth-15)/0.35)
 			end,
 			BeginCommand=function(self)
 				local pscore = hsTable[index]:GetWifeScore()
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
-				self:settextf("%s %.2f%% (x%d)",(getGradeStrings(hsTable[index]:GetWifeGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()); 
+				self:settextf("%s %.2f%% (x%d)",(getGradeStrings(hsTable[index]:GetWifeGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()) 
 			end
 		},
 
 		--mods
 		LoadFont("Common normal")..{
-			Name="option";
+			Name="option",
 			InitCommand=function(self)
 				self:xy(frameX+10,frameY+11+(drawindex*spacing)):zoom(0.35):halign(0):maxwidth((frameWidth-15)/0.35)
 			end,
 			BeginCommand=function(self)
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
-				self:settext(hsTable[index]:GetModifiers()); 
+				self:settext(hsTable[index]:GetModifiers())
 				self:visible(false)
 			end
 		},
@@ -205,7 +187,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 
 		--judgment
 		LoadFont("Common normal")..{
-			Name="judge";
+			Name="judge",
 			InitCommand=function(self)
 				self:xy(frameX+10,frameY+20+(drawindex*spacing)):zoom(0.35):halign(0):maxwidth((frameWidth-15)/0.35)
 			end,
@@ -218,14 +200,14 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 						hsTable[index]:GetTapNoteScore("TapNoteScore_W4"),
 						hsTable[index]:GetTapNoteScore("TapNoteScore_W5"),
 						hsTable[index]:GetTapNoteScore("TapNoteScore_Miss"))
-				end;
+				end
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 			end
 		},
 
 		--date
 		LoadFont("Common normal")..{
-			Name="date";
+			Name="date",
 			InitCommand=function(self)
 				self:xy(frameX+10,frameY+20+(drawindex*spacing)):zoom(0.35):halign(0)
 			end,
@@ -233,7 +215,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 				if #hsTable >= 1 and index>= 1 then
 					self:settext(hsTable[index]:GetDate())
-				end;
+				end
 				self:visible(false)
 			end
 		}
