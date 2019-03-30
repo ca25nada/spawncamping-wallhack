@@ -1444,7 +1444,7 @@ local function boardOfScores()
 			end,
 			SetCommand = function(self)
 				if offsetIndex == scoreIndex and offsetisLocal == isLocal or (isLocal == true and offsetIndex == nil and scoreIndex == newScoreboardInitialLocalIndex) then
-					self:diffusealpha(0.4)
+					self:diffusealpha(0.3)
 				else
 					self:diffusealpha(0.1)
 				end
@@ -1458,7 +1458,7 @@ local function boardOfScores()
 				offsetisLocal = isLocal
 				MESSAGEMAN:Broadcast("ShowScoreOffset")
 				self:finishtweening()
-				self:diffusealpha(0.4)
+				self:diffusealpha(0.3)
 				self:GetParent():GetParent():playcommand("Set")
 			end
 		}
