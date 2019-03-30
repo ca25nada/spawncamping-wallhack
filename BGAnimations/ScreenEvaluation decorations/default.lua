@@ -164,7 +164,11 @@ local function GraphDisplay( pn )
 				local wifeScore = pss:GetHighScore():GetWifeScore()
 				self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
 
-				self:settextf("%.2f%%",math.floor((wifeScore)*10000)/100)
+				if wifeScore > 0.99 then
+					self:settextf("%.4f%%",math.floor((wifeScore)*1000000)/10000)
+				else
+					self:settextf("%.2f%%",math.floor((wifeScore)*10000)/100)
+				end
 			end
 		},
 
