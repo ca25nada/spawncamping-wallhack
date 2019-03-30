@@ -8,6 +8,7 @@ if isAutoLogin() then
 end
 
 local replayScore
+local isEval
 
 local t = Def.ActorFrame{
 	LoginFailedMessageCommand = function(self)
@@ -26,12 +27,17 @@ local t = Def.ActorFrame{
 
 	TriggerReplayBeginMessageCommand = function(self, params)
 		replayScore = params.score
+		isEval = params.isEval
 		self:sleep(0.1)
 		self:queuecommand("DelayedReplayBegin")
 	end,
 
 	DelayedReplayBeginCommand = function(self)
-		SCREENMAN:GetTopScreen():PlayReplay(replayScore)
+		if isEval then
+			SCREENMAN:GetTopScreen():ShowEvalScreenForScore(replayScore)
+		else
+			SCREENMAN:GetTopScreen():PlayReplay(replayScore)
+		end
 	end
 }
 
