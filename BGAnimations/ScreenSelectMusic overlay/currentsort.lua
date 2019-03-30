@@ -101,6 +101,10 @@ local t = Def.ActorFrame{
 		self:y(-frameHeight/2)
 		self:smooth(0.5)
 		self:y(frameY)
+		GHETTOGAMESTATE:checkForReplayToPlay()
+	end,
+	GhettoReplayStartMessageCommand = function(self, params)
+		top:PlayReplay(params.score)
 	end,
 	OffCommand = function(self)
 		self:smooth(0.5)

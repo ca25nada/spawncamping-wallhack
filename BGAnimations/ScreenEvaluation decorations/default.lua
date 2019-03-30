@@ -1516,7 +1516,7 @@ local function boardOfScores()
 		}
 
 		-- BG quad for score item player info
-		d[#d+1] = Def.Quad {
+		d[#d+1] = quadButton(6) .. {
 			InitCommand = function(self)
 				self:addx(scoreItemWidth + 10)
 				self:halign(0):valign(0)
@@ -1524,13 +1524,11 @@ local function boardOfScores()
 				self:zoomto(frameWidth - scoreItemWidth - scoreItemX - 20, scoreItemHeight)
 			end,
 			TopPressedCommand = function(self)
-				if scoreList[scoreIndex] == nil then
+				if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
 					return
 				end
-				self:finishtweening()
-				self:diffusealpha(0.4)
-				self:smooth(0.3)
-				self:diffusealpha(0.1)
+				GHETTOGAMESTATE:setReplay(scoreList[scoreIndex], not isLocal)
+				SCREENMAN:GetTopScreen():Cancel()
 			end
 		}
 

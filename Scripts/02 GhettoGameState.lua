@@ -9,8 +9,60 @@ GHETTOGAMESTATE = {
 	SSM = nil,
 	filterTags = {},
 	tagFilterMode = false, -- false means OR
-	goalsByChartKey = {}
+	goalsByChartKey = {},
+	replayScore = nil,
+	replayIsOnline = nil,
+	replayList = {},
+	replayScoreID = nil
 }
+
+local function continueReplayCheck(leaderboard)
+	local score = nil
+	for _,g in ipairs(leaderboard) do
+		if g:GetScoreid() == GHETTOGAMESTATE.replayScoreID then
+			score = g
+			break
+		end
+	end
+	if score ~= nil then
+		DLMAN:RequestOnlineScoreReplayData(
+			score,
+			function()
+				MESSAGEMAN:Broadcast("GhettoReplayStart", {score = score})
+			end
+		)
+	end
+	GHETTOGAMESTATE.replayIsOnline = nil
+	GHETTOGAMESTATE.replayScore = nil
+	GHETTOGAMESTATE.replayChartkey = nil
+end
+
+function GHETTOGAMESTATE.checkForReplayToPlay(self)
+	if self.replayScore ~= nil and self.SSM ~= nil then
+		if self.replayIsOnline then
+			DLMAN:RequestChartLeaderBoardFromOnline(
+				self.replayChartkey,
+				function(leaderboard)
+					continueReplayCheck(leaderboard)
+				end
+			)
+			return
+		else
+			self.SSM:PlayReplay(self.replayScore)
+			self.replayScore = nil
+			self.replayIsOnline = nil
+			self.replayChartkey = nil
+			self.replayScoreID = nil
+		end
+	end
+end
+
+function GHETTOGAMESTATE.setReplay(self, score, online)
+	self.replayChartkey = score:GetChartKey()
+	self.replayScoreID = score:GetScoreid()
+	self.replayScore = score
+	self.replayIsOnline = online
+end
 
 function GHETTOGAMESTATE.resetGoalTable(self)
 	self.goalsByChartKey = {}
