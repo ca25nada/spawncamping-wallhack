@@ -1008,6 +1008,7 @@ local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 local score = pss:GetHighScore()
 local scoreIndex = getHighScoreIndex(hsTable, score)
 local newScoreboardInitialLocalIndex = scoreIndex
+local newScoreboardInitialLocalIndex2 = scoreIndex -- dont ask about this please i dont want to explain myself
 
 local lbActor
 local offsetIndex
@@ -1605,6 +1606,30 @@ local function boardOfScores()
 			end
 		}
 
+		-- symbol indicating that this is the score you just set
+		d[#d+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+			Name = "CurrentScoreIndicator",
+			InitCommand = function(self)
+				self:zoom(0.10)
+				self:diffusealpha(0.8)
+				self:rotationz(90)
+				self:diffuse(color("#aaaaff"))
+				self:diffusealpha(0)
+				self:xy(3, scoreItemHeight/4)
+			end,
+			SetCommand = function(self)
+				if scoreList[scoreIndex] == nil then
+					return
+				end
+				if (isLocal == true and scoreIndex == newScoreboardInitialLocalIndex2) then
+					self:linear(0.1)
+					self:diffusealpha(1)
+				else
+					self:diffusealpha(0)
+				end
+			end
+		}
+
 		-- grade
 		d[#d+1] = LoadFont("Common Normal") .. {
 			InitCommand = function(self)
@@ -1709,13 +1734,14 @@ local function boardOfScores()
 		}
 
 		-- Tiny green box that means the score has replay data
-		d[#d+1] = Def.Quad {
+		d[#d+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
 			InitCommand = function(self)
 				self:addx(scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20) - 5)
 				self:addy(scoreItemHeight * 3/4)
 				self:diffuse(color("#00ff00"))
-				self:zoomto(4,4)
+				self:zoom(0.12)
 				self:visible(false)
+				self:rotationz(90)
 			end,
 			SetCommand = function(self)
 				if scoreList[scoreIndex] == nil then
