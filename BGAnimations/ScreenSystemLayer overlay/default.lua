@@ -62,5 +62,36 @@ t[#t+1] = Def.ActorFrame {
 	end
 }
 
+-- song reload
+local www = 1366 * 0.8
+local hhh = SCREEN_HEIGHT * 0.8
+local rtzoom = 0.6
+t[#t + 1] =
+	Def.ActorFrame {
+	DFRStartedMessageCommand = function(self)
+		self:visible(true)
+	end,
+	DFRFinishedMessageCommand = function(self, params)
+		self:visible(false)
+	end,
+	BeginCommand = function(self)
+		self:visible(false)
+		self:x(www / 8 + 10):y(SCREEN_BOTTOM - hhh / 8 - 70)
+	end,
+	Def.Quad {
+		InitCommand = function(self)
+			self:zoomto(www / 4, hhh / 4):diffuse(color("0.1,0.1,0.1,0.8"))
+		end
+	},
+	Def.BitmapText {
+		Font = "Common Normal",
+		InitCommand = function(self)
+			self:diffusealpha(0.9):settext(""):maxwidth((www / 4 - 40) / rtzoom):zoom(rtzoom)
+		end,
+		DFRUpdateMessageCommand = function(self, params)
+			self:settext(params.txt)
+		end
+	}
+}
 
 return t
