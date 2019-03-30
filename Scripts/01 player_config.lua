@@ -66,6 +66,7 @@ local defaultConfig = {
 	NPSGraph = false,
 	--NPSUpdateRate = 0.1,
 	--NPSMaxVerts = 300,
+	ReceptorSize = 100,
 	CBHighlight = false,
 	FCEffect = true,
 	Username = "",

@@ -711,6 +711,40 @@ function CustomizeGameplay()
 	return t
 end
 
+local RSChoices = {}
+for i = 1, 250 do
+	RSChoices[i] = tostring(i) .. "%"
+end
+function ReceptorSize()
+	local t = {
+		Name = "ReceptorSize",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = false,
+		ExportOnChange = true,
+		Choices = RSChoices,
+		LoadSelections = function(self, list, pn)
+			local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).ReceptorSize
+			list[prefs] = true
+		end,
+		SaveSelections = function(self, list, pn)
+			local found = false
+			for i = 1, #list do
+				if not found then
+					if list[i] == true then
+						local value = i
+						playerConfig:get_data(pn_to_profile_slot(pn)).ReceptorSize = value
+						found = true
+					end
+				end
+			end
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
+		end
+	}
+	setmetatable(t, t)
+	return t
+end
 
 
 function NPSWindow()
