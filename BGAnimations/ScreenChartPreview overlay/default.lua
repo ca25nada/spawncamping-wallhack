@@ -2,6 +2,7 @@ local pn = GAMESTATE:GetEnabledPlayers()[1]
 local song = GAMESTATE:GetCurrentSong()
 local steps = GAMESTATE:GetCurrentSteps(pn)
 local stepsType = steps:GetStepsType()
+local usingreverse = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
 
 local ssm
 local NF
@@ -522,6 +523,7 @@ t[#t+1] = topRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
 		self:delayedFadeIn(0)
+		self:draworder(100000)
 	end
 }
 
@@ -766,6 +768,9 @@ t[#t+1] = Def.ActorFrame {
 			NF:zoom(0.5):draworder(100)
 			ssm:dootforkfive(NFParent)
 			NF:xy(frameWidth / 2, 50)
+			if usingreverse then
+				NF:y(50 * 1.5 + 215)
+			end
 			NFParent:SortByDrawOrder()
 		end
 	}
