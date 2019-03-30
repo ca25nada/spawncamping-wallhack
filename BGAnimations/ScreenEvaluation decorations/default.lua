@@ -939,8 +939,17 @@ local function boardOfScores()
 			lbActor = self
 		end,
 		OnCommand = function(self)
+			self:addy(-25)
+			self:bouncy(0.2)
+			self:addy(25)
 			SCREENMAN:GetTopScreen():AddInputCallback(scoreboardInput)
 			self:queuecommand("UpdateScores")
+		end,
+		OffCommand = function(self)
+			self:stoptweening()
+			self:bouncy(0.2)
+			self:x(SCREEN_CENTER_X*3/2-frameWidth/2 + 100)
+			self:diffusealpha(0)
 		end,
 		UpdateScoresMessageCommand = function(self, params)
 			if isLocal then
@@ -1015,7 +1024,7 @@ local function boardOfScores()
 		-- Page info text
 		LoadFont("Common Normal") .. {
 			InitCommand = function(self)
-				self:settext("Showing ? - ? of ? scores")
+				--self:settext("Showing ? - ? of ? scores")
 				self:zoom(0.35)
 				self:xy((frameWidth - (frameWidth/6))/2 + frameWidth/6, frameHeight - 25)
 			end,
@@ -1030,7 +1039,7 @@ local function boardOfScores()
 		-- Sort info text
 		LoadFont("Common Normal") .. {
 			InitCommand = function(self)
-				self:settext("Placeholder.")
+				--self:settext("Placeholder.")
 				self:zoom(0.35)
 				self:xy((frameWidth - (frameWidth/6))/2 + frameWidth/6, frameHeight - 15)
 			end,
@@ -1060,6 +1069,7 @@ local function boardOfScores()
 				self:zoom(0.2)
 				self:valign(0)
 				self:xy(scoreItemX + scoreItemWidth/2, (scoreItemHeight + scoreItemSpacing + 1) * scoresPerPage + scoreItemY)
+				self:diffusealpha(0)
 			end,
 			UpdateListMessageCommand = function(self)
 				local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
@@ -1082,6 +1092,7 @@ local function boardOfScores()
 				self:settext("Click for Replay")
 				self:zoom(0.2)
 				self:valign(0)
+				self:diffusealpha(0)
 				self:xy(scoreItemX + scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20)/2, (scoreItemHeight + scoreItemSpacing + 1) * scoresPerPage + scoreItemY)
 			end,
 			UpdateListMessageCommand = function(self)
@@ -1105,7 +1116,7 @@ local function boardOfScores()
 				self:xy(3, 8)
 				self:zoomto(frameWidth/6 - 6, frameHeight / 8)
 				self:halign(0):valign(0)
-				self:diffusealpha(0.1)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
 				if not loggedIn then
@@ -1132,11 +1143,15 @@ local function boardOfScores()
 				self:xy(3, 8)
 				self:addx((frameWidth/6 - 6)/2)
 				self:addy((frameHeight / 8)/2)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if not loggedIn then
 					self:diffusealpha(0.05)
 					return
+				else
+					self:diffusealpha(1)
 				end
 			end
 		},
@@ -1147,9 +1162,10 @@ local function boardOfScores()
 				self:xy(3, 8 + (frameHeight / 8) + spacing)
 				self:zoomto(frameWidth/6 - 6, frameHeight / 8)
 				self:halign(0):valign(0)
-				self:diffusealpha(0.1)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if not loggedIn then
 					self:diffusealpha(0.05)
 					return
@@ -1174,11 +1190,15 @@ local function boardOfScores()
 				self:xy(3, 8 + (frameHeight / 8) + spacing)
 				self:addx((frameWidth/6 - 6)/2)
 				self:addy((frameHeight / 8)/2)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if not loggedIn then
 					self:diffusealpha(0.05)
 					return
+				else
+					self:diffusealpha(1)
 				end
 			end
 		},
@@ -1189,9 +1209,10 @@ local function boardOfScores()
 				self:xy(3, frameHeight - 8 - (frameHeight/8/2) * 2 - spacing)
 				self:zoomto(frameWidth/6 - 6, frameHeight / 8 / 2)
 				self:halign(0):valign(0)
-				self:diffusealpha(0.1)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if isLocal then
 					self:diffusealpha(0.05)
 				else
@@ -1218,8 +1239,10 @@ local function boardOfScores()
 				self:xy(3, frameHeight - 8 - (frameHeight/8/2) * 2 - spacing)
 				self:addx((frameWidth/6 - 6)/2)
 				self:addy((frameHeight / 8 / 2)/2)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if isLocal then
 					self:diffusealpha(0.05)
 				else
@@ -1234,9 +1257,10 @@ local function boardOfScores()
 				self:xy(3, frameHeight - 8 - (frameHeight/8/2))
 				self:zoomto(frameWidth/6 - 6, frameHeight / 8 / 2)
 				self:halign(0):valign(0)
-				self:diffusealpha(0.1)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if isLocal then
 					self:diffusealpha(0.05)
 				else
@@ -1263,8 +1287,10 @@ local function boardOfScores()
 				self:xy(3, frameHeight - 8 - (frameHeight/8/2))
 				self:addx((frameWidth/6 - 6)/2)
 				self:addy((frameHeight / 8 / 2)/2)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if isLocal then
 					self:diffusealpha(0.05)
 				else
@@ -1279,9 +1305,10 @@ local function boardOfScores()
 				self:xy(3, frameHeight - 8 - (frameHeight/8/2)*3 - spacing*3)
 				self:zoomto(frameWidth/6 - 6, frameHeight / 8 / 2)
 				self:halign(0):valign(0)
-				self:diffusealpha(0.1)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if isLocal then
 					self:diffusealpha(0.05)
 				else
@@ -1308,8 +1335,10 @@ local function boardOfScores()
 				self:xy(3, frameHeight - 8 - (frameHeight/8/2)*3 - spacing*3)
 				self:addx((frameWidth/6 - 6)/2)
 				self:addy((frameHeight / 8 / 2)/2)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if isLocal then
 					self:diffusealpha(0.05)
 				else
@@ -1324,9 +1353,10 @@ local function boardOfScores()
 				self:xy(3, frameHeight - 8 - (frameHeight/8/2)*4 - spacing*4)
 				self:zoomto(frameWidth/6 - 6, frameHeight / 8 / 2)
 				self:halign(0):valign(0)
-				self:diffusealpha(0.1)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if isLocal then
 					self:diffusealpha(0.05)
 				else
@@ -1353,8 +1383,10 @@ local function boardOfScores()
 				self:xy(3, frameHeight - 8 - (frameHeight/8/2)*4 - spacing*4)
 				self:addx((frameWidth/6 - 6)/2)
 				self:addy((frameHeight / 8 / 2)/2)
+				self:diffusealpha(0.05)
 			end,
 			SetCommand = function(self)
+				self:linear(0.1)
 				if isLocal then
 					self:diffusealpha(0.05)
 				else
@@ -1372,6 +1404,7 @@ local function boardOfScores()
 		local d = Def.ActorFrame {
 			InitCommand = function(self)
 				self:xy(scoreItemX, scoreItemY + (i-1) * (scoreItemHeight + scoreItemSpacing))
+				self:diffusealpha(0)
 			end,
 			ShowCommand = function(self)
 				self:y(scoreItemY + (i-1)*(scoreItemHeight + scoreItemSpacing)-10)
@@ -1386,7 +1419,7 @@ local function boardOfScores()
 				self:stoptweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
-				self:y(SCREEN_HEIGHT*10) -- Throw it offscreen
+				self:y(SCREEN_HEIGHT*10)
 			end,
 			UpdateListMessageCommand = function(self)
 				self:playcommand("UpdateScores")
@@ -1434,7 +1467,6 @@ local function boardOfScores()
 			InitCommand = function(self)
 				self:xy(22,scoreItemHeight/4)
 				self:zoom(0.3)
-				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
 				if scoreList[scoreIndex] == nil then
@@ -1450,7 +1482,6 @@ local function boardOfScores()
 			InitCommand = function(self)
 				self:xy(22,scoreItemHeight/4 * 3)
 				self:zoom(0.3)
-				self:queuecommand("Set")
 				self:maxwidth(135)
 			end,
 			SetCommand = function(self)
@@ -1468,7 +1499,6 @@ local function boardOfScores()
 				self:xy(45,scoreItemHeight/4)
 				self:halign(0)
 				self:zoom(0.3)
-				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
 				if scoreList[scoreIndex] == nil then
@@ -1506,7 +1536,6 @@ local function boardOfScores()
 				self:xy(45,scoreItemHeight/4 * 3)
 				self:halign(0)
 				self:zoom(0.3)
-				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
 				if scoreList[scoreIndex] == nil then
@@ -1559,7 +1588,6 @@ local function boardOfScores()
 				self:xy(scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20)/2,scoreItemHeight/4)
 				self:maxwidth((frameWidth - scoreItemWidth - scoreItemX - 20)*3)
 				self:zoom(0.3)
-				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
 				if scoreList[scoreIndex] == nil then
@@ -1579,7 +1607,6 @@ local function boardOfScores()
 				self:xy(scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20)/2,scoreItemHeight/4 * 3)
 				self:maxwidth((frameWidth - scoreItemWidth - scoreItemX - 20)*3)
 				self:zoom(0.3)
-				self:queuecommand("Set")
 			end,
 			SetCommand = function(self)
 				if scoreList[scoreIndex] == nil then
@@ -1668,10 +1695,12 @@ t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 	end,
 	OnCommand = function(self)
 		self:stoptweening()
-		self:bouncy(0.2)
 		self:zoom(1)
+		self:addy(25)
+		self:bouncy(0.2)
+		self:addy(-25)
 		self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
-		self:diffusealpha(1)
+		self:diffusealpha(1) 	
 	end,
 	OffCommand = function(self)
 		self:stoptweening()
