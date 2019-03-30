@@ -30,6 +30,8 @@ local handspecific = false
 local left = false
 local setWidth = 0
 local setHeight = 0
+local setSong
+local setSteps
 
 local function fitX(x) -- Scale time values to fit within plot width.
 	if finalSecond == 0 then
@@ -57,9 +59,42 @@ local t = Def.ActorFrame{
 			local params = {width = 0, height = 0, song = nil, steps = nil, nrv = {}, dvt = {}, ctt = {}, ntt = {}}
 			self:playcommand("Update", params) end
 		)
+	end,
+	OffsetPlotModificationMessageCommand = function(self, params)
+		if enabledCustomWindows then
+			if params.Name == "PrevJudge" then
+				judge = judge < 2 and #customWindows or judge - 1
+				customWindow = customWindowsData[customWindows[judge]]
+			elseif params.Name == "NextJudge" then
+				judge = judge == #customWindows and 1 or judge + 1
+				customWindow = customWindowsData[customWindows[judge]]
+			end
+		elseif params.Name == "PrevJudge" and judge > 1 then
+			judge = judge - 1
+			tso = tst[judge]
+		elseif params.Name == "NextJudge" and judge < 9 then
+			judge = judge + 1
+			tso = tst[judge]
+		elseif params.Name == "ToggleHands" and #ctt > 0 then --super ghetto toggle -mina
+			if not handspecific then
+				handspecific = true
+				left = true
+			elseif handspecific and left then
+				left = false
+			elseif handspecific and not left then
+				handspecific = false
+			end
+		end
+		if params.Name == "ResetJudge" then
+			judge = enabledCustomWindows and 0 or GetTimingDifficulty()
+			tso = tst[GetTimingDifficulty()]
+		end
+		maxOffset = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows.boo or math.max(180, 180 * tso)
+		MESSAGEMAN:Broadcast("JudgeDisplayChanged")
 	end
 }
 
+-- Plot BG
 t[#t+1] = Def.Quad{
 	Name = "Background",
 	InitCommand = function(self)
@@ -69,10 +104,17 @@ t[#t+1] = Def.Quad{
 	UpdateCommand = function(self, params)
 		setWidth = params.width
 		setHeight = params.height
+		setSong = params.song
+		setSteps = params.steps
+		dvt = params.dvt
+		nrv = params.nrv
+		ctt = params.ctt
+		ntt = params.ntt
 		self:zoomto(params.width, params.height)
 	end
 }
 
+-- Plot center horizontal line
 t[#t+1] = Def.Quad{
 	Name = "Center Line",
 	InitCommand = function(self)
@@ -85,6 +127,22 @@ t[#t+1] = Def.Quad{
 	end
 }
 
+local function checkParams(params)
+	local fixedparams = params
+	if params.width == nil then
+		fixedparams = {width = setWidth, 
+		height = setHeight, 
+		song = setSong, 
+		steps = setSteps, 
+		nrv = nrv,
+		dvt = dvt,
+		ctt = ctt,
+		ntt = ntt}
+	end
+	return fixedparams
+end
+
+-- this section creates the bars for different judgment levels
 local fantabars = {22.5, 45, 90, 135}
 local bantafars = {"TapNoteScore_W2", "TapNoteScore_W3", "TapNoteScore_W4", "TapNoteScore_W5"}
 for i = 1, #fantabars do
@@ -94,9 +152,13 @@ for i = 1, #fantabars do
 			self:halign(0):valign(0)
 		end,
 		UpdateCommand = function(self, params)
+			params = checkParams(params)
 			self:zoomto(params.width, 1):diffuse(byJudgment(bantafars[i])):diffusealpha(baralpha)
 			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows[judges[i]] or tso * fantabars[i]
 			self:y(fitY(fit) + params.height/2)
+		end,
+		JudgeDisplayChangedMessageCommand = function(self)
+			self:queuecommand("Update")
 		end
 	}
 	t[#t + 1] =
@@ -105,13 +167,18 @@ for i = 1, #fantabars do
 			self:halign(0):valign(0)
 		end,
 		UpdateCommand = function(self, params)
+			params = checkParams(params)
 			self:zoomto(params.width, 1):diffuse(byJudgment(bantafars[i])):diffusealpha(baralpha)
 			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows[judges[i]] or tso * fantabars[i]
 			self:y(fitY(-fit) + params.height/2)
+		end,
+		JudgeDisplayChangedMessageCommand = function(self)
+			self:queuecommand("Update")
 		end
 	}
 end
 
+-- Late ms text
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=function(self)
 		self:zoom(0.3):halign(0):valign(0):diffusealpha(0.4)
@@ -119,21 +186,31 @@ t[#t+1] = LoadFont("Common Normal")..{
 	UpdateCommand = function(self)
 		self:xy(5,5)
 		self:settextf("Late (+%d ms)", maxOffset)
+	end,
+	JudgeDisplayChangedMessageCommand = function(self)
+		self:queuecommand("Update")
 	end
 }
 
+-- Early ms text
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=function(self)
 		self:zoom(0.3):halign(0):valign(1):diffusealpha(0.4)
 	end,
 	UpdateCommand = function(self, params)
+		params = checkParams(params)
 		self:xy(5,params.height-5)
 		self:settextf("Early (-%d ms)", maxOffset)
+	end,
+	JudgeDisplayChangedMessageCommand = function(self)
+		self:queuecommand("Update")
 	end
 }
 
+-- the dots.
 t[#t+1] = Def.ActorMultiVertex{
 	UpdateCommand = function(self, params)
+		params = checkParams(params)
 		local verts = {}
 		
 		if params.song == nil or params.steps == nil or params.nrv == nil or params.dvt == nil then
@@ -178,6 +255,9 @@ t[#t+1] = Def.ActorMultiVertex{
 
 		self:SetVertices(verts)
 		self:SetDrawState{Mode="DrawMode_Quads", First = 1, Num = #verts}
+	end,
+	JudgeDisplayChangedMessageCommand = function(self)
+		self:queuecommand("Update")
 	end
 }
 

@@ -1644,6 +1644,25 @@ else
 end
 
 
+local function offsetInput(event)
+	if event.type == "InputEventType_FirstPress" then
+		local outputName = ""
+		if event.button == "EffectUp" then
+			outputName = "NextJudge"
+		elseif event.button == "EffectDown" then
+			outputName = "PrevJudge"
+		elseif event.button == "MenuDown" then
+			outputName = "ToggleHands"
+		elseif event.button == "MenuUp" then
+			outputName = "ResetJudge"
+		end
+
+		if outputName ~= "" then
+			MESSAGEMAN:Broadcast("OffsetPlotModification", {Name = outputName})
+		end
+	end
+end
+
 t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 	InitCommand = function(self, params)
 		self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
@@ -1701,7 +1720,8 @@ t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 		self:bouncy(0.2)
 		self:addy(-25)
 		self:xy(SCREEN_CENTER_X*3/2-frameWidth/2, SCREEN_HEIGHT - 180)
-		self:diffusealpha(1) 	
+		self:diffusealpha(1)
+		SCREENMAN:GetTopScreen():AddInputCallback(offsetInput)
 	end,
 	OffCommand = function(self)
 		self:stoptweening()
