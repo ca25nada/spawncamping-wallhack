@@ -282,7 +282,7 @@ local function generalFrame(pn)
 					stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
 					self:settextf("Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",notes,holds,rolls,mines,lifts)
 				else
-					self:settext("Disabled")
+					self:settext("")
 				end
 			end
 		end,
