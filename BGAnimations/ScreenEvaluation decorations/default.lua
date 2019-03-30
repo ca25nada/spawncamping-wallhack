@@ -1,6 +1,7 @@
 local t = Def.ActorFrame{}
 local song = GAMESTATE:GetCurrentSong()
 local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
+local steps = GAMESTATE:GetCurrentSteps(pn)
 
 --ScoreBoard
 local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss'}
@@ -324,7 +325,6 @@ end
 local function scoreBoard(pn)
 	local hsTable = getScoreTable(pn, rate)
 	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
-	local steps = GAMESTATE:GetCurrentSteps(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	local index
 	if hsTable == nil then
@@ -1002,7 +1002,6 @@ end
 local player = GAMESTATE:GetEnabledPlayers()[1]
 local song = STATSMAN:GetCurStageStats():GetPlayedSongs()[1]
 local profile = GetPlayerOrMachineProfile(player)
-local steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
 local hsTable = getScoreTable(player, getCurRate())
 local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 local score = pss:GetHighScore()
