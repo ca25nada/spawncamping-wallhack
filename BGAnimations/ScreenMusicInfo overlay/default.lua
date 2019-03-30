@@ -8,6 +8,8 @@ local maxItems = 10
 local maxPages = math.ceil(#scoreList/maxItems)
 local curPage = 1
 
+local inDetail = false
+
 local validStepsType = {
 	'StepsType_Dance_Single',
 	'StepsType_Dance_Solo',
@@ -56,19 +58,13 @@ local function input(event)
 			MESSAGEMAN:Broadcast("WheelDownSlow")
 		end
 
-		if event.button == "EffectUp" then
+		if event.button == "EffectUp" and not inDetail then
 			changeMusicRate(0.05)
-		end
-
-		if event.button == "EffectDown" then
+		elseif event.button == "EffectDown" and not inDetail then
 			changeMusicRate(-0.05)
-		end
-
-		if event.button == "MenuLeft" then
+		elseif event.button == "MenuLeft" and not inDetail then
 			movePage(-1)
-		end
-
-		if event.button == "MenuRight" then
+		elseif event.button == "MenuRight" and not inDetail then
 			movePage(1)
 		end
 
@@ -591,6 +587,25 @@ local function stepsBPMRow()
 	return t
 end
 
+local function offsetInput(event)
+	if event.type == "InputEventType_FirstPress" and inDetail then
+		local outputName = ""
+		if event.button == "EffectUp" then
+			outputName = "NextJudge"
+		elseif event.button == "EffectDown" then
+			outputName = "PrevJudge"
+		elseif event.button == "MenuDown" then
+			outputName = "ToggleHands"
+		elseif event.button == "MenuUp" then
+			outputName = "ResetJudge"
+		end
+
+		if outputName ~= "" then
+			MESSAGEMAN:Broadcast("OffsetPlotModification", {Name = outputName})
+		end
+	end
+end
+
 local function scoreList()
 	local frameWidth = 430
 	local frameHeight = 340
@@ -880,6 +895,7 @@ local function scoreList()
 			end,
 			ShowScoreDetailMessageCommand = function(self, params)
 				scoreIndex = params.scoreIndex
+				inDetail = true
 				self:finishtweening()
 				self:xy(scoreItemX, (params.index+1)*(scoreItemHeight+scoreItemYSpacing)+100+scoreItemHeight/2)
 				self:easeOut(0.5)
@@ -887,9 +903,11 @@ local function scoreList()
 				self:diffusealpha(1)
 			end,
 			HideScoreDetailMessageCommand = function(self)
+				inDetail = false
 				self:playcommand("Hide")
 			end,
 			UpdateListMessageCommand = function(self)
+				inDetail = false
 				self:playcommand("Hide")
 			end
 		}
@@ -951,6 +969,9 @@ local function scoreList()
 		t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 			InitCommand = function(self, params)
 				self:xy(5, 55)
+			end,
+			OnCommand = function(self)
+				SCREENMAN:GetTopScreen():AddInputCallback(offsetInput)
 			end,
 			ShowScoreDetailMessageCommand = function(self, params)
 
