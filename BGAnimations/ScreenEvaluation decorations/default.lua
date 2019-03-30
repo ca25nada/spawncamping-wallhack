@@ -865,6 +865,7 @@ local hsTable = getScoreTable(player, getCurRate())
 local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 local score = pss:GetHighScore()
 local scoreIndex = getHighScoreIndex(hsTable, score)
+local newScoreboardInitialLocalIndex = scoreIndex
 
 local lbActor
 local offsetIndex
@@ -1399,7 +1400,6 @@ local function boardOfScores()
 	-- individual items for the score buttons
 	local function scoreItem(i)
 		local scoreIndex = (curPage - 1) * scoresPerPage + i
-		local selected = false
 
 		local d = Def.ActorFrame {
 			InitCommand = function(self)
@@ -1443,7 +1443,7 @@ local function boardOfScores()
 				self:zoomto(scoreItemWidth, scoreItemHeight)
 			end,
 			SetCommand = function(self)
-				if offsetIndex == scoreIndex and offsetisLocal == isLocal then
+				if offsetIndex == scoreIndex and offsetisLocal == isLocal or (isLocal == true and offsetIndex == nil and scoreIndex == newScoreboardInitialLocalIndex) then
 					self:diffusealpha(0.4)
 				else
 					self:diffusealpha(0.1)
@@ -1453,6 +1453,7 @@ local function boardOfScores()
 				if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
 					return
 				end
+				newScoreboardInitialLocalIndex = 0
 				offsetIndex = scoreIndex
 				offsetisLocal = isLocal
 				MESSAGEMAN:Broadcast("ShowScoreOffset")
