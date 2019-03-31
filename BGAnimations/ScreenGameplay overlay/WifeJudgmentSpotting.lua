@@ -135,6 +135,7 @@ local usingReverse
 --guess checking if things are enabled before changing them is good for not having a log full of errors
 local enabledErrorBar = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar
 local enabledTargetTracker = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).TargetTracker
+local enabledDisplayPercent = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).DisplayPercent
 local leaderboardEnabled = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).leaderboardEnabled and DLMAN:IsLoggedIn()
 local isReplay = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerController() == "PlayerController_Replay"
 
@@ -329,6 +330,56 @@ end
 
 if enabledTargetTracker then
 	t[#t + 1] = d
+end
+
+--[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 					    									**Display Percent**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Displays the current percent for the score.
+]]
+local cp =
+	Def.ActorFrame {
+	Name = "DisplayPercent",
+	InitCommand = function(self)
+		if (allowedCustomization) then
+			Movable.DeviceButton_w.element = self
+			Movable.DeviceButton_e.element = self
+			Movable.DeviceButton_w.condition = enabledDisplayPercent
+			Movable.DeviceButton_e.condition = enabledDisplayPercent
+			Movable.DeviceButton_w.Border = self:GetChild("Border")
+			Movable.DeviceButton_e.Border = self:GetChild("Border")
+		end
+		self:zoom(MovableValues.DisplayPercentZoom):x(MovableValues.DisplayPercentX):y(MovableValues.DisplayPercentY)
+	end,
+	Def.Quad {
+		InitCommand = function(self)
+			self:zoomto(60, 13):diffuse(color("0,0,0,0.4")):halign(1):valign(0)
+		end
+	},
+	-- Displays your current percentage score
+	LoadFont("Common Large") ..
+		{
+			Name = "DisplayPercent",
+			InitCommand = function(self)
+				self:zoom(0.3):halign(1):valign(0)
+			end,
+			OnCommand = function(self)
+				if allowedCustomization then
+					self:settextf("%05.2f%%", -10000)
+					setBorderAlignment(self:GetParent():GetChild("Border"), 1, 0)
+					setBorderToText(self:GetParent():GetChild("Border"), self)
+				end
+				self:settextf("%05.2f%%", 0)
+			end,
+			SpottedOffsetCommand = function(self)
+				self:settextf("%05.2f%%", wifey)
+			end
+		},
+	MovableBorder(100, 13, 1, 0, 0)
+}
+
+if enabledDisplayPercent then
+	t[#t + 1] = cp
 end
 
 --[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

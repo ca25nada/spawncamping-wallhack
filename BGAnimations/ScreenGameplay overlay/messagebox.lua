@@ -48,6 +48,8 @@ return Def.ActorFrame {
 				"6: Error Bar Size",
 				"7: Target Tracker Position",
 				"8: Target Tracker Size",
+				"w: Display Percent Text Position",
+				"e: Display Percent Text Size",
 				"r: Notefield Position",
 				"t: Notefield Size",
 				"y: NPS Display Text Position",
