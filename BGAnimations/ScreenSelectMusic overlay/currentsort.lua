@@ -53,6 +53,12 @@ local function searchInput(event)
 		elseif event.button == "Start" then
 			MESSAGEMAN:Broadcast("EndSearch")
 
+		elseif event.button == "MenuLeft" then
+			wheel:Move(-1)
+			wheel:Move(0)
+		elseif event.button == "MenuRight" then
+			wheel:Move(1)
+			wheel:Move(0)
 		elseif event.DeviceInput.button == "DeviceButton_space" then					-- add space to the string
 			searchstring = searchstring.." "
 
