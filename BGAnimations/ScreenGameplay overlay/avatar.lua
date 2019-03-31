@@ -131,10 +131,13 @@ t[#t+1] = Def.Quad{
 		self:diffuse(getMainColor("highlight"))
 		self:queuecommand("Set")
 	end,
-	JudgmentMessageCommand = function(self)
-		self:queuecommand("Set")
+	JudgmentMessageCommand = function(self, params)
+		self:playcommand("Set", params)
 	end,
-	SetCommand = function(self)
+	SetCommand = function(self, params)
+		if params ~= nil and params.TapNoteScore == "TapNoteScore_AvoidMine" then
+			return
+		end
 		self:finishtweening()
 		self:smooth(0.1)
 		self:zoomx(PLife(PLAYER_1)*120)
@@ -148,10 +151,13 @@ t[#t+1] = LoadFont("Common Bold") .. {
 		self:zoom(0.35)
 		self:queuecommand("Set")
 	end,
-	JudgmentMessageCommand = function(self)
-		self:queuecommand("Set")
+	JudgmentMessageCommand = function(self, params)
+		self:playcommand("Set", params)
 	end,
-	SetCommand = function(self)
+	SetCommand = function(self, params)
+		if params ~= nil and params.TapNoteScore == "TapNoteScore_AvoidMine" then
+			return
+		end
 		local life = PLife(PLAYER_1)
 		self:settextf("%0.0f",life*100)
 		if life*100 < 30 and life*100 ~= 0 then -- replace with lifemeter danger later
