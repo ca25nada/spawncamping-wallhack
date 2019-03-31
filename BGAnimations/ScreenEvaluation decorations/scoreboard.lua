@@ -255,7 +255,7 @@ end
 --Text that sits above the scoreboard with some info
 t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=function(self)
-		self:xy(frameX,frameY-15):zoom(0.35):halign(0)
+		self:xy(frameX + frameWidth/2,frameY-15):zoom(0.35)
 	end,
 	BeginCommand=function(self)
 		local text = ""
