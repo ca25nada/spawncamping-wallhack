@@ -135,7 +135,7 @@ local function generalFrame(pn)
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(assetFolders.avatar .. avatarConfig:get_data().avatar[PROFILEMAN:GetProfile(PLAYER_1):GetGUID()])
+			self:LoadBackground(assetFolders.avatar .. findAvatar(PROFILEMAN:GetProfile(PLAYER_1):GetGUID()))
 			self:zoomto(50,50)
 		end
 	}

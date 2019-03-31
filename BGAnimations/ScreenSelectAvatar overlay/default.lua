@@ -8,7 +8,7 @@ local frameHeight = 40								-- Height of the top bar
 local curPage = 1									-- Current Page index
 local curIndex = 1									-- Current Cursor Index
 local GUID = profile:GetGUID()
-local curName = avatarConfig:get_data().avatar[GUID]		-- String with the current avatar's filename
+local curName = findAvatar(GUID)					-- String with the current avatar's filename
 local lastClickedIndex = 0							-- Last clicked index for double-click detection
 
 local avatarTable = FILEMAN:GetDirListing(assetFolders.avatar) -- Table containing the filename of all installed avatars
@@ -96,7 +96,7 @@ local function topRow()
 		InitCommand = function (self) 
 			self:x(-frameWidth/2 + 5)
 			self:halign(0)
-			self:LoadBackground(assetFolders.avatar .. avatarConfig:get_data().avatar[GUID])
+			self:LoadBackground(assetFolders.avatar .. findAvatar(GUID))
 			self:zoomto(30,30)
 		end
 	}

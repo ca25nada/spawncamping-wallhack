@@ -77,7 +77,7 @@ t[#t+1] = Def.Sprite {
 	BeginCommand = function(self) self:queuecommand('ModifyAvatar') end,
 	ModifyAvatarCommand=function(self)
 		self:finishtweening()
-		self:LoadBackground(assetFolders.avatar .. avatarConfig:get_data().avatar[profile:GetGUID()])
+		self:LoadBackground(assetFolders.avatar .. findAvatar(profile:GetGUID()))
 		self:zoomto(50,50)
 	end
 }

@@ -52,7 +52,7 @@ t[#t+1] = Def.Quad{
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(assetFolders.avatar .. avatarConfig:get_data().avatar[profile:GetGUID()])
+			self:LoadBackground(assetFolders.avatar .. findAvatar(profile:GetGUID()))
 			self:zoomto(avatarHeight,avatarWidth)
 		end
 	}
