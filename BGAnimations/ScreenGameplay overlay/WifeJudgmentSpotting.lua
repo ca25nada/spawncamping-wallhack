@@ -365,14 +365,14 @@ local cp =
 			end,
 			OnCommand = function(self)
 				if allowedCustomization then
-					self:settextf("%05.2f%%", -10000)
+					self:settextf("%05.2f%%", 100)
 					setBorderAlignment(self:GetParent():GetChild("Border"), 1, 0)
 					setBorderToText(self:GetParent():GetChild("Border"), self)
 				end
 				self:settextf("%05.2f%%", 0)
 			end,
 			SpottedOffsetCommand = function(self)
-				self:settextf("%05.2f%%", wifey)
+				self:settextf("%05.2f%%", math.max(0,wifey))
 			end
 		},
 	MovableBorder(100, 13, 1, 0, 0)
