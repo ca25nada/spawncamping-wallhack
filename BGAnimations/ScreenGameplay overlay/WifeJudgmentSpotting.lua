@@ -250,6 +250,7 @@ end
 local target = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).TargetGoal
 GAMESTATE:GetPlayerState(PLAYER_1):SetTargetGoal(target / 100)
 
+
 -- We can save space by wrapping the personal best and set percent trackers into one function, however
 -- this would make the actor needlessly cumbersome and unnecessarily punish those who don't use the
 -- personal best tracker (although everything is efficient enough now it probably wouldn't matter)
@@ -271,7 +272,7 @@ local d =
 	MovableBorder(100, 13, 1, 0, 0)
 }
 
-if targetTrackerMode == 0 then
+if targetTrackerMode == 0 then -- going for set goals
 	d[#d + 1] =
 		LoadFont("Common Normal") ..
 		{
@@ -294,7 +295,7 @@ if targetTrackerMode == 0 then
 				self:settextf("%5.2f (%5.2f%%)", tDiff, target)
 			end
 		}
-else
+else -- going for PB
 	d[#d + 1] =
 		LoadFont("Common Normal") ..
 		{

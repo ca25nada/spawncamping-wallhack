@@ -70,94 +70,65 @@ end
 			end	
 			
 			
-			function AvgScoreType()
+			function TargetTracker()
 				local t = {
-					Name = "AvgScoreType",
+					Name = "TargetTracker",
 					LayoutType = "ShowAllInRow",
 					SelectType = "SelectOne",
 					OneChoiceForAllPlayers = false,
 					ExportOnChange = true,
-					Choices = {THEME:GetString('OptionNames','Off'),'DP','%Score','MIGS' },
+					Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On")},
 					LoadSelections = function(self, list, pn)
-						local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).AvgScoreType
-						list[prefs+1] = true
+						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).TargetTracker
+						if pref then
+							list[2] = true
+						else
+							list[1] = true
+						end
 					end,
 					SaveSelections = function(self, list, pn)
 						local value
-						if list[4] then
-							value = 3
-						elseif list[3] then
-							value = 2
-						elseif list[2] then
-							value = 1
-						else
-							value = 0
-						end
-						playerConfig:get_data(pn_to_profile_slot(pn)).AvgScoreType = value
+						value = list[2]
+						playerConfig:get_data(pn_to_profile_slot(pn)).TargetTracker = value
 						playerConfig:set_dirty(pn_to_profile_slot(pn))
 						playerConfig:save(pn_to_profile_slot(pn))
 					end
 				}
-				setmetatable( t, t )
+				setmetatable(t, t)
 				return t
 			end
-			
-			function GhostScoreType()
-				local t = {
-					Name = "GhostScoreType",
-					LayoutType = "ShowAllInRow",
-					SelectType = "SelectOne",
-					OneChoiceForAllPlayers = false,
-					ExportOnChange = true,
-					Choices = { THEME:GetString('OptionNames','Off'),'DP','%Score','MIGS' },
-					LoadSelections = function(self, list, pn)
-						local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).GhostScoreType
-						list[prefs+1] = true
-					end,
-					SaveSelections = function(self, list, pn)
-						local value
-						if list[4] then
-							value = 3
-						elseif list[3] then
-							value = 2
-						elseif list[2] then
-							value = 1
-						else
-							value = 0
-						end
-						playerConfig:get_data(pn_to_profile_slot(pn)).GhostScoreType = value
-						playerConfig:set_dirty(pn_to_profile_slot(pn))
-						playerConfig:save(pn_to_profile_slot(pn))
-					end
-				}
-				setmetatable( t, t )
-				return t
-			end
-			
 			
 			local tChoices = {}
-			for i=0,100  do
-				tChoices[#tChoices+1] = tostring(i)..'%'
+			for i = 1, 99 do
+				tChoices[i] = tostring(i) .. "%"
 			end
-			function GhostTarget()
+			for i = 1, 3 do
+				tChoices[99 + i] = tostring(99 + i * 0.25) .. "%"
+			end
+			for i = 1, 4 do
+				tChoices[#tChoices + 1] = tostring(99.96 + i * 0.01) .. "%"
+			end
+			function TargetGoal()
 				local t = {
-					Name = "GhostTarget",
+					Name = "TargetGoal",
 					LayoutType = "ShowAllInRow",
 					SelectType = "SelectOne",
 					OneChoiceForAllPlayers = false,
 					ExportOnChange = true,
 					Choices = tChoices,
 					LoadSelections = function(self, list, pn)
-						local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget+1
-						list[prefs] = true
+						local prefsval = playerConfig:get_data(pn_to_profile_slot(pn)).TargetGoal
+						local index = IndexOf(tChoices, prefsval .. "%")
+						list[index] = true
 					end,
 					SaveSelections = function(self, list, pn)
 						local found = false
-						for i=1,#list do
+						for i = 1, #list do
 							if not found then
 								if list[i] == true then
-									local value = i-1
-									playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget = value
+									local value = i
+									playerConfig:get_data(pn_to_profile_slot(pn)).TargetGoal =
+										tonumber(string.sub(tChoices[value], 1, #tChoices[value] - 1))
 									found = true
 								end
 							end
@@ -166,7 +137,35 @@ end
 						playerConfig:save(pn_to_profile_slot(pn))
 					end
 				}
-				setmetatable( t, t )
+				setmetatable(t, t)
+				return t
+			end
+			
+			function TargetTrackerMode()
+				local t = {
+					Name = "TargetTrackerMode",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = {THEME:GetString("OptionNames", "SetPercent"), THEME:GetString("OptionNames", "PersonalBest")},
+					LoadSelections = function(self, list, pn)
+						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).TargetTrackerMode
+						list[pref + 1] = true
+					end,
+					SaveSelections = function(self, list, pn)
+						local value
+						if list[2] then
+							value = 1
+						else
+							value = 0
+						end
+						playerConfig:get_data(pn_to_profile_slot(pn)).TargetTrackerMode = value
+						playerConfig:set_dirty(pn_to_profile_slot(pn))
+						playerConfig:save(pn_to_profile_slot(pn))
+					end
+				}
+				setmetatable(t, t)
 				return t
 			end
 			
