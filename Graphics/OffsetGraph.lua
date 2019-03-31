@@ -23,6 +23,7 @@ local nrt = {} -- noterow vector
 local ctt = {} -- track vector
 local ntt = {} -- tap note type vector
 local wuab = {} -- time corrected tap notes (?)
+local columns = 4 -- the number of columns because we dont keep track of this i guess
 local finalSecond = GAMESTATE:GetCurrentSong(PLAYER_1):GetLastSecond()
 local td = GAMESTATE:GetCurrentSteps(PLAYER_1):GetTimingData()
 
@@ -43,7 +44,7 @@ end
 local function fitY(y) -- Scale offset values to fit within plot height
 	return -1 * y / maxOffset * setHeight / 2
 end
-local function setOffsetVerts(vt, x, y, c)
+local function setOffsetVerts(vt, x, y, c, alpha)
 	vt[#vt + 1] = {{x - dotWidth/2, y + dotWidth/2, 0}, c}
 	vt[#vt + 1] = {{x + dotWidth/2, y + dotWidth/2, 0}, c}
 	vt[#vt + 1] = {{x + dotWidth/2, y - dotWidth/2, 0}, c}
@@ -110,6 +111,7 @@ t[#t+1] = Def.Quad{
 		nrv = params.nrv
 		ctt = params.ctt
 		ntt = params.ntt
+		columns = params.columns
 		self:zoomto(params.width, params.height)
 	end
 }
@@ -137,7 +139,8 @@ local function checkParams(params)
 		nrv = nrv,
 		dvt = dvt,
 		ctt = ctt,
-		ntt = ntt}
+		ntt = ntt,
+		columns = columns}
 	end
 	return fixedparams
 end
@@ -238,16 +241,27 @@ t[#t+1] = Def.ActorMultiVertex{
 				local y = fitY(params.dvt[i]) + params.height / 2
 				--local x = (timestamp/songLength) * params.width
 				--local y = (offset/W5Window/2/timingWindowScale) * params.height + (params.height/2)
+				local alpha = 1 -- 1 is the default, 0.3 is the non highlight version
 
+				if handspecific and left then
+					if ctt[i] < math.floor(columns / 2) then
+						alpha = 0.1
+					end
+				elseif handspecific then
+					if ctt[i] >= math.floor(columns / 2) then
+						alpha = 0.1
+					end
+				end
 				if math.abs(offset) >= 1 then
 					-- Misses
-					verts[#verts+1] = {{x-dotWidth/4, params.height,0}, Alpha(color, 0.3)}
-					verts[#verts+1] = {{x+dotWidth/4, params.height,0}, Alpha(color, 0.3)}
-					verts[#verts+1] = {{x+dotWidth/4, 0,0}, Alpha(color, 0.3)}
-					verts[#verts+1] = {{x-dotWidth/4, 0,0}, Alpha(color, 0.3)}
+					if alpha == 1 then alpha = 0.3 else alpha = 0.1 end
+					verts[#verts+1] = {{x-dotWidth/4, params.height,0}, Alpha(color, alpha)}
+					verts[#verts+1] = {{x+dotWidth/4, params.height,0}, Alpha(color, alpha)}
+					verts[#verts+1] = {{x+dotWidth/4, 0,0}, Alpha(color, alpha)}
+					verts[#verts+1] = {{x-dotWidth/4, 0,0}, Alpha(color, alpha)}
 				else
 					-- Everything else
-					setOffsetVerts(verts, x, y, color)
+					setOffsetVerts(verts, x, y, Alpha(color, alpha))
 				end
 
 			end

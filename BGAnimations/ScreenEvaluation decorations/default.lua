@@ -56,7 +56,7 @@ t[#t+1] = Def.ActorFrame {
 		if params.Name == "ResetJudge" then
 			judge = enabledCustomWindows and 0 or GetTimingDifficulty()
 			self:GetParent():playcommand("ResetJudge")
-		else
+		elseif params.Name ~= "ToggleHands" then
 			self:GetParent():playcommand("SetJudge", params)
 		end
 	end
@@ -1841,7 +1841,8 @@ t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 							nrv = nrv,
 							dvt = dvt,
 							ctt = ctt,
-							ntt = ntt}
+							ntt = ntt,
+							columns = steps:GetNumColumns()}
 			self:playcommand("Update", params) end
 		)
 	end,
@@ -1870,7 +1871,8 @@ t[#t+1] = LoadActor(THEME:GetPathG("","OffsetGraph"))..{
 							nrv = scoreList[offsetIndex]:GetNoteRowVector(),
 							dvt = scoreList[offsetIndex]:GetOffsetVector(),
 							ctt = scoreList[offsetIndex]:GetTrackVector(),
-							ntt = scoreList[offsetIndex]:GetTapNoteTypeVector()}
+							ntt = scoreList[offsetIndex]:GetTapNoteTypeVector(),
+							columns = steps:GetNumColumns()}
 			self:playcommand("Update", params) end
 		)
 	end,

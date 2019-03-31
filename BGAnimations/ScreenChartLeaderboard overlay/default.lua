@@ -1087,7 +1087,8 @@ local function scoreList()
 									nrv = scoreList[cheatIndex]:GetNoteRowVector(),
 									dvt = scoreList[cheatIndex]:GetOffsetVector(),
 									ctt = scoreList[cheatIndex]:GetTrackVector(),
-									ntt = scoreList[cheatIndex]:GetTapNoteTypeVector()}
+									ntt = scoreList[cheatIndex]:GetTapNoteTypeVector(),
+									columns = steps:GetNumColumns()}
 					self:playcommand("Update", params) end
 				)
 			end

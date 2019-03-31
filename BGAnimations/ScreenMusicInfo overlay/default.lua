@@ -1030,7 +1030,8 @@ local function scoreList()
 										nrv = scoreList[params.scoreIndex]:GetNoteRowVector(),
 										dvt = scoreList[params.scoreIndex]:GetOffsetVector(),
 										ctt = scoreList[params.scoreIndex]:GetTrackVector(),
-										ntt = scoreList[params.scoreIndex]:GetTapNoteTypeVector()}
+										ntt = scoreList[params.scoreIndex]:GetTapNoteTypeVector(),
+										columns = steps:GetNumColumns()}
 						self:playcommand("Update", params) end
 					)
 				else
