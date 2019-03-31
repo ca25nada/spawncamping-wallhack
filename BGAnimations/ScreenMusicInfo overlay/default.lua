@@ -9,6 +9,7 @@ local maxPages = math.ceil(#scoreList/maxItems)
 local curPage = 1
 
 local inDetail = false
+local transitioning = false
 
 local validStepsType = {
 	'StepsType_Dance_Single',
@@ -69,7 +70,7 @@ local function input(event)
 		end
 
 		local numpad = event.DeviceInput.button == "DeviceButton_KP "..event.char
-		if not numpad and event.char and tonumber(event.char) then
+		if not numpad and event.char and tonumber(event.char) and not transitioning then
 			if tonumber(event.char) == 1 then
 				SCREENMAN:AddNewScreenToTop("ScreenFileTagManager")
 			elseif tonumber(event.char) == 2 then
@@ -98,6 +99,7 @@ local t = Def.ActorFrame {
 	TriggerExitFromMIMessageCommand = function(self, params)
 		self:sleep(0.1)
 		replayScore = params.score
+		transitioning = true
 		self:queuecommand("DelayedExitMI")
 	end,
 	DelayedExitMICommand = function(self)

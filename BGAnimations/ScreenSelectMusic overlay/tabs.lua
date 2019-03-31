@@ -1,4 +1,5 @@
 local inSongSearch = false
+local transitioning = false
 
 local function input(event)
 
@@ -36,7 +37,7 @@ local function input(event)
 			wheel:Move(-1)
 			wheel:Move(0)
 		end
-		if not numpad and event.char and tonumber(event.char) and not inSongSearch then
+		if not numpad and event.char and tonumber(event.char) and not inSongSearch and not transitioning then
 			if tonumber(event.char) == 1 then
 				SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 			elseif tonumber(event.char) == 2 then
@@ -89,7 +90,11 @@ local t = Def.ActorFrame{
 		self:smooth(0.5)
 		self:diffusealpha(1)
 	end,
+	TriggerReplayBeginMessageCommand = function(self)
+		transitioning = true
+	end,
 	OffCommand = function(self)
+		transitioning = true
 		self:smooth(0.5)
 		self:diffusealpha(0)
 	end,
