@@ -210,6 +210,34 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end
 }
 
+-- Highlight info text
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:zoom(0.3):diffusealpha(0.4)
+		self:settext("")
+	end,
+	UpdateCommand = function(self, params)
+		params = checkParams(params)
+		self:xy(params.width/2, params.height - 10)
+		if #ntt > 0 then
+			if handspecific then
+				if left then
+					self:settext("Highlighting left hand taps")
+				else
+					self:settext("Highlighting right hand taps")
+				end
+			else
+				self:settext("Down toggles highlights")
+			end
+		else
+			self:settext("")
+		end
+	end,
+	JudgeDisplayChangedMessageCommand = function(self)
+		self:queuecommand("Update")
+	end
+}
+
 -- the dots.
 t[#t+1] = Def.ActorMultiVertex{
 	UpdateCommand = function(self, params)
