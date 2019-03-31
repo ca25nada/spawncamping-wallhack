@@ -123,7 +123,8 @@ t[#t+1] = tab:makeTabActors() .. {
 	end,
 	TabPressedMessageCommand = function(self, params)
 		if inSongSearch then
-			return
+			MESSAGEMAN:Broadcast("EndSearch")
+			SCREENMAN:set_input_redirected(PLAYER_1, false)
 		end
 		if params.name == "Profile" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
