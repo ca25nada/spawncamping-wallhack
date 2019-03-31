@@ -5,13 +5,69 @@ local bareBone = isBareBone()
 local JTDisabled = not judgementTween()
 local usingAssets = useAssetsJudgements()
 
+--[[
+Removed from metrics:
+# Things the judgment does when you bang on it.
+JudgmentW1Command=shadowlength,0;diffusealpha,1;zoom,1.3;linear,0.05;zoom,1;sleep,0.8;linear,0.1;zoomy,0.5;zoomx,2;diffusealpha,0;glowblink;effectperiod,0.05;effectcolor1,color("1,1,1,0");effectcolor2,color("1,1,1,0.25")
+JudgmentW2Command=shadowlength,0;diffusealpha,1;zoom,1.3;linear,0.05;zoom,1;sleep,0.8;linear,0.1;zoomy,0.5;zoomx,2;diffusealpha,0
+JudgmentW3Command=shadowlength,0;diffusealpha,1;zoom,1.2;linear,0.05;zoom,1;sleep,0.8;linear,0.1;zoomy,0.5;zoomx,2;diffusealpha,0;
+JudgmentW4Command=shadowlength,0;diffusealpha,1;zoom,1.1;linear,0.05;zoom,1;sleep,0.8;linear,0.1;zoomy,0.5;zoomx,2;diffusealpha,0;
+JudgmentW5Command=shadowlength,0;diffusealpha,1;zoom,1.0;vibrate;effectmagnitude,4,8,8;sleep,0.8;linear,0.1;zoomy,0.5;zoomx,2;diffusealpha,0
+JudgmentMissCommand=shadowlength,0;diffusealpha,1;zoom,1;linear,0.8;sleep,0.8;linear,0.1;zoomy,0.5;zoomx,2;diffusealpha,0
+]]
+
 local JudgeCmds = {
-	TapNoteScore_W1 = THEME:GetMetric( "Judgment", "JudgmentW1Command" ),
-	TapNoteScore_W2 = THEME:GetMetric( "Judgment", "JudgmentW2Command" ),
-	TapNoteScore_W3 = THEME:GetMetric( "Judgment", "JudgmentW3Command" ),
-	TapNoteScore_W4 = THEME:GetMetric( "Judgment", "JudgmentW4Command" ),
-	TapNoteScore_W5 = THEME:GetMetric( "Judgment", "JudgmentW5Command" ),
-	TapNoteScore_Miss = THEME:GetMetric( "Judgment", "JudgmentMissCommand" )
+	TapNoteScore_W1 = function(self)
+		self:shadowlength(0):diffusealpha(1):zoom(1.3 * MovableValues.JudgeZoom)
+		self:linear(0.05):zoom(1 * MovableValues.JudgeZoom)
+		self:sleep(0.8):linear(0.1)
+		self:zoomx(self:GetZoomedWidth() * 0.5)
+		self:zoomy(self:GetZoomedHeight() * 2)
+		self:diffusealpha(0)
+		self:glowblink():effectperiod(0.05):effectcolor1(color("1,1,1,0")):effectcolor2(color("1,1,1,0.25"))
+	end,
+	TapNoteScore_W2 = function(self)
+		self:shadowlength(0):diffusealpha(1):zoom(1.3 * MovableValues.JudgeZoom)
+		self:linear(0.05):zoom(1 * MovableValues.JudgeZoom)
+		self:sleep(0.8):linear(0.1)
+		self:zoomx(self:GetZoomedWidth() * 0.5)
+		self:zoomy(self:GetZoomedHeight() * 2)
+		self:diffusealpha(0)
+	end,
+	TapNoteScore_W3 = function(self)
+		self:shadowlength(0):diffusealpha(1):zoom(1.2 * MovableValues.JudgeZoom)
+		self:linear(0.05):zoom(1 * MovableValues.JudgeZoom)
+		self:sleep(0.8):linear(0.1)
+		self:zoomx(self:GetZoomedWidth() * 0.5)
+		self:zoomy(self:GetZoomedHeight() * 2)
+		self:diffusealpha(0)
+	end,
+	TapNoteScore_W4 = function(self)
+		self:shadowlength(0):diffusealpha(1):zoom(1.1 * MovableValues.JudgeZoom)
+		self:linear(0.05):zoom(1 * MovableValues.JudgeZoom)
+		self:sleep(0.8):linear(0.1)
+		self:zoomx(self:GetZoomedWidth() * 0.5)
+		self:zoomy(self:GetZoomedHeight() * 2)
+		self:diffusealpha(0)
+	end,
+	TapNoteScore_W5 = function(self)
+		self:shadowlength(0):diffusealpha(1):zoom(1.0 * MovableValues.JudgeZoom)
+		self:vibrate()
+		self:effectmagnitude(0.01,0.02,0.02)
+		self:sleep(0.8)
+		self:linear(0.1)
+		self:zoomx(self:GetZoomedWidth() * 0.5)
+		self:zoomy(self:GetZoomedHeight() * 2)
+		self:diffusealpha(0)
+	end,
+	TapNoteScore_Miss = function(self)
+		self:shadowlength(0):diffusealpha(1):zoom(1.0 * MovableValues.JudgeZoom)
+		self:linear(0.8)
+		self:sleep(0.8):linear(0.1)
+		self:zoomx(self:GetZoomedWidth() * 0.5)
+		self:zoomy(self:GetZoomedHeight() * 2)
+		self:diffusealpha(0)
+	end
 }
 
 local TNSFrames = {
