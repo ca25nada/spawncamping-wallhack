@@ -1,4 +1,5 @@
 local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomizeGameplay
+local fullPlayerInfo = themeConfig:get_data().global.PlayerInfoType -- true for full, false for minimal (lifebar only)
 --Avatar frames which also includes current additive %score, mods, and the song stepsttype/difficulty.
 local profileP1
 
@@ -19,6 +20,7 @@ local function PLife(pn)
 end
 
 local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
+local profile = GetPlayerOrMachineProfile(PLAYER_1)
 
 -- whole frame actorframe
 local t = Def.ActorFrame {
@@ -33,84 +35,101 @@ local t = Def.ActorFrame {
 		end
 	end,
 }
-local profile = GetPlayerOrMachineProfile(PLAYER_1)
 
--- whole frame bg quad
-t[#t+1] = Def.Quad {
-	InitCommand = function(self)
-		self:zoomto(200,50)
-		self:halign(0):valign(0)
-		self:queuecommand('Set')
-	end,
-	SetCommand=function(self)
-		local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
-		local diff = steps:GetDifficulty()
-		self:diffuse(color("#000000"))
-		self:diffusealpha(0.8)
-	end,
-	CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
-}
+if fullPlayerInfo then
+	-- whole frame bg quad
+	t[#t+1] = Def.Quad {
+		InitCommand = function(self)
+			self:zoomto(200,50)
+			self:halign(0):valign(0)
+			self:queuecommand('Set')
+		end,
+		SetCommand=function(self)
+			local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			local diff = steps:GetDifficulty()
+			self:diffuse(color("#000000"))
+			self:diffusealpha(0.8)
+		end,
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
+	}
 
--- border?
-t[#t+1] = Def.Quad{
-	InitCommand = function(self)
-		self:zoomto(200,50)
-		self:halign(0):valign(0)
-		self:xy(-3,-3)
-		self:zoomto(56,56)
-		self:diffuse(color("#000000"))
-		self:diffusealpha(0.8)
-	end,
-	SetCommand = function(self)
-		self:stoptweening()
-		self:smooth(0.5)
-		self:diffuse(getBorderColor())
-	end,
-	BeginCommand = function(self) self:queuecommand('Set') end
-}
+	-- border?
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:zoomto(200,50)
+			self:halign(0):valign(0)
+			self:xy(-3,-3)
+			self:zoomto(56,56)
+			self:diffuse(color("#000000"))
+			self:diffusealpha(0.8)
+		end,
+		SetCommand = function(self)
+			self:stoptweening()
+			self:smooth(0.5)
+			self:diffuse(getBorderColor())
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
 
--- avatar
-t[#t+1] = Def.Sprite {
-	InitCommand = function(self)
-		self:halign(0):valign(0)
-	end,
-	BeginCommand = function(self) self:queuecommand('ModifyAvatar') end,
-	ModifyAvatarCommand=function(self)
-		self:finishtweening()
-		self:LoadBackground(assetFolders.avatar .. findAvatar(profile:GetGUID()))
-		self:zoomto(50,50)
-	end
-}
-
-
--- profile name
-t[#t+1] = LoadFont("Common Bold") .. {
-	InitCommand= function(self)
-		local name = profile:GetDisplayName()
-		self:xy(56,7):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
-		self:settext(name)
-	end
-}
-
--- diff name
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand = function(self)
-		self:xy(56,21):zoom(0.4):halign(0):maxwidth(180/0.4)
-	end,
-	BeginCommand = function(self) self:queuecommand('Set') end,
-	SetCommand=function(self)
-		local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
-		local diff = getDifficulty(steps:GetDifficulty())
-		local meter = steps:GetMSD(getCurRateValue(),1)
-		meter = meter == 0 and steps:GetMeter() or meter
+	-- avatar
+	t[#t+1] = Def.Sprite {
+		InitCommand = function(self)
+			self:halign(0):valign(0)
+		end,
+		BeginCommand = function(self) self:queuecommand('ModifyAvatar') end,
+		ModifyAvatarCommand=function(self)
+			self:finishtweening()
+			self:LoadBackground(assetFolders.avatar .. findAvatar(profile:GetGUID()))
+			self:zoomto(50,50)
+		end
+	}
 
 
-		local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-		self:settextf("%s %s %5.2f",stype, diff, meter)
-		self:diffuse(getDifficultyColor(steps:GetDifficulty()))
-	end,
-	CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
-}
+	-- profile name
+	t[#t+1] = LoadFont("Common Bold") .. {
+		InitCommand= function(self)
+			local name = profile:GetDisplayName()
+			self:xy(56,7):zoom(0.6):shadowlength(1):halign(0):maxwidth(180/0.6)
+			self:settext(name)
+		end
+	}
+
+	-- diff name
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(56,21):zoom(0.4):halign(0):maxwidth(180/0.4)
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end,
+		SetCommand=function(self)
+			local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			local diff = getDifficulty(steps:GetDifficulty())
+			local meter = steps:GetMSD(getCurRateValue(),1)
+			meter = meter == 0 and steps:GetMeter() or meter
+
+
+			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
+			self:settextf("%s %s %5.2f",stype, diff, meter)
+			self:diffuse(getDifficultyColor(steps:GetDifficulty()))
+		end,
+		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
+	}
+
+	
+	t[#t+1] = LoadFont("Common Bold") .. {
+		OnCommand = function(self)
+			self:xy(57, 47)
+			self:zoom(0.35)
+			self:queuecommand("Set")
+			self:halign(0)
+			self:maxwidth(200 * 2)
+		end,
+		SetCommand = function(self)
+			local mods = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("ModsLevel_Current")
+			self:settext(mods)
+		end
+
+	}
+end
 
 -- life bg
 t[#t+1] = Def.Quad{
@@ -175,19 +194,5 @@ t[#t+1] = LoadFont("Common Bold") .. {
 	end
 }
 
-t[#t+1] = LoadFont("Common Bold") .. {
-	OnCommand = function(self)
-		self:xy(57, 47)
-		self:zoom(0.35)
-		self:queuecommand("Set")
-		self:halign(0)
-		self:maxwidth(200 * 2)
-	end,
-	SetCommand = function(self)
-		local mods = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("ModsLevel_Current")
-		self:settext(mods)
-	end
-
-}
 
 return t

@@ -14,7 +14,8 @@ local defaultConfig = {
 		UseAssetsJudgements = false,
 		JudgementTween = true,
 		BareBone = false, -- Still can't beat jousway lel
-		EvalScoreboard = true
+		EvalScoreboard = true,
+		PlayerInfoType = true -- true is full, false is minimal (lifebar only)
 	},
 	NPSDisplay = {
 		DynamicWindow = false, -- unused

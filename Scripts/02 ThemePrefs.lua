@@ -389,6 +389,38 @@ function TipType()
 	return t
 end	
 
+function PlayerInfoType()
+	local t = {
+		Name = "PlayerInfoType",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Minimal","Full"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.PlayerInfoType
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.PlayerInfoType = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end	
+
 function SongBGEnabled()
 	local t = {
 		Name = "SongBGEnabled",
