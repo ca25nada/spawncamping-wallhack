@@ -1578,7 +1578,7 @@ local function boardOfScores()
 				self:zoomto(scoreItemWidth, scoreItemHeight)
 			end,
 			SetCommand = function(self)
-				if scoreList[scoreIndex] ~= nil and scoreList[scoreIndex]:GetScoreid() == offsetScoreID and offsetisLocal == isLocal or (isLocal == true and offsetIndex == nil and scoreIndex == newScoreboardInitialLocalIndex) then
+				if scoreList[scoreIndex] ~= nil and ((scoreIndex == offsetIndex and offsetisLocal and isLocal) or (scoreList[scoreIndex]:GetScoreid() == offsetScoreID and not offsetisLocal and not isLocal) or (isLocal and offsetIndex == nil and scoreIndex == newScoreboardInitialLocalIndex)) then
 					self:diffusealpha(0.3)
 				else
 					self:diffusealpha(0.1)
