@@ -676,7 +676,9 @@ local function rightContainer()
 			InitCommand = function(self)
 				self:diffusealpha(0)
 				self:xy(25 + boxWidth*1.5*((tagIndex-1) % maxTags >= 10 and 1 or 0), 30 + ((i-1) % math.floor(maxTags/2))*(boxHeight+verticalSpacing)-10)
-				self:playcommand("Show")
+				if playertags[tagIndex] then
+					self:playcommand("Show")
+				end
 			end,
 			ShowCommand = function(self)
 				self:y(30 + ((i-1) % math.floor(maxTags/2))*(boxHeight+verticalSpacing)-10)
@@ -688,7 +690,7 @@ local function rightContainer()
 				self:diffusealpha(1)
 			end,
 			HideCommand = function(self)
-				self:stoptweening()
+				self:finishtweening()
 				self:easeOut(0.5)
 				self:diffusealpha(0)
 			end,
