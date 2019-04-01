@@ -16,6 +16,7 @@ local score
 local pss
 local player = GAMESTATE:GetEnabledPlayers()[1]
 
+
 pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 profile = GetPlayerOrMachineProfile(player)
 steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
@@ -23,19 +24,42 @@ hsTable = getScoreTable(player, getCurRate())
 score = pss:GetHighScore()
 scoreIndex = getHighScoreIndex(hsTable, score)
 
+local curPage = 1
+local maxPages = math.ceil(#hsTable/lines)
 
+local function movePage(n)
+	if n > 0 then 
+		curPage = ((curPage+n-1) % maxPages + 1)
+	else
+		curPage = ((curPage+n+maxPages-1) % maxPages+1)
+	end
+	MESSAGEMAN:Broadcast("UpdatePage")
+end
 
+local function scoreboardInput(event)
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			MESSAGEMAN:Broadcast("WheelUpSlow")
+		end
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			MESSAGEMAN:Broadcast("WheelDownSlow")
+		end
+		if event.button == "MenuLeft" then
+			movePage(-1)
+		end
+
+		if event.button == "MenuRight" then
+			movePage(1)
+		end
+
+	end
+end
 
 local t = Def.ActorFrame{
 	Name="scoreBoard"
 }
 
 local function scoreitem(pn,index,scoreIndex,drawindex)
-
-	--First box always displays the 1st place score
-	if drawindex == 0 then
-		index = 1
-	end
 
 	--Whether the score at index is the score that was just played.
 	local equals = (index == scoreIndex)
@@ -52,12 +76,38 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			self:bouncy(0.2+index*0.05)
 			self:x(0)
 			self:diffusealpha(1)
+			SCREENMAN:GetTopScreen():AddInputCallback(scoreboardInput)
 		end,
 		OffCommand = function(self)
 			self:stoptweening()
 			self:bouncy(0.2+index*0.05)
 			self:x(100)
 			self:diffusealpha(0)
+		end,
+		ShowCommand = function(self)
+			self:playcommand("Set")
+			self:x(100)
+			self:diffusealpha(0)
+			self:finishtweening()
+			self:sleep((drawindex)*0.03)
+			self:easeOut(1)
+			self:x(0)
+			self:diffusealpha(1)
+		end,
+		HideCommand = function(self)
+			self:stoptweening()
+			self:easeOut(0.5)
+			self:diffusealpha(0)
+			self:x(SCREEN_WIDTH*10)
+		end,
+		UpdatePageMessageCommand = function(self)
+			index = (curPage - 1) * lines + drawindex+1
+			equals = (index == scoreIndex)
+			if hsTable[index] ~= nil then
+				self:playcommand("Show")
+			else
+				self:playcommand("Hide")
+			end
 		end,
 
 		--The main quad
@@ -77,6 +127,9 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			end,
 			BeginCommand=function(self)
 				self:visible(GAMESTATE:IsHumanPlayer(pn) and equals)
+			end,
+			SetCommand = function(self)
+				self:playcommand("Begin")
 			end,
 			MouseLeftClickMessageCommand = function(self)
 				if self:isOver() then
@@ -102,25 +155,37 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 		--ClearType lamps
 		Def.Quad{
 			InitCommand=function(self)
-				self:xy(frameX,frameY+(drawindex*spacing)-4):zoomto(8,30):halign(0):valign(0):diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
+				self:xy(frameX,frameY+(drawindex*spacing)-4):zoomto(8,30):halign(0):valign(0)
 			end,
 			BeginCommand=function(self)
-				self:visible(GAMESTATE:IsHumanPlayer(pn))
+				self:playcommand("Set")
+			end,
+			SetCommand = function(self)
+				if hsTable[index] ~= nil then
+					self:diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
+					self:visible(GAMESTATE:IsHumanPlayer(pn))
+				end
 			end
 		},
 
 		--Animation(?) for ClearType lamps
 		Def.Quad{
 			InitCommand=function(self)
-				self:xy(frameX,frameY+(drawindex*spacing)-4):zoomto(8,30):halign(0):valign(0):diffusealpha(0.3):diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
+				self:xy(frameX,frameY+(drawindex*spacing)-4):zoomto(8,30):halign(0):valign(0):diffusealpha(0.3)
 			end,
 			BeginCommand=function(self)
-				self:visible(GAMESTATE:IsHumanPlayer(pn))
-				self:diffuseramp()
-				self:effectoffset(0.03*(lines-drawindex))
-				self:effectcolor2(color("1,1,1,0.6"))
-				self:effectcolor1(color("1,1,1,0"))
-				self:effecttiming(2,1,0,0)
+				self:playcommand("Set")
+			end,
+			SetCommand = function(self)
+				if hsTable[index] ~= nil then
+					self:diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
+					self:visible(GAMESTATE:IsHumanPlayer(pn))
+					self:diffuseramp()
+					self:effectoffset(0.03*(lines-drawindex))
+					self:effectcolor2(color("1,1,1,0.6"))
+					self:effectcolor1(color("1,1,1,0"))
+					self:effecttiming(2,1,0,0)
+				end
 			end
 		},
 
@@ -131,6 +196,9 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX-8,frameY+12+(drawindex*spacing)):zoom(0.35)
 			end,
 			BeginCommand=function(self)
+				self:playcommand("Set")
+			end,
+			SetCommand = function(self)
 				if #hsTable >= 1 then
 					self:settext(index)
 					if equals then
@@ -153,9 +221,14 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX+10,frameY+11+(drawindex*spacing)):zoom(0.35):halign(0):maxwidth((frameWidth-15)/0.35)
 			end,
 			BeginCommand=function(self)
-				local pscore = hsTable[index]:GetWifeScore()
-				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
-				self:settextf("%s %.2f%% (x%d)",(getGradeStrings(hsTable[index]:GetWifeGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()) 
+				self:playcommand("Set")
+			end,
+			SetCommand = function(self)
+				if hsTable[index] ~= nil then
+					local pscore = hsTable[index]:GetWifeScore()
+					self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
+					self:settextf("%s %.2f%% (x%d)",(getGradeStrings(hsTable[index]:GetWifeGrade())),math.floor((pscore)*10000)/100,hsTable[index]:GetMaxCombo()) 
+				end
 			end
 		},
 
@@ -166,9 +239,14 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX+10,frameY+11+(drawindex*spacing)):zoom(0.35):halign(0):maxwidth((frameWidth-15)/0.35)
 			end,
 			BeginCommand=function(self)
-				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
-				self:settext(hsTable[index]:GetModifiers())
-				self:visible(false)
+				self:playcommand("Set")
+			end,
+			SetCommand = function(self)
+				if hsTable[index] ~= nil then
+					self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
+					self:settext(hsTable[index]:GetModifiers())
+					self:visible(false)
+				end
 			end
 		},
 
@@ -178,9 +256,14 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX+10,frameY+2+(drawindex*spacing)):zoom(0.35):halign(0):maxwidth((frameWidth-15)/0.35)
 			end,
 			BeginCommand=function(self)
-				if #hsTable >= 1 and index>= 1 then
-					self:settext(getClearTypeText(getClearType(pn,steps,hsTable[index])))
-					self:diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
+				self:playcommand("Set")
+			end,
+			SetCommand = function(self)
+				if hsTable[index] ~= nil then
+					if #hsTable >= 1 and index>= 1 then
+						self:settext(getClearTypeText(getClearType(pn,steps,hsTable[index])))
+						self:diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
+					end
 				end
 			end
 		},
@@ -192,16 +275,21 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX+10,frameY+20+(drawindex*spacing)):zoom(0.35):halign(0):maxwidth((frameWidth-15)/0.35)
 			end,
 			BeginCommand=function(self)
-				if #hsTable >= 1 and index>= 1 then
-					self:settextf("%d / %d / %d / %d / %d / %d",
-						hsTable[index]:GetTapNoteScore("TapNoteScore_W1"),
-						hsTable[index]:GetTapNoteScore("TapNoteScore_W2"),
-						hsTable[index]:GetTapNoteScore("TapNoteScore_W3"),
-						hsTable[index]:GetTapNoteScore("TapNoteScore_W4"),
-						hsTable[index]:GetTapNoteScore("TapNoteScore_W5"),
-						hsTable[index]:GetTapNoteScore("TapNoteScore_Miss"))
+				self:playcommand("Set")
+			end,
+			SetCommand = function(self)
+				if hsTable[index] ~= nil then
+					if #hsTable >= 1 and index>= 1 then
+						self:settextf("%d / %d / %d / %d / %d / %d",
+							hsTable[index]:GetTapNoteScore("TapNoteScore_W1"),
+							hsTable[index]:GetTapNoteScore("TapNoteScore_W2"),
+							hsTable[index]:GetTapNoteScore("TapNoteScore_W3"),
+							hsTable[index]:GetTapNoteScore("TapNoteScore_W4"),
+							hsTable[index]:GetTapNoteScore("TapNoteScore_W5"),
+							hsTable[index]:GetTapNoteScore("TapNoteScore_Miss"))
+					end
+					self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 				end
-				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
 			end
 		},
 
@@ -212,11 +300,16 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX+10,frameY+20+(drawindex*spacing)):zoom(0.35):halign(0)
 			end,
 			BeginCommand=function(self)
-				self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
-				if #hsTable >= 1 and index>= 1 then
-					self:settext(hsTable[index]:GetDate())
+				self:playcommand("Set")
+			end,
+			SetCommand = function(self)
+				if hsTable[index] ~= nil then
+					self:diffuse(color(colorConfig:get_data().evaluation.ScoreBoardText))
+					if #hsTable >= 1 and index>= 1 then
+						self:settext(hsTable[index]:GetDate())
+					end
+					self:visible(false)
 				end
-				self:visible(false)
 			end
 		}
 
@@ -230,23 +323,10 @@ if lines > #hsTable then
 end
 
 local drawindex = 0
-local startind = 1
-local finishind = lines+startind-1
+curPage = math.ceil(scoreIndex / lines)
+local startind = (curPage-1) * lines + 1
 
--- Sets the range of indexes to display depending on your rank
-if scoreIndex>math.floor(#hsTable-lines/2) then
-	startind = #hsTable-lines+1
-	finishind = #hsTable 
-elseif scoreIndex>math.floor(lines/2) then
-	finishind = scoreIndex + math.floor(lines/2)
-	if lines%2 == 1 then
-		startind = scoreIndex - math.floor(lines/2)
-	else
-		startind = scoreIndex - math.floor(lines/2)+1
-	end
-end
-
-while drawindex<#hsTable and startind<=finishind do
+while drawindex < 5 do
 	t[#t+1] = scoreitem(player,startind,scoreIndex,drawindex)
 	startind = startind+1
 	drawindex  = drawindex+1
@@ -308,5 +388,25 @@ end
 t.InitCommand=function(self)
 	self:SetUpdateFunction(Update)
 end	
+
+t[#t+1] = Def.Quad {
+	InitCommand = function(self)
+		self:xy(frameX - 20,frameY - 20)
+		self:valign(0):halign(0)
+		self:diffusealpha(0)
+		self:zoomto(20 + frameWidth, 20 + (30) * lines + lines * (5))
+	end,
+	WheelUpSlowMessageCommand = function(self)
+		if self:isOver() then
+			movePage(-1)
+		end
+	end,
+	WheelDownSlowMessageCommand = function(self)
+		if self:isOver() then
+			movePage(1)
+		end
+	end
+
+}
 
 return t
