@@ -445,7 +445,31 @@ local function scoreBoard(pn)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end,
 		SetCommand = function(self)
-			self:settextf("Rating: %0.2f",profile:GetPlayerRating())
+			if DLMAN:IsLoggedIn() then
+				local rank = DLMAN:GetSkillsetRank("Overall")
+				local rating = DLMAN:GetSkillsetRating("Overall")
+				local localrating = profile:GetPlayerRating()
+				local rankDiff = GHETTOGAMESTATE:checkOnlineRank()
+				local finalStr = ""
+				if rankDiff < 0 then
+					finalStr = string.format("Rating: %0.2f (%0.2f #%d Online) %d rank change!", localrating, rating, rank, rankDiff)
+					self:settext(finalStr)
+				elseif rankDiff > 0 then
+					finalStr = string.format("Rating: %0.2f (%0.2f #%d Online) +%d rank change!", localrating, rating, rank, rankDiff)
+					self:settext(finalStr)
+				else
+					finalStr = string.format("Rating: %0.2f (%0.2f #%d Online)", localrating, rating, rank)
+					self:settext(finalStr)
+				end
+				self:AddAttribute(#"Rating:", {Length = 7, Zoom =0.3 ,Diffuse = getMSDColor(localrating)})
+				self:AddAttribute(#"Rating: 00.00 ", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})			
+				if rankDiff ~= 0 then
+					local tempStr = string.format("Rating: %0.2f (%0.2f #%d Online)", localrating, rating, rank)
+					self:AddAttribute(#tempStr+1, {Length = -1, Diffuse = color(colorConfig:get_data().evaluation.ScoreCardText)})
+				end
+			else
+				self:settextf("Rating: %0.2f",profile:GetPlayerRating())
+			end
 		end
 	}
 

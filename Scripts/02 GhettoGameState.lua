@@ -13,8 +13,20 @@ GHETTOGAMESTATE = {
 	replayScore = nil,
 	replayIsOnline = nil,
 	replayList = {},
-	replayScoreID = nil
+	replayScoreID = nil,
+	lastOnlineRank = nil
 }
+
+function GHETTOGAMESTATE.checkOnlineRank(self)
+	if DLMAN:IsLoggedIn() then
+		if self.lastOnlineRank ~= nil then
+			return self.lastOnlineRank - DLMAN:GetSkillsetRank("Overall")
+		else
+			self.lastOnlineRank = DLMAN:GetSkillsetRank("Overall")
+		end
+	end
+	return 0
+end
 
 local function continueReplayCheck(leaderboard)
 	local score = nil
