@@ -22,7 +22,7 @@ function TAB.makeTabActors(tab)
 				self:halign(0)
 				self:zoomto(tab.width, tab.height)
 				self:x(tab.width*(i-1))
-				self:diffuse(color("#333333"))
+				self:diffuse(getMainColor("tabFrame"))
 			end,
 			TopPressedCommand = function(self, params)
 				if params.input == "DeviceButton_left mouse button" then
@@ -36,7 +36,7 @@ function TAB.makeTabActors(tab)
 			self:halign(0)
 			self:zoomto(tab.width, tab.height)
 			self:x(tab.width*(i-1))
-			self:diffuse(color("#FFFFFF")):diffusealpha(0)
+			self:diffuse(getMainColor("tabButton")):diffusealpha(0)
 		end,
 		TopPressedCommand = function(self, params)
 			if params.input == "DeviceButton_left mouse button" then

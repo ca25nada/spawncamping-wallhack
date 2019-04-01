@@ -12,6 +12,8 @@ local defaultConfig = {
 		headerText = "#FFFFFF",
 		headerFrameText = "#FFFFFF",
 		transition = "#888888",
+		tabFrame = "#333333",
+		tabButton = "#FFFFFF",
 	},
 
 	clearType = {
