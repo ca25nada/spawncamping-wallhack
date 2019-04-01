@@ -38,7 +38,8 @@ local sortTable = {
 	SortOrder_Endless 				= 'Endless',
 	SortOrder_Length 				= 'Song Length',
 	SortOrder_Roulette 				= 'Roulette',
-	SortOrder_Recent 				= 'Recently Played'
+	SortOrder_Recent 				= 'Recently Played',
+	SortOrder_Favorites				= 'Favorites',
 }
 
 local function searchInput(event)
