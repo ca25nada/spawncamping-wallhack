@@ -52,7 +52,7 @@ local function playMusic(self, delta)
 						else
 							SOUND:PlayMusicPart(curPath,start,amountOfWait,2,2,false,true,false)
 						end
-						self:SetUpdateFunctionInterval(amountOfWait)
+						self:SetUpdateFunctionInterval(math.max(0.02, amountOfWait))
 						start = 0
 
 						if themeConfig:get_data().global.SongPreview == 2 then
