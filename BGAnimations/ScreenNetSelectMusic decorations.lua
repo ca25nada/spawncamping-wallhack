@@ -1,7 +1,4 @@
-reset_needs_defective_field_for_all_players()
 local t = Def.ActorFrame{}
-
-t[#t+1] = LoadActor("_chatbox")
 
 t[#t+1] = Def.Sprite {
 	InitCommand=function(self)
