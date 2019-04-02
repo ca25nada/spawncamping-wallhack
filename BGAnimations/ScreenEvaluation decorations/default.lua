@@ -921,7 +921,7 @@ local function scoreBoard(pn)
 	for k,v in ipairs(hjudges) do
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand= function(self)
-				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),260)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),260)
 				self:zoom(0.4)
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 
@@ -935,7 +935,7 @@ local function scoreBoard(pn)
 
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand= function(self)
-				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),275)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),275)
 				self:zoom(0.35)
 		    	self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end,
@@ -951,7 +951,7 @@ local function scoreBoard(pn)
 
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand= function(self)
-				self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*k),285)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*k),285)
 				self:zoom(0.30)
 		    	self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end,
@@ -968,7 +968,7 @@ local function scoreBoard(pn)
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand= function(self)
-			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),260)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),260)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			self:settext("Mines Hit")
@@ -977,7 +977,7 @@ local function scoreBoard(pn)
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand= function(self)
-			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),275)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),275)
 			self:zoom(0.35)
 		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end,
@@ -993,7 +993,7 @@ local function scoreBoard(pn)
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand= function(self)
-			self:xy(((-(frameWidth+frameWidth/4)/2)+((frameWidth+frameWidth/4)/5)*4),285)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*4),285)
 			self:zoom(0.30)
 		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end,
@@ -1006,6 +1006,59 @@ local function scoreBoard(pn)
 			self:settextf("(%.2f%%)",percent)
 		end
 	}
+
+	-- stolen from Til Death without any shame
+	local tracks = pss:GetTrackVector()
+	local devianceTable = pss:GetOffsetVector()
+	local cbl = 0
+	local cbr = 0
+
+	local tst = ms.JudgeScalers
+	local tso = tst[judge]
+	if enabledCustomWindows then
+		tso = 1
+	end
+	local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
+	for i = 1, #devianceTable do
+		if tracks[i] then
+			if math.abs(devianceTable[i]) > tso * 90 then
+				if tracks[i] <= math.floor(ncol/2) then
+					cbl = cbl + 1
+				else
+					cbr = cbr + 1
+				end
+			end
+		end
+	end
+	local statCategory = {"Mean", "Mean(Abs)", "Sd", "Left cbs", "Right cbs"}
+	local statInfo = {
+		wifeMean(devianceTable),
+		wifeAbsMean(devianceTable),
+		wifeSd(devianceTable),
+		cbl,
+		cbr
+	}
+
+	for i = 1, #statCategory do
+		t[#t + 1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5.25) - 20, 258 + 8 * (i-1))
+				self:zoom(0.3):halign(0):settext(statCategory[i] .. ":")
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+			end
+		}
+
+		t[#t + 1] = LoadFont("Common Normal") .. {
+			InitCommand = function(self)
+				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+				if i < 4 then
+					self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5.25) + 20, 258 + 8 * (i-1)):zoom(0.3):halign(0):settextf("%5.2fms", statInfo[i])
+				else
+					self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5.25) + 20, 258 + 8 * (i-1)):zoom(0.3):halign(0):settext(statInfo[i])
+				end
+			end
+		}
+	end
 
 	return t
 end
