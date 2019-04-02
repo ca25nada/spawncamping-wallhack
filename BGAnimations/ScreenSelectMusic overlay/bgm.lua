@@ -27,6 +27,7 @@ GHETTOGAMESTATE:setLastPlayedSecond(0)
 local deltaSum = 0
 local function playMusic(self, delta)
 	deltaSum = deltaSum + delta
+
 	if deltaSum > delay and sampleEvent then
 		local s = GHETTOGAMESTATE:getSSM()
 		if s:GetName() == "ScreenSelectMusic" then
@@ -35,6 +36,7 @@ local function playMusic(self, delta)
 				if curSong and curPath then
 					if startFromPreview then -- When starting from preview point
 						amountOfWait = musicLength - sampleStart
+						
 						SOUND:PlayMusicPart(curPath,sampleStart,amountOfWait,2,2,loop,true,true)
 						self:SetUpdateFunctionInterval(amountOfWait)
 
@@ -44,7 +46,12 @@ local function playMusic(self, delta)
 
 					else -- When starting from start of from exit point.
 						amountOfWait = musicLength - start
-						SOUND:PlayMusicPart(curPath,start,amountOfWait,2,2,false,true,false)
+
+						if loops == 1 then
+							SOUND:PlayMusicPart(curPath,start,amountOfWait,2,2,true,true,false)
+						else
+							SOUND:PlayMusicPart(curPath,start,amountOfWait,2,2,false,true,false)
+						end
 						self:SetUpdateFunctionInterval(amountOfWait)
 						start = 0
 
@@ -99,6 +106,14 @@ local t = Def.ActorFrame{
 		if themeConfig:get_data().global.SongPreview ~= 1 then
 			amountOfWait = amountOfWait / (1 / params.oldRate) / params.rate -- fun math, this works.
 			self:SetUpdateFunctionInterval(amountOfWait)
+		end
+	end,
+	PreviewNoteFieldDeletedMessageCommand = function(self)
+		sampleEvent = true
+		loops = 0
+		if themeConfig:get_data().global.SongPreview ~= 1 then
+			self:SetUpdateFunctionInterval(0.002)
+			SOUND:StopMusic()
 		end
 	end
 }

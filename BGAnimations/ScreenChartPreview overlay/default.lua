@@ -54,6 +54,7 @@ local function input(event)
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
 			ssm:DeletePreviewNoteField(NFParent)
+			MESSAGEMAN:Broadcast("PreviewNoteFieldDeleted")
 		end
 
 		if event.button == "EffectUp" then
@@ -508,6 +509,7 @@ local t = Def.ActorFrame {
 	end,
 	ExitScreenMessageCommand = function(self)
 		ssm:DeletePreviewNoteField(NFParent)
+		MESSAGEMAN:Broadcast("PreviewNoteFieldDeleted")
 	end
 }
 
