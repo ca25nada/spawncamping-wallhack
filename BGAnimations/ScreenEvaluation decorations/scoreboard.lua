@@ -56,7 +56,10 @@ local function scoreboardInput(event)
 end
 
 local t = Def.ActorFrame{
-	Name="scoreBoard"
+	Name="scoreBoard",
+	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(scoreboardInput)
+	end
 }
 
 local function scoreitem(pn,index,scoreIndex,drawindex)
@@ -75,8 +78,11 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			self:stoptweening()
 			self:bouncy(0.2+index*0.05)
 			self:x(0)
-			self:diffusealpha(1)
-			SCREENMAN:GetTopScreen():AddInputCallback(scoreboardInput)
+			if hsTable[index] == nil then
+				self:diffusealpha(0)
+			else
+				self:diffusealpha(1)
+			end
 		end,
 		OffCommand = function(self)
 			self:stoptweening()
