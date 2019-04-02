@@ -1,7 +1,7 @@
-local lines = 5 -- number of scores to display
+local lines = 4 -- number of scores to display
 local frameWidth = 260
 local frameX = SCREEN_WIDTH-frameWidth-WideScale(get43size(40),40)/2
-local frameY = 115
+local frameY = 165
 local spacing = 34
 
 local song = STATSMAN:GetCurStageStats():GetPlayedSongs()[1]
@@ -332,7 +332,7 @@ local drawindex = 0
 curPage = math.ceil(scoreIndex / lines)
 local startind = (curPage-1) * lines + 1
 
-while drawindex < 5 do
+while drawindex < 4 do
 	t[#t+1] = scoreitem(player,startind,scoreIndex,drawindex)
 	startind = startind+1
 	drawindex  = drawindex+1
