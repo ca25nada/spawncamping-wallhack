@@ -5,13 +5,13 @@ local frameY = THEME:GetMetric("ScreenTitleMenu","ScrollerY")
 
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
-		self:draworder(-300):xy(frameX,frameY):zoomto(SCREEN_WIDTH,120):halign(0):diffuse(getMainColor('highlight')):diffusealpha(1)
+		self:draworder(-300):xy(frameX,frameY):zoomto(SCREEN_WIDTH,136):halign(0):diffuse(getMainColor('highlight')):diffusealpha(1)
 	end	
 }
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand=function(self)
-		self:xy(SCREEN_WIDTH-5,frameY-60):zoom(0.5):valign(1):halign(1)
+		self:xy(SCREEN_WIDTH-5,frameY-70):zoom(0.5):valign(1):halign(1)
 	end,
 	OnCommand=function(self)
 		self:settext(string.format("%s v%s %s",getThemeName(),getThemeVersion(),getThemeDate()))
