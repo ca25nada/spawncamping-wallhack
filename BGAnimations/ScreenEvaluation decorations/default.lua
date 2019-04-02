@@ -1030,7 +1030,13 @@ local function scoreBoard(pn)
 			end
 		end
 	end
-	local statCategory = {"Mean", "Mean(Abs)", "Sd", "Left cbs", "Right cbs"}
+	local statCategory = {
+		"Mean",
+		"Mean(Abs)",
+		"Sd",
+		"Left cbs",
+		"Right cbs"
+	}
 	local statInfo = {
 		wifeMean(devianceTable),
 		wifeAbsMean(devianceTable),
@@ -1039,26 +1045,83 @@ local function scoreBoard(pn)
 		cbr
 	}
 
-	for i = 1, #statCategory do
-		t[#t + 1] = LoadFont("Common Normal") .. {
-			InitCommand = function(self)
-				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5.25) - 20, 258 + 8 * (i-1))
-				self:zoom(0.3):halign(0):settext(statCategory[i] .. ":")
-				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-			end
-		}
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5),260)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+			self:settext("Mean")
+		end
+	}
 
-		t[#t + 1] = LoadFont("Common Normal") .. {
-			InitCommand = function(self)
-				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
-				if i < 4 then
-					self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5.25) + 20, 258 + 8 * (i-1)):zoom(0.3):halign(0):settextf("%5.2fms", statInfo[i])
-				else
-					self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5.25) + 20, 258 + 8 * (i-1)):zoom(0.3):halign(0):settext(statInfo[i])
-				end
-			end
-		}
-	end
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5),275)
+			self:zoom(0.35)
+		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+		end,
+		SetCommand=function(self) 
+			self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
+			self:settextf("%.2fms", statInfo[1])
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5),285)
+			self:zoom(0.25)
+		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+		end,
+		SetCommand=function(self) 
+			self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
+			self:settextf("%.2fms (abs)", statInfo[2])
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5),292)
+			self:zoom(0.25)
+		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+		end,
+		SetCommand=function(self) 
+			self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
+			self:settextf("%.2fms (std dev)", statInfo[3])
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*6),260)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+			self:settext("CBs")
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*6),275)
+			self:zoom(0.3)
+		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+		end,
+		SetCommand=function(self) 
+			self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
+			self:settextf("Left: %d", statInfo[4])
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*6),285)
+			self:zoom(0.30)
+		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+		end,
+		SetCommand=function(self) 
+			self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
+			self:settextf("Right: %d", statInfo[5])
+		end
+	}
 
 	return t
 end
