@@ -1,3 +1,7 @@
+if IsSMOnlineLoggedIn() then
+	CloseConnection()
+end
+
 t = Def.ActorFrame{}
 
 local frameX = THEME:GetMetric("ScreenTitleMenu","ScrollerX")-10
