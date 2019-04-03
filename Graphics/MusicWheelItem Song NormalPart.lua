@@ -28,40 +28,7 @@ t[#t+1] = quadButton(1) .. {
 	end,
 	TopPressedCommand = function(self, params)
 
-		if params.input ~= "DeviceButton_left mouse button" then
-			return
-		end
-
-		local newIndex = tonumber(self:GetParent():GetName())
-		local wheel = top:GetMusicWheel()
-		local size = wheel:GetNumItems()
-		local move = newIndex-wheel:GetCurrentIndex()
-
-		if math.abs(move)>math.floor(size/2) then
-			if newIndex > wheel:GetCurrentIndex() then
-				move = (move)%size-size
-			else
-				move = (move)%size
-			end
-		end
-		
-		local wheelType = wheel:MoveAndCheckType(move)
-		wheel:Move(0)
-
-		-- TODO: play sounds.
-		if move == 0 then
-			if wheelType == 'WheelItemDataType_Section' then
-				if wheel:GetSelectedSection() == curFolder then
-					wheel:SetOpenSection("")
-					curFolder = ""
-				else
-					wheel:SetOpenSection(wheel:GetSelectedSection())
-					curFolder = wheel:GetSelectedSection()
-				end
-			else
-				top:SelectCurrent(0)
-			end
-		end
+	
 	end
 }
 
