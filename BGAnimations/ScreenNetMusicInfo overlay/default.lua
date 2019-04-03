@@ -113,7 +113,10 @@ local function topRow()
 	local frameWidth = SCREEN_WIDTH - 20
 	local frameHeight = 40
 
-	local t = Def.ActorFrame{
+	local t = Def.ActorFrame {
+		BeginCommand = function(self)
+			SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
+		end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -1095,9 +1098,15 @@ t[#t+1] = LoadActor("../_frame")
 local tab = TAB:new({"Manage Tags", "Preview", "Leaderboard", "", ""})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
-		self:y(SCREEN_HEIGHT+tab.height/2)
-		self:easeOut(0.5)
-		self:y(SCREEN_HEIGHT-tab.height/2)
+		if IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() then
+			self:y(SCREEN_HEIGHT+tab.height/2 - 17)
+			self:easeOut(0.5)
+			self:y(SCREEN_HEIGHT-tab.height/2 - 17)
+		else
+			self:y(SCREEN_HEIGHT+tab.height/2)
+			self:easeOut(0.5)
+			self:y(SCREEN_HEIGHT-tab.height/2)
+		end
 	end,
 	OffCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)

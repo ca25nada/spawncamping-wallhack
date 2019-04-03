@@ -73,6 +73,7 @@ local t = Def.ActorFrame {
 		everything = self
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end,
 	DFRFinishedMessageCommand = function(self) -- not sure this would even normally happen on this screen but just in case
 		profile:SetFromAll()

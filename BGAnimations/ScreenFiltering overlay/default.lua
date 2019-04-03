@@ -201,6 +201,7 @@ local t = Def.ActorFrame {
 		everything = self
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end
 }
 

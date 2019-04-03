@@ -104,7 +104,10 @@ local function topRow()
 	local frameWidth = SCREEN_WIDTH - 20
 	local frameHeight = 40
 
-	local t = Def.ActorFrame{
+	local t = Def.ActorFrame {
+		BeginCommand = function(self)
+			SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
+		end
 	}
 
 	t[#t+1] = Def.Quad{

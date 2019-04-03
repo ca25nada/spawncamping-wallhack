@@ -174,6 +174,7 @@ local t = Def.ActorFrame {
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
 		co = coroutine.create(updateFromGroup)
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end
 }
 

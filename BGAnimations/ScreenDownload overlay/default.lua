@@ -160,6 +160,7 @@ local t = Def.ActorFrame {
 		self:SetUpdateFunction(update)
 		MESSAGEMAN:Broadcast("UpdateList")
 		MESSAGEMAN:Broadcast("UpdateBundleList")
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end
 }
 

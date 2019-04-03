@@ -21,6 +21,7 @@ t[#t+1] = Def.ActorFrame{
 		self:y(-frameHeight/2)
 		self:smooth(0.5)
 		self:y(frameY)
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end,
 	OffCommand = function(self)
 		self:smooth(0.5)

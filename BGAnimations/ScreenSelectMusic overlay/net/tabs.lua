@@ -122,7 +122,6 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2 - 17)
 		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT-tab.height/2 - 17)
-		ms.ok(1)
 	end,
 	OffCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2 - 17)

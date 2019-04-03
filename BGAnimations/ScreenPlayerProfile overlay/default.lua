@@ -19,6 +19,7 @@ local t = Def.ActorFrame {
 	OnCommand = function(self)
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end,
 	TriggerExitFromPSMessageCommand = function(self, params)
 		self:sleep(0.05)
@@ -35,12 +36,18 @@ t[#t+1] = LoadActor("../_mouse")
 
 t[#t+1] = LoadActor("../_frame")
 
-local tab = TAB:new({"Goals", "", ""})
+local tab = TAB:new({"Goals"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
-		self:y(SCREEN_HEIGHT+tab.height/2)
-		self:easeOut(0.5)
-		self:y(SCREEN_HEIGHT-tab.height/2)
+		if IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() then
+			self:y(SCREEN_HEIGHT+tab.height/2 - 17)
+			self:easeOut(0.5)
+			self:y(SCREEN_HEIGHT-tab.height/2 - 17)
+		else
+			self:y(SCREEN_HEIGHT+tab.height/2)
+			self:easeOut(0.5)
+			self:y(SCREEN_HEIGHT-tab.height/2)
+		end
 	end,
 	OffCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)

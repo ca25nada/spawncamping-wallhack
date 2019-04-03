@@ -363,6 +363,7 @@ local t = Def.ActorFrame {
 		top:AddInputCallback(input)
 		co = coroutine.create(updateAvatars)
 		self:SetUpdateFunction(update)
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end
 }
 

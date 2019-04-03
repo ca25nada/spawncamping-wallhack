@@ -506,6 +506,7 @@ local t = Def.ActorFrame {
 		MESSAGEMAN:Broadcast("SetStepsType",{st = stepsType})
 		MESSAGEMAN:Broadcast("SetSteps",{steps = steps})
 		top:AddInputCallback(input)
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end,
 	ExitScreenMessageCommand = function(self)
 		ssm:DeletePreviewNoteField(NFParent)
