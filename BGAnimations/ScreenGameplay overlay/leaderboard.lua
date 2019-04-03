@@ -3,6 +3,9 @@ local leaderboardEnabled =
 	(NSMAN:IsETTP() and SCREENMAN:GetTopScreen() and SCREENMAN:GetTopScreen():GetName() == "ScreenNetStageInformation") or
 	(playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).leaderboardEnabled and DLMAN:IsLoggedIn())
 local entryActors = {}
+local indexDifferences = {}
+local beforeSort = {}
+local sortedIndices = {}
 local t =
 	Widg.Container {
 	x = MovableValues.LeaderboardX,
@@ -16,7 +19,7 @@ end
 local CRITERIA = "GetWifeScore"
 local NUM_ENTRIES = themeConfig:get_data().global.LeaderboardSlots
 local ENTRY_HEIGHT = IsUsingWideScreen() and 35 or 20
-local WIDTH = SCREEN_WIDTH * (IsUsingWideScreen() and 0.25 or 0.2)
+local WIDTH = SCREEN_WIDTH * (IsUsingWideScreen() and 0.275 or 0.25)
 local jdgs = {
 	-- Table of judgments for the judgecounter
 	"TapNoteScore_W1",
@@ -66,7 +69,7 @@ local onlineScores = {}
 local isMulti = NSMAN:IsETTP() and SCREENMAN:GetTopScreen() and SCREENMAN:GetTopScreen():GetName() == "ScreenNetStageInformation" or false
 if isMulti then
 	multiScores = NSMAN:GetMPLeaderboard()
-	for i = 1, 5 do
+	for i = 1, NUM_ENTRIES do
 		onlineScores[i] = scoreUsingMultiScore(i)
 	end
 else
@@ -138,6 +141,12 @@ function scoreEntry(i)
 			entryActors[i]["container"] = self
 			self.update = function(self, hs)
 				self:visible(not (not hs))
+				local diff = indexDifferences[i]
+				if not(not hs) and diff ~= nil and diff ~= 0 then
+					self:finishtweening()
+					self:linear(0.2)
+					self:addy(diff * ENTRY_HEIGHT * 1.3)
+				end
 			end
 			self:update(scoreboard[i])
 		end
@@ -184,7 +193,7 @@ function scoreEntry(i)
 	addLabel(
 		"rank",
 		function(self, hs)
-			self:settext(tostring(i))
+			self:settext(tostring(sortedIndices[i]))
 		end,
 		5,
 		ENTRY_HEIGHT / 4
@@ -244,6 +253,26 @@ for i = 1, NUM_ENTRIES do
 	t[#t + 1] = scoreEntry(i)
 end
 
+local function deepcopy(orig)
+	local orig_type = type(orig)
+	local copy
+	if orig_type == 'table' then
+		copy = {}
+		for orig_key, orig_value in next, orig, nil do
+			copy[deepcopy(orig_key)] = deepcopy(orig_value)
+		end
+		setmetatable(copy, deepcopy(getmetatable(orig)))
+	else
+		copy = orig
+	end
+	return copy
+end
+
+beforeSort = deepcopy(scoreboard)
+for i = 1, NUM_ENTRIES do
+	sortedIndices[i] = i
+end
+
 t.ComboChangedMessageCommand = function(self, params)
 	curScore.combo = params.PlayerStageStats and params.PlayerStageStats:GetCurrentCombo() or params.OldCombo
 end
@@ -260,7 +289,34 @@ t.JudgmentMessageCommand = function(self, params)
 		multiScores = NSMAN:GetMPLeaderboard()
 	end
 	if old ~= curScore.curWifeScore then
-		table.sort(scoreboard, sortFunction)
+		local anothercopy = deepcopy(beforeSort)
+		table.sort(anothercopy, sortFunction)
+		for i = 1, NUM_ENTRIES do
+			local index = i
+			local foundIndex = 1
+			local convertIndex = 1
+			for j, score in ipairs(anothercopy) do -- to determine the difference in indices after sorting
+				if beforeSort[i]:GetDisplayName() == score:GetDisplayName() and beforeSort[i]:GetWifeScore() == score:GetWifeScore() then
+					foundIndex = j
+					break
+				end
+			end
+			for j, score in ipairs(scoreboard) do -- to find what the original scoreboard index is from a sorted score
+				if beforeSort[i]:GetDisplayName() == score:GetDisplayName() and beforeSort[i]:GetWifeScore() == score:GetWifeScore() then
+					convertIndex = j
+					break
+				end
+			end
+			for j, score in ipairs(scoreboard) do -- to find out the position of this score after sorting
+				if anothercopy[i]:GetDisplayName() == score:GetDisplayName() and anothercopy[i]:GetWifeScore() == score:GetWifeScore() then
+					sortedIndices[j] = i
+					break
+				end
+			end
+			indexDifferences[convertIndex] = foundIndex - index
+		end
+		beforeSort = deepcopy(anothercopy)
+
 		for i, entry in ipairs(entryActors) do
 			for name, label in pairs(entry) do
 				label:update(scoreboard[i])
