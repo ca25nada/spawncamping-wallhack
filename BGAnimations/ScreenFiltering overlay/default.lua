@@ -16,6 +16,7 @@ local playertags = {}
 local filterTags = GHETTOGAMESTATE:getFilterTags()
 local tagName
 local tagFilterMode = GHETTOGAMESTATE:getTagFilterMode()
+local packlistFiltered
 
 for i = 1, #ms.SkillSets + 1 do -- the +1 is for the length field
 	filterFields["Lower"][i] = FILTERMAN:GetSSFilter(i, 0)
@@ -502,7 +503,60 @@ t[#t+1] = Def.ActorFrame {
 				self:settext("May match any set bound")
 			end
 		end
-	}
+	},
+	quadButton(6) .. {
+		Name = "ApplyButton",
+		InitCommand = function(self)
+			packlistFiltered = FILTERMAN:GetFilteringCommonPacks()
+			self:xy(leftSectionWidth - numBoxWidth - boundHorizontalSpacing, leftLowerSectionHeight - boxHeight - 5)
+			self:halign(0)
+			self:diffusealpha(0.2)
+			self:zoomto(numBoxWidth, 20)
+			self:visible( IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() )
+		end,
+		TopPressedCommand = function(self)
+			if IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() then
+				self:finishtweening()
+				self:diffusealpha(0.4)
+				self:smooth(0.3)
+				self:diffusealpha(0.2)
+				--updateFilter()
+				packlistFiltered = GHETTOGAMESTATE:getMusicWheel():SetPackListFiltering(not packlistFiltered)
+				MESSAGEMAN:Broadcast("FilterModeChanged")
+			end
+		end
+	},
+	LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(leftSectionWidth - (numBoxWidth + boundHorizontalSpacing)/2 - 5, leftLowerSectionHeight - boxHeight - 5)
+			self:zoom(0.4)
+			if IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() then
+				self:playcommand("Set")
+			else
+				self:visible(false)
+			end
+		end,
+		SetCommand = function(self)
+			self:settext(packlistFiltered and "On" or "Off")
+		end,
+		FilterModeChangedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end
+	},
+	LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(leftSectionWidth - (numBoxWidth + boundHorizontalSpacing)/2 - 5, leftLowerSectionHeight - boxHeight*2 - 7)
+			self:zoom(0.4)
+			if IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() then
+				self:playcommand("Set")
+			else
+				self:visible(false)
+			end
+		end,
+		SetCommand = function(self)
+			self:settext("Common Pack\nFilter")
+		end
+	},
 }
 
 for i = 1, #filterFields["Lower"] do
