@@ -313,7 +313,7 @@ end
 				setmetatable( t, t )
 				return t
 			end
-			
+
 			function LeaderBoard()
 				local t = {
 					Name = "Leaderboard",
@@ -799,6 +799,41 @@ function ReceptorSize()
 			end
 			playerConfig:set_dirty(pn_to_profile_slot(pn))
 			playerConfig:save(pn_to_profile_slot(pn))
+		end
+	}
+	setmetatable(t, t)
+	return t
+end
+
+local LBChoices = {}
+for i = 1, 15 do
+	LBChoices[i] = tostring(i)
+end
+function LeaderboardSlots()
+	local t = {
+		Name = "LeaderboardSlots",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = false,
+		ExportOnChange = true,
+		Choices = LBChoices,
+		LoadSelections = function(self, list, pn)
+			local prefs = themeConfig:get_data().global.LeaderboardSlots
+			list[prefs] = true
+		end,
+		SaveSelections = function(self, list, pn)
+			local found = false
+			for i = 1, #list do
+				if not found then
+					if list[i] == true then
+						local value = i
+						themeConfig:get_data().global.LeaderboardSlots = value
+						found = true
+					end
+				end
+			end
+			themeConfig:set_dirty()
+			themeConfig:save()
 		end
 	}
 	setmetatable(t, t)

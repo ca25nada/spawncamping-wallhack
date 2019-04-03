@@ -14,7 +14,7 @@ if not leaderboardEnabled then
 	return t
 end
 local CRITERIA = "GetWifeScore"
-local NUM_ENTRIES = 5
+local NUM_ENTRIES = themeConfig:get_data().global.LeaderboardSlots
 local ENTRY_HEIGHT = IsUsingWideScreen() and 35 or 20
 local WIDTH = SCREEN_WIDTH * (IsUsingWideScreen() and 0.25 or 0.2)
 local jdgs = {

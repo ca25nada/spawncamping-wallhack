@@ -14,6 +14,7 @@ local defaultConfig = {
 		UseAssetsJudgements = false,
 		JudgementTween = true,
 		ComboTween = true,
+		LeaderboardSlots = 8,
 		BareBone = false, -- Still can't beat jousway lel
 		EvalScoreboard = true,
 		PlayerInfoType = true -- true is full, false is minimal (lifebar only)
