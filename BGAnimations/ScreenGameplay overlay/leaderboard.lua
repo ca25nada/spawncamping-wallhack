@@ -2,10 +2,13 @@ local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1))
 local leaderboardEnabled =
 	(NSMAN:IsETTP() and SCREENMAN:GetTopScreen() and SCREENMAN:GetTopScreen():GetName() == "ScreenNetStageInformation") or
 	(playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).leaderboardEnabled and DLMAN:IsLoggedIn())
+local animated = themeConfig:get_data().global.AnimatedLeaderboard
 local entryActors = {}
 local indexDifferences = {}
 local beforeSort = {}
 local sortedIndices = {}
+
+-- Overall ActorFrame (container)
 local t =
 	Widg.Container {
 	x = MovableValues.LeaderboardX,
@@ -13,9 +16,12 @@ local t =
 	name = "Leaderboard"
 }
 
+-- Don't load the leaderboard stuff if we don't want it
 if not leaderboardEnabled then
 	return t
 end
+
+-- "Modifiable" content
 local CRITERIA = "GetWifeScore"
 local NUM_ENTRIES = themeConfig:get_data().global.LeaderboardSlots
 local ENTRY_HEIGHT = IsUsingWideScreen() and 35 or 20
@@ -30,6 +36,7 @@ local jdgs = {
 	"TapNoteScore_Miss"
 }
 
+-- Function handed to CustomizeGameplay for element spacing
 local function arbitraryLeaderboardSpacing(value)
 	for i, entry in ipairs(entryActors) do
 		entry.container:addy((i - 1) * value)
@@ -42,10 +49,15 @@ local function arbitraryLeaderboardSpacing(value)
 	end
 end
 
+-- ????
 if not DLMAN:GetCurrentRateFilter() then
 	DLMAN:ToggleRateFilter()
 end
+
+---- Multiplayer section of code ----
 local multiScores = {}
+
+-- Function used to redirect scoreboard table elements to multiplayer scoreboard data
 local function scoreUsingMultiScore(idx)
 	return {
 		GetDisplayName = function()
@@ -65,8 +77,12 @@ local function scoreUsingMultiScore(idx)
 		end
 	}
 end
+
 local onlineScores = {}
 local isMulti = NSMAN:IsETTP() and SCREENMAN:GetTopScreen() and SCREENMAN:GetTopScreen():GetName() == "ScreenNetStageInformation" or false
+
+-- If we are in multiplayer, use that redirect above
+-- Otherwise, we will use the scores from the chart leaderboards
 if isMulti then
 	multiScores = NSMAN:GetMPLeaderboard()
 	for i = 1, NUM_ENTRIES do
@@ -75,10 +91,15 @@ if isMulti then
 else
 	onlineScores = DLMAN:GetChartLeaderBoard(GAMESTATE:GetCurrentSteps(PLAYER_1):GetChartKey())
 end
+
+-- how to use table.sort()
 local sortFunction = function(h1, h2)
 	return h1[CRITERIA](h1) > h2[CRITERIA](h2)
 end
-table.sort(onlineScores, sortFunction)
+table.sort(onlineScores, sortFunction) -- a little sort never hurt anybody
+
+-- A table which mocks the format of a HighScore but holds other info instead
+-- Used for the player's current score
 local curScore
 curScore = {
 	GetDisplayName = function()
@@ -112,12 +133,16 @@ curScore.jdgVals = {
 	["TapNoteScore_W5"] = 0,
 	["TapNoteScore_Miss"] = 0
 }
+
+-- The table for the data being displayed
 local scoreboard = {}
+
+-- Emplace chart leaderboard/multi data into all but one of the scoreboard elements
 for i = 1, NUM_ENTRIES - 1 do
 	scoreboard[i] = onlineScores[i]
 end
 local done = false
-if not isMulti then
+if not isMulti then -- if not in multi, use the last slot for the player's score
 	for i = 1, NUM_ENTRIES do
 		if not done and not scoreboard[i] then
 			scoreboard[i] = curScore
@@ -125,13 +150,20 @@ if not isMulti then
 		end
 	end
 end
-table.sort(scoreboard, sortFunction)
+table.sort(scoreboard, sortFunction) -- sort it again why not
 
+-- Prepare the list of entries (the containers of the leaderboard elements) that we will use to call update functions for later
 for i = 1, NUM_ENTRIES do
 	entryActors[i] = {}
 end
+
+-- creates a single box in the leaderboard container, with all its info
 function scoreEntry(i)
 	local entryActor
+
+	-- locally hold an "entry" which is a Widg.Container.
+	-- Widg.Containers take a customized set of parameters through a table, like our usual Def.ActorFrames
+	-- making "entry" sets some defaults for it
 	local entry =
 		Widg.Container {
 		x = 0,
@@ -144,13 +176,16 @@ function scoreEntry(i)
 				local diff = indexDifferences[i]
 				if not(not hs) and diff ~= nil and diff ~= 0 then
 					self:finishtweening()
-					self:linear(0.2)
+					if animated then
+						self:linear(0.2)
+					end
 					self:addy(diff * ENTRY_HEIGHT * 1.3)
 				end
 			end
 			self:update(scoreboard[i])
 		end
 	}
+	-- Put the background box in the entry container
 	entry:add(
 		Widg.Rectangle {
 			width = WIDTH,
@@ -159,12 +194,15 @@ function scoreEntry(i)
 			halign = 0.5
 		}
 	)
+
+	-- Make another container to hold the text labels
 	local labelContainer =
 		Widg.Container {
 		x = WIDTH / 5
 	}
 	entry:add(labelContainer)
 	local y
+	-- Make a function with preset parameters to add text to that text label container
 	local addLabel = function(name, fn, x, y)
 		y = (y or 0) - (IsUsingWideScreen() and 0 or ENTRY_HEIGHT / 3.2)
 		labelContainer:add(
@@ -190,6 +228,8 @@ function scoreEntry(i)
 			}
 		)
 	end
+
+	-- Proceed adding those labels with their appropriate update methods
 	addLabel(
 		"rank",
 		function(self, hs)
@@ -221,7 +261,6 @@ function scoreEntry(i)
 		end,
 		WIDTH / 1.3
 	)
-	--WIDTH - 84
 	addLabel(
 		"wife",
 		function(self, hs)
@@ -247,12 +286,16 @@ function scoreEntry(i)
 		WIDTH / 5,
 		ENTRY_HEIGHT / 2
 	)
+
 	return entry
 end
+
+-- Now make x entries
 for i = 1, NUM_ENTRIES do
 	t[#t + 1] = scoreEntry(i)
 end
 
+-- ... oh no
 local function deepcopy(orig)
 	local orig_type = type(orig)
 	local copy
@@ -267,12 +310,14 @@ local function deepcopy(orig)
 	end
 	return copy
 end
-
 beforeSort = deepcopy(scoreboard)
 for i = 1, NUM_ENTRIES do
 	sortedIndices[i] = i
 end
+---
 
+-- Adding commands to the output ActorFrame
+-- Similar to placing these directly within the ActorFrame definition
 t.ComboChangedMessageCommand = function(self, params)
 	curScore.combo = params.PlayerStageStats and params.PlayerStageStats:GetCurrentCombo() or params.OldCombo
 end
@@ -289,6 +334,9 @@ t.JudgmentMessageCommand = function(self, params)
 		multiScores = NSMAN:GetMPLeaderboard()
 	end
 	if old ~= curScore.curWifeScore then
+
+		-- What follows is an unfortunate block of sorting and looping
+		-- Thankfully we aren't dealing with thousands of elements or I might be blacklisted from programming globally
 		local anothercopy = deepcopy(beforeSort)
 		table.sort(anothercopy, sortFunction)
 		for i = 1, NUM_ENTRIES do
@@ -316,7 +364,9 @@ t.JudgmentMessageCommand = function(self, params)
 			indexDifferences[convertIndex] = foundIndex - index
 		end
 		beforeSort = deepcopy(anothercopy)
+		--- Now that that's over with....
 
+		-- Tell all the text labels to update.
 		for i, entry in ipairs(entryActors) do
 			for name, label in pairs(entry) do
 				label:update(scoreboard[i])
@@ -325,6 +375,7 @@ t.JudgmentMessageCommand = function(self, params)
 	end
 end
 
+-- Border for CustomizeGameplay
 t[#t + 1] = MovableBorder(WIDTH, 200, 1, 0, 0)
 
 t.OnCommand = function(self, params)

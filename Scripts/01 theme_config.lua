@@ -15,6 +15,7 @@ local defaultConfig = {
 		JudgementTween = true,
 		ComboTween = true,
 		LeaderboardSlots = 8,
+		AnimatedLeaderboard = true,
 		BareBone = false, -- Still can't beat jousway lel
 		EvalScoreboard = true,
 		PlayerInfoType = true -- true is full, false is minimal (lifebar only)

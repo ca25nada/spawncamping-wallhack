@@ -929,6 +929,38 @@ function SongPreview()
 	return t
 end
 
+function AnimatedLeaderboard()
+	local t = {
+		Name = "AnimatedLeaderboard",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.AnimatedLeaderboard
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.AnimatedLeaderboard = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+
 function BannerWheel()
 	local t = {
 		Name = "BannerWheel",
