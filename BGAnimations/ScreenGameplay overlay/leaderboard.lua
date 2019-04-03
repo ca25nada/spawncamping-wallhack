@@ -343,25 +343,33 @@ t.JudgmentMessageCommand = function(self, params)
 			local index = i
 			local foundIndex = 1
 			local convertIndex = 1
+			local foundCases = {}
 			for j, score in ipairs(anothercopy) do -- to determine the difference in indices after sorting
-				if beforeSort[i]:GetDisplayName() == score:GetDisplayName() and beforeSort[i]:GetWifeScore() == score:GetWifeScore() then
+				if beforeSort[i] ~= nil and beforeSort[i]:GetDisplayName() == score:GetDisplayName() and beforeSort[i]:GetWifeScore() == score:GetWifeScore() then
 					foundIndex = j
+					foundCases[1] = true
 					break
 				end
 			end
 			for j, score in ipairs(scoreboard) do -- to find what the original scoreboard index is from a sorted score
-				if beforeSort[i]:GetDisplayName() == score:GetDisplayName() and beforeSort[i]:GetWifeScore() == score:GetWifeScore() then
+				if beforeSort[i] ~= nil and beforeSort[i]:GetDisplayName() == score:GetDisplayName() and beforeSort[i]:GetWifeScore() == score:GetWifeScore() then
 					convertIndex = j
+					foundCases[2] = true
 					break
 				end
 			end
 			for j, score in ipairs(scoreboard) do -- to find out the position of this score after sorting
-				if anothercopy[i]:GetDisplayName() == score:GetDisplayName() and anothercopy[i]:GetWifeScore() == score:GetWifeScore() then
+				if anothercopy[i] ~= nil and anothercopy[i]:GetDisplayName() == score:GetDisplayName() and anothercopy[i]:GetWifeScore() == score:GetWifeScore() then
 					sortedIndices[j] = i
+					foundCases[3] = true
 					break
 				end
 			end
-			indexDifferences[convertIndex] = foundIndex - index
+			if foundCases[1] and foundCases[2] and foundCases[3] then
+				indexDifferences[convertIndex] = foundIndex - index
+			else
+				indexDifferences[convertIndex] = 0
+			end
 		end
 		beforeSort = deepcopy(anothercopy)
 		--- Now that that's over with....
