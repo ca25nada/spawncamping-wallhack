@@ -141,9 +141,11 @@ local t = Def.ActorFrame {
 			c.Number:stopeffect()
 			c.Label:diffuse(Color("Red")):diffusebottomedge(color("0.5,0,0,1"))
 		end
-		-- Pulse
-		Pulse( c.Number, param )
-		PulseLabel( c.Label, param )
+		if themeConfig:get_data().global.ComboTween then
+			-- Pulse
+			Pulse( c.Number, param )
+			PulseLabel( c.Label, param )
+		end
 		numberCurrentZoom = param.Zoom
 	end,
 	MovableBorder(0, 0, 1, MovableValues.ComboX, MovableValues.ComboY)
