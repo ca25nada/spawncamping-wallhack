@@ -102,12 +102,18 @@ local t = Def.ActorFrame{
 			SOUND:StopMusic()
 		end
 	end,
+	--[[
+		--- ---
+		---	NOTE FOR THE FUTURE: Need to add oldRate to the messages ingame or something.
+		-------
+	--]]
 	CurrentRateChangedMessageCommand = function(self, params)
-		if themeConfig:get_data().global.SongPreview ~= 1 then
+		if themeConfig:get_data().global.SongPreview ~= 1 and params.oldRate ~= nil then
 			amountOfWait = amountOfWait / (1 / params.oldRate) / params.rate -- fun math, this works.
 			self:SetUpdateFunctionInterval(amountOfWait)
 		end
 	end,
+	
 	PreviewNoteFieldDeletedMessageCommand = function(self)
 		sampleEvent = true
 		loops = 0
