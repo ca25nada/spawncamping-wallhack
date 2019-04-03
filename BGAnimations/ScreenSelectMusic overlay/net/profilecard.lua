@@ -10,7 +10,7 @@ local t = Def.ActorFrame{
 }
 
 local frameX = SCREEN_CENTER_X/2
-local frameY = SCREEN_CENTER_Y+100
+local frameY = SCREEN_CENTER_Y+86
 local maxMeter = 30
 local frameWidth = capWideScale(get43size(390),390)
 local frameHeight = 110

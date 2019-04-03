@@ -42,7 +42,7 @@ local function input(event)
 				SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 			elseif tonumber(event.char) == 2 then
 				if GAMESTATE:GetCurrentSong() then
-					SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+					SCREENMAN:AddNewScreenToTop("ScreenNetMusicInfo")
 				end
 			elseif tonumber(event.char) == 3 then
 				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
@@ -119,12 +119,13 @@ t[#t+1] = LoadActor("../../_mouse")
 local tab = TAB:new({"Profile", "Song Info", "Group Info", "Filtering", "Downloads"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
-		self:y(SCREEN_HEIGHT+tab.height/2)
+		self:y(SCREEN_HEIGHT+tab.height/2 - 17)
 		self:easeOut(0.5)
-		self:y(SCREEN_HEIGHT-tab.height/2)
+		self:y(SCREEN_HEIGHT-tab.height/2 - 17)
+		ms.ok(1)
 	end,
 	OffCommand = function(self)
-		self:y(SCREEN_HEIGHT+tab.height/2)
+		self:y(SCREEN_HEIGHT+tab.height/2 - 17)
 	end,
 	TabPressedMessageCommand = function(self, params)
 		if inSongSearch then
@@ -135,7 +136,7 @@ t[#t+1] = tab:makeTabActors() .. {
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 		elseif params.name == "Song Info" then
 			if GAMESTATE:GetCurrentSong() then
-				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+				SCREENMAN:AddNewScreenToTop("ScreenNetMusicInfo")
 			end
 		elseif params.name == "Group Info" then
 			SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
