@@ -60,7 +60,7 @@ return Def.ActorFrame {
 				"a: Leaderboard Position",
 				"s: Leaderboard Size",
 				"d: Leaderboard Spacing",
-				"h: Replay Buttons Spacing",
+				--"h: Replay Buttons Spacing",
 				"j: Player Info Position",
 				"k: Player Info Size",
 			}
