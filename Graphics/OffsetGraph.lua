@@ -219,7 +219,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	UpdateCommand = function(self, params)
 		params = checkParams(params)
 		self:xy(params.width/2, params.height - 10)
-		if #ntt > 0 then
+		if ntt ~= nil and #ntt > 0 then
 			if handspecific then
 				if left then
 					self:settext("Highlighting left hand taps")
