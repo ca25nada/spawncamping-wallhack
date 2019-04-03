@@ -128,7 +128,9 @@ function quadButton(z)
 
 		OnCommand = function(self)
 			local top = SCREENMAN:GetTopScreen()
-			topName = top:GetName()
+			if top ~= nil then
+				topName = top:GetName()
+			end
 		end,
 
 		MouseLeftClickMessageCommand = function(self)
