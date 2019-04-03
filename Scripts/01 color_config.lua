@@ -118,6 +118,12 @@ local defaultConfig = {
 		PacemakerCurrent = "#0099FF",
 	},
 
+	leaderboard = {
+		background = "#111111CC",
+		border = "#000111",
+		text = "#9654FD"
+	},
+
 	evaluation = {
 		BackgroundText = "#000000",
 		ScoreCardText = "#FFFFFF",
@@ -167,6 +173,10 @@ end
 
 function getMainColor(type)
 	return color(colorConfig:get_data().main[type])
+end
+
+function getLeaderboardColor(type)
+	return color(colorConfig:get_data().leaderboard[type])
 end
 
 function getGradeColor (grade)

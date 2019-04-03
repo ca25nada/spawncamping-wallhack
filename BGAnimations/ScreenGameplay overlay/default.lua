@@ -20,6 +20,7 @@ t[#t+1] = LoadActor("WifeJudgmentSpotting")
 if themeConfig:get_data().global.ProgressBar ~= 0 then
 	t[#t+1] = LoadActor("progressbar")
 end
+t[#t+1] = LoadActor("leaderboard")
 t[#t+1] = LoadActor("avatar")
 --t[#t+1] = LoadActor("BPMDisplay")
 t[#t+1] = LoadActor("title")
