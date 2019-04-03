@@ -1,2 +1,2 @@
-local t = LoadActor("ScreenSelectMusic decorations/default")
+local t = LoadActor("ScreenSelectMusic decorations/net/default")
 return t
