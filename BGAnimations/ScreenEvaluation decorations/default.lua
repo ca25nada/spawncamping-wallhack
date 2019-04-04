@@ -1149,8 +1149,10 @@ local currentCountry = "Global"
 local scoresPerPage = 5
 local maxPages = math.ceil(#hsTable/scoresPerPage)
 local curPage = 1
+local alreadyPulled = false
 
 local function updateLeaderBoardForCurrentChart()
+	alreadyPulled = true
 	if steps then
 		DLMAN:RequestChartLeaderBoardFromOnline(
 			steps:GetChartKey(),
@@ -1164,6 +1166,10 @@ local function updateLeaderBoardForCurrentChart()
 end
 
 local function movePage(n)
+	if maxPages <= 1 then
+		return
+	end
+
 	if n > 0 then 
 		curPage = ((curPage+n-1) % maxPages + 1)
 	else
@@ -1174,6 +1180,9 @@ end
 
 local function scoreboardInput(event)
 	if event.type == "InputEventType_FirstPress" then
+		if maxPages <= 1 then
+			return
+		end
 		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
 			MESSAGEMAN:Broadcast("WheelUpSlow")
 		end
@@ -1232,7 +1241,7 @@ local function boardOfScores()
 				scoreList = getScoreTable(player, getCurRate())
 			else
 				scoreList = DLMAN:GetChartLeaderBoard(steps:GetChartKey(), currentCountry)
-				if #scoreList == 0 then
+				if #scoreList == 0 and not alreadyPulled then
 					updateLeaderBoardForCurrentChart()
 				end
 			end
@@ -1244,17 +1253,12 @@ local function boardOfScores()
 			end
 			if isLocal or #scoreList ~= 0 then
 				self:queuecommand("Set")
+			elseif #scoreList == 0 then
+				self:queuecommand("ListEmpty")
 			end
 
 		end,
 		SetFromLeaderboardCommand = function(self, leaderboard)
-			scoreList = DLMAN:GetChartLeaderBoard(steps:GetChartKey(), currentCountry)
-			curPage = 1
-			if scoreList ~= nil then
-				maxPages = math.ceil(#scoreList / scoresPerPage)
-			else
-				maxPages = 1
-			end
 			self:queuecommand("UpdateScores")
 		end,
 
@@ -1309,6 +1313,9 @@ local function boardOfScores()
 			end,
 			UpdateListMessageCommand = function(self)
 				self:playcommand("Set")
+			end,
+			ListEmptyCommand = function(self)
+				self:settext("Showing 0 - 0 of 0 scores")
 			end
 		},
 
@@ -1335,6 +1342,9 @@ local function boardOfScores()
 						self:settext("Highest online scores for this rate") -- but i wanted to make the distinction
 					end
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:settext("No scores found")
 			end
 		},
 
@@ -1349,6 +1359,10 @@ local function boardOfScores()
 			end,
 			UpdateListMessageCommand = function(self)
 				local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
+				if #scoreList == 0 then
+					self:diffusealpha(0)
+					return
+				end
 				self:stoptweening()
 				self:diffusealpha(0)
 				self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY - 8)
@@ -1358,6 +1372,9 @@ local function boardOfScores()
 				self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY + 2)
 			end,
 			UpdateScoresCommand = function(self)
+				self:playcommand("UpdateList")
+			end,
+			ListEmptyCommand = function(self)
 				self:playcommand("UpdateList")
 			end
 		},
@@ -1373,6 +1390,10 @@ local function boardOfScores()
 			end,
 			UpdateListMessageCommand = function(self)
 				local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
+				if #scoreList == 0 then
+					self:diffusealpha(0)
+					return
+				end
 				self:stoptweening()
 				self:diffusealpha(0)
 				self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY - 8)
@@ -1382,6 +1403,9 @@ local function boardOfScores()
 				self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY + 2)
 			end,
 			UpdateScoresCommand = function(self)
+				self:playcommand("UpdateList")
+			end,
+			ListEmptyCommand = function(self)
 				self:playcommand("UpdateList")
 			end
 		},
@@ -1410,6 +1434,9 @@ local function boardOfScores()
 					isLocal = true
 					self:GetParent():queuecommand("UpdateScores")
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 		LoadFont("Common Bold") .. {
@@ -1429,6 +1456,9 @@ local function boardOfScores()
 				else
 					self:diffusealpha(1)
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 
@@ -1457,6 +1487,9 @@ local function boardOfScores()
 					isLocal = false
 					self:GetParent():queuecommand("UpdateScores")
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 		LoadFont("Common Bold") .. {
@@ -1476,6 +1509,9 @@ local function boardOfScores()
 				else
 					self:diffusealpha(1)
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 
@@ -1506,6 +1542,9 @@ local function boardOfScores()
 						self:GetParent():queuecommand("UpdateScores")
 					end
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 		LoadFont("Common Bold") .. {
@@ -1524,6 +1563,9 @@ local function boardOfScores()
 				else
 					self:diffusealpha(1)
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 
@@ -1554,6 +1596,9 @@ local function boardOfScores()
 						self:GetParent():queuecommand("UpdateScores")
 					end
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 		LoadFont("Common Bold") .. {
@@ -1572,6 +1617,9 @@ local function boardOfScores()
 				else
 					self:diffusealpha(1)
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 
@@ -1602,6 +1650,9 @@ local function boardOfScores()
 						self:GetParent():queuecommand("UpdateScores")
 					end
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 		LoadFont("Common Bold") .. {
@@ -1620,6 +1671,9 @@ local function boardOfScores()
 				else
 					self:diffusealpha(1)
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 
@@ -1650,6 +1704,9 @@ local function boardOfScores()
 						self:GetParent():queuecommand("UpdateScores")
 					end
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		},
 		LoadFont("Common Bold") .. {
@@ -1668,6 +1725,9 @@ local function boardOfScores()
 				else
 					self:diffusealpha(1)
 				end
+			end,
+			ListEmptyCommand = function(self)
+				self:queuecommand("Set")
 			end
 		}
 	}
@@ -1685,7 +1745,7 @@ local function boardOfScores()
 				self:y(scoreItemY + (i-1)*(scoreItemHeight + scoreItemSpacing)-10)
 				self:diffusealpha(0)
 				self:finishtweening()
-				self:sleep((i-1)*0.03)
+				self:sleep(math.max(0.01, (i-1)*0.03))
 				self:easeOut(1)
 				self:y(scoreItemY + (i-1)*(scoreItemHeight + scoreItemSpacing))
 				self:diffusealpha(1)
