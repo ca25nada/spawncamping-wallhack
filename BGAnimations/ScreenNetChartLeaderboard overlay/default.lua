@@ -980,6 +980,9 @@ local function scoreList()
 			end,
 
 			TopPressedCommand = function(self)
+				if not inDetail then
+					return
+				end
 				self:finishtweening()
 				self:diffusealpha(1)
 				self:smooth(0.3)
@@ -1012,6 +1015,9 @@ local function scoreList()
 			end,
 
 			TopPressedCommand = function(self)
+				if not inDetail then
+					return
+				end
 				self:finishtweening()
 				self:diffusealpha(1)
 				self:smooth(0.3)
