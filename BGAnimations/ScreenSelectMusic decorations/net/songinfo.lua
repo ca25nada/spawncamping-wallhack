@@ -298,7 +298,9 @@ t[#t+1] = quadButton(6) .. {
 		self:halign(0)
 	end,
 	TopPressedCommand = function(self)
-		SCREENMAN:AddNewScreenToTop("ScreenPlayerOptions")
+		if song then
+			SCREENMAN:AddNewScreenToTop("ScreenPlayerOptions")
+		end
 	end
 }
 t[#t+1] = LoadFont("Common Normal") .. {
