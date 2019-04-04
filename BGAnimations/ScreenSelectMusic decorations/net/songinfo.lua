@@ -245,5 +245,70 @@ t[#t+1] = LoadFont("Common Bold") .. {
 	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
 }
 
+local function getReady()
+	local userCount = topScreen:GetUserQty()
+	local me = NSMAN:GetLoggedInUsername()
+	local ready = nil
+	for i = 1, userCount do
+		if topScreen:GetUser(i) == me then
+			ready = topScreen:GetUserReady(i)
+		end
+	end
+	return ready
+end
+
+-- Ready button
+t[#t+1] = quadButton(6) .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5, 217.5)
+		self:zoomto(55,25)
+		self:diffuse(getMainColor("negative"))
+		self:diffusealpha(0.9)
+		self:halign(0)
+	end,
+	TopPressedCommand = function(self)
+		NSMAN:SendChatMsg("/ready", 1, NSMAN:GetCurrentRoomName())
+	end,
+	UsersUpdateMessageCommand = function(self)
+		local ready = getReady()
+		if ready then
+			self:diffuse(getMainColor("positive"))
+			self:diffusealpha(0.9)
+		else
+			self:diffuse(getMainColor("negative"))
+			self:diffusealpha(0.9)
+		end
+	end
+}
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 55/2, 217.5)
+		self:settext("Ready")
+		self:zoom(0.4)
+	end
+}
+
+-- Player Options button
+t[#t+1] = quadButton(6) .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 57, 217.5)
+		self:zoomto(55,25)
+		self:diffuse(getMainColor("frame"))
+		self:diffusealpha(0.8)
+		self:halign(0)
+	end,
+	TopPressedCommand = function(self)
+		SCREENMAN:AddNewScreenToTop("ScreenPlayerOptions")
+	end
+}
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 55/2 + 57, 216)
+		self:settext("Player\nOptions")
+		self:zoom(0.4)
+	end
+
+}
+
 
 return t
