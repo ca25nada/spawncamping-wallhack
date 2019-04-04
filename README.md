@@ -1,6 +1,11 @@
 ﻿# spawncamping-wallhack
-A SM5 Theme ported for Etterna, a client aimed primarily for KB players.  
+A SM5 Theme ported for Etterna, a client aimed primarily for KB players.
+
+Here are some old screenshots (very old)
 <a href="http://imgur.com/a/RpFvQ" target="_blank">Screenshots</a>
+
+See newer screenshots here (latest versions)
+<a href="https://imgur.com/a/Pad27GS" target="_blank">Screenshots</a>
 
 Requirements: The latest release version of Etterna. Older releases are for SM5.
 
