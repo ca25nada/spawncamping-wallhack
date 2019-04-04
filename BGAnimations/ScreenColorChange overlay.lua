@@ -56,20 +56,20 @@ local function generateCategory()
 				self:zoom(scale)
 				self:halign(0)
 				self:queuecommand('UpdateColor')
-			end;
+			end,
 			RowChangedMessageCommand = function(self,params)
 				if params.level == 1 then
 					self:queuecommand('UpdateColor')
 					self:settext(visibleItems[k])
 				end
-			end;
+			end,
 			ColChangedMessageCommand = function(self,params)
 				if params.level == 1 then
 					self:diffusealpha(1)
 				else
 					self:diffusealpha(0.5)
 				end
-			end;
+			end,
 			UpdateColorCommand=function(self)
 				if visibleItems[k] == currentItems[1][cursorIndex[1]] then
 					self:diffuse(getMainColor('highlight'))
@@ -133,19 +133,19 @@ local function generateCategoryColors()
 				self:zoom(scale)
 				self:halign(0)
 				self:queuecommand('UpdateColor')
-			end;
+			end,
 			RowChanged2MessageCommand = function(self,params)
 				if params.level <= 2 then
 					self:queuecommand('UpdateColor')
 				end
-			end;
+			end,
 			ColChangedMessageCommand = function(self,params)
 				if params.level == 2 then
 					self:diffusealpha(1)
 				else
 					self:diffusealpha(0.5)
 				end
-			end;
+			end,
 			UpdateColorCommand=function(self)
 				if visibleItems[i] ~= nil then
 					self:visible(true)
@@ -179,19 +179,19 @@ local function generateCategoryColors()
 				self:zoom(scale)
 				self:halign(0)
 				self:queuecommand('UpdateColor')
-			end;
+			end,
 			RowChanged2MessageCommand = function(self,params)
 				if params.level <= 2 then
 					self:queuecommand('UpdateColor')
 				end
-			end;
+			end,
 			ColChangedMessageCommand = function(self,params)
 				if params.level == 2 then
 					self:diffusealpha(1)
 				else
 					self:diffusealpha(0.5)
 				end
-			end;
+			end,
 			UpdateColorCommand=function(self)
 				if visibleItems[i] ~= nil then
 					self:visible(true)
@@ -257,34 +257,34 @@ local t = Def.ActorFrame{
 				MESSAGEMAN:Broadcast("ColChanged",{level = curLevel})
 			elseif curLevel == 2 then
 				setTableKeys(selected)
-				SCREENMAN:AddNewScreenToTop("ScreenColorEdit");
+				SCREENMAN:AddNewScreenToTop("ScreenColorEdit")
 			end
 
 		elseif params.Name == "ColorCancel" then
 			SCREENMAN:GetTopScreen():Cancel()
 		end
-	end;
+	end
 }
 
-t[#t+1] = LoadActor("_frame");
-t[#t+1] = LoadActor("_mouse");
+t[#t+1] = LoadActor("_frame")
+t[#t+1] = LoadActor("_mouse")
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=function(self)
 		self:xy(frameX[1],frameY):halign(0):valign(1):zoom(0.6):settext("Category:")
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=function(self)
 		self:xy(frameX[2],frameY):halign(0):valign(1):zoom(0.6):settext("Name:")
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=function(self)
 		self:xy(frameX[3],frameY):halign(0):valign(1):zoom(0.6):settext("Color:")
-	end;
+	end
 }
 
 if configData ~= nil then

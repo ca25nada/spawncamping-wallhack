@@ -1,13 +1,13 @@
 local t = Def.ActorFrame{
 	InitCommand = function(self) 
 		self:delayedFadeIn(6)
-	end;
+	end,
 	OffCommand = function(self)
 		self:sleep(0.05)
 		self:smooth(0.2)
 		self:diffusealpha(0) 
-	end;
-};
+	end
+}
 
 local frameX = SCREEN_CENTER_X/2
 local frameY = SCREEN_CENTER_Y+100
@@ -17,41 +17,34 @@ local frameHeight = 110
 local frameHeightShort = 61
 local song
 local course
+local ctags = {}
 
 local steps = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local trail = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local profile = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local topScore = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local hsTable = {
-	PlayerNumber_P1,
-	PlayerNumber_P2
+	PlayerNumber_P1
 }
 
 local function generalFrame(pn)
 	local t = Def.ActorFrame{
 		SetCommand = function(self)
 			self:xy(frameX,frameY)
-			if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-				self:x(SCREEN_WIDTH-frameX)
-			end
 			self:visible(GAMESTATE:IsPlayerEnabled(pn))
-		end;
+		end,
 
 		UpdateInfoCommand = function(self)
 			song = GAMESTATE:GetCurrentSong()
@@ -59,17 +52,26 @@ local function generalFrame(pn)
 				profile[pn] = GetPlayerOrMachineProfile(pn)
 				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
 				topScore[pn] = getBestScore(pn, 0, getCurRate())
+				if song and steps[pn] then
+					ptags = tags:get_data().playerTags
+					chartkey = steps[pn]:GetChartKey()
+					ctags = {}
+					for k,v in pairs(ptags) do
+						if ptags[k][chartkey] then
+							ctags[#ctags + 1] = k
+						end
+					end
+				end
 			end
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
-		end;
+		end,
 
-		BeginCommand = function(self) self:playcommand('Set') end;
-		PlayerJoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
-		PlayerUnjoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
-		CurrentSongChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
-		CurrentStepsP1ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
-		CurrentStepsP2ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
-		CurrentRateChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end;
+		BeginCommand = function(self) self:playcommand('Set') end,
+		PlayerJoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
+		PlayerUnjoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
+		CurrentSongChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
+		CurrentStepsP1ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
+		CurrentRateChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end
 	}
 
 	--Upper Bar
@@ -79,7 +81,7 @@ local function generalFrame(pn)
 			self:valign(0)
 			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
-		end;
+		end
 	}
 
 	-- Avatar background frame
@@ -89,13 +91,13 @@ local function generalFrame(pn)
 			self:zoomto(56,56)
 			self:diffuse(color("#000000"))
 			self:diffusealpha(0.8)
-		end;
+		end,
 		SetCommand = function(self)
 			self:stoptweening()
 			self:smooth(0.5)
 			self:diffuse(getBorderColor())
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = Def.Quad{
@@ -103,13 +105,13 @@ local function generalFrame(pn)
 			self:xy(25+10-(frameWidth/2),5)
 			self:zoomto(56,56)
 			self:diffusealpha(0.8)
-		end;
+		end,
 		BeginCommand = function(self)
 			self:diffuseramp()
 			self:effectcolor2(color("1,1,1,0.6"))
 			self:effectcolor1(color("1,1,1,0"))
 			self:effecttiming(2,1,0,0)
-		end;
+		end
 	}
 
 	t[#t+1] = quadButton(3) .. {
@@ -117,25 +119,25 @@ local function generalFrame(pn)
 			self:xy(25+10-(frameWidth/2),5)
 			self:zoomto(50,50)
 			self:visible(false)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			if params.input == "DeviceButton_left mouse button" then
 				SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 			end
-		end;
+		end
 	}
 
 	-- Avatar
 	t[#t+1] = Def.Sprite {
-		InitCommand = function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end;
-		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
-		PlayerUnjoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
-		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
+		InitCommand = function (self) self:xy(25+10-(frameWidth/2),5):playcommand("ModifyAvatar") end,
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
+		PlayerUnjoinedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
+		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
+			self:LoadBackground(assetFolders.avatar .. findAvatar(PROFILEMAN:GetProfile(PLAYER_1):GetGUID()))
 			self:zoomto(50,50)
-		end;
+		end
 	}
 
 	-- Player name
@@ -145,7 +147,7 @@ local function generalFrame(pn)
 			self:zoom(0.6)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local text = ""
 			if profile[pn] ~= nil then
@@ -155,11 +157,11 @@ local function generalFrame(pn)
 				end
 			end
 			self:settext(text)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
-		LoginMessageCommand = function(self) self:queuecommand('Set') end;
-		LogOutMessageCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end,
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end,
+		LoginMessageCommand = function(self) self:queuecommand('Set') end,
+		LogOutMessageCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -168,32 +170,35 @@ local function generalFrame(pn)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local rating = 0
 			local rank = 0
+			local localrating = 0
 
 			if DLMAN:IsLoggedIn() then
 				rank = DLMAN:GetSkillsetRank("Overall")
 				rating = DLMAN:GetSkillsetRating("Overall")
+				localrating = profile[pn]:GetPlayerRating()
 
-				self:settextf("Skill Rating: %0.2f (#%d)", rating, rank)
-
-			else		
+				self:settextf("Skill Rating: %0.2f  (%0.2f #%d Online)", localrating, rating, rank)
+				self:AddAttribute(#"Skill Rating:", {Length = 7, Zoom =0.3 ,Diffuse = getMSDColor(localrating)})
+				self:AddAttribute(#"Skill Rating: 00.00  ", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})
+			else
 				if profile[pn] ~= nil then
-					rating = profile[pn]:GetPlayerRating()
-					self:settextf("Skill Rating: %0.2f",rating)
+					localrating = profile[pn]:GetPlayerRating()
+					self:settextf("Skill Rating: %0.2f",localrating)
+					self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(localrating)})
 				end
 
 			end
 
-			self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
-		LoginMessageCommand = function(self) self:queuecommand('Set') end;
-		LogOutMessageCommand = function(self) self:queuecommand('Set') end;
-		OnlineUpdateMessageCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end,
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end,
+		LoginMessageCommand = function(self) self:queuecommand('Set') end,
+		LogOutMessageCommand = function(self) self:queuecommand('Set') end,
+		OnlineUpdateMessageCommand = function(self) self:queuecommand('Set') end
 	}
 
 	-- Level and exp
@@ -203,7 +208,7 @@ local function generalFrame(pn)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			if profile[pn] ~= nil then
 				local level = getLevel(getProfileExp(pn))
@@ -211,9 +216,9 @@ local function generalFrame(pn)
 				local nextExp = getNextLvExp(level)
 				self:settextf("Lv.%d (%d/%d)",level, currentExp, nextExp)
 			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end,
+		PlayerJoinedMessageCommand = function(self) self:queuecommand('Set') end
 	}
 
 	--Score Date
@@ -223,16 +228,16 @@ local function generalFrame(pn)
 			self:zoom(0.35)
 		    self:halign(1):valign(0)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText)):diffusealpha(0.5)
-		end;
+		end,
 		SetCommand = function(self)
 			if getScoreDate(topScore[pn]) == "" then
 				self:settext("Date Achieved: 0000-00-00 00:00:00")
 			else
 				self:settext("Date Achieved: "..getScoreDate(topScore[pn]))
 			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-	};
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
 
 	-- Steps info
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -241,67 +246,49 @@ local function generalFrame(pn)
 			self:zoom(0.3)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local diff,stype
 			local notes,holds,rolls,mines,lifts = 0
 			local difftext = ""
 
-			if GAMESTATE:IsCourseMode() then
-				if course:AllSongsAreFixed() then
-					if trail[pn] ~= nil then
-						notes = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-						holds = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
-						rolls = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-						mines = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
-						lifts = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
-						diff = trail[pn]:GetDifficulty()
-					end
+			if steps[pn] ~= nil then
+				notes = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+				holds = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
+				rolls = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
+				mines = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
+				lifts = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
+				diff = steps[pn]:GetDifficulty()
 
-					stype = ToEnumShortString(trail[pn]:GetStepsType()):gsub("%_"," ")
-					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts);
-				else
-					self:settextf("Disabled for courses containing random songs.")
-				end
+			
+
+				stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
+				self:settextf("Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",notes,holds,rolls,mines,lifts)
 			else
-				if steps[pn] ~= nil then
-					notes = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-					holds = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
-					rolls = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-					mines = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
-					lifts = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
-					diff = steps[pn]:GetDifficulty()
-
-				
-
-					stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-					self:settextf("Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",notes,holds,rolls,mines,lifts);
-				else
-					self:settext("Disabled");
-				end
+				self:settext("")
 			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name="StepsAndMeter";
+		Name="StepsAndMeter",
 		InitCommand = function(self)
 			self:xy(frameWidth/2-5,38)
 			self:zoom(0.5)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			if steps[pn] ~= nil then
 
 				local diff = steps[pn]:GetDifficulty()
 				local stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-				local meter = math.floor(steps[pn]:GetMSD(getCurRateValue(),1))
+				local meter = steps[pn]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
 					meter = steps[pn]:GetMeter()
 				end
-				meter = math.max(1,meter)
+				meter = math.max(0,meter)
 
 				local difftext
 				if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
@@ -311,23 +298,25 @@ local function generalFrame(pn)
 					difftext = getDifficulty(diff)
 				end
 				if IsUsingWideScreen() then
-					self:settext(stype.." "..difftext.." "..meter)
+					self:settextf("%s %s %5.2f", stype, difftext, meter)
 				else
-					self:settext(difftext.." "..meter)
+					self:settextf("%s %5.2f", difftext, meter)
 				end
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
+			else
+				self:settext("")
 			end
-		end;
-	};
+		end
+	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name="MSDAvailability";
+		Name="MSDAvailability",
 		InitCommand = function(self)
 			self:xy(frameWidth/2-5,27)
 			self:zoom(0.3)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			if steps[pn] ~= nil then
 
@@ -339,9 +328,11 @@ local function generalFrame(pn)
 					self:settext("MSD")
 					self:diffuse(color(colorConfig:get_data().main.enabled))
 				end
+			else
+				self:settext("")
 			end
-		end;
-	};
+		end
+	}
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
@@ -359,15 +350,15 @@ local function generalFrame(pn)
 			self:xy(frameWidth-10-frameWidth/2-2,50)
 			self:zoom(0.3)
 			self:settext(maxMeter)
-		end;
+		end,
 		SetCommand = function(self)
 			if steps[pn] ~= nil then
 				local diff = getDifficulty(steps[pn]:GetDifficulty())
 				local stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
 			end
-		end;
-	};
+		end
+	}
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
@@ -375,7 +366,7 @@ local function generalFrame(pn)
 			self:halign(0)
 			self:zoomy(10)
 			self:diffuse(getMainColor("highlight"))
-		end;
+		end,
 		SetCommand = function(self)
 			self:stoptweening()
 			self:decelerate(0.5)
@@ -391,15 +382,34 @@ local function generalFrame(pn)
 			else
 				self:zoomx(0)
 			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(frameWidth/2-5,18)
+			self:settext("Negative BPMs")
+			self:zoom(0.4)
+			self:halign(1)
+			self:visible(false)
+		end,
+		SetCommand = function(self)
+			if song and steps and steps[pn] then
+				if steps[pn]:GetTimingData():HasWarps() then
+					self:visible(true)
+					return
+				end
+			end
+			self:visible(false)
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand = function(self)
 			self:y(50):zoom(0.3)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self) 
 			self:stoptweening()
 			self:decelerate(0.5)
@@ -411,13 +421,13 @@ local function generalFrame(pn)
 					meter = steps[pn]:GetMeter()
 				end
 				meter = math.max(1,meter)
-				self:settext(math.floor(meter))
-				self:x((math.min(1,meter/maxMeter))*(frameWidth-10)-frameWidth/2-3)
+				self:settextf("%0.2f", meter)
+				self:x((math.min(1,meter/maxMeter))*(frameWidth-15)-frameWidth/2-3)
 			else
 				self:settext(0)
 			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	--Grades
@@ -426,7 +436,7 @@ local function generalFrame(pn)
 			self:xy(60-frameWidth/2,frameHeight-35)
 			self:zoom(0.6)
 		    self:maxwidth(110/0.6)
-		end;
+		end,
 		SetCommand = function(self)
 			local grade = 'Grade_None'
 			if topScore[pn] ~= nil then
@@ -434,8 +444,8 @@ local function generalFrame(pn)
 			end
 			self:settext(THEME:GetString("Grade",ToEnumShortString(grade)))
 			self:diffuse(getGradeColor(grade))
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	--ClearType
@@ -444,7 +454,7 @@ local function generalFrame(pn)
 			self:xy(60-frameWidth/2,frameHeight-15)
 			self:zoom(0.4)
 			self:maxwidth(110/0.4)
-		end;
+		end,
 		SetCommand = function(self)
 			self:stoptweening()
 
@@ -455,9 +465,11 @@ local function generalFrame(pn)
 				clearType = getHighestClearType(pn,steps[pn],scoreList,0)
 				self:settext(getClearTypeText(clearType))
 				self:diffuse(getClearTypeColor(clearType))
+			else
+				self:settext("")
 			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	-- Percentage Score
@@ -466,30 +478,30 @@ local function generalFrame(pn)
 			self:xy(190-frameWidth/2,frameHeight-36)
 			self:zoom(0.45):halign(1):maxwidth(75/0.45)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local scorevalue = 0
 			if topScore[pn] ~= nil then
 				scorevalue = getScore(topScore[pn], steps[pn], true)
 			end
 			self:settextf("%.2f%%",math.floor((scorevalue)*10000)/100)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 
 	--Player DP/Exscore / Max DP/Exscore
 	t[#t+1] = LoadFont("Common Normal")..{
-		Name = "score"; 
+		Name = "score", 
 		InitCommand= function(self)
 			self:xy(177-frameWidth/2,frameHeight-18)
 			self:zoom(0.5):halign(1):maxwidth(26/0.5)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self) 
 			self:settext(getMaxScore(pn,0))
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -497,7 +509,7 @@ local function generalFrame(pn)
 			self:xy(177-frameWidth/2,frameHeight-18)
 			self:zoom(0.5):halign(1):maxwidth(50/0.5)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self) 
 			self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
 
@@ -506,9 +518,9 @@ local function generalFrame(pn)
 				scoreValue = getScore(topScore[pn], steps[pn], false)
 			end
 			self:settextf("%.0f/",scoreValue)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-	};
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
 
 	--ScoreType superscript(?)
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -517,10 +529,10 @@ local function generalFrame(pn)
 			self:zoom(0.3)
 		    self:halign(0)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		BeginCommand = function(self)
 			self:settext(getScoreTypeText(1))
-		end;
+		end
 	}
 
 	--MaxCombo
@@ -530,15 +542,15 @@ local function generalFrame(pn)
 			self:zoom(0.4)
 		    self:halign(0)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local score = getBestMaxCombo(pn,0, getCurRate())
 			local maxCombo = 0
 			maxCombo = getScoreMaxCombo(score)
 			self:settextf("Max Combo: %d",maxCombo)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-	};
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
 
 
 	--MissCount
@@ -548,7 +560,7 @@ local function generalFrame(pn)
 			self:zoom(0.4)
 		    self:halign(0)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			local score = getBestMissCount(pn, 0, getCurRate())
 			if score ~= nil then
@@ -556,9 +568,9 @@ local function generalFrame(pn)
 			else
 				self:settext("Miss Count: -")
 			end
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-	};
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
 
 
 	-- EO rank placeholder
@@ -568,19 +580,70 @@ local function generalFrame(pn)
 			self:zoom(0.4)
 		    self:halign(0)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
+		end,
 		SetCommand = function(self)
 			self:settextf("Ranking: %d/%d",0,0)
-		end;
-		BeginCommand = function(self) self:queuecommand('Set') end;
-	};
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(260 - frameWidth/5, frameHeight-40)
+			self:zoom(0.4)
+			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and ctags[1] then
+				self:settext(ctags[1])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(260 - frameWidth/5, frameHeight-28)
+			self:zoom(0.4)
+			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and ctags[2] then
+				self:settext(ctags[2])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(260 - frameWidth/5, frameHeight-16)
+			self:zoom(0.4)
+			self:halign(1)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and ctags[3] then
+				self:settext(ctags[3])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
 
 	return t
 end
 
 t[#t+1] = generalFrame(PLAYER_1)
-t[#t+1] = generalFrame(PLAYER_2)
-
-
 
 return t

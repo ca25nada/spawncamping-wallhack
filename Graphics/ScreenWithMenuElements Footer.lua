@@ -2,7 +2,11 @@ local screenWithNoTips = {
 	ScreenSelectMusic = true,
 	ScreenMusicInfo = true,
 	ScreenPlayerProfile = true,
-	ScreenGroupInfo = true,
+	ScreenNetEvaluation = true,
+	ScreenNetSelectMusic = true,
+	ScreenNetRoom = true,
+	ScreenNetPlayerOptions = true,
+	ScreenNetMusicInfo = true,
 }
 
 local t = Def.ActorFrame{}
@@ -14,34 +18,34 @@ t[#t+1] = quadButton(2) .. {
 		self:valign(1)
 		self:zoomto(SCREEN_WIDTH,height)
 		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
-	end;
+	end,
 	OnCommand = function(self)
 		self:zoomy(0)
 		self:easeOut(0.5)
 		self:zoomy(height)
-	end;
+	end,
 	OffCommand = function(self)
 		self:easeOut(0.5)
 		self:zoomy(0)
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Bold") .. {
-	Name = "currentTime";
+	Name = "currentTime",
 	InitCommand=function(self)
 		self:xy(SCREEN_WIDTH-10,SCREEN_HEIGHT-height/2):zoom(0.45):halign(1)
-	end;
+	end,
 	OnCommand = function(self)
 		self:diffuse(color(colorConfig:get_data().main.headerText))
 		self:y(SCREEN_HEIGHT+height/2)
 		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT-height/2)
-	end;
+	end,
 	OffCommand = function(self)
 		self:easeOut(0.5)
 		self:y(SCREEN_HEIGHT+height/2)
-	end;
-};
+	end
+}
 
 local function Update(self)
 	local year = Year()
@@ -51,7 +55,7 @@ local function Update(self)
 	local minute = Minute()
 	local second = Second()
 	self:GetChild("currentTime"):settextf("%04d-%02d-%02d %02d:%02d:%02d",year,month,day,hour,minute,second)
-end;
+end
 
 t.InitCommand=function(self)
 	self:SetUpdateFunction(Update)
@@ -61,7 +65,7 @@ if themeConfig:get_data().global.TipType >= 2 then
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand=function(self)
 			self:xy(10,SCREEN_HEIGHT-10):zoom(0.4):maxwidth((SCREEN_WIDTH-150)/0.4):halign(0)
-		end;
+		end,
 		OnCommand = function(self)
 			self:diffuse(color(colorConfig:get_data().main.headerText))
 			if not screenWithNoTips[SCREENMAN:GetTopScreen():GetName()] then
@@ -70,12 +74,12 @@ if themeConfig:get_data().global.TipType >= 2 then
 			self:y(SCREEN_HEIGHT+height/2)
 			self:easeOut(0.5)
 			self:y(SCREEN_HEIGHT-height/2)
-		end;
+		end,
 		OffCommand = function(self)
 			self:easeOut(0.5)
 			self:y(SCREEN_HEIGHT+height/2)
 		end
 	}
-end;
+end
 
 return t

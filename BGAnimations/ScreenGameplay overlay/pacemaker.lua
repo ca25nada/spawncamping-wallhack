@@ -12,7 +12,7 @@ local frameX = SCREEN_WIDTH-frameWidth
 local frameY = 0
 
 local barY = 430-- Starting point/bottom of graph
-local barCount = GAMESTATE:IsCourseMode() and 2 or 3 -- Number of graphs
+local barCount = 3 -- Number of graphs
 local barWidth = 0.65
 local barTrim = 0 -- Final width of each graph = ((frameWidth/barCount)*barWidth) - barTrim
 local barHeight = 350 -- Max Height of graphs
@@ -25,14 +25,9 @@ local enabled = GAMESTATE:GetNumPlayersEnabled() == 1
 
 local player = GAMESTATE:GetEnabledPlayers()[1]
 if player == PLAYER_1 then
-	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off,1 = DP,2 = PS,3 = MIGS
-	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
+	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType -- 0 = off,1 = DP,2 = PS,3 = MIGS
+	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100 -- target score from 0% to 100%.
 	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
-elseif player == PLAYER_2 then
-	ghostType = playerConfig:get_data(pn_to_profile_slot(player)).GhostScoreType; -- 0 = off,1 = DP,2 = PS,3 = MIGS
-	target = playerConfig:get_data(pn_to_profile_slot(player)).GhostTarget/100; -- target score from 0% to 100%.
-	enabled =  enabled and playerConfig:get_data(pn_to_profile_slot(player)).PaceMaker
-	frameX = 0
 end
 
 local profile = GetPlayerOrMachineProfile(player)
@@ -82,7 +77,7 @@ local function ghostScoreGraph(index,scoreType,color)
 			self:zoomto(frameWidth/barCount*barWidth,1)
 			self:valign(1)
 			self:diffuse(color):diffusealpha(0.7)
-		end;
+		end,
 		SetCommand = function(self)
 			local curScore = getCurScoreGD(player,scoreType)
 			local maxScore = getMaxScoreST(player,scoreType)
@@ -91,7 +86,7 @@ local function ghostScoreGraph(index,scoreType,color)
 			else
 				self:zoomy(math.max(1,barHeight*(curScore/maxScore)))
 			end
-		end;
+		end,
 		GhostScoreMessageCommand = function(self) self:queuecommand("Set") end
 	}
 
@@ -110,7 +105,7 @@ local function ghostScoreGraph(index,scoreType,color)
 			self:zoom(0.35):maxwidth(((frameWidth*0.8)-2)/0.35)
 			self:halign(0)
 			self:diffuse(color)
-		end;
+		end,
 		BeginCommand = function(self)
 			if getCurRate() == "1.0x" or not themeConfig:get_data().global.RateSort then
 				self:settextf("%s Best",getScoreTypeText(ghostType))
@@ -126,7 +121,7 @@ local function ghostScoreGraph(index,scoreType,color)
 			self:zoom(0.35):maxwidth(25/0.35)
 			self:halign(1)
 			self:settext(0)
-		end;
+		end,
 		SetCommand = function(self)
 			local score
 			if isGhostDataValid(player,hsTable[1]) then
@@ -135,7 +130,7 @@ local function ghostScoreGraph(index,scoreType,color)
 				score = getBestScore(player,0,scoreType)
 			end
 			self:settext(score)
-		end;
+		end,
 		GhostScoreMessageCommand = function(self) self:queuecommand("Set") end
 	}
 
@@ -156,7 +151,7 @@ local function currentScoreGraph(index,scoreType,color)
 			self:zoomto(frameWidth/barCount*barWidth,1)
 			self:valign(1)
 			self:diffuse(color):diffusealpha(0.7)
-		end;
+		end,
 		SetCommand = function(self)
 			local curScore = getCurScoreST(player,scoreType)
 			local maxScore = getMaxScoreST(player,scoreType)
@@ -164,8 +159,8 @@ local function currentScoreGraph(index,scoreType,color)
 				self:zoomy(1)
 			else
 				self:zoomy(math.max(1,barHeight*(curScore/maxScore)))
-			end;
-		end;
+			end
+		end,
 		JudgmentMessageCommand = function(self) self:queuecommand("Set") end
 	}
 
@@ -184,9 +179,9 @@ local function currentScoreGraph(index,scoreType,color)
 			self:zoom(0.35):maxwidth(((frameWidth*0.8)-2)/0.35)
 			self:halign(0)
 			self:diffuse(color)
-		end;
+		end,
 		BeginCommand = function(self)
-			local text = profile:GetDisplayName();
+			local text = profile:GetDisplayName()
 			if text == "" then
 				self:settext("Machine Profile")
 			else
@@ -201,11 +196,11 @@ local function currentScoreGraph(index,scoreType,color)
 			self:zoom(0.35):maxwidth(25/0.35)
 			self:halign(1)
 			self:settext(0)
-		end;
+		end,
 		SetCommand = function(self)
 			local curScore = getCurScoreST(player,scoreType)
 			self:settext(curScore)
-		end;
+		end,
 		JudgmentMessageCommand = function(self) self:queuecommand("Set") end
 	}
 
@@ -227,7 +222,7 @@ local function avgScoreGraph(index,scoreType,color)
 			self:zoomto(frameWidth/barCount*barWidth,1)
 			self:valign(1)
 			self:diffuse(color):diffusealpha(0.2)
-		end;
+		end,
 		SetCommand = function(self)
 			local curScore = getCurScoreST(player,scoreType)
 			local curMaxScore = getCurMaxScoreST(player,scoreType)
@@ -236,7 +231,7 @@ local function avgScoreGraph(index,scoreType,color)
 			else
 				self:zoomy(math.max(1,barHeight*(curScore/curMaxScore)))
 			end
-		end;
+		end,
 		JudgmentMessageCommand = function(self) self:queuecommand("Set") end
 	}
 
@@ -259,7 +254,7 @@ local function bestScoreGraph(index,scoreType,color)
 			self:zoomto(frameWidth/barCount*barWidth,1)
 			self:valign(1)
 			self:diffuse(color):diffusealpha(0.2)
-		end;
+		end,
 		BeginCommand = function(self)
 			local bestScore = 0
 			if themeConfig:get_data().global.RateSort then
@@ -282,7 +277,7 @@ local function bestScoreGraph(index,scoreType,color)
 			self:xy((1+(2*(index-1)))*(frameWidth/(barCount*2)),frameY+barY-12)
 			self:zoom(0.35):maxwidth(frameWidth/barCount*barWidth/0.35)
 			self:diffusealpha(0)
-		end;
+		end,
 		BeginCommand = function(self)
 			local bestScore = 0
 			if themeConfig:get_data().global.RateSort then
@@ -323,7 +318,7 @@ local function targetScoreGraph(index,scoreType,color)
 			self:zoomto(frameWidth/barCount*barWidth,1)
 			self:valign(1)
 			self:diffuse(color):diffusealpha(0.7)
-		end;
+		end,
 		SetCommand = function(self)
 			local curScore = math.ceil(getCurMaxScoreST(player,scoreType)*target)
 			local maxScore = getMaxScoreST(player,scoreType)
@@ -332,7 +327,7 @@ local function targetScoreGraph(index,scoreType,color)
 			else
 				self:zoomy(math.max(1,barHeight*(curScore/maxScore)))
 			end
-		end;
+		end,
 		JudgmentMessageCommand = function(self) self:queuecommand("Set") end
 	}
 
@@ -352,7 +347,7 @@ local function targetScoreGraph(index,scoreType,color)
 			self:halign(0)
 			self:diffuse(color)
 			self:settextf("%s %0.2f%%",getScoreTypeText(ghostType),target*100)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -361,16 +356,16 @@ local function targetScoreGraph(index,scoreType,color)
 			self:zoom(0.35):maxwidth(25/0.35)
 			self:halign(1)
 			self:settext(0)
-		end;
+		end,
 		SetCommand = function(self)
 			local curScore = math.ceil(getCurMaxScoreST(player,scoreType)*target)
 			self:settext(curScore)
-		end;
+		end,
 		JudgmentMessageCommand = function(self) self:queuecommand("Set") end
 	}
 
 	return t
-end;
+end
 
 
 -- Represents the total target score for the specified scoreType
@@ -386,7 +381,7 @@ local function targetMaxGraph(index,scoreType,color)
 			self:zoomto(frameWidth/barCount*barWidth,1)
 			self:valign(1)
 			self:diffuse(color):diffusealpha(0.2)
-		end;
+		end,
 		BeginCommand = function(self)
 			local maxScore = getMaxScoreST(player,scoreType)
 			self:smooth(1.5)
@@ -403,7 +398,7 @@ local function targetMaxGraph(index,scoreType,color)
 			self:xy((1+(2*(index-1)))*(frameWidth/(barCount*2)),frameY+barY-12)
 			self:zoom(0.35):maxwidth(frameWidth/barCount*barWidth/0.35)
 			self:diffusealpha(0)
-		end;
+		end,
 		BeginCommand = function(self)
 			local maxScore = getMaxScoreST(player,scoreType)
 			self:smooth(1.5)
@@ -439,7 +434,7 @@ local function markers(scoreType,showMessage)
 				self:y(barY-(barHeight*v))
 				self:zoomto(frameWidth,2)
 				self:halign(0)
-			end;
+			end,
 			JudgmentMessageCommand = function(self)
 				local percent = getCurScoreST(player,scoreType)/getMaxScoreST(player,scoreType)
 				if percent >= v then
@@ -456,7 +451,7 @@ local function markers(scoreType,showMessage)
 					self:zoom(0.3)
 					self:halign(0):valign(1)
 					self:settext(getGradeStrings(k))
-				end;
+				end,
 				JudgmentMessageCommand = function(self)
 					local percent = getCurScoreST(player,scoreType)/getMaxScoreST(player,scoreType)
 					if percent >= v then
@@ -474,7 +469,7 @@ local function markers(scoreType,showMessage)
 
 	return t
 
-end;
+end
 
 
 -- Text showing life/judge setting
@@ -489,7 +484,7 @@ local function lifejudge()
 			self:xy(2,15)
 			self:zoom(0.4)
 			self:halign(0):valign(1)
-		end;
+		end,
 		BeginCommand = function(self)
 			self:settext(THEME:GetString("ScreenGameplay","PacemakerTimingDifficulty")..":")
 		end
@@ -500,7 +495,7 @@ local function lifejudge()
 			self:xy(2,28)
 			self:zoom(0.4)
 			self:halign(0):valign(1)
-		end;
+		end,
 		BeginCommand = function(self)
 			self:settext(THEME:GetString("ScreenGameplay","PacemakerLifeDifficulty")..":")
 		end
@@ -512,7 +507,7 @@ local function lifejudge()
 			self:xy(frameWidth-5,15)
 			self:zoom(0.4)
 			self:halign(1):valign(1)
-		end;
+		end,
 		BeginCommand = function(self)
 			self:settext(GetTimingDifficulty())
 		end
@@ -523,7 +518,7 @@ local function lifejudge()
 			self:xy(frameWidth-5,28)
 			self:zoom(0.4)
 			self:halign(1):valign(1)
-		end;
+		end,
 		BeginCommand = function(self)
 			self:settext(GetLifeDifficulty())
 		end
@@ -550,11 +545,8 @@ if enabled then
 	t[#t+1] = avgScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 	t[#t+1] = currentScoreGraph(1,ghostType,getPaceMakerColor("Current"))
 
-	-- Remove Best Graph for Course modes.
-	if not GAMESTATE:IsCourseMode() then
-		t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("Best"))
-		t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("Best"))
-	end
+	t[#t+1] = ghostScoreGraph(2,ghostType,getPaceMakerColor("Best"))
+	t[#t+1] = bestScoreGraph(2,ghostType,getPaceMakerColor("Best"))
 
 	t[#t+1] = targetMaxGraph(math.min(barCount,3),ghostType,getPaceMakerColor("Target"))
 	t[#t+1] = targetScoreGraph(math.min(barCount,3),ghostType,getPaceMakerColor("Target"))
@@ -562,7 +554,7 @@ if enabled then
 	t[#t+1] = markers(ghostType,true)
 	t[#t+1] = lifejudge()
 
-end;
+end
 
 
 return t

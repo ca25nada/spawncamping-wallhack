@@ -4,13 +4,16 @@ local defaultConfig = {
 		frame = "#000000",
 		highlight = "#00AEEF",
 		background = "#FFFFFF",
-		warning = "#EEBB00";
+		warning = "#EEBB00",
 		enabled = "#4CBB17",
 		disabled = "#666666",
 		negative = "#FF9999",
 		positive = "#66ccff",
 		headerText = "#FFFFFF",
 		headerFrameText = "#FFFFFF",
+		transition = "#888888",
+		tabFrame = "#333333",
+		tabButton = "#FFFFFF",
 	},
 
 	clearType = {
@@ -22,7 +25,7 @@ local defaultConfig = {
 		ClearType_SDG	= "#448844",
 		ClearType_FC 	= "#66cc66",
 		ClearType_MF 	= "#cc6666",
-		ClearType_SDCB	= "#666666",
+		ClearType_SDCB	= "#33ccff",
 		ClearType_EXHC 	= "#ff9933",
 		ClearType_HClear 	= "#ff6666",
 		ClearType_Clear 	= "#33aaff",
@@ -115,6 +118,24 @@ local defaultConfig = {
 		PacemakerCurrent = "#0099FF",
 	},
 
+	combo = {
+		NumberFC = "#A4FF00",
+		NumberPFC = "#FFF568",
+		NumberMFC = "#00AEEF",
+		NumberRegular = "#DDDDDD",
+		NumberMiss = "#FF0000",
+		LabelRegular = "#DDDDDD",
+		LabelMiss = "#FF2020",
+		LabelRegularGradient = "#888888",
+		LabelMissGradient = "#880000"
+	},
+
+	leaderboard = {
+		background = "#111111CC",
+		border = "#000111",
+		text = "#9654FD"
+	},
+
 	evaluation = {
 		BackgroundText = "#000000",
 		ScoreCardText = "#FFFFFF",
@@ -129,11 +150,21 @@ local defaultConfig = {
 		MusicWheelArtistText = "#FFFFFF",
 		MusicWheelSectionCountText = "#FFFFFF",
 		MusicWheelDivider = "#FFFFFF",
+		UnfinishedGoalGradient = "#FF66FF",
+		CompletedGoalGradient = "#66FF66",
 		MusicWheelExtraColor = "#FFCCCC",
 		ProfileCardText = "#FFFFFF",
 		TabContentText = "#FFFFFF",
 		BannerText = "#FFFFFF",
 		StepsDisplayListText = "#FFFFFF"
+	},
+
+	miscellaneous = {
+		PreviewProgress = "#00FF66",
+		PreviewSeek = "#FF3333",
+		ChordGraphGradientDark = "#555555",
+		TagPositive = "#5555BB",
+		TagNegative = "#BB5555",
 	}
 
 }
@@ -156,16 +187,28 @@ function getMainColor(type)
 	return color(colorConfig:get_data().main[type])
 end
 
+function getComboColor(type)
+	return color(colorConfig:get_data().combo[type])
+end
+
+function getLeaderboardColor(type)
+	return color(colorConfig:get_data().leaderboard[type])
+end
+
 function getGradeColor (grade)
-	return color(colorConfig:get_data().grade[grade]) or color(colorConfig:get_data().grade['Grade_None']);
+	return color(colorConfig:get_data().grade[grade]) or color(colorConfig:get_data().grade['Grade_None'])
 end
 
 function getDifficultyColor(diff)
-	return color(colorConfig:get_data().difficulty[diff]) or color("#ffffff");
+	return color(colorConfig:get_data().difficulty[diff]) or color("#ffffff")
 end
 
 function getPaceMakerColor(type)
-	return color(colorConfig:get_data().gameplay["Pacemaker"..type]) or color("#ffffff");
+	return color(colorConfig:get_data().gameplay["Pacemaker"..type]) or color("#ffffff")
+end
+
+function getMiscColor(type)
+	return color(colorConfig:get_data().miscellaneous[type])
 end
 
 function getSongLengthColor(s)
@@ -220,11 +263,108 @@ function offsetToJudgeColor(offset)
 	end
 end
 
+-- expecting ms input (153, 13.321, etc) so convert to seconds to compare to judgment windows -mina
+function offsetToJudgeColor(offset, scale)
+	local offset = math.abs(offset / 1000)
+	if not scale then
+		scale = PREFSMAN:GetPreference("TimingWindowScale")
+	end
+	if offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW1") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W1"])
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW2") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W2"])
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW3") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W3"])
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW4") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W4"])
+	elseif offset <= math.max(scale * PREFSMAN:GetPreference("TimingWindowSecondsW5"), 0.180) then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W5"])
+	else
+		return color(colorConfig:get_data().judgment["TapNoteScore_Miss"])
+	end
+end
+
+-- 30% hardcoded, should var but lazy atm -mina
+function offsetToJudgeColorAlpha(offset, scale)
+	local offset = math.abs(offset / 1000)
+	if not scale then
+		scale = PREFSMAN:GetPreference("TimingWindowScale")
+	end
+	if offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW1") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W1"] .. "48")
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW2") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W2"] .. "48")
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW3") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W3"] .. "48")
+	elseif offset <= scale * PREFSMAN:GetPreference("TimingWindowSecondsW4") then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W4"] .. "48")
+	elseif offset <= math.max(scale * PREFSMAN:GetPreference("TimingWindowSecondsW5"), 0.180) then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W5"] .. "48")
+	else
+		return color(colorConfig:get_data().judgment["TapNoteScore_Miss"] .. "48")
+	end
+end
+
+-- 30% hardcoded, should var but lazy atm -mina
+function customOffsetToJudgeColor(offset, windows)
+	local offset = math.abs(offset)
+	if offset <= windows.marv then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W1"] .. "48")
+	elseif offset <= windows.perf then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W2"] .. "48")
+	elseif offset <= windows.great then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W3"] .. "48")
+	elseif offset <= windows.good then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W4"] .. "48")
+	elseif offset <= math.max(windows.boo, 0.180) then
+		return color(colorConfig:get_data().judgment["TapNoteScore_W5"] .. "48")
+	else
+		return color(colorConfig:get_data().judgment["TapNoteScore_Miss"] .. "48")
+	end
+end
+
 function getBorderColor()
 	return HSV(Hour()*360/12, 0.7, 1)
 end
 
-function TapNoteScoreToColor(tns) return color(colorConfig:get_data().judgment[tns]) or color("#ffffff"); end;
+function TapNoteScoreToColor(tns) return color(colorConfig:get_data().judgment[tns]) or color("#ffffff") end
+
+function byJudgment(judge)
+	return color(colorConfig:get_data().judgment[judge])
+end
+
+function byDifficulty(diff)
+	return color(colorConfig:get_data().difficulty[diff])
+end
+
+-- i guess if i'm going to use this naming convention it might as well be complete and standardized which means redundancy -mina
+function byGrade(grade)
+	return color(colorConfig:get_data().grade[grade]) or color(colorConfig:get_data().grade["Grade_None"])
+end
+
+-- Colorized stuff
+function byMSD(x)
+	if x then
+		return HSV(math.max(95 - (x / 40) * 150, -50), 0.9, 0.9)
+	end
+	return HSV(0, 0.9, 0.9)
+end
+
+function byMusicLength(x)
+	if x then
+		x = math.min(x, 600)
+		return HSV(math.max(95 - (x / 900) * 150, -50), 0.9, 0.9)
+	end
+	return HSV(0, 0.9, 0.9)
+end
+
+function byFileSize(x)
+	if x then
+		x = math.min(x, 600)
+		return HSV(math.max(95 - (x / 1025) * 150, -50), 0.9, 0.9)
+	end
+	return HSV(0, 0.9, 0.9)
+end
 
 -- a tad-bit desaturated with a wider color range vs til death
 function getMSDColor(MSD)

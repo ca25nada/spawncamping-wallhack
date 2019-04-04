@@ -42,10 +42,10 @@ end
 function changeMusicRate(amount)
 	local curRate = getCurRateValue()
 	local newRate = curRate + amount
-	if newRate <= 3 and newRate >= 0.75 then
+	if newRate <= 3 and newRate >= 0.7 then
 		GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate(curRate+amount)
 		GAMESTATE:GetSongOptionsObject('ModsLevel_Song'):MusicRate(curRate+amount)
 		GAMESTATE:GetSongOptionsObject('ModsLevel_Current'):MusicRate(curRate+amount)
-		MESSAGEMAN:Broadcast("CurrentRateChanged", {rate = newRate})
+		MESSAGEMAN:Broadcast("CurrentRateChanged", {rate = newRate, oldRate = curRate})
 	end
 end

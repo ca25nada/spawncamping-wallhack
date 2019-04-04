@@ -3,29 +3,29 @@
 
 function get43size(size4_3)
 	return 640*(size4_3/854)
-end;
+end
 
 function capWideScale(AR4_3,AR16_9)
 	if AR4_3 < AR16_9 then
 		return clamp(WideScale(AR4_3, AR16_9),AR4_3,AR16_9)
 	else
 		return clamp(WideScale(AR4_3, AR16_9),AR16_9,AR4_3)
-	end;
-end;
+	end
+end
 
 --returns if the table contains the key.
 function tableContains(table,key)
 	return (table[key] ~= nil)
-end;
+end
 
 --for non-array tables.
 function getTableSize(table)
 	local i = 0
 	for k,v in pairs(table) do
 		i = i+1
-	end;
+	end
 	return i
-end;
+end
 
 -- returns the hexadecimal representaion of the MD5 hash.
 function MD5FileHex(sPath)
@@ -159,7 +159,7 @@ end
 
 -- from profile.lua in til death
 function easyInputStringWithParams(question, maxLength, isPassword, f, params)
-	SCREENMAN:AddNewScreenToTop("ScreenTextEntry");
+	SCREENMAN:AddNewScreenToTop("ScreenTextEntry")
 	local settings = {
 		Question = question,
 		MaxInputLength = maxLength,
@@ -167,8 +167,8 @@ function easyInputStringWithParams(question, maxLength, isPassword, f, params)
 		OnOK = function(answer)
 			f(answer, params)
 		end
-	};
-	SCREENMAN:GetTopScreen():Load(settings);
+	}
+	SCREENMAN:GetTopScreen():Load(settings)
 end
 
 function easyInputStringWithFunction(question, maxLength, isPassword, f)

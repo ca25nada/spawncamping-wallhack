@@ -8,7 +8,7 @@ local maxDistY = SCREEN_HEIGHT*magnitude
 -- 3 = the pool will be grade specific bgs only. unless it doesn't exist in which case it will revert to the clear bg pool. 
 -- Fails will only use the Grade_Failed folder.
 local bgType = themeConfig:get_data().eval.SongBGType -- 1 = disabled, 2 = songbg, 3 = playerbg
-local enabled = themeConfig:get_data().global.SongBGEnabled and not(GAMESTATE:IsCourseMode())
+local enabled = themeConfig:get_data().global.SongBGEnabled
 local moveBG = themeConfig:get_data().global.SongBGMouseEnabled and enabled
 local brightness = 0.4
 
@@ -18,16 +18,16 @@ t[#t+1] = LoadActor("_background")
 
 if enabled and bgType == 1 then -- SONG BG
 	t[#t+1] = LoadSongBackground()..{
-		Name="MouseXY";
+		Name="MouseXY",
 		BeginCommand=function(self)
 			if moveBG then
 				self:scaletocover(0-maxDistX/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8)
-				self:diffusealpha(brightness);
+				self:diffusealpha(brightness)
 			else
 				self:scaletocover(0,0,SCREEN_WIDTH,SCREEN_BOTTOM)
-				self:diffusealpha(brightness);
+				self:diffusealpha(brightness)
 			end
-		end;
+		end
 	}
 end
 
@@ -38,13 +38,11 @@ if enabled and bgType > 1 then -- 2 = Grade+Clear, 3 = Grade Only
 	-- Get the highest grade from the player (or players if 2P)
 	local pss
 	local highestGrade = "Grade_Failed" 
-	for k,v in pairs({PLAYER_1,PLAYER_2}) do
-		if GAMESTATE:IsPlayerEnabled(v) then
-			pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(v)
-			local playerGrade = pss:GetGrade()
-			if Enum.Reverse(Grade)[playerGrade] < Enum.Reverse(Grade)[highestGrade] then
-				highestGrade = playerGrade
-			end
+	if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+		pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
+		local playerGrade = pss:GetGrade()
+		if Enum.Reverse(Grade)[playerGrade] < Enum.Reverse(Grade)[highestGrade] then
+			highestGrade = playerGrade
 		end
 	end
 
@@ -80,22 +78,22 @@ if enabled and bgType > 1 then -- 2 = Grade+Clear, 3 = Grade Only
 	local bgList = filterFileList(bgList,imgTypes)
 
 	t[#t+1] = Def.Sprite {
-		Name="MouseXY";
+		Name="MouseXY",
 		BeginCommand=function(self)
 			if #bgList > 0 then
 				local bg = bgList[math.random(#bgList)]
 				--SCREENMAN:SystemMessage(string.format("Loading %s",bg))
-				self:LoadBackground(bg);
+				self:LoadBackground(bg)
 			end
 			if moveBG then
 				self:scaletocover(0-maxDistX/8,0-maxDistY/8,SCREEN_WIDTH+maxDistX/8,SCREEN_BOTTOM+maxDistY/8)
-				self:diffusealpha(brightness);
+				self:diffusealpha(brightness)
 			else
 				self:scaletocover(0,0,SCREEN_WIDTH,SCREEN_BOTTOM)
-				self:diffusealpha(brightness);
+				self:diffusealpha(brightness)
 			end
-		end;
-	};
+		end
+	}
 end
 
 t[#t+1] = LoadActor("_particles")
@@ -132,32 +130,32 @@ local function getPosY()
 		offset = math.abs(offset)
 		if offset > 1 then
 			offset = math.min(2*math.sqrt(offset),maxDistY)
-		end;
+		end
 	else
 		neg = false
 		offset = math.abs(offset)
 		if offset > 1 then
 			offset = math.min(2*math.sqrt(offset),maxDistY)
-		end;
-	end;
+		end
+	end
 	if neg then
 		return SCREEN_CENTER_Y+offset
 	else 
 		return SCREEN_CENTER_Y-offset
-	end;
+	end
 end
 
 local function Update(self)
 	t.InitCommand=function(self)
 		self:SetUpdateFunction(Update)
-	end;
+	end
     self:GetChild("MouseXY"):xy(getPosX(),getPosY())
-end; 
+end
 
 if moveBG then
 	t.InitCommand=function(self)
 		self:SetUpdateFunction(Update)
-	end;
-end;
+	end
+end
 
 return t

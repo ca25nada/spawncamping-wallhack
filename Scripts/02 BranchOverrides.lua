@@ -1,3 +1,18 @@
+function SMOnlineScreen()
+	if not IsNetSMOnline() then
+		return "ScreenSelectMusic"
+	end
+	for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+		if not IsSMOnlineLoggedIn(pn) then
+			return "ScreenSMOnlineLogin"
+		end
+	end
+	if not IsSMOnlineLoggedIn(pn) then
+		return "ScreenSMOnlineLogin"
+	end
+	return "ScreenNetRoom"
+end
+
 Branch.PlayerOptions= function()
 	local pm = GAMESTATE:GetPlayMode()
 	local restricted = { PlayMode_Oni= true, PlayMode_Rave= true,
@@ -15,12 +30,11 @@ Branch.PlayerOptions= function()
 end
 
 Branch.AfterSelectProfile = function()
-	if (THEME:GetMetric("Common","AutoSetStyle") == true) then
-		-- use SelectStyle in online...
-		return IsNetConnected() and "ScreenSelectStyle" or "ScreenSelectMusic"
-	else
-		return "ScreenSelectMusic"
-	end
+	return "ScreenSelectMusic"
+end
+
+Branch.AfterNetSelectProfile = function()
+	return SMOnlineScreen()
 end
 
 Branch.AfterProfileLoad = function()
@@ -29,4 +43,12 @@ end
 
 Branch.AfterTitleMenu = function()
 	return Branch.StartGame()
+end
+
+Branch.MultiScreen = function()
+	if IsNetSMOnline() then
+		return "ScreenNetSelectProfile"
+	else
+		return "ScreenNetworkOptions"
+	end
 end

@@ -72,7 +72,7 @@ end
 function Actor.getTrueX(self)
 	if self == nil then
 		return 0
-	end;
+	end
 
 	local parent = self:GetParent()
 
@@ -80,13 +80,13 @@ function Actor.getTrueX(self)
 		return self:GetX() or 0
 	else
 		return self:GetX() + parent:getTrueX()
-	end;
-end;
+	end
+end
 
 function Actor.getTrueY(self)
 	if self == nil then
 		return 0
-	end;
+	end
 
 	local parent = self:GetParent()
 
@@ -94,8 +94,8 @@ function Actor.getTrueY(self)
 		return self:GetY() or 0
 	else
 		return self:GetY() + parent:getTrueY()
-	end;
-end;
+	end
+end
 
 --Button Rollovers
 function Actor.isOver(self)
@@ -113,7 +113,7 @@ function Actor.isOver(self)
 	local withinY = (mouseY >= (y-(vAlign*h))) and (mouseY <= ((y+h)-(vAlign*h)))
 
 	return (withinX and withinY)
-end;
+end
 
 
 
@@ -124,25 +124,27 @@ function quadButton(z)
 	local t = Def.Quad{
 		InitCommand= function(self) 
 			self:z(z)
-		end;
+		end,
 
 		OnCommand = function(self)
 			local top = SCREENMAN:GetTopScreen()
-			topName = top:GetName()
-		end;
+			if top ~= nil then
+				topName = top:GetName()
+			end
+		end,
 
 		MouseLeftClickMessageCommand = function(self)
 			if self:isOver() then
 				BUTTON:addPressedActors(self, topName, "DeviceButton_left mouse button")
 			end
-		end;
+		end,
 		MouseRightClickMessageCommand = function(self)
 			if self:isOver() then
 				BUTTON:addPressedActors(self, topName, "DeviceButton_right mouse button")
 			end
-		end;
+		end,
 		TopPressedCommand = function(self)
-		end;
+		end,
 	}
 
 	return t
@@ -158,7 +160,7 @@ function checkbox(z, checked)
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:playcommand("Toggle")
-		end;
+		end,
 		ToggleCommand = function(self)
 			if checked then 
 				checked = false
@@ -169,26 +171,26 @@ function checkbox(z, checked)
 				self:playcommand("Check")
 				self:RunCommandsOnChildren(function(self) self:playcommand("Check") end)
 			end
-		end;
+		end,
 		CheckCommand = function(self)
-		end;
+		end,
 
 		UncheckCommand = function(self)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
 			self:zoomto(zoom*100,zoom*100)
 			self:diffuse(color("#000000")):diffusealpha(0.8)
-		end;
+		end
 	}
 
 	t[#t+1] = quadButton(z) .. {
 		InitCommand = function(self)
 			self:zoomto(zoom*100,zoom*100)
 			self:diffuse(color("#FFFFFF")):diffusealpha(0)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			if params.input == "DeviceButton_left mouse button" then
 				self:GetParent():playcommand("Toggle")
@@ -197,25 +199,25 @@ function checkbox(z, checked)
 				self:smooth(0.3)
 				self:diffusealpha(0)
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = LoadActor(THEME:GetPathG("", "_x"))..{
 		InitCommand = function(self)
 			self:zoom(zoom)
-		end;
+		end,
 		CheckCommand = function(self)
 			self:finishtweening()
 			self:smooth(0.1)
 			self:zoom(zoom)
 			self:diffusealpha(1)
-		end;
+		end,
 		UncheckCommand = function(self)
 			self:finishtweening()
 			self:smooth(0.1)
 			self:zoom(0)
 			self:diffusealpha(0)
-		end;
+		end
 	}
 
 	return t

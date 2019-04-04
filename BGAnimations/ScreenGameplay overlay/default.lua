@@ -1,4 +1,9 @@
-local t = Def.ActorFrame{}
+local inCustomize = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomizeGameplay
+local inPractice = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingPractice()
+local inReplay = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerController() == "PlayerController_Replay"
+
+local t = Def.ActorFrame {}
+
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = GetPlayerOrMachineProfile(pn)
 local steps = GAMESTATE:GetCurrentSteps(pn)
@@ -10,23 +15,25 @@ t[#t+1] = LoadActor("judgecount")
 --t[#t+1] = LoadActor("pacemaker")
 t[#t+1] = LoadActor("npscalc")
 --t[#t+1] = LoadActor("lifepercent")
-
 t[#t+1] = LoadActor("lanecover")
-t[#t+1] = LoadActor("progressbar")
-t[#t+1] = LoadActor("errorbar")
+t[#t+1] = LoadActor("WifeJudgmentSpotting")
+if themeConfig:get_data().global.ProgressBar ~= 0 then
+	t[#t+1] = LoadActor("progressbar")
+end
+t[#t+1] = LoadActor("leaderboard")
 t[#t+1] = LoadActor("avatar")
 --t[#t+1] = LoadActor("BPMDisplay")
 t[#t+1] = LoadActor("title")
 
+if inCustomize then
+	t[#t+1] = LoadActor("messagebox")
+end
 
-
-
-t[#t+1] = LoadFont("Common Normal")..{
-	InitCommand=function(self)
-		self:xy(SCREEN_CENTER_X,SCREEN_BOTTOM-10):zoom(0.35):settext(GAMESTATE:GetSongOptions('ModsLevel_Song')):shadowlength(1)
-	end;
-}
-
+if not inCustomize and not inPractice and not inReplay then
+	HOOKS:ShowCursor(false)
+else
+	t[#t+1] = LoadActor("../_cursor")
+end
 
 local largeImageText = string.format("%s: %5.2f",profile:GetDisplayName(), profile:GetPlayerRating())
 

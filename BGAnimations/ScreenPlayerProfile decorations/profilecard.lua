@@ -1,5 +1,6 @@
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = PROFILEMAN:GetProfile(pn)
+local onlineStatus = GHETTOGAMESTATE:getOnlineStatus()
 
 local t = Def.ActorFrame{
 
@@ -16,21 +17,59 @@ t[#t+1] = Def.Quad{
 t[#t+1] = LoadActor("avatar") .. {
 	InitCommand = function(self)
 		self:xy(50,0)
-	end;
+	end
 }
 
 t[#t+1] = LoadActor("expbar") .. {
 	InitCommand = function(self)
 		self:xy(100,5)
-	end;
+	end
 }
+
+local function toggleOnlineStatus(given)
+	if DLMAN:IsLoggedIn() then
+		if given ~= nil then
+			GHETTOGAMESTATE:setOnlineStatus(given)
+		else
+			GHETTOGAMESTATE:setOnlineStatus()
+		end
+		onlineStatus = GHETTOGAMESTATE:getOnlineStatus()
+	else
+		GHETTOGAMESTATE:setOnlineStatus("Local")
+		onlineStatus = "Local"
+	end
+end
 
 
 t[#t+1] = quadButton(3)..{
 	InitCommand = function (self)
 		self:xy(145,30)
 		self:zoomto(90,20)
-		self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+		self:diffuse(color(colorConfig:get_data().main.disabled))
+		if DLMAN:IsLoggedIn() then
+			self:diffusealpha(0.8)
+		else
+			self:diffusealpha(0.2)
+		end
+	end,
+	TopPressedCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:smooth(0.3)
+			self:diffusealpha(0.8)
+			toggleOnlineStatus()
+			MESSAGEMAN:Broadcast("OnlineTogglePressed")
+		end
+	end,
+	LoginMessageCommand = function(self)
+		self:diffusealpha(0.8)
+	end,
+	LoginFailedMessageCommand = function(self)
+		--self:diffusealpha(0.8)
+	end,
+	LogOutMessageCommand = function(self)
+		self:diffusealpha(0.2)
 	end
 }
 
@@ -39,12 +78,28 @@ t[#t+1] = LoadFont("Common Bold")..{
 	InitCommand  = function(self)
 		self:xy(145,30)
 		self:zoom(0.4)
-		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		if not DLMAN:IsLoggedIn() then
+			self:diffusealpha(0.4)
+		end
 		self:queuecommand('Set')
-	end;
+	end,
 	SetCommand = function(self)
-		self:settext("Update")
-	end;
+		self:settextf("%s", onlineStatus)
+	end,
+	LogOutMessageCommand = function(self)
+		toggleOnlineStatus("Local")
+		self:diffusealpha(0.4)
+		self:queuecommand("Set")
+	end,
+	LoginMessageCommand = function(self)
+		self:diffusealpha(1)
+		toggleOnlineStatus("Online")
+		self:queuecommand("Set")
+	end,
+	OnlineTogglePressedMessageCommand = function(self)
+		self:queuecommand("Set")
+	end
 }
 
 t[#t+1] = quadButton(3)..{
@@ -57,7 +112,7 @@ t[#t+1] = quadButton(3)..{
 		else
 			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 		end
-	end;
+	end,
 
 	-- Login
 	StartLoginCommand = function(self)
@@ -67,24 +122,24 @@ t[#t+1] = quadButton(3)..{
 			DLMAN:Login(user, pass)
 		end
 
-		easyInputStringWithFunction("Password:", 50, true, password)
-		easyInputStringWithFunction("Username:",50, false, username)
-	end;
+		easyInputStringWithFunction("Password:", 255, true, password)
+		easyInputStringWithFunction("Username:", 255, false, username)
+	end,
 
 	-- Save config upon successful login
 	LoginMessageCommand = function(self)
 		self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
-		playerConfig:get_data(pn_to_profile_slot(pn)).Username = user
-		playerConfig:get_data(pn_to_profile_slot(pn)).Password = pass
+		playerConfig:get_data(pn_to_profile_slot(pn)).Username = DLMAN:GetUsername()
+		playerConfig:get_data(pn_to_profile_slot(pn)).Password = DLMAN:GetToken()
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
 		SCREENMAN:SystemMessage("Login Successful!")
-	end;
+	end,
 
 	-- Do nothing on failed login
 	LoginFailedMessageCommand = function(self)
 		SCREENMAN:SystemMessage("Login Failed!")
-	end;
+	end,
 
 	-- delete config upon logout
 	StartLogoutCommand = function(self)
@@ -93,7 +148,7 @@ t[#t+1] = quadButton(3)..{
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
 		DLMAN:Logout()
-	end;
+	end,
 
 	LogOutMessageCommand=function(self)
 		self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
@@ -111,7 +166,7 @@ t[#t+1] = quadButton(3)..{
 		self:diffusealpha(1)
 		self:smooth(0.3)
 		self:diffusealpha(0.8)
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Bold")..{
@@ -124,11 +179,11 @@ t[#t+1] = LoadFont("Common Bold")..{
 		else
 			self:settext("Login")
 		end
-	end;
+	end,
 
 	LoginMessageCommand = function(self)
 		self:settext("Logout")
-	end;
+	end,
 
 	LogOutMessageCommand=function(self)
 		self:settext("Login")
@@ -145,9 +200,9 @@ t[#t+1] = LoadFont("Common BLarge")..{
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:queuecommand('Set')
-	end;
-	LoginMessageCommand = function(self) self:queuecommand('Set') end;
-	LogOutMessageCommand = function(self) self:queuecommand('Set') end;
+	end,
+	LoginMessageCommand = function(self) self:queuecommand('Set') end,
+	LogOutMessageCommand = function(self) self:queuecommand('Set') end,
 
 	SetCommand = function(self)
 		local text = ""
@@ -159,7 +214,7 @@ t[#t+1] = LoadFont("Common BLarge")..{
 		end
 
 		self:settext(text)
-	end;
+	end
 }
 
 return t

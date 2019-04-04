@@ -1,28 +1,38 @@
 return Def.ActorFrame{
 	LoadFont("Common Bold") .. {
-        InitCommand=function(self)
-        	self:xy(16,-1):zoom(0.5):maxwidth(WideScale(get43size(20),20)/0.5)
-        end;
-        SetGradeCommand=function(self,params)
-        	local player = params.PlayerNumber
-			local song = params.Song
-			local sGrade = params.Grade or 'Grade_None';
-			if GAMESTATE:GetNumPlayersEnabled() == 2 then
-				if player == PLAYER_1 then
-					self:valign(1)
-					self:y(-5)
-				elseif player == PLAYER_2 then
-					self:valign(0)
-					self:y(3)
-				else
-					self:valign(0.5)
-					self:y(-1)
-				end;
-			else
+		InitCommand=function(self)
+			self:xy(16,-1):zoom(0.5):maxwidth(WideScale(get43size(20),20)/0.5)
+		end,
+		SetGradeCommand=function(self,params)
+			local player = params.PlayerNumber
+				local song = params.Song
+				local sGrade = params.Grade or 'Grade_None'
 				self:valign(0.5)
-			end;
-			self:settext(THEME:GetString("Grade",ToEnumShortString(sGrade)) or "")
-			self:diffuse(getGradeColor(sGrade))
-        end;
-	};
+				self:settext(THEME:GetString("Grade",ToEnumShortString(sGrade)) or "")
+				self:diffuse(getGradeColor(sGrade))
+		end
+	},
+	Def.Quad{
+		InitCommand= function(self) 
+			self:x(30)
+			self:zoomto(2,32)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.MusicWheelDivider))
+		end,
+
+		BeginCommand = function(self) self:queuecommand('Set') end,
+		OffCommand = function(self) self:visible(false) end,
+		SetCommand = function(self, params)
+			if params.Song then
+				local goalType = GHETTOGAMESTATE:getLowestGoalTypeBySong(params.Song)
+				if goalType == 0 then -- No goals
+					self:diffusebottomedge(color(colorConfig:get_data().selectMusic.MusicWheelDivider))
+				elseif goalType == 1 then -- Unfinished goals
+					self:diffusebottomedge(color(colorConfig:get_data().selectMusic.UnfinishedGoalGradient))
+				elseif goalType == 2 then -- All goals are finished
+					self:diffusebottomedge(color(colorConfig:get_data().selectMusic.CompletedGoalGradient))
+				end
+			end
+		end
+	}
 }

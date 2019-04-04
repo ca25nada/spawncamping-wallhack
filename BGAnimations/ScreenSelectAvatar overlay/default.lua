@@ -7,10 +7,11 @@ local frameHeight = 40								-- Height of the top bar
 
 local curPage = 1									-- Current Page index
 local curIndex = 1									-- Current Cursor Index
-local curName = PROFILEMAN:GetAvatarName(pn)		-- String with the current avatar's filename
+local GUID = profile:GetGUID()
+local curName = findAvatar(GUID)					-- String with the current avatar's filename
 local lastClickedIndex = 0							-- Last clicked index for double-click detection
 
-local avatarTable = PROFILEMAN:GetAllAvatarNames() -- Table containing the filename of all installed avatars
+local avatarTable = FILEMAN:GetDirListing(assetFolders.avatar) -- Table containing the filename of all installed avatars
 local avatarWidth = 50								-- Self explanatory
 local avatarHeight = 50
 local maxCols = math.floor(capWideScale(7,11))		-- Maximum columns depending on screen aspect ratio.
@@ -88,16 +89,16 @@ local function topRow()
 		InitCommand = function(self)
 			self:zoomto(frameWidth, frameHeight)
 			self:diffuse(color("#000000")):diffusealpha(0.8)
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Sprite {
 		InitCommand = function (self) 
 			self:x(-frameWidth/2 + 5)
 			self:halign(0)
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
+			self:LoadBackground(assetFolders.avatar .. findAvatar(GUID))
 			self:zoomto(30,30)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common BLarge") .. {
@@ -106,7 +107,7 @@ local function topRow()
 			self:zoom(0.30)
 			self:halign(0)
 			self:settext(profile:GetDisplayName())
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
@@ -115,13 +116,16 @@ local function topRow()
 			self:zoom(0.35)
 			self:halign(0)
 			self:settextf("%s", avatarTable[getAvatarIndex()])
-		end;
+		end,
+		UpdateAvatarMessageCommand = function(self, params)
+			self:settextf("%s", avatarTable[getAvatarIndex()])
+		end,
 		CursorMovedMessageCommand = function(self, params)
 			self:settextf("%s", avatarTable[getAvatarIndex()])
-		end;
+		end,
 		PageMovedMessageCommand = function(self, params)
 			self:settextf("%s", avatarTable[getAvatarIndex()])
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -130,10 +134,10 @@ local function topRow()
 			self:zoom(0.45)
 			self:halign(1)
 			self:settextf("Page %d/%d", curPage, maxPage)
-		end;
+		end,
 		PageMovedMessageCommand = function(self, params)
 			self:settextf("Page %d/%d",params.page, maxPage)
-		end;
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -142,16 +146,16 @@ local function topRow()
 			self:zoom(0.35)
 			self:halign(1)
 			self:settext("Loading... 0%")
-		end;
+		end,
 		PageMovedMessageCommand = function(self, params)
 			self:settext("Loading... 0%")
-		end;
+		end,
 		UpdateAvatarMessageCommand = function(self, params)
 			self:settextf("Loading... %0.0f%%",100*params.index/math.min(maxRows*maxCols, #avatarTable-(maxRows*maxCols*(curPage-1))))
-		end;
+		end,
 		UpdateFinishedMessageCommand = function(self, params)
 			self:settextf("Loaded in %0.2f Seconds", params.time)
-		end;
+		end
 	}
 
 	return t
@@ -161,17 +165,17 @@ local function avatarBox(i)
 	local avatarName = avatarTable[i]
 
 	local t = Def.ActorFrame {
-		Name = tostring(i);
+		Name = tostring(i),
 		InitCommand = function(self)
 			self:x((((i-1)%maxCols)+1)*avatarHSpacing)
 			self:y(((math.floor((i-1)/maxCols)+1)*avatarVSpacing)-10+50)
 			self:diffusealpha(0)
-		end;
+		end,
 		PageMovedMessageCommand = function(self)
 			self:finishtweening()
 			self:easeOut(0.5)
 			self:diffusealpha(0)
-		end;
+		end,
 		UpdateAvatarMessageCommand = function(self, params)
 			if params.index == i then
 				if i+((curPage-1)*maxCols*maxRows) > #avatarTable then
@@ -183,7 +187,7 @@ local function avatarBox(i)
 					avatarName = avatarTable[i+((curPage-1)*maxCols*maxRows)]
 
 					-- Load the avatar image
-					self:GetChild("Avatar"):LoadBackground(ProfileManager:GetAvatarFolderPath()..avatarName);
+					self:GetChild("Avatar"):LoadBackground(assetFolders.avatar..avatarName)
 					if i == curIndex then
 						self:GetChild("Avatar"):zoomto(avatarHeight+8,avatarWidth+8)
 						self:GetChild("Border"):zoomto(avatarHeight+12,avatarWidth+12)
@@ -200,11 +204,11 @@ local function avatarBox(i)
 							
 				end
 			end
-		end;
+		end
 	}
 
 	t[#t+1] = Def.Quad{
-		Name = "Border";
+		Name = "Border",
 		InitCommand = function(self)
 			self:zoomto(avatarWidth+4, avatarHeight+4)
 			self:queuecommand("Set")
@@ -217,7 +221,7 @@ local function avatarBox(i)
 
 			self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 
-		end;
+		end,
 		CursorMovedMessageCommand = function(self, params)
 			self:finishtweening()
 			if params.index == i then
@@ -229,7 +233,7 @@ local function avatarBox(i)
 				self:zoomto(avatarWidth+4, avatarHeight+4)
 				self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 			end
-		end;
+		end,
 		PageMovedMessageCommand = function(self, params)
 			self:finishtweening()
 			if params.index == i then
@@ -241,7 +245,7 @@ local function avatarBox(i)
 				self:zoomto(avatarWidth+4, avatarHeight+4)
 				self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 			end
-		end;
+		end
 
 	}
 
@@ -249,27 +253,30 @@ local function avatarBox(i)
 		InitCommand = function(self)
 			self:zoomto(avatarWidth, avatarHeight)
 			self:visible(false)
-		end;
+		end,
 		TopPressedCommand = function(self, params)
 			-- Move the cursor to this index upon clicking
 			if params.input == "DeviceButton_left mouse button" then
 				-- Save and exit upon double clicking
 				if lastClickedIndex == i then
-					PROFILEMAN:SaveAvatar(pn, avatarTable[getAvatarIndex()])
+					avatarConfig:get_data().avatar[GUID] = avatarTable[getAvatarIndex()]
+					avatarConfig:set_dirty()
+					avatarConfig:save()
 					SCREENMAN:GetTopScreen():Cancel()
+					MESSAGEMAN:Broadcast("AvatarChanged")
 				end
 
 				lastClickedIndex = i
 				curIndex = i
 				MESSAGEMAN:Broadcast("CursorMoved",{index = i})
 			end
-		end;
+		end
 	}
 
 
 	-- Avatar
 	t[#t+1] = Def.Sprite {
-		Name = "Avatar";
+		Name = "Avatar",
 		CursorMovedMessageCommand = function(self, params)
 			self:finishtweening()
 			if params.index == i then
@@ -279,7 +286,7 @@ local function avatarBox(i)
 				self:smooth(0.2)
 				self:zoomto(avatarWidth, avatarHeight)
 			end
-		end;
+		end,
 		PageMovedMessageCommand = function(self, params)
 			self:finishtweening()
 			if params.index == i then
@@ -289,7 +296,7 @@ local function avatarBox(i)
 				self:smooth(0.2)
 				self:zoomto(avatarWidth, avatarHeight)
 			end
-		end;
+		end
 	}
 
 
@@ -305,8 +312,11 @@ local function input(event)
 		end
 
 		if event.button == "Start" then
-			PROFILEMAN:SaveAvatar(pn, avatarTable[getAvatarIndex()])
+			avatarConfig:get_data().avatar[GUID] = avatarTable[getAvatarIndex()]
+			avatarConfig:set_dirty()
+			avatarConfig:save()
 			SCREENMAN:GetTopScreen():Cancel()
+			MESSAGEMAN:Broadcast("AvatarChanged")
 		end
 
 		-- We want repeats for these events anyway
@@ -353,13 +363,14 @@ local t = Def.ActorFrame {
 		top:AddInputCallback(input)
 		co = coroutine.create(updateAvatars)
 		self:SetUpdateFunction(update)
-	end;
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
+	end
 }
 
 t[#t+1] = topRow() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X, 50)
-	end;
+	end
 }
 
 t[#t+1] = Def.Quad{
@@ -367,14 +378,14 @@ t[#t+1] = Def.Quad{
 		self:zoomto(25, 25)
 		self:xy(25, SCREEN_CENTER_Y+25)
 		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
-	end;
+	end
 }
 t[#t+1] = quadButton(4)..{
 	InitCommand = function(self)
 		self:zoomto(25, 25)
 		self:xy(25, SCREEN_CENTER_Y+25)
 		self:diffuse(color("#FFFFFF")):diffusealpha(0)
-	end;
+	end,
 	TopPressedCommand = function(self, params)
 		if params.input == "DeviceButton_left mouse button" then
 			movePage(-1)
@@ -384,22 +395,22 @@ t[#t+1] = quadButton(4)..{
 		self:diffusealpha(0.2)
 		self:smooth(0.3)
 		self:diffusealpha(0)
-	end;
+	end
 }
 t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
-	Name = "TriangleLeft";
+	Name = "TriangleLeft",
 	InitCommand = function(self)
 		self:zoom(0.15)
 		self:diffusealpha(0.8)
 		self:xy(25, SCREEN_CENTER_Y+25)
 		self:rotationz(-90)
-	end;
+	end,
 	TweenCommand = function(self)
 		self:finishtweening()
 		self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 		self:smooth(0.5)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
-	end;
+	end
 }
 
 t[#t+1] = Def.Quad{
@@ -407,14 +418,14 @@ t[#t+1] = Def.Quad{
 		self:zoomto(25, 25)
 		self:xy(SCREEN_WIDTH-25, SCREEN_CENTER_Y+25)
 		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
-	end;
+	end
 }
 t[#t+1] = quadButton(4)..{
 	InitCommand = function(self)
 		self:zoomto(25, 25)
 		self:xy(SCREEN_WIDTH-25, SCREEN_CENTER_Y+25)
 		self:diffuse(color("#FFFFFF")):diffusealpha(0)
-	end;
+	end,
 	TopPressedCommand = function(self, params)
 		if params.input == "DeviceButton_left mouse button" then
 			movePage(1)
@@ -424,22 +435,22 @@ t[#t+1] = quadButton(4)..{
 		self:diffusealpha(0.2)
 		self:smooth(0.3)
 		self:diffusealpha(0)
-	end;
+	end
 }
 t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
-	Name = "TriangleRight";
+	Name = "TriangleRight",
 	InitCommand = function(self)
 		self:zoom(0.15)
 		self:diffusealpha(0.8)
 		self:xy(SCREEN_WIDTH-25, SCREEN_CENTER_Y+25)
 		self:rotationz(90)
-	end;
+	end,
 	TweenCommand = function(self)
 		self:finishtweening()
 		self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 		self:smooth(0.5)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
-	end;
+	end
 }
 
 for i=1, math.min(maxRows*maxCols, #avatarTable) do

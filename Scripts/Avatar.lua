@@ -6,8 +6,8 @@ local function addProfileFromGUID(GUID)
 		avatarConfig:get_data().avatar[GUID] = avatarConfig:get_data().avatar.default
 		avatarConfig:set_dirty()
 		avatarConfig:save()
-	end;
-end;
+	end
+end
 
 function ProfileManager.GetAvatarFolderPath()
 	return "Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/"
@@ -26,19 +26,19 @@ function ProfileManager.GetAvatarName(self, pn)
 		-- make the new config for the profile and return the default image.
 		fileName = avatarConfig:get_data().avatar.default
 		addProfileFromGUID(GUID)
-	end;
+	end
 
 
 	if FILEMAN:DoesFileExist(self:GetAvatarFolderPath()..fileName) then
 		return fileName
 	else
 		return "_fallback.png"
-	end;
-end;
+	end
+end
 
 function ProfileManager.GetAvatarPath(self, pn)
 	return string.format("%s%s",self:GetAvatarFolderPath(),self:GetAvatarName(pn))
-end;
+end
 
 function ProfileManager.GetAllAvatarNames()
 	local imgTypes = {".jpg",".png",".gif",".jpeg"}

@@ -41,123 +41,94 @@ end
 			
 			function JudgeType()
 				local t = {
-					Name = "JudgeType";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = { THEME:GetString('OptionNames','Off'),'No Highlights','On'};
+					Name = "JudgeType",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = { THEME:GetString('OptionNames','Off'),'No Highlights','On'},
 					LoadSelections = function(self, list, pn)
 						local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).JudgeType
 						list[prefs+1] = true
-					end;
+					end,
 					SaveSelections = function(self, list, pn)
 						local value
 						if list[3] then
-							value = 2;
+							value = 2
 						elseif list[2] then
-							value = 1;
+							value = 1
 						else
-							value = 0;
-						end;
+							value = 0
+						end
 						playerConfig:get_data(pn_to_profile_slot(pn)).JudgeType = value
 						playerConfig:set_dirty(pn_to_profile_slot(pn))
 						playerConfig:save(pn_to_profile_slot(pn))
-					end;
-				};
-				setmetatable( t, t );
-				return t;
+					end
+				}
+				setmetatable( t, t )
+				return t
 			end	
 			
 			
-			function AvgScoreType()
+			function TargetTracker()
 				local t = {
-					Name = "AvgScoreType";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = {THEME:GetString('OptionNames','Off'),'DP','%Score','MIGS' };
+					Name = "TargetTracker",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On")},
 					LoadSelections = function(self, list, pn)
-						local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).AvgScoreType
-						list[prefs+1] = true
-					end;
+						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).TargetTracker
+						if pref then
+							list[2] = true
+						else
+							list[1] = true
+						end
+					end,
 					SaveSelections = function(self, list, pn)
 						local value
-						if list[4] then
-							value = 3;
-						elseif list[3] then
-							value = 2;
-						elseif list[2] then
-							value = 1;
-						else
-							value = 0;
-						end;
-						playerConfig:get_data(pn_to_profile_slot(pn)).AvgScoreType = value
+						value = list[2]
+						playerConfig:get_data(pn_to_profile_slot(pn)).TargetTracker = value
 						playerConfig:set_dirty(pn_to_profile_slot(pn))
 						playerConfig:save(pn_to_profile_slot(pn))
-					end;
-				};
-				setmetatable( t, t );
-				return t;
-			end;
+					end
+				}
+				setmetatable(t, t)
+				return t
+			end
 			
-			function GhostScoreType()
+			local tChoices = {}
+			for i = 1, 99 do
+				tChoices[i] = tostring(i) .. "%"
+			end
+			for i = 1, 3 do
+				tChoices[99 + i] = tostring(99 + i * 0.25) .. "%"
+			end
+			for i = 1, 4 do
+				tChoices[#tChoices + 1] = tostring(99.96 + i * 0.01) .. "%"
+			end
+			function TargetGoal()
 				local t = {
-					Name = "GhostScoreType";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = { THEME:GetString('OptionNames','Off'),'DP','%Score','MIGS' };
+					Name = "TargetGoal",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = tChoices,
 					LoadSelections = function(self, list, pn)
-						local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).GhostScoreType
-						list[prefs+1] = true
-					end;
-					SaveSelections = function(self, list, pn)
-						local value
-						if list[4] then
-							value = 3;
-						elseif list[3] then
-							value = 2;
-						elseif list[2] then
-							value = 1;
-						else
-							value = 0;
-						end;
-						playerConfig:get_data(pn_to_profile_slot(pn)).GhostScoreType = value
-						playerConfig:set_dirty(pn_to_profile_slot(pn))
-						playerConfig:save(pn_to_profile_slot(pn))
-					end;
-				};
-				setmetatable( t, t );
-				return t;
-			end;
-			
-			
-			local tChoices = {};
-			for i=0,100  do
-				tChoices[#tChoices+1] = tostring(i)..'%';
-			end;
-			function GhostTarget()
-				local t = {
-					Name = "GhostTarget";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = tChoices;
-					LoadSelections = function(self, list, pn)
-						local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget+1
-						list[prefs] = true;
-					end;
+						local prefsval = playerConfig:get_data(pn_to_profile_slot(pn)).TargetGoal
+						local index = IndexOf(tChoices, prefsval .. "%")
+						list[index] = true
+					end,
 					SaveSelections = function(self, list, pn)
 						local found = false
-						for i=1,#list do
+						for i = 1, #list do
 							if not found then
 								if list[i] == true then
-									local value = i-1;
-									playerConfig:get_data(pn_to_profile_slot(pn)).GhostTarget = value
+									local value = i
+									playerConfig:get_data(pn_to_profile_slot(pn)).TargetGoal =
+										tonumber(string.sub(tChoices[value], 1, #tChoices[value] - 1))
 									found = true
 								end
 							end
@@ -166,78 +137,50 @@ end
 						playerConfig:save(pn_to_profile_slot(pn))
 					end
 				}
-				setmetatable( t, t )
+				setmetatable(t, t)
+				return t
+			end
+			
+			function TargetTrackerMode()
+				local t = {
+					Name = "TargetTrackerMode",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = {THEME:GetString("OptionNames", "SetPercent"), THEME:GetString("OptionNames", "PersonalBest")},
+					LoadSelections = function(self, list, pn)
+						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).TargetTrackerMode
+						list[pref + 1] = true
+					end,
+					SaveSelections = function(self, list, pn)
+						local value
+						if list[2] then
+							value = 1
+						else
+							value = 0
+						end
+						playerConfig:get_data(pn_to_profile_slot(pn)).TargetTrackerMode = value
+						playerConfig:set_dirty(pn_to_profile_slot(pn))
+						playerConfig:save(pn_to_profile_slot(pn))
+					end
+				}
+				setmetatable(t, t)
 				return t
 			end
 			
 			function ErrorBar()
 				local t = {
-					Name = "ErrorBar";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = { THEME:GetString('OptionNames','Off'),'On'};
+					Name = "ErrorBar",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On"), THEME:GetString("OptionNames", "EWMA")},
 					LoadSelections = function(self, list, pn)
 						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar
-						if pref then
-							list[2] = true;
-						else
-							list[1] = true;
-						end;
-					end;
-					SaveSelections = function(self, list, pn)
-						local value
-						value = list[2]
-						playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar = value
-						playerConfig:set_dirty(pn_to_profile_slot(pn))
-						playerConfig:save(pn_to_profile_slot(pn))
-					end;
-				};
-				setmetatable( t, t );
-				return t;
-			end	
-			
-			function PaceMaker()
-				local t = {
-					Name = "PaceMaker";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = { THEME:GetString('OptionNames','Off'),'On'};
-					LoadSelections = function(self, list, pn)
-						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).PaceMaker
-						if pref then
-							list[2] = true;
-						else
-							list[1] = true;
-						end;
-					end;
-					SaveSelections = function(self, list, pn)
-						local value
-						value = list[2]
-						playerConfig:get_data(pn_to_profile_slot(pn)).PaceMaker = value
-						playerConfig:set_dirty(pn_to_profile_slot(pn))
-						playerConfig:save(pn_to_profile_slot(pn))
-					end;
-				};
-				setmetatable( t, t );
-				return t;
-			end	
-			
-			function LaneCover()
-				local t = {
-					Name = "LaneCover";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = { THEME:GetString('OptionNames','Off'),'Sudden','Hidden'};
-					LoadSelections = function(self, list, pn)
-						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).LaneCover
-						list[pref+1] = true;
-					end;
+						list[pref + 1] = true
+					end,
 					SaveSelections = function(self, list, pn)
 						local value
 						if list[1] == true then
@@ -246,24 +189,82 @@ end
 							value = 1
 						else
 							value = 2
-						end;
+						end
+						playerConfig:get_data(pn_to_profile_slot(pn)).ErrorBar = value
+						playerConfig:set_dirty(pn_to_profile_slot(pn))
+						playerConfig:save(pn_to_profile_slot(pn))
+					end
+				}
+				setmetatable(t, t)
+				return t
+			end
+			
+			function PaceMaker()
+				local t = {
+					Name = "PaceMaker",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = { THEME:GetString('OptionNames','Off'),'On'},
+					LoadSelections = function(self, list, pn)
+						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).PaceMaker
+						if pref then
+							list[2] = true
+						else
+							list[1] = true
+						end
+					end,
+					SaveSelections = function(self, list, pn)
+						local value
+						value = list[2]
+						playerConfig:get_data(pn_to_profile_slot(pn)).PaceMaker = value
+						playerConfig:set_dirty(pn_to_profile_slot(pn))
+						playerConfig:save(pn_to_profile_slot(pn))
+					end
+				}
+				setmetatable( t, t )
+				return t
+			end	
+			
+			function LaneCover()
+				local t = {
+					Name = "LaneCover",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = { THEME:GetString('OptionNames','Off'),'Sudden','Hidden'},
+					LoadSelections = function(self, list, pn)
+						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).LaneCover
+						list[pref+1] = true
+					end,
+					SaveSelections = function(self, list, pn)
+						local value
+						if list[1] == true then
+							value = 0
+						elseif list[2] == true then
+							value = 1
+						else
+							value = 2
+						end
 						playerConfig:get_data(pn_to_profile_slot(pn)).LaneCover = value
 						playerConfig:set_dirty(pn_to_profile_slot(pn))
 						playerConfig:save(pn_to_profile_slot(pn))
-					end;
-				};
-				setmetatable( t, t );
-				return t;
+					end
+				}
+				setmetatable( t, t )
+				return t
 			end	
 			
 			function NPSDisplay()
 				local t = {
-					Name = "NPSDisplay";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectMultiple";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = {"NPS Display","NPS Graph"};
+					Name = "NPSDisplay",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectMultiple",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = {"NPS Display","NPS Graph"},
 					LoadSelections = function(self, list, pn)
 						local npsDisplay = playerConfig:get_data(pn_to_profile_slot(pn)).NPSDisplay
 						local npsGraph = playerConfig:get_data(pn_to_profile_slot(pn)).NPSGraph
@@ -273,106 +274,85 @@ end
 						if npsGraph then 
 							list[2] = true
 						end
-					end;
+					end,
 					SaveSelections = function(self, list, pn)
 						playerConfig:get_data(pn_to_profile_slot(pn)).NPSDisplay = list[1]
 						playerConfig:get_data(pn_to_profile_slot(pn)).NPSGraph = list[2]
 						playerConfig:set_dirty(pn_to_profile_slot(pn))
 						playerConfig:save(pn_to_profile_slot(pn))
-					end;
-				};
-				setmetatable( t, t );
-				return t;
+					end
+				}
+				setmetatable( t, t )
+				return t
 			end
 			
 			function CBHighlight()
 				local t = {
-					Name = "CBHighlight";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = { THEME:GetString('OptionNames','Off'),'On'};
+					Name = "CBHighlight",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = { THEME:GetString('OptionNames','Off'),'On'},
 					LoadSelections = function(self, list, pn)
 						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlight
 						if pref then
-							list[2] = true;
+							list[2] = true
 						else
-							list[1] = true;
-						end;
-					end;
+							list[1] = true
+						end
+					end,
 					SaveSelections = function(self, list, pn)
 						local value
 						value = list[2]
 						playerConfig:get_data(pn_to_profile_slot(pn)).CBHighlight = value
 						playerConfig:set_dirty(pn_to_profile_slot(pn))
 						playerConfig:save(pn_to_profile_slot(pn))
-					end;
-				};
-				setmetatable( t, t );
-				return t;
+					end
+				}
+				setmetatable( t, t )
+				return t
 			end
-			
-			--unused
-			--[[
-			function Avatars()
-				local directory = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
+
+			function LeaderBoard()
 				local t = {
-					Name = "Avatars";
-					LayoutType = "ShowAllInRow";
-					SelectType = "SelectOne";
-					OneChoiceForAllPlayers = false;
-					ExportOnChange = true;
-					Choices = directory;
+					Name = "Leaderboard",
+					LayoutType = "ShowAllInRow",
+					SelectType = "SelectOne",
+					OneChoiceForAllPlayers = false,
+					ExportOnChange = true,
+					Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On")},
 					LoadSelections = function(self, list, pn)
-						local profile = PROFILEMAN:GetProfile(pn)
-						local GUID = profile:GetGUID()
-						local pref = themeConfig:get_data().avatar[GUID]
-						local found = false
-						for i=1,#list do
-							if pref == directory[i] then
-								list[i] = true
-								found = true
-							end;
-						end;
-						if not found then
+						local pref = playerConfig:get_data(pn_to_profile_slot(pn)).leaderboardEnabled
+						if pref then
+							list[2] = true
+						else
 							list[1] = true
-						end;
-					end;
-					SaveSelections = function(self, list, pn)
-						local profile = PROFILEMAN:GetProfile(pn)
-						local GUID = profile:GetGUID()
-						local value
-						local found = false
-						for i=1,#list do
-							if not found then
-								if list[i] == true then
-									local value = directory[i];
-									themeConfig:get_data().avatar[GUID] = value
-									found = true
-								end
-							end
 						end
-						themeConfig:set_dirty()
-						themeConfig:save()
-					end;
-				};
-				setmetatable( t, t );
-				return t;
-			end	
-			--]]
+					end,
+					SaveSelections = function(self, list, pn)
+						local value
+						value = list[2]
+						playerConfig:get_data(pn_to_profile_slot(pn)).leaderboardEnabled = value
+						playerConfig:set_dirty(pn_to_profile_slot(pn))
+						playerConfig:save(pn_to_profile_slot(pn))
+					end
+				}
+				setmetatable(t, t)
+				return t
+			end
 			
 			--===============================================
 			--Globals
 
 function DefaultScoreType()
 	local t = {
-		Name = "DefaultScoreType";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "DP","PS","MIGS"};
+		Name = "DefaultScoreType",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "DP","PS","MIGS"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.DefaultScoreType
 			if pref == 1 then
@@ -381,8 +361,8 @@ function DefaultScoreType()
 				list[2] = true
 			else 
 				list[3] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] == true then
@@ -391,24 +371,24 @@ function DefaultScoreType()
 				value = 2
 			else
 				value = 3
-			end;
+			end
 			themeConfig:get_data().global.DefaultScoreType = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
 end	
 
 function TipType()
 	local t = {
-		Name = "TipType";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","Tips","Random Phrases"};
+		Name = "TipType",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","Tips","Random Phrases"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.TipType
 			if pref == 1 then
@@ -417,8 +397,8 @@ function TipType()
 				list[2] = true
 			else 
 				list[3] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] == true then
@@ -427,88 +407,120 @@ function TipType()
 				value = 2
 			else
 				value = 3
-			end;
+			end
 			themeConfig:get_data().global.TipType = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
+end	
+
+function PlayerInfoType()
+	local t = {
+		Name = "PlayerInfoType",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Minimal","Full"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.PlayerInfoType
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.PlayerInfoType = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
 end	
 
 function SongBGEnabled()
 	local t = {
-		Name = "SongBGEnabled";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","On"};
+		Name = "SongBGEnabled",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.SongBGEnabled
 			if pref then
 				list[2] = true
 			else 
 				list[1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] then
 				value = false
 			else
 				value = true
-			end;
+			end
 			themeConfig:get_data().global.SongBGEnabled = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
 end	
 
 function SongBGMouseEnabled()
 	local t = {
-		Name = "SongBGMouseEnabled";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","On"};
+		Name = "SongBGMouseEnabled",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.SongBGMouseEnabled
 			if pref then
 				list[2] = true
 			else 
 				list[1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] then
 				value = false
 			else
 				value = true
-			end;
+			end
 			themeConfig:get_data().global.SongBGMouseEnabled = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
 end	
 
 function EvalBGType()
 	local t = {
-		Name = "EvalBGType";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Song Background","Clear+Grade Background","Grade Background only"};
+		Name = "EvalBGType",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Song Background","Clear+Grade Background","Grade Background only"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().eval.SongBGType
 			if pref == 1 then
@@ -517,8 +529,8 @@ function EvalBGType()
 				list[2] = true
 			else 
 				list[3] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] == true then
@@ -527,160 +539,193 @@ function EvalBGType()
 				value = 2
 			else
 				value = 3
-			end;
+			end
 			themeConfig:get_data().eval.SongBGType = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
-end	
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
 
 function Particles()
 	local t = {
-		Name = "Particles";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","On"};
+		Name = "Particles",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.Particles
 			if pref then
 				list[2] = true
 			else 
 				list[1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] then
 				value = false
 			else
 				value = true
-			end;
+			end
 			themeConfig:get_data().global.Particles = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
 end	
 
 
 function RateSort()
 	local t = {
-		Name = "RateSort";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","On"};
+		Name = "RateSort",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.RateSort
 			if pref then
 				list[2] = true
 			else 
 				list[1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] then
 				value = false
 			else
 				value = true
-			end;
+			end
 			themeConfig:get_data().global.RateSort = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
 end	
 
 function HelpMenu()
 	local t = {
-		Name = "HelpMenu";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","On"};
+		Name = "HelpMenu",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.HelpMenu
 			if pref then
 				list[2] = true
 			else 
 				list[1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] then
 				value = false
 			else
 				value = true
-			end;
+			end
 			themeConfig:get_data().global.HelpMenu = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
 end	
 
 function MeasureLines()
 	local t = {
-		Name = "MeasureLines";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","On"};
+		Name = "MeasureLines",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.MeasureLines
 			if pref then
 				list[2] = true
 			else 
 				list[1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] then
 				value = false
 			else
 				value = true
-			end;
+			end
 			themeConfig:get_data().global.MeasureLines = value
 			themeConfig:set_dirty()
 			themeConfig:save()
 			THEME:ReloadMetrics()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+
+function EvalScoreboard()
+	local t = {
+		Name = "EvalScoreboard",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Old","New"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.EvalScoreboard
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.EvalScoreboard = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+			THEME:ReloadMetrics()
+		end
+	}
+	setmetatable( t, t )
+	return t
 end
 
 function ProgressBar()
 	local t = {
-		Name = "ProgressBar";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","Bottom", "Top",};
+		Name = "ProgressBar",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","Bottom", "Top",},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.ProgressBar
 			if pref then
 				list[pref+1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] == true then
@@ -688,141 +733,419 @@ function ProgressBar()
 			elseif list[2] == true then
 				value = 1
 			else
-				value = 2;
-			end;
-			themeConfig:get_data().global.ProgressBar = value;
-			themeConfig:set_dirty();
-			themeConfig:save();
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+				value = 2
+			end
+			themeConfig:get_data().global.ProgressBar = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
 end
 
+function CustomizeGameplay()
+	local t = {
+		Name = "CustomizeGameplay",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = false,
+		ExportOnChange = true,
+		Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On")},
+		LoadSelections = function(self, list, pn)
+			local pref = playerConfig:get_data(pn_to_profile_slot(pn)).CustomizeGameplay
+			if pref then
+				list[2] = true
+			else
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			playerConfig:get_data(pn_to_profile_slot(pn)).CustomizeGameplay = list[2]
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
+		end
+	}
+	setmetatable(t, t)
+	return t
+end
 
+local RSChoices = {}
+for i = 1, 250 do
+	RSChoices[i] = tostring(i) .. "%"
+end
+function ReceptorSize()
+	local t = {
+		Name = "ReceptorSize",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = false,
+		ExportOnChange = true,
+		Choices = RSChoices,
+		LoadSelections = function(self, list, pn)
+			local prefs = playerConfig:get_data(pn_to_profile_slot(pn)).ReceptorSize
+			list[prefs] = true
+		end,
+		SaveSelections = function(self, list, pn)
+			local found = false
+			for i = 1, #list do
+				if not found then
+					if list[i] == true then
+						local value = i
+						playerConfig:get_data(pn_to_profile_slot(pn)).ReceptorSize = value
+						found = true
+					end
+				end
+			end
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
+		end
+	}
+	setmetatable(t, t)
+	return t
+end
+
+local LBChoices = {}
+for i = 1, 15 do
+	LBChoices[i] = tostring(i)
+end
+function LeaderboardSlots()
+	local t = {
+		Name = "LeaderboardSlots",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = false,
+		ExportOnChange = true,
+		Choices = LBChoices,
+		LoadSelections = function(self, list, pn)
+			local prefs = themeConfig:get_data().global.LeaderboardSlots
+			list[prefs] = true
+		end,
+		SaveSelections = function(self, list, pn)
+			local found = false
+			for i = 1, #list do
+				if not found then
+					if list[i] == true then
+						local value = i
+						themeConfig:get_data().global.LeaderboardSlots = value
+						found = true
+					end
+				end
+			end
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable(t, t)
+	return t
+end
+
+function DisplayPercent()
+	local t = {
+		Name = "DisplayPercent",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = false,
+		ExportOnChange = true,
+		Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On")},
+		LoadSelections = function(self, list, pn)
+			local pref = playerConfig:get_data(pn_to_profile_slot(pn)).DisplayPercent
+			if pref then
+				list[2] = true
+			else
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			value = list[2]
+			playerConfig:get_data(pn_to_profile_slot(pn)).DisplayPercent = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
+		end
+	}
+	setmetatable(t, t)
+	return t
+end
 
 function NPSWindow()
 	local t = {
-		Name = "NPSWindow";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = {"1","2","3","4","5"};
+		Name = "NPSWindow",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = {"1","2","3","4","5"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().NPSDisplay.MaxWindow
 			if pref then
 				list[pref] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			for k,v in ipairs(list) do
 				if v then
 					value = k
-				end;
-			end;
+				end
+			end
 			themeConfig:get_data().NPSDisplay.MaxWindow = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
 end
 
 function SongPreview()
 	local t = {
-		Name = "SongPreview";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = {"SM Style","osu! Style (Current)","osu! Style (Old)"};
+		Name = "SongPreview",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = {"SM Style","osu! Style (Current)","osu! Style (Old)"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.SongPreview
 			if pref then
 				list[pref] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			for k,v in ipairs(list) do
 				if v then
 					value = k
-				end;
-			end;
+				end
+			end
 			themeConfig:get_data().global.SongPreview = value
 			themeConfig:set_dirty()
 			themeConfig:save()
 			THEME:ReloadMetrics()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+
+function AnimatedLeaderboard()
+	local t = {
+		Name = "AnimatedLeaderboard",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.AnimatedLeaderboard
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.AnimatedLeaderboard = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
 end
 
 function BannerWheel()
 	local t = {
-		Name = "BannerWheel";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","On"};
+		Name = "BannerWheel",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.BannerWheel
 			if pref then
 				list[2] = true
 			else 
 				list[1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] then
 				value = false
 			else
 				value = true
-			end;
+			end
 			themeConfig:get_data().global.BannerWheel = value
 			themeConfig:set_dirty()
 			themeConfig:save()
 			THEME:ReloadMetrics()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
+		end
+	}
+	setmetatable( t, t )
+	return t
 end
 
 function BareBone()
 	local t = {
-		Name = "BareBone";
-		LayoutType = "ShowAllInRow";
-		SelectType = "SelectOne";
-		OneChoiceForAllPlayers = true;
-		ExportOnChange = true;
-		Choices = { "Off","On"};
+		Name = "BareBone",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
 			local pref = themeConfig:get_data().global.BareBone
 			if pref then
 				list[2] = true
 			else 
 				list[1] = true
-			end;
-		end;
+			end
+		end,
 		SaveSelections = function(self, list, pn)
 			local value
 			if list[1] then
 				value = false
 			else
 				value = true
-			end;
+			end
 			themeConfig:get_data().global.BareBone = value
 			themeConfig:set_dirty()
 			themeConfig:save()
-		end;
-	};
-	setmetatable( t, t );
-	return t;
-end	
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+function JudgementTween()
+	local t = {
+		Name = "JudgementTween",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.JudgementTween
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.JudgementTween = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+function UseAssetsJudgements()
+	local t = {
+		Name = "UseAssetsJudgements",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Native","Assets"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.UseAssetsJudgements
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.UseAssetsJudgements = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+function ComboTween()
+	local t = {
+		Name = "ComboTween",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.ComboTween
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.ComboTween = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+function ComboWords()
+	local t = {
+		Name = "ComboWords",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = { "Off","On"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.ComboWords
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.ComboWords = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end

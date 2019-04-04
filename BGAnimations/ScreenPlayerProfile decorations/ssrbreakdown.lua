@@ -38,7 +38,7 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:settext("Skill Rating Breakdown")
-	end;
+	end
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
@@ -48,21 +48,24 @@ t[#t+1] = LoadFont("Common Normal")..{
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:queuecommand("Set")
-	end;
+	end,
 	SetCommand = function(self)
-		if DLMAN:IsLoggedIn() then
+		if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
 			self:settext("Using server values")
 		else
 			self:settext("Using client values")
 		end
-	end;
+	end,
 
 	OnlineUpdateMessageCommand = function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	LogOutMessageCommand = function(self)
 		self:queuecommand("Set")
-	end;
+	end,
+	OnlineTogglePressedMessageCommand = function(self)
+		self:queuecommand("Set")
+	end
 }
 
 local sepAngle = 360/#SkillSets-1
@@ -77,10 +80,10 @@ local function makeSSRPoints(i)
 			self:zoom(0.3)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:queuecommand("Set")
-		end;
+		end,
 		SetCommand = function(self)
 			local SSR = 0
-			if DLMAN:IsLoggedIn() then
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
 				SSR = DLMAN:GetSkillsetRating(SkillSets[i])
 			else
 				SSR = profile:GetPlayerSkillsetRating(SkillSets[i])
@@ -88,13 +91,22 @@ local function makeSSRPoints(i)
 
 			self:settextf("%s\n%0.2f",SkillSets[i], SSR)
 			self:AddAttribute(#SkillSets[i], {Length = -1, Diffuse = getMSDColor(SSR)})
-		end;
+		end,
+		OnlineTogglePressedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end,
+		LogOutMessageCommand = function(self)
+			self:queuecommand("Set")
+		end,
+		OnlineUpdateMessageCommand = function(self)
+			self:queuecommand("Set")
+		end
 	}
 end
 
 
 t[#t+1] = Def.ActorMultiVertex{
-	Name= "SSR_MAX_Graph";
+	Name= "SSR_MAX_Graph",
 	InitCommand = function(self)
 		local x,y
 		for i=1, #SkillSets do
@@ -110,40 +122,43 @@ t[#t+1] = Def.ActorMultiVertex{
 		self:SetDrawState{First= 1, Num= -1}
 		self:SetDrawState{Mode="DrawMode_QuadStrip"}
 		self:playcommand("Set")
-	end;
+	end,
 	SetCommand = function(self)
 		self:diffusealpha(0.2)
 		self:SetVertices(maxVerts)
 		self:SetDrawState{First= 1, Num= -1}
-	end;
+	end,
 	OnlineUpdateMessageCommand = function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	LogOutMessageCommand = function(self)
 		self:queuecommand("Set")
-	end;
+	end
 }
 
 t[#t+1] = Def.ActorMultiVertex{
-	Name= "SSR_Graph";
+	Name= "SSR_Graph",
 	InitCommand = function(self)
 		self:diffusealpha(0.5)
 		self:SetDrawState{Mode="DrawMode_QuadStrip"}
 		self:queuecommand("Set")
-	end;
+	end,
 	OnlineUpdateMessageCommand = function(self)
 		self:queuecommand("Set")
-	end;
+	end,
 	LogOutMessageCommand = function(self)
 		self:queuecommand("Set")
-	end;
+	end,
+	OnlineTogglePressedMessageCommand = function(self)
+		self:queuecommand("Set")
+	end,
 	SetCommand = function(self)
 		verts = {}
 		local x,y
 		for i=1, #SkillSets do
 			local SSR = 0
 			x,y = getPointOffset(circleRadius,sepAngle*(i-1)-90)
-			if DLMAN:IsLoggedIn() then
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
 				SSR = DLMAN:GetSkillsetRating(SkillSets[i])
 			else
 				SSR = profile:GetPlayerSkillsetRating(SkillSets[i])
@@ -160,7 +175,7 @@ t[#t+1] = Def.ActorMultiVertex{
 		self:easeOut(1)
 		self:SetVertices(verts)
 		self:SetDrawState{First= 1, Num= -1}
-	end;
+	end
 
 }
 
