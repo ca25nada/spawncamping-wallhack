@@ -118,6 +118,18 @@ local defaultConfig = {
 		PacemakerCurrent = "#0099FF",
 	},
 
+	combo = {
+		NumberFC = "#A4FF00",
+		NumberPFC = "#FFF568",
+		NumberMFC = "#00AEEF",
+		NumberRegular = "#DDDDDD",
+		NumberMiss = "#FF0000",
+		LabelRegular = "#DDDDDD",
+		LabelMiss = "#FF2020",
+		LabelRegularGradient = "#888888",
+		LabelMissGradient = "#880000"
+	},
+
 	leaderboard = {
 		background = "#111111CC",
 		border = "#000111",
@@ -173,6 +185,10 @@ end
 
 function getMainColor(type)
 	return color(colorConfig:get_data().main[type])
+end
+
+function getComboColor(type)
+	return color(colorConfig:get_data().combo[type])
 end
 
 function getLeaderboardColor(type)

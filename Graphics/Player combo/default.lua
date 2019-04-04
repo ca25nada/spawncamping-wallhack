@@ -41,6 +41,16 @@ local function arbitraryComboZoom(value)
 	end
 end
 
+local numFC = getComboColor("NumberFC")
+local numPFC = getComboColor("NumberPFC")
+local numMFC = getComboColor("NumberMFC")
+local numReg = getComboColor("NumberRegular")
+local numMiss = getComboColor("NumberMiss")
+local labelReg = getComboColor("LabelRegular")
+local labelMiss = getComboColor("LabelMiss")
+local labelRG = getComboColor("LabelRegularGradient")
+local labelMG = getComboColor("LabelMissGradient")
+
 local t = Def.ActorFrame {
 
 	LoadFont( "Combo", "numbers" ) .. {
@@ -57,12 +67,12 @@ local t = Def.ActorFrame {
 	LoadFont("Common Normal") .. {
 		Name="Label",
 		InitCommand = function(self)
-			self:xy(MovableValues.ComboX, MovableValues.ComboY):diffusebottomedge(color("0.75,0.75,0.75,1")):halign(0):valign(
+			self:xy(MovableValues.ComboX, MovableValues.ComboY):diffusebottomedge(labelRG):halign(0):valign(
 				1
 			):visible(false)
 		end,
 		OnCommand = function(self)
-			self:shadowlength(1):diffusebottomedge(color("0.75,0.75,0.75,1")):halign(0):valign(1)
+			self:shadowlength(1):diffusebottomedge(labelRG):halign(0):valign(1)
 		end
 	},
 	InitCommand = function(self)
@@ -124,22 +134,22 @@ local t = Def.ActorFrame {
 		c.Number:settext( string.format("%i", iCombo) )
 		-- FullCombo Rewards
 		if param.FullComboW1 then
-			c.Number:diffuse(color("#00aeef"))
+			c.Number:diffuse(numMFC)
 			c.Number:glowshift()
 		elseif param.FullComboW2 then
-			c.Number:diffuse(color("#fff568"))
+			c.Number:diffuse(numPFC)
 			c.Number:glowshift()
 		elseif param.FullComboW3 then
-			c.Number:diffuse(color("#a4ff00"))
+			c.Number:diffuse(numFC)
 			c.Number:stopeffect()
 		elseif param.Combo then
-			c.Number:diffuse(Color("White"))
+			c.Number:diffuse(numReg)
 			c.Number:stopeffect()
-			c.Label:diffuse(Color("White")):diffusebottomedge(color("0.5,0.5,0.5,1"))
+			c.Label:diffuse(labelReg):diffusebottomedge(labelRG)
 		else
-			c.Number:diffuse(color("#ff0000"))
+			c.Number:diffuse(numMiss)
 			c.Number:stopeffect()
-			c.Label:diffuse(Color("Red")):diffusebottomedge(color("0.5,0,0,1"))
+			c.Label:diffuse(labelMiss):diffusebottomedge(labelMG)
 		end
 		if themeConfig:get_data().global.ComboTween then
 			-- Pulse
