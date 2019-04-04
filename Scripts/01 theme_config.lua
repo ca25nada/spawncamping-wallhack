@@ -14,6 +14,7 @@ local defaultConfig = {
 		UseAssetsJudgements = false,
 		JudgementTween = true,
 		ComboTween = true,
+		ComboWords = true,
 		LeaderboardSlots = 8,
 		AnimatedLeaderboard = true,
 		BareBone = false, -- Still can't beat jousway lel

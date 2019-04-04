@@ -1,6 +1,7 @@
 local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomizeGameplay
 local c
 local player = Var "Player"
+local wordsOn = themeConfig:get_data().global.ComboWords
 
 
 local ShowComboAt = THEME:GetMetric("Combo", "ShowComboAt")
@@ -97,7 +98,7 @@ local t = Def.ActorFrame {
 		if (allowedCustomization) then
 			c.Label:settext("COMBO")
 			c.Number:visible(true)
-			c.Label:visible(true)
+			c.Label:visible(wordsOn)
 			c.Number:settext(1000)
 			Movable.DeviceButton_3.propertyOffsets = {self:GetTrueX() -6, self:GetTrueY() + c.Number:GetHeight()*1.5}	-- centered to screen/valigned
 			setBorderAlignment(c.Border, 0.5, 1)
@@ -129,7 +130,7 @@ local t = Def.ActorFrame {
 		param.LabelZoom = clamp( param.LabelZoom, LabelMinZoom, LabelMaxZoom )
 		
 		c.Number:visible(true)
-		c.Label:visible(true)
+		c.Label:visible(wordsOn)
 
 		c.Number:settext( string.format("%i", iCombo) )
 		-- FullCombo Rewards
