@@ -7,6 +7,12 @@ if isAutoLogin() then
 	DLMAN:LoginWithToken(user, pass)
 end
 
+
+local screenChoices = {
+	ScreenNetSelectMusic = true,
+	ScreenSelectMusic = true,
+}
+
 local replayScore
 local isEval
 
@@ -45,12 +51,14 @@ local t = Def.ActorFrame{
 			playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).leaderboardEnabled and DLMAN:IsLoggedIn()
 		if leaderboardEnabled and GAMESTATE:GetCurrentSteps(PLAYER_1) then
 			local chartkey = GAMESTATE:GetCurrentSteps(PLAYER_1):GetChartKey()
-			if SCREENMAN:GetTopScreen():GetMusicWheel():IsSettled() then
-				DLMAN:RequestChartLeaderBoardFromOnline(
-					chartkey,
-					function(leaderboard)
-					end
-				)
+			if screenChoices[SCREENMAN:GetTopScreen():GetName()] then
+				if SCREENMAN:GetTopScreen():GetMusicWheel():IsSettled() then
+					DLMAN:RequestChartLeaderBoardFromOnline(
+						chartkey,
+						function(leaderboard)
+						end
+					)
+				end
 			end
 		end
 	end
