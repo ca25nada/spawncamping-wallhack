@@ -7,7 +7,10 @@ local borderWidth = 4
 
 
 local t = Def.ActorFrame{
-	Name="PlayerAvatar"
+	Name="PlayerAvatar",
+	BeginCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
+	end
 }
 
 local profileP1
