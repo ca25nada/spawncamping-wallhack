@@ -1934,7 +1934,7 @@ local function boardOfScores()
 end
 
 local newScoreboard = themeConfig:get_data().global.EvalScoreboard
-local inMulti = NSMAN:IsETTP() or false
+local inMulti = NSMAN:IsETTP() and IsSMOnlineLoggedIn() or false
 if newScoreboard and not inMulti then
 	t[#t+1] = boardOfScores() .. {
 		InitCommand = function(self)
