@@ -3,7 +3,7 @@
 themeInfo = {
 	Name = "spawncamping-wallhack (etterna .65.1)",
 	Version = "2.2.0", -- a.b.c, a for complete overhauls, b for major releases, c for minor additions/bugfix.
-	Date = "20190115",
+	Date = "20190404",
 }
 
 function getThemeName()
