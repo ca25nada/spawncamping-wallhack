@@ -217,14 +217,19 @@ local function scoreListItem(i)
 			self:diffusealpha(0.2)
 			self:zoomto(scoreItemWidth, scoreItemHeight)
 		end,
-		TopPressedCommand = function(self)
+		TopPressedCommand = function(self, params)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
 			self:diffusealpha(0.2)
-			--MESSAGEMAN:Broadcast("DisplaySong",{score = ths})
-			SCREENMAN:GetTopScreen():Cancel()
-			MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
+			if params.input == "DeviceButton_right mouse button" then
+				ths:ToggleEtternaValidation()
+				MESSAGEMAN:Broadcast("UpdateRanking", {SSRType = skillset})
+			elseif params.input == "DeviceButton_left mouse button" then
+				--MESSAGEMAN:Broadcast("DisplaySong",{score = ths})
+				SCREENMAN:GetTopScreen():Cancel()
+				MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
+			end
 		end,
 		SetCommand = function(self)
 			if ths:GetEtternaValid() then
