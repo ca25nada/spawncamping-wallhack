@@ -1126,7 +1126,7 @@ t[#t+1] = scoreList() .. {
 
 
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenMusicInfo")
 
 t[#t+1] = LoadActor("../_frame")
 

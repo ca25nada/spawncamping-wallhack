@@ -907,7 +907,7 @@ t[#t+1] = playlistStepsList() .. {
 	end
 }
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenPlaylistInfo")
 t[#t+1] = LoadActor("../_frame")
 t[#t+1] = LoadActor("../_cursor")
 

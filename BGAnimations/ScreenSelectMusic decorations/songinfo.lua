@@ -53,18 +53,14 @@ t[#t+1] = quadButton(1)..{
 		self:zoomto(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 		self:visible(false)
 	end,
-	TopPressedCommand = function(self, params)
-		if params.input == "DeviceButton_left mouse button" then
-					
-			if song ~= nil then 
-				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
+	MouseDownCommand = function(self)
+		
+		if song ~= nil then 
+			SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 
-			elseif group ~= nil and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
-				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
-			end
-
+		elseif group ~= nil and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
+			SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
 		end
-
 
 	end
 }

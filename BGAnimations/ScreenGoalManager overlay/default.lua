@@ -85,7 +85,7 @@ local t = Def.ActorFrame {
 local boxHeight = 20
 local numBoxWidth = leftSectionWidth / 2
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenGoalManager")
 
 t[#t+1] = LoadActor("../_frame")
 

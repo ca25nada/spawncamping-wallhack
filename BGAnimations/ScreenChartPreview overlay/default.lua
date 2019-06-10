@@ -514,7 +514,7 @@ local t = Def.ActorFrame {
 	end
 }
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenChartPreview")
 
 t[#t+1] = LoadActor("../_frame") .. {
 	InitCommand = function(self)

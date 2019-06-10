@@ -83,7 +83,7 @@ local numBoxWidth = leftSectionWidth / 5
 local boundHorizontalSpacing = 8
 local boundVerticalSpacing = 2
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenFileTagManager")
 
 t[#t+1] = LoadActor("../_frame")
 

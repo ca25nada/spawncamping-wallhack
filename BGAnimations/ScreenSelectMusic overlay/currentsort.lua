@@ -158,7 +158,7 @@ t[#t+1] = quadButton(4) .. {
 		self:zoomto(frameWidth,frameHeight)
 		self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 	end,
-	TopPressedCommand = function(self)
+	MouseDownCommand = function(self)
 		MESSAGEMAN:Broadcast("StartSearch")
 	end
 }

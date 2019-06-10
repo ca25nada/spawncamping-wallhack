@@ -109,7 +109,7 @@ local t = Def.ActorFrame{
 	end
 }
 
-t[#t+1] = LoadActor("../../_mouse")
+t[#t+1] = LoadActor("../../_mouse", "ScreenSelectMusic")
 
 -- Profile contains: Profile breakdown (local and online)
 -- Song Info contains: MSD, Scores, Chart Preview, Online Leaderboard, (and something to let you tag the song)

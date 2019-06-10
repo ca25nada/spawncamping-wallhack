@@ -254,22 +254,20 @@ local function avatarBox(i)
 			self:zoomto(avatarWidth, avatarHeight)
 			self:visible(false)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			-- Move the cursor to this index upon clicking
-			if params.input == "DeviceButton_left mouse button" then
-				-- Save and exit upon double clicking
-				if lastClickedIndex == i then
-					avatarConfig:get_data().avatar[GUID] = avatarTable[getAvatarIndex()]
-					avatarConfig:set_dirty()
-					avatarConfig:save()
-					SCREENMAN:GetTopScreen():Cancel()
-					MESSAGEMAN:Broadcast("AvatarChanged")
-				end
-
-				lastClickedIndex = i
-				curIndex = i
-				MESSAGEMAN:Broadcast("CursorMoved",{index = i})
+			-- Save and exit upon double clicking
+			if lastClickedIndex == i then
+				avatarConfig:get_data().avatar[GUID] = avatarTable[getAvatarIndex()]
+				avatarConfig:set_dirty()
+				avatarConfig:save()
+				SCREENMAN:GetTopScreen():Cancel()
+				MESSAGEMAN:Broadcast("AvatarChanged")
 			end
+
+			lastClickedIndex = i
+			curIndex = i
+			MESSAGEMAN:Broadcast("CursorMoved",{index = i})
 		end
 	}
 
@@ -386,11 +384,9 @@ t[#t+1] = quadButton(4)..{
 		self:xy(25, SCREEN_CENTER_Y+25)
 		self:diffuse(color("#FFFFFF")):diffusealpha(0)
 	end,
-	TopPressedCommand = function(self, params)
-		if params.input == "DeviceButton_left mouse button" then
-			movePage(-1)
-			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
-		end
+	MouseDownCommand = function(self)
+		movePage(-1)
+		self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
 		self:finishtweening()
 		self:diffusealpha(0.2)
 		self:smooth(0.3)
@@ -426,11 +422,9 @@ t[#t+1] = quadButton(4)..{
 		self:xy(SCREEN_WIDTH-25, SCREEN_CENTER_Y+25)
 		self:diffuse(color("#FFFFFF")):diffusealpha(0)
 	end,
-	TopPressedCommand = function(self, params)
-		if params.input == "DeviceButton_left mouse button" then
-			movePage(1)
-			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
-		end
+	MouseDownCommand = function(self)
+		movePage(1)
+		self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
 		self:finishtweening()
 		self:diffusealpha(0.2)
 		self:smooth(0.3)
@@ -458,7 +452,7 @@ for i=1, math.min(maxRows*maxCols, #avatarTable) do
 end
 
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenSelectAvatar")
 t[#t+1] = LoadActor("../_frame")
 t[#t+1] = LoadActor("../_cursor")
 
