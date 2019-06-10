@@ -67,9 +67,38 @@ function BUTTON.playTopPressedActor(self)
 end
 
 
+-- Rotates coordinates x,y by an angle (degrees) from the origin.
+local function rotateFromOrigin(x, y, angle)
+	local rad = math.rad(angle)
+	return x*math.cos(rad) - y*math.sin(rad), x*math.sin(rad) + y*math.cos(rad)
+end
+
+-- Returns x2,x2 after rotated from x1,y1 by a specified angle
+local function rotateFromPoint(x1, y1, x2, y2, angle)
+	local x = x2-x1
+	local y = y2-y1
+
+	local newx, newy = rotateFromOrigin(x, y, angle)
+	return newx+x1, newy+y1
+end
+
+function Actor.GetTrueRotationZ(self)
+	if self == nil then
+		return 0
+	end
+
+	local parent = self:GetParent()
+
+	if parent == nil then
+		return self:GetRotationZ()
+	else 
+		return self:GetRotationZ() + parent:GetTrueRotationZ()
+	end
+end
+
 --Gets the true X/Y Position by recursively grabbing the parents' position.
---Does not take zoom into account.
-function Actor.getTrueX(self)
+--Now Attempts to take parent actors zoom and rotation into account.
+function Actor.GetTrueX(self)
 	if self == nil then
 		return 0
 	end
@@ -77,13 +106,14 @@ function Actor.getTrueX(self)
 	local parent = self:GetParent()
 
 	if parent == nil then
-		return self:GetX() or 0
+		return self:GetX()
 	else
-		return self:GetX() + parent:getTrueX()
+		local newX,newY = rotateFromOrigin(self:GetX(), self:GetY(), parent:GetTrueRotationZ())
+		return newX + parent:GetTrueX()
 	end
 end
 
-function Actor.getTrueY(self)
+function Actor.GetTrueY(self)
 	if self == nil then
 		return 0
 	end
@@ -91,26 +121,35 @@ function Actor.getTrueY(self)
 	local parent = self:GetParent()
 
 	if parent == nil then
-		return self:GetY() or 0
+		return self:GetY()
 	else
-		return self:GetY() + parent:getTrueY()
+		local newX,newY = rotateFromOrigin(self:GetX(), self:GetY(), parent:GetTrueRotationZ())
+		return newY + parent:GetTrueY()
 	end
 end
 
---Button Rollovers
-function Actor.isOver(self)
-	local x = self:getTrueX()
-	local y = self:getTrueY()
-	local hAlign = self:GetHAlign()
-	local vAlign = self:GetVAlign()
-	local w = self:GetZoomedWidth()
-	local h = self:GetZoomedHeight()
+-- Button Rollovers
+function Actor.isOver(self, mouseX, mouseY)
+	if mouseX == nil then
+		mouseX = INPUTFILTER:GetMouseX()
+	end
 
-	local mouseX = INPUTFILTER:GetMouseX()
-	local mouseY = INPUTFILTER:GetMouseY()
+	if mouseY == nil then
+		mouseY = INPUTFILTER:GetMouseY()
+	end
 
-	local withinX = (mouseX >= (x-(hAlign*w))) and (mouseX <= ((x+w)-(hAlign*w)))
-	local withinY = (mouseY >= (y-(vAlign*h))) and (mouseY <= ((y+h)-(vAlign*h)))
+	local rotationZ = self:GetTrueRotationZ()
+
+	local x, y = self:GetX(), self:GetY()
+	local tx, ty =  self:GetTrueX(), self:GetTrueY()
+	local hAlign, vAlign = self:GetHAlign(), self:GetVAlign()
+	local w, h = self:GetZoomedWidth(), self:GetZoomedHeight()
+
+	-- Since the boundaries for a rotated rectangle is a pain to calculate, rotate the mouse X/Y coordinates in the opposite direction and compare.
+	local newMouseX, newMouseY = rotateFromOrigin(mouseX-tx, mouseY-ty, -rotationZ)
+
+	local withinX = (newMouseX >= (x-(hAlign*w))) and (newMouseX <= ((x+w)-(hAlign*w)))
+	local withinY = (newMouseY >= (y-(vAlign*h))) and (newMouseY <= ((y+h)-(vAlign*h)))
 
 	return (withinX and withinY)
 end
