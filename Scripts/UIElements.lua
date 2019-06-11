@@ -313,7 +313,7 @@ function BUTTON.SetMouseDown(self, event)
 	self.CurDownButton = self.CurTopButton
 	self.CurDownButtonDepth = self.CurTopButtonDepth
 	if self.CurDownButton ~= nil then -- Only call onmousedown if a button is pressed.
-		self:OnMouseDown(self.CurDownButton, self.CurDownButtonDepth)
+		self:OnMouseDown(self.CurDownButton, self.CurDownButtonDepth, {button = event})
 	end
 end
 
@@ -331,20 +331,20 @@ function BUTTON.SetMouseUp(self, event)
             return
             
 		else -- Clicked button, release at non-button
-			self:OnMouseRelease(curDownButton, curDownButtonDepth)
+			self:OnMouseRelease(curDownButton, curDownButtonDepth, {button = event})
 		end
 
 	else
 		if curDownButton == nil then -- Clicked non-button, release at button
-			self:OnMouseUp(curTopButton, curTopButtonDepth)
+			self:OnMouseUp(curTopButton, curTopButtonDepth, {button = event})
 
 		elseif curDownButton == curTopButton then -- Clicked button, released on same button
-			self:OnMouseUp(curTopButton, curTopButtonDepth)
-			self:OnMouseClick(curTopButton, curTopButtonDepth)
+			self:OnMouseUp(curTopButton, curTopButtonDepth, {button = event})
+			self:OnMouseClick(curTopButton, curTopButtonDepth, {button = event})
 
 		else -- Clicked button, released at different button
-			self:OnMouseUp(curTopButton, curTopButtonDepth)
-			self:OnMouseRelease(curDownButton, curDownButtonDepth)
+			self:OnMouseUp(curTopButton, curTopButtonDepth, {button = event})
+			self:OnMouseRelease(curDownButton, curDownButtonDepth, {button = event})
 		end
 	end
 	
