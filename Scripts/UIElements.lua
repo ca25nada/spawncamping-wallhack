@@ -209,7 +209,7 @@ function Actor.IsOver(self, mouseX, mouseY)
 
 	if mouseY == nil then
 		mouseY = INPUTFILTER:GetMouseY()
-    end
+	end
     
     local rotationZ = self:GetTrueRotationZ()
 
@@ -219,10 +219,12 @@ function Actor.IsOver(self, mouseX, mouseY)
     local w, h = self:GetZoomedWidth(), self:GetZoomedHeight()
 
     -- Since the boundaries for a rotated rectangle is a pain to calculate, rotate the mouse X/Y coordinates in the opposite direction and compare.
-    local newMouseX, newMouseY = rotateFromOrigin(mouseX-tx, mouseY-ty, -rotationZ)
+	local newMouseX, newMouseY = rotateFromOrigin(mouseX-tx, mouseY-ty, -rotationZ)
+	newMouseX = newMouseX + tx
+	newMouseY = newMouseY + ty
 
-	local withinX = (newMouseX >= (x-(hAlign*w))) and (newMouseX <= ((x+w)-(hAlign*w)))
-	local withinY = (newMouseY >= (y-(vAlign*h))) and (newMouseY <= ((y+h)-(vAlign*h)))
+	local withinX = (newMouseX >= (tx-(hAlign*w))) and (newMouseX <= ((tx+w)-(hAlign*w)))
+	local withinY = (newMouseY >= (ty-(vAlign*h))) and (newMouseY <= ((ty+h)-(vAlign*h)))
 
 	return (withinX and withinY)
 end
