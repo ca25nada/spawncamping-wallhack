@@ -108,7 +108,7 @@ t[#t+1] = Def.Quad{
 }
 
 t[#t+1] = LoadActor("_frame")
-t[#t+1] = LoadActor("_mouse")
+t[#t+1] = LoadActor("_mouse", "ScreenColorEdit")
 
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)

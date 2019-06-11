@@ -24,28 +24,24 @@ function TAB.makeTabActors(tab)
 				self:x(tab.width*(i-1))
 				self:diffuse(getMainColor("tabFrame"))
 			end,
-			TopPressedCommand = function(self, params)
-				if params.input == "DeviceButton_left mouse button" then
-					MESSAGEMAN:Broadcast("TabPressed",{name = v})
-				end
+			MouseDownCommand = function(self)
+				MESSAGEMAN:Broadcast("TabPressed",{name = v})
 			end
 		}
 
-		t[#t+1] = quadButton(3)..{
+		t[#t+1] = quadButton(3, 1)..{
 		InitCommand = function(self)
 			self:halign(0)
 			self:zoomto(tab.width, tab.height)
 			self:x(tab.width*(i-1))
 			self:diffuse(getMainColor("tabButton")):diffusealpha(0)
 		end,
-		TopPressedCommand = function(self, params)
-			if params.input == "DeviceButton_left mouse button" then
-				MESSAGEMAN:Broadcast("TabPressed",{name = v})
-				self:finishtweening()
-				self:diffusealpha(0.2)
-				self:smooth(0.3)
-				self:diffusealpha(0)
-			end
+		MouseDownCommand = function(self)
+			MESSAGEMAN:Broadcast("TabPressed",{name = v})
+			self:finishtweening()
+			self:diffusealpha(0.2)
+			self:smooth(0.3)
+			self:diffusealpha(0)
 		end
 	}
 

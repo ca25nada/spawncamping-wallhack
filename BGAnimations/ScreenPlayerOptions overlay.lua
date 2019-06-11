@@ -1,5 +1,5 @@
 local t = Def.ActorFrame{}
-t[#t+1] = LoadActor("_mouse")
+t[#t+1] = LoadActor("_mouse", "ScreenPlayerOptions")
 
 local topFrameHeight = 35
 local bottomFrameHeight = 54

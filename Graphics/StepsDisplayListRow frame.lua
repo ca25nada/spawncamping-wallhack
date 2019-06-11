@@ -7,7 +7,7 @@ t[#t+1] = quadButton(3) .. {
 	InitCommand=function(self)
 		self:zoomto(60,60):diffuse(getMainColor("frame")):diffusealpha(0.7):rotationz(90)
 	end,
-	TopPressedCommand = function(self)
+	MouseDownCommand = function(self)
 		local s = GAMESTATE:GetCurrentSong()
 		if s then
 			local idx = self:GetParent():GetParent():GetIndex() - self:GetParent():GetParent():GetParent():GetCurrentIndex()

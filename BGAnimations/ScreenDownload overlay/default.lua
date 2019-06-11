@@ -798,7 +798,7 @@ t[#t+1] = packList() .. {
 
 
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenDownload")
 t[#t+1] = LoadActor("../_frame")
 t[#t+1] = LoadActor("../_cursor")
 

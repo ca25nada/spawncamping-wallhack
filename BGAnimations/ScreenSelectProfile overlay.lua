@@ -13,10 +13,8 @@ function GetLocalProfiles(pn)
 					self:visible(false)
 					self:name(tostring(p))
 				end,
-				TopPressedCommand = function(self, params)
-					if params.input == "DeviceButton_left mouse button" then
-						MESSAGEMAN:Broadcast("ProfileLeftClick",{pn = pn,index = tonumber(self:GetName())})
-					end
+				MouseDownCommand = function(self)
+					MESSAGEMAN:Broadcast("ProfileLeftClick",{pn = pn,index = tonumber(self:GetName())})
 				end
 			},
 			LoadFont("Common Large") .. {
@@ -189,7 +187,7 @@ end
 local t = Def.ActorFrame{
 }
 
-t[#t+1] = LoadActor("_mouse")
+t[#t+1] = LoadActor("_mouse", "ScreenSelectProfile")
 
 
 

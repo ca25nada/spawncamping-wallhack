@@ -20,7 +20,7 @@ local t = Def.ActorFrame {
 	end
 }
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenScoreInfo")
 
 t[#t+1] = LoadActor("../_frame")
 

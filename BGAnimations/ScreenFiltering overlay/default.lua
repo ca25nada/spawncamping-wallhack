@@ -300,7 +300,7 @@ local function boundBoxes(i)
 	return r
 end
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenFiltering")
 
 t[#t+1] = LoadActor("../_frame")
 

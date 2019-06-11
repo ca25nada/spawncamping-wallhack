@@ -25,10 +25,6 @@ t[#t+1] = quadButton(1) .. {
 		self:zoomto(capWideScale(get43size(340),340),44)
 		self:halign(0)
 		self:visible(false)
-	end,
-	TopPressedCommand = function(self, params)
-
-	
 	end
 }
 
