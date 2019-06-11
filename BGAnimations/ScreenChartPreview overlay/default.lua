@@ -685,7 +685,7 @@ t[#t+1] = Def.ActorFrame {
 	},
 
 	-- This handles the seeking through the preview
-	Def.Quad {
+	quadButton(7) .. {
 		Name = "PreviewClickable",
 		InitCommand = function(self)
 			self:diffuse(color("#000000"))
@@ -702,8 +702,8 @@ t[#t+1] = Def.ActorFrame {
 				self:GetParent():GetChild("PreviewSeek"):visible(false)
 			end
 		end,
-		MouseLeftClickMessageCommand = function(self)
-			if isOver(self) then
+		MouseDownCommand = function(self, params)
+			if params.button == "DeviceButton_left mouse button" then
 				ssm:SetPreviewNoteFieldMusicPosition( (INPUTFILTER:GetMouseY() - self:GetParent():GetY() - 20) * musicratio)
 			end
 		end,

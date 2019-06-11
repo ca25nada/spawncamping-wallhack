@@ -619,7 +619,7 @@ local function rightContainer()
 		end,
 
 		-- The container quad
-		Def.Quad {
+		quadButton(1) .. {
 			InitCommand = function (self)
 				self:zoomto(rightSectionWidth,rightSectionHeight)
 				self:halign(0):valign(0)
@@ -636,8 +636,8 @@ local function rightContainer()
 					movePage(1)
 				end
 			end,
-			MouseRightClickMessageCommand = function(self)
-				if inDetail and isOver(self) then
+			MouseDownCommand = function(self, params)
+				if inDetail and params.button == "DeviceButton_right mouse button" then
 					self:sleep(0.05)
 					self:queuecommand("DelayedHide")
 				end
