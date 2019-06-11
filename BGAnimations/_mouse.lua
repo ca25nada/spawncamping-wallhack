@@ -3,8 +3,6 @@ local whee
 local sName = ...
 
 BUTTON:ResetButtonTable(sName)
-ms.ok(sName)
-
 
 -- Actor for handling most mouse interactions.
 local function input(event)

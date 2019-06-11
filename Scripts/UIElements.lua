@@ -312,9 +312,7 @@ end
 function BUTTON.SetMouseDown(self, event)
 	self.CurDownButton = self.CurTopButton
 	self.CurDownButtonDepth = self.CurTopButtonDepth
-	ms.ok(1)
 	if self.CurDownButton ~= nil then -- Only call onmousedown if a button is pressed.
-		ms.ok(2)
 		self:OnMouseDown(self.CurDownButton, self.CurDownButtonDepth)
 	end
 end
@@ -449,15 +447,14 @@ function quadButton(z, depth)
 			local screen = SCREENMAN:GetTopScreen()
 			if screen ~= nil then
 				BUTTON:AddButton(self, screen:GetName(), depth)
-				ms.ok("adsfasfdasasdf')")
 			end
 		end,
 		MouseOverCommand = function(self) self:GetParent():playcommand("RolloverUpdate",{update = "over"}) end,
 		MouseOutCommand = function(self) self:GetParent():playcommand("RolloverUpdate",{update = "out"}) end,
-		MouseUpCommand = function(self) self:diffuse(color("#FF0000")):diffusealpha(0.5) self:GetParent():playcommand("Click",{update = "OnMouseUp"}) end,
-		MouseDownCommand = function(self) self:diffuse(color("#00FF00")):diffusealpha(0.5) self:GetParent():playcommand("Click",{update = "OnMouseDown"}) end,
-		MouseClickCommand = function(self) self:diffuse(color("#0000FF")):diffusealpha(0.5) self:GetParent():playcommand("Click",{update = "OnMouseClicked"}) end,
-		MouseReleaseCommand = function(self) self:diffuse(color("#FF00FF")):diffusealpha(0.5) self:GetParent():playcommand("Click",{update = "OnMouseReleased"}) end,
+		MouseUpCommand = function(self) self:GetParent():playcommand("Click",{update = "OnMouseUp"}) end,
+		MouseDownCommand = function(self) self:GetParent():playcommand("Click",{update = "OnMouseDown"}) end,
+		MouseClickCommand = function(self) self:GetParent():playcommand("Click",{update = "OnMouseClicked"}) end,
+		MouseReleaseCommand = function(self) self:GetParent():playcommand("Click",{update = "OnMouseReleased"}) end,
 		MouseDragCommand = function(self, params) self:GetParent():playcommand("DragUpdate", params) end,
 	}
 	return t
@@ -484,10 +481,10 @@ function ButtonDemo(z)
 		end,
 		MouseOverCommand = function(self) self:GetParent():playcommand("RolloverUpdate",{update = "over"}) end,
 		MouseOutCommand = function(self) self:GetParent():playcommand("RolloverUpdate",{update = "out"}) end,
-		MouseUpCommand = function(self) self:diffuse(color("#FF0000")):diffusealpha(0.5) self:GetParent():playcommand("Click",{update = "OnMouseUp"}) end,
-		MouseDownCommand = function(self) self:diffuse(color("#00FF00")):diffusealpha(0.5) self:GetParent():playcommand("Click",{update = "OnMouseDown"}) end,
-		MouseClickCommand = function(self) self:diffuse(color("#0000FF")):diffusealpha(0.5) self:GetParent():playcommand("Click",{update = "OnMouseClicked"}) end,
-		MouseReleaseCommand = function(self) self:diffuse(color("#FF00FF")):diffusealpha(0.5) self:GetParent():playcommand("Click",{update = "OnMouseReleased"}) end,
+		MouseUpCommand = function(self) self:GetParent():playcommand("Click",{update = "OnMouseUp"}) end,
+		MouseDownCommand = function(self) self:GetParent():playcommand("Click",{update = "OnMouseDown"}) end,
+		MouseClickCommand = function(self) self:GetParent():playcommand("Click",{update = "OnMouseClicked"}) end,
+		MouseReleaseCommand = function(self) self:GetParent():playcommand("Click",{update = "OnMouseReleased"}) end,
 		MouseDragCommand = function(self, params) self:GetParent():playcommand("DragUpdate", params) end,
 	}
 
