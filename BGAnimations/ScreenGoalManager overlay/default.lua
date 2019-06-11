@@ -329,7 +329,7 @@ local function lowerLeftContainer()
 				self:halign(1)
 				self:faderight(0.5)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				if inDetail then
 					goaltable[goalIndex]:SetRate(goaltable[goalIndex]:GetRate() - 0.05)
 					MESSAGEMAN:Broadcast("UpdateGoalDetails")
@@ -349,7 +349,7 @@ local function lowerLeftContainer()
 				self:halign(1)
 				self:fadeleft(0.5)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				if inDetail then
 					goaltable[goalIndex]:SetRate(goaltable[goalIndex]:GetRate() + 0.05)
 					MESSAGEMAN:Broadcast("UpdateGoalDetails")
@@ -460,7 +460,7 @@ local function lowerLeftContainer()
 				self:halign(1)
 				self:faderight(0.5)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				if inDetail then
 					goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() - 0.01)
 					MESSAGEMAN:Broadcast("UpdateGoalDetails")
@@ -480,7 +480,7 @@ local function lowerLeftContainer()
 				self:halign(1)
 				self:fadeleft(0.5)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				if inDetail then
 					goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() + 0.01)
 					MESSAGEMAN:Broadcast("UpdateGoalDetails")
@@ -567,7 +567,7 @@ local function lowerLeftContainer()
 				ShowGoalDetailMessageCommand = function(self, params)
 					goalIndex = params.goalIndex
 				end,
-				TopPressedCommand = function(self)
+				MouseDownCommand = function(self)
 					if goaltable[goalIndex] and inDetail then
 						goaltable[goalIndex]:Delete()
 						profile:SetFromAll()
@@ -762,9 +762,9 @@ local function rightContainer()
 				self:diffusealpha(0.2)
 				self:zoomto(boxWidth, boxHeight)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self, params)
 				if goaltable[goalIndex] ~= nil then
-					if params.input == "DeviceButton_left mouse button" then
+					if params.button == "DeviceButton_left mouse button" then
 						if goaltable[goalIndex] and goalsong and goalsteps and ((inDetail and theDetail) or not inDetail) then
 							MESSAGEMAN:Broadcast("TriggerExitFromPS",{song = goalsong})
 							GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred"):MusicRate(goaltable[goalIndex]:GetRate())
@@ -772,7 +772,7 @@ local function rightContainer()
 							GAMESTATE:GetSongOptionsObject("ModsLevel_Current"):MusicRate(goaltable[goalIndex]:GetRate())
 							SCREENMAN:GetTopScreen():Cancel()
 						end
-					elseif params.input == "DeviceButton_right mouse button" then
+					elseif params.button == "DeviceButton_right mouse button" then
 						if goaltable[goalIndex] and not inDetail then
 							inDetail = true
 							MESSAGEMAN:Broadcast("ShowGoalDetail", {index = i, goalIndex = goalIndex})

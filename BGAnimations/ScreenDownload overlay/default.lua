@@ -233,7 +233,7 @@ local function packInfo()
 			self:diffusealpha(0.2)
 			self:zoomto(packItemWidth / 4, packItemHeight - packItemYSpacing)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -315,7 +315,7 @@ local function packInfo()
 				self:diffusealpha(0.2)
 				self:zoomto(packItemWidth, packItemHeight)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				initpacklist:SetFromCoreBundle(bundlenames[bundleIndex]:lower())
 				packlist = initpacklist:GetPackTable()
 				self:finishtweening()
@@ -479,7 +479,7 @@ local function packList()
 			self:diffusealpha(0.2)
 			self:zoomto(packItemWidth / 6, packItemHeight - packItemYSpacing)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -514,7 +514,7 @@ local function packList()
 			self:diffusealpha(0.2)
 			self:zoomto(packItemWidth / 6, packItemHeight - packItemYSpacing)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -545,7 +545,7 @@ local function packList()
 			self:zoomto(packItemWidth - 128, packItemHeight - packItemYSpacing)
 			self:diffusealpha(0.2)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:diffusealpha(0.4)
 			inputting = true
 		end,
@@ -683,7 +683,7 @@ local function packList()
 				self:diffusealpha(0.2)
 				self:zoomto(packItemWidth, packItemHeight)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if packlist[packIndex] ~= nil and packlist[packIndex]:IsDownloading() then -- IsDownloading() returns the wrong boolean for some reason.
 					self:GetParent():playcommand("StartDownload")
 				elseif packlist[packIndex] ~= nil then

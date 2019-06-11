@@ -205,7 +205,7 @@ local function playlistInfo()
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2-10)
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			if not playlist then
 				return
 			end
@@ -241,7 +241,7 @@ local function playlistInfo()
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2*3-10*2)
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			if not playlist then
 				return
 			end
@@ -274,7 +274,7 @@ local function playlistInfo()
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2*5-10*3)
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			if not playlist then
 				return
 			end
@@ -311,7 +311,7 @@ local function playlistInfo()
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2*7-10*4)
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			if not playlist or not playlist:IsPlayable() then
 				return
 			end
@@ -429,18 +429,18 @@ local function playlistList()
 				self:diffusealpha(0.2)
 				self:zoomto(itemWidth, itemHeight)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self, params)
 				if hidden then
 					return
 				end
 
-				if params.input == "DeviceButton_left mouse button" then
+				if params.button == "DeviceButton_left mouse button" then
 					if not detail and playlist then
 						detail = true
 						MESSAGEMAN:Broadcast("ShowPlaylistDetail", {playlist = playlist, playlistIndex = playlistIndex, index = i})
 					end
 
-				elseif params.input == "DeviceButton_right mouse button" then
+				elseif params.button == "DeviceButton_right mouse button" then
 					detail = false
 					MESSAGEMAN:Broadcast("HidePlaylistDetail")
 				end
@@ -536,7 +536,7 @@ local function playlistList()
 				end
 				self:zoomto(40, 17)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not (steps and song) or hidden then
 					return
 				end
@@ -594,7 +594,7 @@ local function playlistList()
 			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 			self:zoomto(100, 20)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			-- Doesn't work yet outside of ScreenSelectMusic apparently.
 			addPlaylist()
 			self:finishtweening()
@@ -711,7 +711,7 @@ local function playlistStepsList()
 				self:diffusealpha(0.2)
 				self:zoomto(itemWidth, itemHeight)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
@@ -786,7 +786,7 @@ local function playlistStepsList()
 				self:xy(itemWidth-5-20, 0)
 				self:zoomto(40, 17)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not playlist or hidden then
 					return
 				end
@@ -823,7 +823,7 @@ local function playlistStepsList()
 				self:xy(itemWidth-10-60, 0)
 				self:zoomto(40, 17)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not playlist or hidden then
 					return
 				end

@@ -332,7 +332,7 @@ local function stepsListRow()
 				self:y(SCREEN_HEIGHT*10)
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1)-10)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				local dir = i - curStepIndex
 				if dir ~= 0 then
 					ssm:ChangeSteps(dir)
@@ -409,7 +409,7 @@ local function stepsBPMRow()
 			self:halign(1)
 			self:faderight(0.5)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			changeMusicRate(-0.05)
 			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
 
@@ -427,7 +427,7 @@ local function stepsBPMRow()
 			self:halign(1)
 			self:fadeleft(0.5)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			changeMusicRate(0.05)
 			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
 

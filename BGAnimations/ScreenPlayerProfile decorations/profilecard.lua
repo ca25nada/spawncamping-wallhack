@@ -52,7 +52,7 @@ t[#t+1] = quadButton(3)..{
 			self:diffusealpha(0.2)
 		end
 	end,
-	TopPressedCommand = function(self)
+	MouseDownCommand = function(self)
 		if DLMAN:IsLoggedIn() then
 			self:finishtweening()
 			self:diffusealpha(1)
@@ -155,7 +155,7 @@ t[#t+1] = quadButton(3)..{
 		SCREENMAN:SystemMessage("Logged Out!")
 	end,
 
-	TopPressedCommand = function(self)
+	MouseDownCommand = function(self)
 		if not DLMAN:IsLoggedIn() then
 			self:playcommand("StartLogin")
 		else

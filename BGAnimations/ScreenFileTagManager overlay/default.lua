@@ -315,7 +315,7 @@ t[#t+1] = Def.ActorFrame {
 			self:diffusealpha(0.2)
 			self:zoomto(numBoxWidth + 15, 35)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -444,9 +444,9 @@ local function rightContainer()
 				self:diffusealpha(0.2)
 				self:zoomto(boxWidth, boxHeight)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self, params)
 				if playertags[tagIndex] ~= nil then
-					if params.input == "DeviceButton_left mouse button" then
+					if params.button == "DeviceButton_left mouse button" then
 						if not ptags[playertags[tagIndex]][ck] then
 							tags:get_data().playerTags[playertags[tagIndex]][ck] = 1
 							tags:set_dirty()
@@ -454,7 +454,7 @@ local function rightContainer()
 							updateTagsFromData()
 							MESSAGEMAN:Broadcast("UpdateList")
 						end
-					elseif params.input == "DeviceButton_right mouse button" then
+					elseif params.button == "DeviceButton_right mouse button" then
 						if ptags[playertags[tagIndex]][ck] then
 							tags:get_data().playerTags[playertags[tagIndex]][ck] = nil
 							tags:set_dirty()

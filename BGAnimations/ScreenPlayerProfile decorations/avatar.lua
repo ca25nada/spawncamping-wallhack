@@ -37,8 +37,8 @@ t[#t+1] = Def.Quad{
 			self:zoomto(avatarHeight+avatarBorder*2,avatarWidth+avatarBorder*2)
 			self:visible(false)
 		end,
-		TopPressedCommand = function(self, params)
-			if params.input == "DeviceButton_left mouse button" then
+		MouseDownCommand = function(self, params)
+			if params.button == "DeviceButton_left mouse button" then
 				SCREENMAN:AddNewScreenToTop("ScreenSelectAvatar")
 			end
 		end

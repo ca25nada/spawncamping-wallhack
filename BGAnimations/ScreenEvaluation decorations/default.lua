@@ -1429,7 +1429,7 @@ local function boardOfScores()
 					self:diffusealpha(0.4)
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					isLocal = true
 					self:GetParent():queuecommand("UpdateScores")
@@ -1482,7 +1482,7 @@ local function boardOfScores()
 					self:diffusealpha(0.4)
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if isLocal and loggedIn then
 					isLocal = false
 					self:GetParent():queuecommand("UpdateScores")
@@ -1535,7 +1535,7 @@ local function boardOfScores()
 					end
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					if not DLMAN:GetCurrentRateFilter() then
 						DLMAN:ToggleRateFilter()
@@ -1589,7 +1589,7 @@ local function boardOfScores()
 					end
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					if DLMAN:GetCurrentRateFilter() then
 						DLMAN:ToggleRateFilter()
@@ -1643,7 +1643,7 @@ local function boardOfScores()
 					end
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					if not DLMAN:GetTopScoresOnlyFilter() then
 						DLMAN:ToggleTopScoresOnlyFilter()
@@ -1697,7 +1697,7 @@ local function boardOfScores()
 					end
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					if DLMAN:GetTopScoresOnlyFilter() then
 						DLMAN:ToggleTopScoresOnlyFilter()
@@ -1784,7 +1784,7 @@ local function boardOfScores()
 					self:diffusealpha(0.1)
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
 					return
 				end
@@ -1917,7 +1917,7 @@ local function boardOfScores()
 				self:diffusealpha(0.1)
 				self:zoomto(frameWidth - scoreItemWidth - scoreItemX - 20, scoreItemHeight)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
 					return
 				end

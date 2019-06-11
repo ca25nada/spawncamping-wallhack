@@ -99,7 +99,7 @@ local function scoreSSRTypes(i)
 			self:diffusealpha(0.2)
 			self:zoomto(scoreSSRItemWidth, scoreSSRItemHeight)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -217,15 +217,15 @@ local function scoreListItem(i)
 			self:diffusealpha(0.2)
 			self:zoomto(scoreItemWidth, scoreItemHeight)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self, params)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
 			self:diffusealpha(0.2)
-			if params.input == "DeviceButton_right mouse button" then
+			if params.button == "DeviceButton_right mouse button" then
 				ths:ToggleEtternaValidation()
 				MESSAGEMAN:Broadcast("UpdateRanking", {SSRType = skillset})
-			elseif params.input == "DeviceButton_left mouse button" then
+			elseif params.button == "DeviceButton_left mouse button" then
 				--MESSAGEMAN:Broadcast("DisplaySong",{score = ths})
 				SCREENMAN:GetTopScreen():Cancel()
 				MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
@@ -371,7 +371,7 @@ local function songDisplay()
 			self:diffusealpha(0.2)
 			self:zoomto(songDisplayWidth, songDisplayHeight)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.5)
