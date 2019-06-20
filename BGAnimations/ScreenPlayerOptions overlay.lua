@@ -104,7 +104,7 @@ t[#t+1] = Def.ActorFrame{
 		end,
 		ModifyAvatarCommand=function(self)
 			self:finishtweening()
-			self:LoadBackground(assetFolders.avatar .. findAvatar(PROFILEMAN:GetProfile(PLAYER_1):GetGUID()))
+			self:Load(getAvatarPath(PLAYER_1))
 			self:zoomto(30,30)
 		end
 	},

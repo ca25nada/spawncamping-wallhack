@@ -96,7 +96,7 @@ local function topRow()
 		InitCommand = function (self) 
 			self:x(-frameWidth/2 + 5)
 			self:halign(0)
-			self:LoadBackground(assetFolders.avatar .. findAvatar(GUID))
+			self:Load(getAvatarPath(PLAYER_1))
 			self:zoomto(30,30)
 		end
 	}

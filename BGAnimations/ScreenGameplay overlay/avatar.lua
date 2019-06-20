@@ -79,7 +79,7 @@ if fullPlayerInfo then
 		BeginCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand=function(self)
 			self:finishtweening()
-			self:LoadBackground(assetFolders.avatar .. findAvatar(profile:GetGUID()))
+			self:Load(getAvatarPath(PLAYER_1))
 			self:zoomto(50,50)
 		end
 	}
