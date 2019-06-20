@@ -107,6 +107,9 @@ local t = Def.ActorFrame{
 		top:AddInputCallback(input)
 	end,
 	OffCommand = function(self)
+		self:playcommand("Cancel")
+	end,
+	CancelCommand = function(self)
 		BUTTON:ResetButtonTable(top:GetName())
 	end,
 	ExitScreenMessageCommand = function(self, params)
