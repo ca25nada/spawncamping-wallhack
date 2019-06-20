@@ -200,6 +200,9 @@ function Actor.GetLocalMousePos(self, mouseX, mouseY, depth)
 
 end
 
+function Actor.isOver(self)
+	return self:IsOver()
+end
 -- Button Rollover detection
 function Actor.IsOver(self, mouseX, mouseY)
 
