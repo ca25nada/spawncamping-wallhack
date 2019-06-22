@@ -2,8 +2,7 @@ local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1))
 local c
 local player = Var "Player"
 local bareBone = isBareBone()
-local JTDisabled = not judgementTween()
-local usingAssets = useAssetsJudgements()
+local JTDisabled = not JudgmentTween()
 
 --[[
 Removed from metrics:
@@ -93,7 +92,7 @@ local t = Def.ActorFrame {
 		self:draworder(350)
 	end,
 	Def.Sprite {
-		Texture = usingAssets and "../../../../" .. getAssetPath("judgement") or THEME:GetPathG("Judgment", "Normal"),
+		Texture = "../../../../" .. getAssetPath("judgment"),
 		Name="Judgment",
 		InitCommand=function(self)
 			self:pause():visible(false):xy(MovableValues.JudgeX, MovableValues.JudgeY)

@@ -11,8 +11,7 @@ local defaultConfig = {
 		ProgressBar = 1, -- 0 = off, 1 bottom , 2 top
 		SongPreview = 3, -- 1 = SM style, 2 = osu! Style (new), 3 = osu! style (old)
 		BannerWheel = true,
-		UseAssetsJudgements = false,
-		JudgementTween = true,
+		JudgmentTween = true,
 		ComboTween = true,
 		ComboWords = true,
 		LeaderboardSlots = 8,
@@ -50,10 +49,6 @@ function isBareBone()
 	return themeConfig:get_data().global.BareBone
 end
 
-function judgementTween()
-	return themeConfig:get_data().global.JudgementTween
-end
-
-function useAssetsJudgements()
-	return themeConfig:get_data().global.UseAssetsJudgements
+function JudgmentTween()
+	return themeConfig:get_data().global.JudgmentTween
 end
