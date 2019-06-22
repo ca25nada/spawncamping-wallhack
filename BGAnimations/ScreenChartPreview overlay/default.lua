@@ -8,6 +8,9 @@ local ssm
 local NF
 local NFParent
 local musicratio = 1
+local snapGraph
+local densityGraph
+local previewType = 1
 
 local validStepsType = {
 	'StepsType_Dance_Single',
@@ -584,6 +587,19 @@ local function seekOrHighlight(self)
 	self:queuecommand("Highlight")
 end
 
+local function togglePreviewType()
+	if previewType == 1 then
+		previewType = 0
+		densityGraph:visible(false)
+		snapGraph:visible(true)
+		snapGraph:queuecommand("DrawSnapGraph")
+	else
+		previewType = 1
+		densityGraph:visible(true)
+		snapGraph:visible(false)
+	end
+end
+
 -- The container for the density graph and scrollbar
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
@@ -596,7 +612,9 @@ t[#t+1] = Def.ActorFrame {
 		-- i dunno maybe the song might not be ready in time, just in case bro
 		musicratio = GAMESTATE:GetCurrentSong():GetLastSecond() / (frameHeight - 20)
 	end,
-
+	OnCommand = function(self)
+		densityGraph = self:GetChild("ChordDensityGraph")
+	end,
 
 	-- container bg
 	Def.Quad {
@@ -685,6 +703,20 @@ t[#t+1] = Def.ActorFrame {
 		end
 	},
 
+	-- Invisible button to toggle secret scuffed graph
+	quadButton(8) .. {
+		Name = "spooky",
+		InitCommand = function(self)
+			self:zoomto(84,20)
+			self:halign(0)
+			self:valign(0)
+			self:diffusealpha(0)
+		end,
+		MouseDownCommand = function(self)
+			togglePreviewType()
+		end
+	},
+
 	-- This handles the seeking through the preview
 	quadButton(7) .. {
 		Name = "PreviewClickable",
@@ -733,6 +765,99 @@ t[#t+1] = Def.ActorFrame {
 
 }
 
+local dotWidth = 8
+local dotHeight = 0.75
+local function fillVertStruct( vt, x, y, givencolor )
+	vt[#vt + 1] = {{x - dotWidth, y + dotHeight, 0}, givencolor}
+	vt[#vt + 1] = {{x + dotWidth, y + dotHeight, 0}, givencolor}
+	vt[#vt + 1] = {{x + dotWidth, y - dotHeight, 0}, givencolor}
+	vt[#vt + 1] = {{x - dotWidth, y - dotHeight, 0}, givencolor}
+end
+local function fitX( number, totalnumber ) -- find X relative to the center of the plot
+	return -84 / 2 + 84 * (number / totalnumber) - (84/(totalnumber*2))
+end
+
+local function fitY( number, tracks ) -- find Y relative to the middle of the screen
+	return -SCREEN_HEIGHT / 2 + SCREEN_HEIGHT * (number / tracks) * (usingreverse and -1 or 1)
+end
+
+local noteData
+
+t[#t+1] = Def.ActorFrame {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X / 1.2 - 36 + frameWidth + horizontalSpacing + 84/2, 110)
+		self:valign(0)
+	end,
+	OnCommand = function(self)
+		if song and steps then
+			noteData = steps:GetNonEmptyNoteData()
+		else
+			noteData = nil
+		end
+		snapGraph = self:GetChild("SnapGraph")
+	end,
+	Def.ActorMultiVertex {
+		Name = "SnapGraph",
+		OnCommand = function(self)
+			self:visible(false)
+			self:queuecommand("DrawSnapGraph")
+		end,
+		SetStepsMessageCommand = function(self, params)
+			if params.steps then
+				if song then
+					noteData = params.steps:GetNonEmptyNoteData()
+				else
+					noteData = nil
+				end
+				if previewType == 0 then
+					self:queuecommand("DrawSnapGraph")
+					ms.ok(1)
+				end
+			end
+		end,
+		DrawSnapGraphCommand = function(self)
+			local verts = {}
+			local numtracks = #noteData - 2
+			local numrows = noteData[1][#noteData[1]]
+			local specificwidth = (frameHeight - 20) / numrows
+			for row = 1, #noteData[1] do
+				--local y = fitY(noteData[1][row], numrows)
+				local y = 20 + math.min(noteData[1][row] * specificwidth, frameHeight-20)
+				for track = 1, numtracks do
+					local x = fitX(track, numtracks)
+					if noteData[track + 1][row] == 1 then
+						local dotcolor = color("#da5757") 
+						if noteData[6][row] == 1 then 
+							dotcolor = color("#da5757")
+						elseif noteData[6][row] == 2 then 
+							dotcolor = color("#003EFF")
+						elseif noteData[6][row] == 3 then 
+							dotcolor = color("#3F6826")
+						elseif noteData[6][row] == 4 then 
+							dotcolor = color("#dff442")
+						elseif noteData[6][row] == 5 then 
+							dotcolor = color("#7a11d6")
+						elseif noteData[6][row] == 6 then 
+							dotcolor = color("#d68311")
+						elseif noteData[6][row] == 7 then 
+							dotcolor = color("#11d6bb")
+						elseif noteData[6][row] == 8 then 
+							dotcolor = color("#5e5d60")
+						elseif noteData[6][row] == 9 then 
+							dotcolor = color("#f9f9f9")
+						end
+							
+						fillVertStruct( verts, x, y, dotcolor )
+					end
+				end
+			end
+			self:SetVertices(verts)
+			self:SetDrawState {Mode = "DrawMode_Quads", First = 1, Num = #verts}
+
+		end
+	}
+}
+
 -- The main, central container (Preview Notefield)
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
@@ -777,9 +902,8 @@ t[#t+1] = Def.ActorFrame {
 			end
 			NFParent:SortByDrawOrder()
 		end
-	}
+	},
 }
-
 
 t[#t+1] = LoadActor("../_cursor")
 
