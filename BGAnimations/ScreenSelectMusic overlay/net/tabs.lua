@@ -127,6 +127,9 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2 - 17)
 	end,
 	TabPressedMessageCommand = function(self, params)
+		if params.params.button ~= "DeviceButton_left mouse button" then
+			return
+		end
 		if inSongSearch then
 			MESSAGEMAN:Broadcast("EndSearch")
 			SCREENMAN:set_input_redirected(PLAYER_1, false)

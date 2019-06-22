@@ -53,8 +53,10 @@ t[#t+1] = quadButton(1)..{
 		self:zoomto(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 		self:visible(false)
 	end,
-	MouseDownCommand = function(self)
-		
+	MouseDownCommand = function(self, params)
+		if params.button ~= "DeviceButton_left mouse button" then
+			return
+		end
 		if song ~= nil then 
 			SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 

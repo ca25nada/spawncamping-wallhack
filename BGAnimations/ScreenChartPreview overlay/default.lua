@@ -75,6 +75,7 @@ local function input(event)
 
 		if event.DeviceInput.button == "DeviceButton_right mouse button" then
 			ssm:PausePreviewNoteField()
+			MESSAGEMAN:Broadcast("PreviewPaused")
 		end
 
 	end

@@ -44,6 +44,10 @@ local sortTable = {
 
 local function searchInput(event)
 	if event.type == "InputEventType_FirstPress" and (event.DeviceInput.button == "DeviceButton_left mouse button" or event.DeviceInput.button == "DeviceButton_right mouse button") then
+		if not active and event.DeviceInput.button == "DeviceButton_right mouse button" then
+			top:PausePreviewNoteField()
+			MESSAGEMAN:Broadcast("PreviewPaused")
+		end
 		MESSAGEMAN:Broadcast("EndSearch")
 	end
 	if not active and event.type =="InputEventType_FirstPress" then
@@ -163,8 +167,10 @@ t[#t+1] = quadButton(4) .. {
 		self:zoomto(frameWidth,frameHeight)
 		self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 	end,
-	MouseDownCommand = function(self)
-		MESSAGEMAN:Broadcast("StartSearch")
+	MouseDownCommand = function(self, params)
+		if params.button == "DeviceButton_left mouse button" then
+			MESSAGEMAN:Broadcast("StartSearch")
+		end
 	end
 }
 

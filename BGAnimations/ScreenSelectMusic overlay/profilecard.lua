@@ -120,8 +120,10 @@ local function generalFrame(pn)
 			self:zoomto(50,50)
 			self:visible(false)
 		end,
-		MouseDownCommand = function(self)
-			SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
+		MouseDownCommand = function(self, params)
+			if params.button == "DeviceButton_left mouse button" then
+				SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
+			end
 		end
 	}
 
