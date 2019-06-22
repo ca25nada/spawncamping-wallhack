@@ -46,6 +46,11 @@ local function searchInput(event)
 	if event.type == "InputEventType_FirstPress" and (event.DeviceInput.button == "DeviceButton_left mouse button" or event.DeviceInput.button == "DeviceButton_right mouse button") then
 		MESSAGEMAN:Broadcast("EndSearch")
 	end
+	if not active and event.type =="InputEventType_FirstPress" then
+		if song and event.DeviceInput.button == "DeviceButton_space" then
+			SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
+		end
+	end
 	if event.type ~= "InputEventType_Release" and active then
 		local CtrlPressed = INPUTFILTER:IsBeingPressed("left ctrl") or INPUTFILTER:IsBeingPressed("right ctrl")
 		if event.button == "Back" then
@@ -179,7 +184,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		if searchstring == "" then
 			if not active then
 				local sort = GAMESTATE:GetSortOrder()
-				local song = GAMESTATE:GetCurrentSong()
+				song = GAMESTATE:GetCurrentSong()
 				if sort == nil then
 					self:settext("Sort: ")
 				elseif sort == "SortOrder_Group" and song ~= nil then

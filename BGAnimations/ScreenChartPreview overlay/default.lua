@@ -51,7 +51,7 @@ local curStepIndex = 0
 local function input(event)
 	
 	if event.type == "InputEventType_FirstPress" then
-		if event.button == "Back" or event.button == "Start" then
+		if event.button == "Back" or event.button == "Start" or event.DeviceInput.button == "DeviceButton_space" then
 			SCREENMAN:GetTopScreen():Cancel()
 			ssm:DeletePreviewNoteField(NFParent)
 			MESSAGEMAN:Broadcast("PreviewNoteFieldDeleted")
