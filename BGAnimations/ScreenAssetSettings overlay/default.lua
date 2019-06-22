@@ -128,6 +128,9 @@ local function confirmPick() -- select the asset in the current index for use in
 	setAssetsByType(type, GUID, path)
 
 	MESSAGEMAN:Broadcast("PickChanged")
+	if type == "avatar" then
+		MESSAGEMAN:Broadcast("AvatarChanged")
+	end
 end
 
 local function updateImages() -- Update all image actors (sprites)
@@ -141,7 +144,7 @@ local function updateImages() -- Update all image actors (sprites)
 end
 
 local function loadAssetType(n) -- move and load asset type forward/backward
-	if n < 0 then n = 0 end
+	if n < 1 then n = 1 end
 	if n > #assetTypes then n = #assetTypes end
 	lastClickedIndex = 0
 	curPage = 1
@@ -206,7 +209,7 @@ local function moveCursor(x, y) -- move the cursor
 	end
 end
 
--- more code lifted straight from scwh
+-- aliased tabs
 local TAB = {
 	choices = {},
 	width = 100,
@@ -240,9 +243,6 @@ function TAB.makeTabActors(tab)
 				self:diffusealpha(0.7)
 				loadAssetType(i)
 			end
-		end,
-		MouseRightClickMessageCommand = function(self)
-			SCREENMAN:GetTopScreen():Cancel()
 		end,
 		TabPressedMessageCommand = function(self, params)
 			if params.name ~= v then
@@ -278,6 +278,154 @@ function TAB.makeTabActors(tab)
 	return t
 end
 ---
+
+local function topRow()
+	local t = Def.ActorFrame{}
+	local frameHeight = 40
+	local frameWidth = SCREEN_WIDTH - 20
+	local fontScale = 0.5
+	local smallFontScale = 0.25
+	local tinyFontScale = 0.2
+	local fontRow1 = -frameHeight/2+20
+	local fontRow2 = -frameHeight/2+45
+	local fontSpacing = 15
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:zoomto(frameWidth, frameHeight)
+			self:diffuse(color("#000000")):diffusealpha(0.8)
+		end
+	}
+
+	t[#t+1] = Def.Quad{
+		InitCommand = function(self)
+			self:y(SCREEN_HEIGHT-40-30)
+			self:valign(1)
+			self:zoomto(frameWidth, 20)
+			self:diffuse(color("#000000")):diffusealpha(0.8)
+		end
+	}
+
+	t[#t+1] = Def.Sprite {
+		InitCommand = function (self) 
+			self:x(-frameWidth/2 + 5)
+			self:halign(0)
+			self:Load(getAvatarPath(PLAYER_1))
+			self:zoomto(30,30)
+		end,
+		AvatarChangedMessageCommand = function(self)
+			self:Load(getAvatarPath(PLAYER_1))
+			self:zoomto(30,30)
+		end
+	}
+
+	t[#t+1] = LoadFont("Common BLarge") .. {
+		InitCommand = function(self)
+			self:xy(-frameWidth/2 + 30 + 10, -7)
+			self:zoom(0.30)
+			self:halign(0)
+			self:settext(profile:GetDisplayName())
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(-frameWidth/2 + 30 +10, 7)
+			self:zoom(0.35)
+			self:halign(0)
+			self:settext("")
+		end,
+		SetCommand = function(self)
+			local cur = getIndex()
+			local max = #assetTable
+			self:settext(cur .. "/" .. max)
+		end,
+		UpdateFinishedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end,
+		CursorMovedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand = function(self)
+			self:xy(frameWidth/2-5,-1)
+			self:zoom(0.45)
+			self:halign(1)
+			self:settextf("Page %d/%d", curPage, maxPage)
+		end,
+		PageMovedMessageCommand = function(self, params)
+			self:settextf("Page %d/%d",params.page, maxPage)
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Large") .. {
+		Name = "CurrentPath",
+		InitCommand = function(self)
+			self:zoom(smallFontScale)
+			self:halign(0)
+			self:xy(-frameWidth/2 + fontSpacing, SCREEN_HEIGHT-40-40)
+			self:maxwidth((SCREEN_CENTER_X - TAB.width*#assetTypes/2 - 40)/smallFontScale)
+		end,
+		SetCommand = function(self)
+			local type = assetTable[getIndex()]
+			if type == nil then
+				self:settext("")
+			else
+				self:settext(type:gsub("^%l", string.upper))
+			end
+		end,
+		CursorMovedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end,
+		UpdateFinishedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Large") .. {
+		Name = "SelectedPath",
+		InitCommand = function(self)
+			self:zoom(smallFontScale)
+			self:halign(1)
+			self:xy(frameWidth/2 - fontSpacing, SCREEN_HEIGHT-40-40)
+			self:maxwidth((SCREEN_CENTER_X - TAB.width*#assetTypes/2 - 40)/smallFontScale)
+		end,
+		SetCommand = function(self)
+			local type = assetTable[selectedIndex]
+			if type == nil then
+				self:settext("")
+			else
+				self:settext(type:gsub("^%l", string.upper))
+			end
+		end,
+		PickChangedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end,
+		UpdateFinishedMessageCommand = function(self)
+			self:queuecommand("Set")
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Large") .. {
+		Name = "AssetType",
+		InitCommand = function(self)
+			self:zoom(fontScale)
+			self:xy(0, fontRow1)
+			self:queuecommand("Set")
+		end,
+		SetCommand = function(self)
+			local type = assetTypes[curType]
+			self:settext(type:gsub("^%l", string.upper))
+		end,
+		UpdatingAssetsMessageCommand = function(self)
+			self:queuecommand("Set")
+		end
+	}
+
+	return t
+end
 
 local function assetBox(i)
     local name = assetTable[i]
@@ -473,179 +621,6 @@ local function assetBox(i)
     return t
 end
 
-
-
-local function highlight(self)
-	self:queuecommand("Highlight")
-end
-
-local function mainContainer()
-	local fontScale = 0.5
-	local smallFontScale = 0.35
-	local tinyFontScale = 0.2
-	local fontRow1 = -frameHeight/2+20
-	local fontRow2 = -frameHeight/2+45
-	local fontSpacing = 15
-
-	local t = Def.ActorFrame {
-		InitCommand = function(self)
-			self:SetUpdateFunction(highlight)
-		end
-	}
-
-    t[#t+1] = Def.Quad {
-        InitCommand = function(self)
-            self:zoomto(frameWidth, frameHeight)
-            self:diffuse(color("#333333")):diffusealpha(0.8)
-        end
-	}
-	
-	t[#t+1] = LoadFont("Common Large") .. {
-		InitCommand = function(self)
-			self:zoom(fontScale)
-			self:halign(0)
-			self:xy(-frameWidth/2 + fontSpacing, fontRow1)
-			self:settext("Asset Settings")
-		end
-	}
-
-	--[[
-	-- instructions
-	t[#t+1] = LoadFont("Common Large") .. {
-		InitCommand = function(self)
-			self:zoom(smallFontScale)
-			self:xy(0, frameHeight/2 - 15)
-			self:settext("Arrows to move       Enter to select       Mouse support enabled")
-		end
-	}]]
-
-	t[#t+1] = LoadFont("Common Large") .. {
-		InitCommand = function(self)
-			self:zoom(smallFontScale)
-			self:xy(-frameWidth/2 + fontSpacing + 35, fontRow2 + 5)
-			self:settext("")
-		end,
-		SetCommand = function(self)
-			local cur = getIndex()
-			local max = #assetTable
-			self:settext(cur .. "/" .. max)
-		end,
-		UpdateFinishedMessageCommand = function(self)
-			self:queuecommand("Set")
-		end,
-		CursorMovedMessageCommand = function(self)
-			self:queuecommand("Set")
-		end
-	}
-
-	t[#t+1] = LoadFont("Common Large") .. {
-		Name = "CurrentPath",
-		InitCommand = function(self)
-			self:zoom(smallFontScale)
-			self:halign(0)
-			self:xy(-frameWidth/2 + fontSpacing, frameHeight/2 - 15)
-			self:maxwidth((SCREEN_CENTER_X - TAB.width*#assetTypes/2 - 40)/smallFontScale)
-		end,
-		SetCommand = function(self)
-			local type = assetTable[getIndex()]
-			if type == nil then
-				self:settext("")
-			else
-				self:settext(type:gsub("^%l", string.upper))
-			end
-		end,
-		CursorMovedMessageCommand = function(self)
-			self:queuecommand("Set")
-		end,
-		UpdateFinishedMessageCommand = function(self)
-			self:queuecommand("Set")
-		end
-	}
-
-	t[#t+1] = LoadFont("Common Large") .. {
-		Name = "SelectedPath",
-		InitCommand = function(self)
-			self:zoom(smallFontScale)
-			self:halign(0)
-			self:xy(TAB.width*#assetTypes/2 + 15, frameHeight/2 - 15)
-			self:maxwidth((SCREEN_CENTER_X - TAB.width*#assetTypes/2 - 40)/smallFontScale)
-		end,
-		SetCommand = function(self)
-			local type = assetTable[selectedIndex]
-			if type == nil then
-				self:settext("")
-			else
-				self:settext(type:gsub("^%l", string.upper))
-			end
-		end,
-		PickChangedMessageCommand = function(self)
-			self:queuecommand("Set")
-		end,
-		UpdateFinishedMessageCommand = function(self)
-			self:queuecommand("Set")
-		end
-	}
-
-	t[#t+1] = LoadFont("Common Large") .. {
-		Name = "AssetType",
-		InitCommand = function(self)
-			self:zoom(fontScale)
-			self:xy(0, fontRow1)
-			self:queuecommand("Set")
-		end,
-		SetCommand = function(self)
-			local type = assetTypes[curType]
-			self:settext(type:gsub("^%l", string.upper))
-		end,
-		UpdatingAssetsMessageCommand = function(self)
-			self:queuecommand("Set")
-		end
-	}
---[[
-	t[#t+1] = LoadFont("Common Large") .. {
-		InitCommand = function(self)
-			self:zoom(smallFontScale)
-			self:xy(-100, frameHeight/2 - 18)
-			self:settext("Prev")
-		end,
-		HighlightCommand = function(self)
-			if isOver(self) then
-				self:diffusealpha(1)
-			else
-				self:diffusealpha(0.6)
-			end
-		end,
-		MouseLeftClickMessageCommand = function(self)
-			if isOver(self) then
-				loadAssetType(-1)
-			end
-		end
-	}
-
-	t[#t+1] = LoadFont("Common Large") .. {
-		InitCommand = function(self)
-			self:zoom(smallFontScale)
-			self:xy(100, frameHeight/2 - 18)
-			self:settext("Next")
-		end,
-		HighlightCommand = function(self)
-			if isOver(self) then
-				self:diffusealpha(1)
-			else
-				self:diffusealpha(0.6)
-			end
-		end,
-		MouseLeftClickMessageCommand = function(self)
-			if isOver(self) then
-				loadAssetType(1)
-			end
-		end
-	}]]
-
-    return t
-end
-
-
 local function input(event)
 	if event.type ~= "InputEventType_Release" then
 		if event.button == "Back" then
@@ -680,13 +655,8 @@ local function input(event)
 			loadAssetType(curType - 1)
         end
 	end
-	if event.type == "InputEventType_FirstPress" then
-		if event.DeviceInput.button == "DeviceButton_left mouse button" then
-			MESSAGEMAN:Broadcast("MouseLeftClick")
-		elseif event.DeviceInput.button == "DeviceButton_right mouse button" then
-			MESSAGEMAN:Broadcast("MouseRightClick")
-		
-		elseif event.DeviceInput.button == "DeviceButton_mousewheel up" and event.type == "InputEventType_FirstPress" then
+	if event.type == "InputEventType_FirstPress" then		
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" and event.type == "InputEventType_FirstPress" then
 			movePage(-1)
 		elseif event.DeviceInput.button == "DeviceButton_mousewheel down" and event.type == "InputEventType_FirstPress" then
 			movePage(1)
@@ -716,10 +686,10 @@ local t = Def.ActorFrame {
 
 }
 
-t[#t+1] = mainContainer() .. {
-    InitCommand = function(self)
-        self:xy(SCREEN_CENTER_X, SCREEN_CENTER_Y)
-    end
+t[#t+1] = topRow() .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X, 50)
+	end
 }
 
 local l = 1
@@ -732,6 +702,82 @@ local typeTabs = TAB:new(capTypes)
 t[#t+1] = typeTabs:makeTabActors() .. {
 	InitCommand = function(self)
 		self:xy(SCREEN_CENTER_X - TAB.width*#assetTypes/2, SCREEN_CENTER_Y + frameHeight/2 - TAB.height/2)
+	end
+}
+
+t[#t+1] = Def.Quad{
+	InitCommand = function(self)
+		self:zoomto(25, 25)
+		self:xy(25, SCREEN_CENTER_Y+25)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+	end
+}
+t[#t+1] = quadButton(4)..{
+	InitCommand = function(self)
+		self:zoomto(25, 25)
+		self:xy(25, SCREEN_CENTER_Y+25)
+		self:diffuse(color("#FFFFFF")):diffusealpha(0)
+	end,
+	MouseDownCommand = function(self)
+		movePage(-1)
+		self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
+		self:finishtweening()
+		self:diffusealpha(0.2)
+		self:smooth(0.3)
+		self:diffusealpha(0)
+	end
+}
+t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+	Name = "TriangleLeft",
+	InitCommand = function(self)
+		self:zoom(0.15)
+		self:diffusealpha(0.8)
+		self:xy(25, SCREEN_CENTER_Y+25)
+		self:rotationz(-90)
+	end,
+	TweenCommand = function(self)
+		self:finishtweening()
+		self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+		self:smooth(0.5)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
+	end
+}
+
+t[#t+1] = Def.Quad{
+	InitCommand = function(self)
+		self:zoomto(25, 25)
+		self:xy(SCREEN_WIDTH-25, SCREEN_CENTER_Y+25)
+		self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+	end
+}
+t[#t+1] = quadButton(4)..{
+	InitCommand = function(self)
+		self:zoomto(25, 25)
+		self:xy(SCREEN_WIDTH-25, SCREEN_CENTER_Y+25)
+		self:diffuse(color("#FFFFFF")):diffusealpha(0)
+	end,
+	MouseDownCommand = function(self)
+		movePage(1)
+		self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
+		self:finishtweening()
+		self:diffusealpha(0.2)
+		self:smooth(0.3)
+		self:diffusealpha(0)
+	end
+}
+t[#t+1] = LoadActor(THEME:GetPathG("", "_triangle")) .. {
+	Name = "TriangleRight",
+	InitCommand = function(self)
+		self:zoom(0.15)
+		self:diffusealpha(0.8)
+		self:xy(SCREEN_WIDTH-25, SCREEN_CENTER_Y+25)
+		self:rotationz(90)
+	end,
+	TweenCommand = function(self)
+		self:finishtweening()
+		self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
+		self:smooth(0.5)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText)):diffusealpha(0.8)
 	end
 }
 
