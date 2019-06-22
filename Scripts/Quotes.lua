@@ -391,7 +391,7 @@ local Phrases = {
     "Video constantly desyncs from song audio during low impact play on sub-10 difficulty charts. Not to mention it also stutters more than an autistic child with a lisp.",
     "Please use an actual (non garbage) Stepmania Client. Thanks",
     "You can't judge the file this isn't even remotely jumptrillable - someone who can actually play the file", --Snover on Mario Paint from Fullerene Shift (70.13%)
-    "Beat you!! >.<", --KcHecKa beating J5user at Tri Paloski chordjacks but not foxfire
+    "Beat you!! >.<", --KcHecKA on getting 0.0001% over Ice on Savage Terminal, prompting a full scale attack to resolve the issue.
     "See that bridge over there? Jump off it.", --Mina, moments before disaster and misunderstanding causes major drama.
     "I come from the Guitar Hero scene so it's like if there's nothing to chart, chart nothing", -- Zibang on expressive mines in DourGent's Minipack 4, or anywhere else.
     "I feel like good musicians are only 1 step away from telepathy, it brings you into that collective mindspace", -- F14m3z
@@ -401,7 +401,16 @@ local Phrases = {
     "pine nut is banned",
     "their finished tbh",
     "i dont vibro :(",
-    "we should delete all the spread packs"
+    "we should delete all the spread packs",
+    ":map:", -- etternaonline
+    "Im not a furry", -- :denial:
+    "i dont have a table", -- void, living in 1st world poverty
+    "they say do what u love and u never work a day in your life but imo turning your hobby into a job is just retarded. thats why i refuse to take any donations for this. i'll never owe you retards anything", -- mina
+    "fucks wrong with your music taste?", -- a dd review on whitey's ice
+    "hey what the fuck guys", -- a tim review on whitey's ice
+    "who is minty?", -- dd
+    "My mother may not have a normal brain.", -- dawnx's defense
+
 }
 
 --tip
