@@ -101,11 +101,6 @@ local function getClearLevel (pn,steps,score)
 		return 17
 	end
 
-	-- Return invalid if the score isn't valid.
-	if not isScoreValid(pn,steps,score) then
-		return 16
-	end
-
 	local grade = score:GetWifeGrade()
 	local clearLevel = 18
 	local lifeDiff = 4 -- default to 4
