@@ -226,23 +226,25 @@ local function GraphDisplay( pn )
 			end,
 			SetJudgeCommand = function(self, params)
 				if enabledCustomWindows then
-					self:settextf(
-						"%05.2f%% (%s)",
-						rescoredPercentage,
-						customWindow.name
-					)
-				elseif params.Name == "PrevJudge" and judge >= 1 then
-					self:settextf(
-						"%05.2f%% (%s)",
-						rescoredPercentage,
-						"Wife J" .. judge
-					)
-				elseif params.Name == "NextJudge" and judge <= 9 then
-					if judge == 9 then
+					if rescoredPercentage > 99 then
 						self:settextf(
+							"%05.4f%% (%s)",
+							rescoredPercentage,
+							customWindow.name
+						)
+						else
+							self:settextf(
 							"%05.2f%% (%s)",
 							rescoredPercentage,
-							"Wife Justice"
+							customWindow.name
+						)
+					end
+				elseif params.Name == "PrevJudge" and judge >= 1 then
+					if rescoredPercentage > 99 then
+						self:settextf(
+							"%05.4f%% (%s)",
+							rescoredPercentage,
+							"Wife J" .. judge
 						)
 					else
 						self:settextf(
@@ -250,6 +252,36 @@ local function GraphDisplay( pn )
 							rescoredPercentage,
 							"Wife J" .. judge
 						)
+					end
+				elseif params.Name == "NextJudge" and judge <= 9 then
+					if judge == 9 then
+						if rescoredPercentage > 99 then
+							self:settextf(
+								"%05.4f%% (%s)",
+								rescoredPercentage,
+								"Wife Justice"
+							)
+						else
+							self:settextf(
+								"%05.2f%% (%s)",
+								rescoredPercentage,
+								"Wife Justice"
+							)	
+						end
+					else
+						if rescoredPercentage > 99 then
+							self:settextf(
+								"%05.4f%% (%s)",
+								rescoredPercentage,
+								"Wife J" .. judge
+							)
+						else
+							self:settextf(
+								"%05.2f%% (%s)",
+								rescoredPercentage,
+								"Wife J" .. judge
+							)
+						end
 					end
 				end
 			end,
