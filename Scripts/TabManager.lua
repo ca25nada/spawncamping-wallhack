@@ -24,8 +24,8 @@ function TAB.makeTabActors(tab)
 				self:x(tab.width*(i-1))
 				self:diffuse(getMainColor("tabFrame"))
 			end,
-			MouseDownCommand = function(self)
-				MESSAGEMAN:Broadcast("TabPressed",{name = v})
+			MouseDownCommand = function(self, params)
+				MESSAGEMAN:Broadcast("TabPressed",{name = v, params = params})
 			end
 		}
 
@@ -36,8 +36,8 @@ function TAB.makeTabActors(tab)
 			self:x(tab.width*(i-1))
 			self:diffuse(getMainColor("tabButton")):diffusealpha(0)
 		end,
-		MouseDownCommand = function(self)
-			MESSAGEMAN:Broadcast("TabPressed",{name = v})
+		MouseDownCommand = function(self, params)
+			MESSAGEMAN:Broadcast("TabPressed",{name = v, params = params})
 			self:finishtweening()
 			self:diffusealpha(0.2)
 			self:smooth(0.3)
