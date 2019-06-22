@@ -94,7 +94,7 @@ t[#t+1] = Def.Sprite {
 t[#t+1] = Def.Sprite {
 	Name = "CDTitle",
 	InitCommand = function(self)
-		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)-40)
+		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)+40)
 		self:y(120-(capWideScale(get43size(120),120)/2)+30)
 		self:wag():effectmagnitude(0,0,5)
 		self:diffusealpha(0.8)
