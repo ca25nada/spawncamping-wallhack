@@ -4,6 +4,7 @@ local defaultConfig = {
 		frame = "#000000",
 		highlight = "#00AEEF",
 		background = "#CCCCEE",
+		underlay = "#CCCCEE",
 		warning = "#EEBB00",
 		enabled = "#4CBB17",
 		disabled = "#666666",
