@@ -751,9 +751,14 @@ local function playlistStepsList()
 				self:zoom(0.4)
 			end,
 			SetCommand = function(self)
-				local msd = steps:GetMSD(1, 1)
-				self:settextf("%5.2f", msd)
-				self:diffuse(getMSDColor(msd))
+				if steps then
+					local msd = steps:GetMSD(1, 1)
+					self:settextf("%5.2f", msd)
+					self:diffuse(getMSDColor(msd))
+				else
+					self:settext("0.00")
+					self:diffuse(color("#666666"))
+				end
 			end
 		}
 
@@ -764,7 +769,11 @@ local function playlistStepsList()
 				self:zoom(0.4)
 			end,
 			SetCommand = function(self)
-				self:settextf("%s",song:GetMainTitle())
+				if song then
+					self:settextf("%s",song:GetMainTitle())
+				else
+					self:settext("")
+				end
 			end
 		}
 
@@ -776,7 +785,11 @@ local function playlistStepsList()
 				self:zoom(0.3)
 			end,
 			SetCommand = function(self)
-				self:settextf("// %s",song:GetDisplayArtist())
+				if song then
+					self:settextf("// %s",song:GetDisplayArtist())
+				else
+					self:settext("//")
+				end
 			end
 		}
 
