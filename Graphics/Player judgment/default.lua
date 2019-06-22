@@ -2,7 +2,11 @@ local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1))
 local c
 local player = Var "Player"
 local bareBone = isBareBone()
-local JTDisabled = not JudgmentTween()
+local JTDisabled = not useJudgmentTween()
+local enabled = isJudgmentEnabled()
+if not enabled then
+	return Def.ActorFrame {}
+end
 
 --[[
 Removed from metrics:
