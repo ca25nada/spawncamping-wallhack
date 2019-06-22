@@ -40,6 +40,14 @@ local sortTable = {
 	SortOrder_Roulette 				= 'Roulette',
 	SortOrder_Recent 				= 'Recently Played',
 	SortOrder_Favorites				= 'Favorites',
+	SortOrder_Overall				= 'Overall Rating',
+	SortOrder_Stream				= 'Stream Rating',
+	SortOrder_Jumpstream			= 'Jumpstream Rating',
+	SortOrder_Handstream			= 'Handstream Rating',
+	SortOrder_Stamina				= 'Stamina Rating',
+	SortOrder_JackSpeed				= 'JackSpeed Rating',
+	SortOrder_Chordjack				= 'Chordjack Rating',
+	SortOrder_Technical				= 'Technical Rating',
 }
 
 local function searchInput(event)
