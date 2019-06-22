@@ -12,6 +12,7 @@ local active = false
 local top
 local wheel
 local song
+local released = false
 
 local sortTable = {
 	SortOrder_Preferred 			= 'Preferred',
@@ -56,7 +57,13 @@ local function searchInput(event)
 			top:PausePreviewNoteField()
 			MESSAGEMAN:Broadcast("PreviewPaused")
 		end
-		MESSAGEMAN:Broadcast("EndSearch")
+		if released and active then
+			MESSAGEMAN:Broadcast("EndSearch")
+		end
+	end
+	if not released and pressed and active and event.type == "InputEventType_FirstPress" and event.DeviceInput.button == 'DeviceButton_left mouse button' then
+		released = true
+		pressed = false
 	end
 	if not active and event.type =="InputEventType_FirstPress" then
 		if song and event.DeviceInput.button == "DeviceButton_space" then
@@ -79,7 +86,7 @@ local function searchInput(event)
 		elseif event.button == "MenuRight" then
 			wheel:Move(1)
 			wheel:Move(0)
-		elseif event.DeviceInput.button == "DeviceButton_space" then					-- add space to the string
+		elseif event.DeviceInput.button == "DeviceButton_space" then -- add space to the string
 			searchstring = searchstring.." "
 
 		elseif event.DeviceInput.button == "DeviceButton_backspace" then
@@ -137,6 +144,7 @@ local t = Def.ActorFrame{
 		self:y(-frameHeight/2)
 	end,
 	StartSearchMessageCommand = function(self)
+		released = false
 		active = true
 		if searchstring == "" then
 			self:GetChild("SortBar"):settext("Type to Search..")
@@ -147,6 +155,8 @@ local t = Def.ActorFrame{
 		SCREENMAN:set_input_redirected(PLAYER_1, true)
 	end,
 	EndSearchMessageCommand = function(self)
+		released = false
+		pressed = false
 		SCREENMAN:set_input_redirected(PLAYER_1, false)
 		active = false
 		if searchstring == "" then
@@ -178,6 +188,7 @@ t[#t+1] = quadButton(4) .. {
 	MouseDownCommand = function(self, params)
 		if params.button == "DeviceButton_left mouse button" then
 			MESSAGEMAN:Broadcast("StartSearch")
+			pressed = true
 		end
 	end
 }
