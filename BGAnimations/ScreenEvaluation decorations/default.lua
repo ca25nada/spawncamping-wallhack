@@ -65,8 +65,8 @@ t[#t+1] = Def.ActorFrame {
 -- Timing/Judge Difficulty
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:xy(10,40)
-		self:zoom(0.4)
+		self:xy(10,50)
+		self:zoom(0.45)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		self:queuecommand("Set")
@@ -85,8 +85,8 @@ t[#t+1] = LoadFont("Common Normal")..{
 -- Life Difficulty
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:xy(10,55)
-		self:zoom(0.4)
+		self:xy(10,65)
+		self:zoom(0.45)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		self:settextf("Life Difficulty: %d",GetLifeDifficulty())
@@ -96,21 +96,20 @@ t[#t+1] = LoadFont("Common Normal")..{
 -- Music Rate/Haste
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:xy(10,70)
-		self:zoom(0.4)
-		self:halign(0)
+		self:xy(SCREEN_CENTER_X,120)
+		self:zoom(0.48)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-		self:settextf("Music Rate: %s", rate)
+		self:settextf("Rate: %s", rate)
 	end
 }
 
 -- Mod List
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:xy(10,85)
-		self:zoom(0.4)
+		self:xy(10,80)
+		self:zoom(0.45)
 		self:halign(0)
-		self:maxwidth(SCREEN_WIDTH - (266/2) - 45)
+		self:maxwidth((SCREEN_WIDTH/2 - 133 - 10)/0.45)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		local mods = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("ModsLevel_Current")
 		self:settextf("Mods: %s", mods)
@@ -211,7 +210,7 @@ local function GraphDisplay( pn )
 		LoadFont("Common Normal")..{
 			Font= "Common Normal", 
 			InitCommand= function(self)
-				self:y(50):zoom(0.6)
+				self:y(50):zoom(0.7)
 				self:halign(0)
 			end,
 			BeginCommand=function(self) 
