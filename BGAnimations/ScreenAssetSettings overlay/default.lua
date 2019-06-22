@@ -237,7 +237,7 @@ function TAB.makeTabActors(tab)
 		end,
 		MouseLeftClickMessageCommand = function(self)
 			if isOver(self) then
-				MESSAGEMAN:Broadcast("TabPressed",{name = v, index=i})
+				MESSAGEMAN:Broadcast("TabPressed",{name = v, index=i, params = {button = "DeviceButton_left mouse button"}})
 				self:finishtweening()
 				self:smooth(0.1)
 				self:diffusealpha(0.7)
