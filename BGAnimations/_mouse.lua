@@ -52,9 +52,6 @@ local function input(event)
 			elseif mouseY > 408 and mouseY < 456 then
 				m = 1
 				n = 4
-			elseif mouseY > 456 and mouseY < 500 then
-				m = 1
-				n = 5
 			elseif mouseY > 164 and mouseY < 212 then
 				m = -1
 				n = 1
@@ -64,12 +61,9 @@ local function input(event)
 			elseif mouseY > 68 and mouseY < 112 then
 				m = -1
 				n = 3
-			elseif mouseY > 20 and mouseY < 68 then
+			elseif mouseY > 22 and mouseY < 68 then
 				m = -1
 				n = 4
-			elseif mouseY > -30 and mouseY < 20 then
-				m = -1
-				n = 5
 			end
 
 			local type = whee:MoveAndCheckType(m * n)
