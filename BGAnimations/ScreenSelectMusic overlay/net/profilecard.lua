@@ -598,11 +598,8 @@ local function generalFrame(pn)
 		end,
 		SetCommand = function(self)
 			if song and ctags[3] then
-				self:finishtweening()
-				self:linear(0.1)
 				self:diffusealpha(0.8)
 			else
-				self:linear(0.1)
 				self:diffusealpha(0)
 			end
 		end,
@@ -620,11 +617,8 @@ local function generalFrame(pn)
 		end,
 		SetCommand = function(self)
 			if song and ctags[2] then
-				self:finishtweening()
-				self:linear(0.1)
 				self:diffusealpha(0.8)
 			else
-				self:linear(0.1)
 				self:diffusealpha(0)
 			end
 		end,
@@ -642,11 +636,8 @@ local function generalFrame(pn)
 		end,
 		SetCommand = function(self)
 			if song and ctags[1] then
-				self:finishtweening()
-				self:linear(0.1)
 				self:diffusealpha(0.8)
 			else
-				self:linear(0.1)
 				self:diffusealpha(0)
 			end
 		end,
