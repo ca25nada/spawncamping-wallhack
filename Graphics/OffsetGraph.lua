@@ -221,10 +221,10 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:xy(params.width/2, params.height - 10)
 		if ntt ~= nil and #ntt > 0 then
 			if handspecific then
-				if left then
-					self:settext("Highlighting left hand taps")
-				else
+				if left then -- haha this is backwards you will never know
 					self:settext("Highlighting right hand taps")
+				else
+					self:settext("Highlighting left hand taps")
 				end
 			else
 				self:settext("Down toggles highlights")
