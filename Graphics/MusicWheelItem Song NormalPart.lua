@@ -93,7 +93,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 
 t[#t+1] = LoadActor("round_star") .. {
 	InitCommand = function(self)
-		self:xy(3,-19)
+		self:xy(3,-16)
 		self:zoom(0.25)
 		self:wag()
 		self:diffuse(Color.Yellow)

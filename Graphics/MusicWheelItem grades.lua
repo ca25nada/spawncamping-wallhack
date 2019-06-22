@@ -34,5 +34,20 @@ return Def.ActorFrame{
 				end
 			end
 		end
+	},
+	LoadActor("mirror") .. {
+		InitCommand = function(self)
+			self:xy(3,16)
+			self:zoom(0.2)
+			self:wag()
+			self:diffuse(Color.Blue)
+		end,
+		SetGradeCommand = function(self,params)
+			self:visible(false)
+			if params.PermaMirror then
+				self:visible(true)
+			end
+		end
 	}
+	
 }
