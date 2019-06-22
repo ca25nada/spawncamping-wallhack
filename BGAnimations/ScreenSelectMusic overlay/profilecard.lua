@@ -587,6 +587,73 @@ local function generalFrame(pn)
 		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
+	t[#t+1] = Def.Quad {
+		InitCommand = function(self)
+			self:xy(85 + (frameWidth-75)/3,0)
+			self:valign(1)
+			self:halign(1)
+			self:zoomto((frameWidth-75)/3,16)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0)
+		end,
+		SetCommand = function(self)
+			if song and ctags[3] then
+				self:finishtweening()
+				self:linear(0.1)
+				self:diffusealpha(0.8)
+			else
+				self:linear(0.1)
+				self:diffusealpha(0)
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand("Set") end
+		
+	}
+	t[#t+1] = Def.Quad {
+		InitCommand = function(self)
+			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/3 - 2,0)
+			self:valign(1)
+			self:halign(1)
+			self:zoomto((frameWidth-75)/3,16)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0)
+		end,
+		SetCommand = function(self)
+			if song and ctags[2] then
+				self:finishtweening()
+				self:linear(0.1)
+				self:diffusealpha(0.8)
+			else
+				self:linear(0.1)
+				self:diffusealpha(0)
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand("Set") end
+		
+	}
+	t[#t+1] = Def.Quad {
+		InitCommand = function(self)
+			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4,0)
+			self:valign(1)
+			self:halign(1)
+			self:zoomto((frameWidth-75)/3,16)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0)
+		end,
+		SetCommand = function(self)
+			if song and ctags[1] then
+				self:finishtweening()
+				self:linear(0.1)
+				self:diffusealpha(0.8)
+			else
+				self:linear(0.1)
+				self:diffusealpha(0)
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand("Set") end
+		
+	}
+
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
 			self:xy(260 - frameWidth/5, frameHeight-40)
@@ -596,8 +663,8 @@ local function generalFrame(pn)
 			self:maxwidth(200)
 		end,
 		SetCommand = function(self)
-			if song and ctags[1] then
-				self:settext(ctags[1])
+			if song and steps[pn] then
+				self:settext(steps[pn]:GetRelevantSkillsetsByMSDRank(getCurRateValue(), 1))
 			else
 				self:settext("")
 			end
@@ -614,8 +681,8 @@ local function generalFrame(pn)
 			self:maxwidth(200)
 		end,
 		SetCommand = function(self)
-			if song and ctags[2] then
-				self:settext(ctags[2])
+			if song and steps[pn] then
+				self:settext(steps[pn]:GetRelevantSkillsetsByMSDRank(getCurRateValue(), 2))
 			else
 				self:settext("")
 			end
@@ -630,6 +697,57 @@ local function generalFrame(pn)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and steps[pn] then
+				self:settext(steps[pn]:GetRelevantSkillsetsByMSDRank(getCurRateValue(), 3))
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4 - (frameWidth-75)/6, -8)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and ctags[1] then
+				self:settext(ctags[1])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/3 - 2 - (frameWidth-75)/6, -8)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and ctags[2] then
+				self:settext(ctags[2])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/6, -8)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(((frameWidth-75)/3-10)/0.4)
 		end,
 		SetCommand = function(self)
 			if song and ctags[3] then
