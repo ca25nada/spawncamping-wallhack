@@ -4,7 +4,7 @@ local frameWidth = SCREEN_WIDTH - 300 - 30
 local frameHeight = SCREEN_HEIGHT - 60
 
 
-local scoreItemX = 100
+local scoreItemX = 110
 local scoreItemY = 75
 local scoreItemYSpacing = 5
 local scoreItemWidth = 350
@@ -16,6 +16,48 @@ local scoreSSRItemY = 80
 local scoreSSRItemYSpacing = 5
 local scoreSSRItemWidth = 80
 local scoreSSRItemHeight = 35
+local maxPages = 10
+local curPage = 1
+
+local function movePage(n)
+	if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+		curPage = 1
+		n = 0
+	end
+	if maxPages > 1 then
+		if n > 0 then 
+			curPage = ((curPage+n-1) % maxPages + 1)
+		else
+			curPage = ((curPage+n+maxPages-1) % maxPages+1)
+		end
+	end
+	MESSAGEMAN:Broadcast("UpdateList")
+end
+
+local function input(event)
+	if event.type == "InputEventType_FirstPress" then
+
+		if event.button == "MenuLeft" then
+			movePage(-1)
+		end
+
+		if event.button == "MenuRight" then
+			movePage(1)
+		end
+
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			MESSAGEMAN:Broadcast("WheelUpSlow")
+		end
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			MESSAGEMAN:Broadcast("WheelDownSlow")
+		end
+
+		if event.button == "Back" or event.button == "Start" then
+			SCREENMAN:GetTopScreen():Cancel()
+		end
+
+	end
+end
 
 local SkillSets = {
 	"Overall",
@@ -34,6 +76,19 @@ t[#t+1] = Def.Quad{
 		self:halign(0):valign(0)
 		self:diffuse(getMainColor("frame"))
 		self:diffusealpha(0.8)
+	end,
+	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(input)
+	end,
+	WheelUpSlowMessageCommand = function(self)
+		if self:isOver() then
+			movePage(-1)
+		end
+	end,
+	WheelDownSlowMessageCommand = function(self)
+		if self:isOver() then
+			movePage(1)
+		end
 	end
 }
 
@@ -104,6 +159,7 @@ local function scoreSSRTypes(i)
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
 			self:diffusealpha(0.2)
+			curPage = 1
 			MESSAGEMAN:Broadcast("UpdateRanking",{SSRType = SkillSets[i]})
 		end
 	}
@@ -134,6 +190,8 @@ local function scoreListItem(i)
 	local song = SONGMAN:GetSongByChartKey(chartKey)
 	local onlineScore = DLMAN:GetTopSkillsetScore(i, "Overall")
 
+	local index = (curPage-1)*maxScoreItems+i
+
 	local t = Def.ActorFrame{
 		InitCommand = function(self)
 			self:playcommand("Tween")
@@ -148,8 +206,9 @@ local function scoreListItem(i)
 			self:xy(scoreItemX, scoreItemY + (i-1)*(scoreItemHeight+scoreItemYSpacing))
 		end,
 		UpdateRankingMessageCommand = function(self, params)
+			index = (curPage-1)*maxScoreItems+i
 			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
-				onlineScore = DLMAN:GetTopSkillsetScore(i, params.SSRType)
+				onlineScore = DLMAN:GetTopSkillsetScore(index, params.SSRType)
 				if not onlineScore then
 					self:visible(false)
 				else
@@ -158,7 +217,7 @@ local function scoreListItem(i)
 			else
 				SCOREMAN:SortSSRs(params.SSRType)
 				skillset = params.SSRType
-				ths = SCOREMAN:GetTopSSRHighScore(i, params.SSRType)
+				ths = SCOREMAN:GetTopSSRHighScore(index, params.SSRType)
 				chartKey = ths:GetChartKey()
 				song = SONGMAN:GetSongByChartKey(chartKey)
 				steps = SONGMAN:GetStepsByChartKey(chartKey)
@@ -167,6 +226,9 @@ local function scoreListItem(i)
 			self:playcommand("Tween")
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end,
+		UpdateListMessageCommand = function(self)
+			self:playcommand("UpdateRanking", {SSRType = skillset})
+		end,
 		LoginMessageCommand = function(self)
 			GHETTOGAMESTATE:setOnlineStatus("Online")
 			self:visible(false)
@@ -174,10 +236,11 @@ local function scoreListItem(i)
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end,
 		LogOutMessageCommand = function(self)
+			index = (curPage-1)*maxScoreItems+i
 			GHETTOGAMESTATE:setOnlineStatus("Local")
 			SCOREMAN:SortSSRs("Overall")
 			skillset = "Overall"
-			ths = SCOREMAN:GetTopSSRHighScore(i, "Overall")
+			ths = SCOREMAN:GetTopSSRHighScore(index, "Overall")
 			chartKey = ths:GetChartKey()
 			song = SONGMAN:GetSongByChartKey(chartKey)
 			steps = SONGMAN:GetStepsByChartKey(chartKey)
@@ -187,6 +250,8 @@ local function scoreListItem(i)
 		end,
 		OnlineTogglePressedMessageCommand = function(self)
 			if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+				curPage = 1
+				index = i
 				onlineScore = DLMAN:GetTopSkillsetScore(i, SkillSets[1])
 				if not onlineScore then
 					self:visible(false)
@@ -233,7 +298,7 @@ local function scoreListItem(i)
 			end
 		end,
 		SetCommand = function(self)
-			if ths:GetEtternaValid() then
+			if GHETTOGAMESTATE:getOnlineStatus() == "Online" or ths:GetEtternaValid() then
 				self:diffuse(color("#FFFFFF"))
 			else
 				self:diffuse(color(colorConfig:get_data().clearType.ClearType_Invalid))
@@ -279,6 +344,18 @@ local function scoreListItem(i)
 				self:settextf("%0.2f", rating)
 				self:diffuse(getMSDColor(rating))
 			end
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(-10,0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:zoom(0.36)
+			self:playcommand("Set")
+		end,
+		SetCommand = function(self)
+			self:settextf("%d.", index)
 		end
 	}
 
