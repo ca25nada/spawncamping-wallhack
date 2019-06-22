@@ -5,6 +5,8 @@ local function input(event)
 		end
 		if tonumber(event.char) == 1 then
 			SCREENMAN:AddNewScreenToTop("ScreenGoalManager")
+		elseif tonumber(event.char) == 2 then
+			SCREENMAN:AddNewScreenToTop("ScreenAssetSettings")
 		end
 	end
 
@@ -36,7 +38,7 @@ t[#t+1] = LoadActor("../_mouse", "ScreenPlayerProfile")
 
 t[#t+1] = LoadActor("../_frame")
 
-local tab = TAB:new({"Goals"})
+local tab = TAB:new({"Goals", "Assets"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		if IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() then
@@ -55,6 +57,8 @@ t[#t+1] = tab:makeTabActors() .. {
 	TabPressedMessageCommand = function(self, params)
 		if params.name == "Goals" then
 			SCREENMAN:AddNewScreenToTop("ScreenGoalManager")
+		elseif params.name == "Assets" then
+			SCREENMAN:AddNewScreenToTop("ScreenAssetSettings")
 		end
 	end
 }

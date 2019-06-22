@@ -39,7 +39,7 @@ t[#t+1] = Def.Quad{
 		end,
 		MouseDownCommand = function(self, params)
 			if params.button == "DeviceButton_left mouse button" then
-				SCREENMAN:AddNewScreenToTop("ScreenSelectAvatar")
+				SCREENMAN:AddNewScreenToTop("ScreenAssetSettings")
 			end
 		end
 	}
