@@ -890,14 +890,12 @@ local t = Def.ActorFrame{
 t[#t+1] = playlistInfo() .. {
 	InitCommand = function(self)
 		self:xy(10,30)
-		self:delayedFadeIn(1)
 	end
 }
 
 t[#t+1] = playlistList() .. {
 	InitCommand = function(self)
 		self:xy(320,30)
-		self:delayedFadeIn(2)
 	end
 }
 
