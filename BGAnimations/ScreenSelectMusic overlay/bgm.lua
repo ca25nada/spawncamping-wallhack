@@ -29,7 +29,7 @@ GHETTOGAMESTATE:setLastPlayedSecond(0)
 local deltaSum = 0
 local function playMusic(self, delta)
 	deltaSum = deltaSum + delta * musicNotPaused
-	if musicLength + 10 < GAMESTATE:GetSongPosition():GetMusicSeconds() then
+	if musicLength + 3 < GAMESTATE:GetSongPosition():GetMusicSeconds() then
 		goNow = true
 	end
 
