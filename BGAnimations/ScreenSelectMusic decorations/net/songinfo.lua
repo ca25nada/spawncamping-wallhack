@@ -273,9 +273,13 @@ t[#t+1] = quadButton(6) .. {
 	UsersUpdateMessageCommand = function(self)
 		local ready = getReady()
 		if ready then
+			self:finishtweening()
+			self:linear(0.1)
 			self:diffuse(getMainColor("positive"))
 			self:diffusealpha(0.9)
 		else
+			self:finishtweening()
+			self:linear(0.1)
 			self:diffuse(getMainColor("negative"))
 			self:diffusealpha(0.9)
 		end
@@ -314,6 +318,34 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:zoom(0.4)
 	end
 
+}
+
+-- Force Start button
+t[#t+1] = quadButton(6) .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 57*2, 217.5)
+		self:zoomto(55,25)
+		self:diffuse(getMainColor("negative"))
+		self:diffusealpha(0.9)
+		self:halign(0)
+	end,
+	MouseDownCommand = function(self, params)
+		if params.button ~= "DeviceButton_left mouse button" then
+			return
+		end
+		NSMAN:SendChatMsg("/force", 1, NSMAN:GetCurrentRoomName())
+		self:finishtweening()
+		self:diffuse(getMainColor("highlight"))
+		self:linear(0.2)
+		self:diffuse(getMainColor("negative"))
+	end
+}
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 55/2 + 57*2, 217.5)
+		self:settext("Force\nStart")
+		self:zoom(0.4)
+	end
 }
 
 
