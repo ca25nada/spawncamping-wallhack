@@ -410,6 +410,7 @@ local Phrases = {
     "hey what the fuck guys", -- a tim review on whitey's ice
     "who is minty?", -- dd
     "My mother may not have a normal brain.", -- dawnx's defense
+    ":ok_mine:" -- sm6
 
 }
 

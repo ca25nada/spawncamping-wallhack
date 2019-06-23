@@ -504,7 +504,7 @@ local function scoreBoard(pn)
 		end
 	}
 
-
+	--[[ -- disabled because the game doesnt save the required stuff correctly, just stored it to xml and reads once per session
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
 			self:xy(self:GetParent():GetChild("DisplayName"):GetX()+self:GetParent():GetChild("DisplayName"):GetWidth()*0.6+5,10)
@@ -519,6 +519,7 @@ local function scoreBoard(pn)
 			self:addy(-5)
 		end
 	}
+	]]
 
 	--Diff & MSD
 	t[#t+1] = LoadFont("Common Normal")..{
