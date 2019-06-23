@@ -5,7 +5,7 @@ local steps = GAMESTATE:GetCurrentSteps(pn)
 
 
 t[#t+1] = LoadActor("../_frame")
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenEvaluation")
 
 --Group folder name
 local frameWidth = 280

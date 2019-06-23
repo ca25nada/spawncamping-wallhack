@@ -167,7 +167,7 @@ local t = Def.ActorFrame {
 
 
 local function packInfo()
-	local frameWidth = 300
+	local frameWidth = SCREEN_WIDTH/2 - capWideScale(35,50)
 	local frameHeight = SCREEN_HEIGHT - 60
 
 	local packItemWidth = frameWidth-30
@@ -233,7 +233,7 @@ local function packInfo()
 			self:diffusealpha(0.2)
 			self:zoomto(packItemWidth / 4, packItemHeight - packItemYSpacing)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -315,7 +315,7 @@ local function packInfo()
 				self:diffusealpha(0.2)
 				self:zoomto(packItemWidth, packItemHeight)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				initpacklist:SetFromCoreBundle(bundlenames[bundleIndex]:lower())
 				packlist = initpacklist:GetPackTable()
 				self:finishtweening()
@@ -405,7 +405,7 @@ local function packInfo()
 end
 
 local function packList()
-	local frameWidth = 430
+	local frameWidth = SCREEN_WIDTH/2 - 0
 	local frameHeight = SCREEN_HEIGHT - 60
 
 	-- Pack item information
@@ -466,6 +466,7 @@ local function packList()
 			self:zoom(0.4)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:maxwidth((frameWidth-10) / 0.4)
 			self:settext("Click to download a pack. Searching for a pack resets the bundle filter.")
 		end
 	}
@@ -479,7 +480,7 @@ local function packList()
 			self:diffusealpha(0.2)
 			self:zoomto(packItemWidth / 6, packItemHeight - packItemYSpacing)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -514,7 +515,7 @@ local function packList()
 			self:diffusealpha(0.2)
 			self:zoomto(packItemWidth / 6, packItemHeight - packItemYSpacing)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -528,7 +529,7 @@ local function packList()
 	-- The toggle ascending/descending text
 	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand = function(self)
-			self:xy(packItemX + 60, packItemY - packItemHeight - packItemYSpacing):halign(0)
+			self:xy(packItemX + capWideScale(40,60), packItemY - packItemHeight - packItemYSpacing):halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.4)
 			self:settext("Toggle Ascending", sorts[curSort])
@@ -545,7 +546,7 @@ local function packList()
 			self:zoomto(packItemWidth - 128, packItemHeight - packItemYSpacing)
 			self:diffusealpha(0.2)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:diffusealpha(0.4)
 			inputting = true
 		end,
@@ -624,6 +625,10 @@ local function packList()
 				end
 			end,
 			StartDownloadCommand = function(self) -- Start download
+				if packlist[packIndex]:GetSize() > 2000000000 then
+					GAMESTATE:ApplyGameCommand("urlnoexit," .. packlist[packIndex]:GetURL())
+					return
+				end
 				download = packlist[packIndex]:DownloadAndInstall()
 				downloading = DLMAN:GetDownloadingPacks()
 				if not packExists(packlist[packIndex]:GetName()) then
@@ -683,7 +688,7 @@ local function packList()
 				self:diffusealpha(0.2)
 				self:zoomto(packItemWidth, packItemHeight)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if packlist[packIndex] ~= nil and packlist[packIndex]:IsDownloading() then -- IsDownloading() returns the wrong boolean for some reason.
 					self:GetParent():playcommand("StartDownload")
 				elseif packlist[packIndex] ~= nil then
@@ -790,7 +795,7 @@ t[#t+1] = packInfo() .. {
 t[#t+1] = packList() .. {
 	Name = "PackList",
 	InitCommand = function(self)
-		self:xy(320,30)
+		self:xy(SCREEN_WIDTH/2 - capWideScale(35,50) + 20,30)
 		self:delayedFadeIn(2)
 	end
 }
@@ -798,7 +803,7 @@ t[#t+1] = packList() .. {
 
 
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenDownload")
 t[#t+1] = LoadActor("../_frame")
 t[#t+1] = LoadActor("../_cursor")
 

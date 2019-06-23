@@ -53,18 +53,16 @@ t[#t+1] = quadButton(1)..{
 		self:zoomto(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 		self:visible(false)
 	end,
-	TopPressedCommand = function(self, params)
-		if params.input == "DeviceButton_left mouse button" then
-					
-			if song ~= nil then 
-				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
-
-			elseif group ~= nil and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
-				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
-			end
-
+	MouseDownCommand = function(self, params)
+		if params.button ~= "DeviceButton_left mouse button" then
+			return
 		end
+		if song ~= nil then 
+			SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 
+		elseif group ~= nil and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
+			SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
+		end
 
 	end
 }
@@ -96,7 +94,7 @@ t[#t+1] = Def.Sprite {
 t[#t+1] = Def.Sprite {
 	Name = "CDTitle",
 	InitCommand = function(self)
-		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)-40)
+		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)+40)
 		self:y(120-(capWideScale(get43size(120),120)/2)+30)
 		self:wag():effectmagnitude(0,0,5)
 		self:diffusealpha(0.8)

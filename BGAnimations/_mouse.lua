@@ -1,5 +1,8 @@
 local top
 local whee
+local sName = ...
+
+BUTTON:ResetButtonTable(sName)
 
 -- Actor for handling most mouse interactions.
 local function input(event)
@@ -11,6 +14,22 @@ local function input(event)
 			MESSAGEMAN:Broadcast("MouseRightClick")
 		end
 	end
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_left mouse button" then
+			BUTTON:SetMouseDown(event.DeviceInput.button)
+		end
+		if event.DeviceInput.button == "DeviceButton_right mouse button" then
+			BUTTON:SetMouseDown(event.DeviceInput.button)
+		end
+	end
+	if event.type == "InputEventType_Release" then
+		if event.DeviceInput.button == "DeviceButton_left mouse button" then
+            BUTTON:SetMouseUp(event.DeviceInput.button)
+		end
+		if event.DeviceInput.button == "DeviceButton_right mouse button" then
+            BUTTON:SetMouseUp(event.DeviceInput.button)
+        end
+    end
 
 	local mouseX = INPUTFILTER:GetMouseX()
 	local mouseY = INPUTFILTER:GetMouseY()
@@ -33,9 +52,6 @@ local function input(event)
 			elseif mouseY > 408 and mouseY < 456 then
 				m = 1
 				n = 4
-			elseif mouseY > 456 and mouseY < 500 then
-				m = 1
-				n = 5
 			elseif mouseY > 164 and mouseY < 212 then
 				m = -1
 				n = 1
@@ -45,12 +61,9 @@ local function input(event)
 			elseif mouseY > 68 and mouseY < 112 then
 				m = -1
 				n = 3
-			elseif mouseY > 20 and mouseY < 68 then
+			elseif mouseY > 22 and mouseY < 68 then
 				m = -1
 				n = 4
-			elseif mouseY > -30 and mouseY < 20 then
-				m = -1
-				n = 5
 			end
 
 			local type = whee:MoveAndCheckType(m * n)
@@ -65,9 +78,19 @@ local function input(event)
 
 end
 
+local function updater()
+	local mouseX = INPUTFILTER:GetMouseX()
+	local mouseY = INPUTFILTER:GetMouseY()
+	BUTTON:UpdateMouseState()
+
+	return false
+end
+
 local t = Def.ActorFrame{
+	InitCommand = function(self)
+		self:SetUpdateFunction(updater):SetUpdateFunctionInterval(0.01)
+	end,
 	OnCommand = function(self)
-		BUTTON:resetPressedActors()
 
 		SCREENMAN:set_input_redirected(PLAYER_1, false)
 
@@ -78,17 +101,10 @@ local t = Def.ActorFrame{
 		top:AddInputCallback(input)
 	end,
 	OffCommand = function(self)
-		BUTTON:resetPressedActors()
+		self:playcommand("Cancel")
 	end,
-	MouseLeftClickMessageCommand = function(self)
-		self:queuecommand("PlayTopPressedActor")
-	end,
-	MouseRightClickMessageCommand = function(self)
-		self:queuecommand("PlayTopPressedActor")
-	end,
-	PlayTopPressedActorCommand = function(self)
-		BUTTON:playTopPressedActor()
-		BUTTON:resetPressedActors()
+	CancelCommand = function(self)
+		BUTTON:ResetButtonTable(top:GetName())
 	end,
 	ExitScreenMessageCommand = function(self, params)
 		if params.screen == top:GetName() then

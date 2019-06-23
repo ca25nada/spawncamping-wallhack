@@ -12,6 +12,7 @@ local active = false
 local top
 local wheel
 local song
+local released = false
 
 local sortTable = {
 	SortOrder_Preferred 			= 'Preferred',
@@ -40,11 +41,34 @@ local sortTable = {
 	SortOrder_Roulette 				= 'Roulette',
 	SortOrder_Recent 				= 'Recently Played',
 	SortOrder_Favorites				= 'Favorites',
+	SortOrder_Overall				= 'Overall Rating',
+	SortOrder_Stream				= 'Stream Rating',
+	SortOrder_Jumpstream			= 'Jumpstream Rating',
+	SortOrder_Handstream			= 'Handstream Rating',
+	SortOrder_Stamina				= 'Stamina Rating',
+	SortOrder_JackSpeed				= 'JackSpeed Rating',
+	SortOrder_Chordjack				= 'Chordjack Rating',
+	SortOrder_Technical				= 'Technical Rating',
 }
 
 local function searchInput(event)
 	if event.type == "InputEventType_FirstPress" and (event.DeviceInput.button == "DeviceButton_left mouse button" or event.DeviceInput.button == "DeviceButton_right mouse button") then
-		MESSAGEMAN:Broadcast("EndSearch")
+		if not active and event.DeviceInput.button == "DeviceButton_right mouse button" then
+			top:PausePreviewNoteField()
+			MESSAGEMAN:Broadcast("PreviewPaused")
+		end
+		if released and active then
+			MESSAGEMAN:Broadcast("EndSearch")
+		end
+	end
+	if not released and pressed and active and event.type == "InputEventType_FirstPress" and event.DeviceInput.button == 'DeviceButton_left mouse button' then
+		released = true
+		pressed = false
+	end
+	if not active and event.type =="InputEventType_FirstPress" then
+		if song and event.DeviceInput.button == "DeviceButton_space" then
+			SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
+		end
 	end
 	if event.type ~= "InputEventType_Release" and active then
 		local CtrlPressed = INPUTFILTER:IsBeingPressed("left ctrl") or INPUTFILTER:IsBeingPressed("right ctrl")
@@ -62,7 +86,7 @@ local function searchInput(event)
 		elseif event.button == "MenuRight" then
 			wheel:Move(1)
 			wheel:Move(0)
-		elseif event.DeviceInput.button == "DeviceButton_space" then					-- add space to the string
+		elseif event.DeviceInput.button == "DeviceButton_space" then -- add space to the string
 			searchstring = searchstring.." "
 
 		elseif event.DeviceInput.button == "DeviceButton_backspace" then
@@ -119,8 +143,12 @@ local t = Def.ActorFrame{
 		self:smooth(0.5)
 		self:y(-frameHeight/2)
 	end,
-	StartSearchMessageCommand = function(self)
+	StartSearchMessageCommand = function(self, params)
+		released = false
 		active = true
+		if params ~= nil and params.hotkey then
+			released = true
+		end
 		if searchstring == "" then
 			self:GetChild("SortBar"):settext("Type to Search..")
 			self:GetChild("SortBar"):diffusealpha(alphaInactive)
@@ -130,6 +158,8 @@ local t = Def.ActorFrame{
 		SCREENMAN:set_input_redirected(PLAYER_1, true)
 	end,
 	EndSearchMessageCommand = function(self)
+		released = false
+		pressed = false
 		SCREENMAN:set_input_redirected(PLAYER_1, false)
 		active = false
 		if searchstring == "" then
@@ -158,8 +188,11 @@ t[#t+1] = quadButton(4) .. {
 		self:zoomto(frameWidth,frameHeight)
 		self:diffuse(getMainColor('highlight')):diffusealpha(0.8)
 	end,
-	TopPressedCommand = function(self)
-		MESSAGEMAN:Broadcast("StartSearch")
+	MouseDownCommand = function(self, params)
+		if params.button == "DeviceButton_left mouse button" then
+			MESSAGEMAN:Broadcast("StartSearch")
+			pressed = true
+		end
 	end
 }
 
@@ -179,7 +212,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		if searchstring == "" then
 			if not active then
 				local sort = GAMESTATE:GetSortOrder()
-				local song = GAMESTATE:GetCurrentSong()
+				song = GAMESTATE:GetCurrentSong()
 				if sort == nil then
 					self:settext("Sort: ")
 				elseif sort == "SortOrder_Group" and song ~= nil then

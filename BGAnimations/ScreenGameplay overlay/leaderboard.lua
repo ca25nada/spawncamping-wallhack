@@ -5,7 +5,6 @@ local leaderboardEnabled =
 local animated = themeConfig:get_data().global.AnimatedLeaderboard
 local entryActors = {}
 local indexDifferences = {}
-local beforeSort = {}
 local sortedIndices = {}
 
 -- Overall ActorFrame (container)
@@ -149,6 +148,8 @@ if not isMulti then -- if not in multi, use the last slot for the player's score
 			done = true
 		end
 	end
+else
+	scoreboard[NUM_ENTRIES] = onlineScores[NUM_ENTRIES]
 end
 table.sort(scoreboard, sortFunction) -- sort it again why not
 
@@ -173,14 +174,6 @@ function scoreEntry(i)
 			entryActors[i]["container"] = self
 			self.update = function(self, hs)
 				self:visible(not (not hs))
-				local diff = indexDifferences[i]
-				if not(not hs) and diff ~= nil and diff ~= 0 then
-					self:finishtweening()
-					if animated then
-						self:linear(0.2)
-					end
-					self:addy(diff * ENTRY_HEIGHT * 1.3)
-				end
 			end
 			self:update(scoreboard[i])
 		end
@@ -233,7 +226,7 @@ function scoreEntry(i)
 	addLabel(
 		"rank",
 		function(self, hs)
-			self:settext(tostring(sortedIndices[i]))
+			self:settext(tostring(i))
 		end,
 		5,
 		ENTRY_HEIGHT / 4
@@ -295,27 +288,6 @@ for i = 1, NUM_ENTRIES do
 	t[#t + 1] = scoreEntry(i)
 end
 
--- ... oh no
-local function deepcopy(orig)
-	local orig_type = type(orig)
-	local copy
-	if orig_type == 'table' then
-		copy = {}
-		for orig_key, orig_value in next, orig, nil do
-			copy[deepcopy(orig_key)] = deepcopy(orig_value)
-		end
-		setmetatable(copy, deepcopy(getmetatable(orig)))
-	else
-		copy = orig
-	end
-	return copy
-end
-beforeSort = deepcopy(scoreboard)
-for i = 1, NUM_ENTRIES do
-	sortedIndices[i] = i
-end
----
-
 -- Adding commands to the output ActorFrame
 -- Similar to placing these directly within the ActorFrame definition
 t.ComboChangedMessageCommand = function(self, params)
@@ -334,46 +306,7 @@ t.JudgmentMessageCommand = function(self, params)
 		multiScores = NSMAN:GetMPLeaderboard()
 	end
 	if old ~= curScore.curWifeScore then
-
-		-- What follows is an unfortunate block of sorting and looping
-		-- Thankfully we aren't dealing with thousands of elements or I might be blacklisted from programming globally
-		local anothercopy = deepcopy(beforeSort)
-		table.sort(anothercopy, sortFunction)
-		for i = 1, NUM_ENTRIES do
-			local index = i
-			local foundIndex = 1
-			local convertIndex = 1
-			local foundCases = {}
-			for j, score in ipairs(anothercopy) do -- to determine the difference in indices after sorting
-				if beforeSort[i] ~= nil and beforeSort[i]:GetDisplayName() == score:GetDisplayName() and beforeSort[i]:GetWifeScore() == score:GetWifeScore() then
-					foundIndex = j
-					foundCases[1] = true
-					break
-				end
-			end
-			for j, score in ipairs(scoreboard) do -- to find what the original scoreboard index is from a sorted score
-				if beforeSort[i] ~= nil and beforeSort[i]:GetDisplayName() == score:GetDisplayName() and beforeSort[i]:GetWifeScore() == score:GetWifeScore() then
-					convertIndex = j
-					foundCases[2] = true
-					break
-				end
-			end
-			for j, score in ipairs(scoreboard) do -- to find out the position of this score after sorting
-				if anothercopy[i] ~= nil and anothercopy[i]:GetDisplayName() == score:GetDisplayName() and anothercopy[i]:GetWifeScore() == score:GetWifeScore() then
-					sortedIndices[j] = i
-					foundCases[3] = true
-					break
-				end
-			end
-			if foundCases[1] and foundCases[2] and foundCases[3] then
-				indexDifferences[convertIndex] = foundIndex - index
-			else
-				indexDifferences[convertIndex] = 0
-			end
-		end
-		beforeSort = deepcopy(anothercopy)
-		--- Now that that's over with....
-
+		table.sort(scoreboard, sortFunction)
 		-- Tell all the text labels to update.
 		for i, entry in ipairs(entryActors) do
 			for name, label in pairs(entry) do

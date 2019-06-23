@@ -401,7 +401,7 @@ local alpha = 0.07 -- ewma alpha
 local avg
 local lastAvg
 
--- Makes the error bars. They position themselves relative to the center of the screen based on your dv and diffuse to your judgement value before disappating or refreshing
+-- Makes the error bars. They position themselves relative to the center of the screen based on your dv and diffuse to your judgment value before disappating or refreshing
 -- Should eventually be handled by the game itself to optimize performance
 function smeltErrorBar(index)
 	return Def.Quad {
@@ -648,11 +648,7 @@ local cd
 local bookmarkPosition
 
 local function duminput(event)
-	if event.DeviceInput.button == "DeviceButton_left mouse button" and event.type == "InputEventType_Release" then
-		MESSAGEMAN:Broadcast("MouseLeftClick")
-	elseif event.DeviceInput.button == "DeviceButton_right mouse button" and event.type == "InputEventType_Release" then
-		MESSAGEMAN:Broadcast("MouseRightClick")
-	elseif event.DeviceInput.button == "DeviceButton_backspace" and event.type == "InputEventType_FirstPress" then
+	if event.DeviceInput.button == "DeviceButton_backspace" and event.type == "InputEventType_FirstPress" then
 		if bookmarkPosition ~= nil then
 			SCREENMAN:GetTopScreen():SetPreviewNoteFieldMusicPosition(bookmarkPosition)
 		end
@@ -746,27 +742,27 @@ pm[#pm + 1] =
 	}
 
 pm[#pm + 1] =
-	Def.Quad {
-	Name = "Seek",
-	InitCommand = function(self)
-		self:zoomto(2, hidth):diffuse(color("1,.2,.5,1")):halign(0.5):draworder(1100)
-	end,
-	MouseLeftClickMessageCommand = function(self)
-		if isOver(self) then
-			SCREENMAN:GetTopScreen():SetPreviewNoteFieldMusicPosition(self:GetX() * musicratio)
-		end
-	end,
-	MouseRightClickMessageCommand = function(self)
-		if isOver(self) then
-			bookmarkPosition = self:GetX() * musicratio
-			self:GetParent():GetChild("BookmarkPos"):queuecommand("Set")
-		else
-			if not (allowedCustomization) then
-				SCREENMAN:GetTopScreen():TogglePracticePause()
+	quadButton(7) .. {
+		Name = "Seek",
+		InitCommand = function(self)
+			self:zoomto(2, hidth):diffuse(color("1,.2,.5,1")):halign(0.5):draworder(1100)
+		end,
+		MouseDownCommand = function(self, params)
+			if params.button == "DeviceButton_left mouse button" then
+				SCREENMAN:GetTopScreen():SetPreviewNoteFieldMusicPosition(self:GetX() * musicratio)
+			elseif params.button == "DeviceButton_right mouse button" then
+				bookmarkPosition = self:GetX() * musicratio
+				self:GetParent():GetChild("BookmarkPos"):queuecommand("Set")
+			end
+		end,
+		MouseRightClickMessageCommand = function(self)
+			if not self:IsOver() then
+				if not (allowedCustomization) then
+					SCREENMAN:GetTopScreen():TogglePracticePause()
+				end
 			end
 		end
-	end
-}
+	}
 
 pm[#pm + 1] =
 	Def.Quad {

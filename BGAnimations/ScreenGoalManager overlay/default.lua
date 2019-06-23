@@ -85,7 +85,7 @@ local t = Def.ActorFrame {
 local boxHeight = 20
 local numBoxWidth = leftSectionWidth / 2
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenGoalManager")
 
 t[#t+1] = LoadActor("../_frame")
 
@@ -329,7 +329,7 @@ local function lowerLeftContainer()
 				self:halign(1)
 				self:faderight(0.5)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				if inDetail then
 					goaltable[goalIndex]:SetRate(goaltable[goalIndex]:GetRate() - 0.05)
 					MESSAGEMAN:Broadcast("UpdateGoalDetails")
@@ -349,7 +349,7 @@ local function lowerLeftContainer()
 				self:halign(1)
 				self:fadeleft(0.5)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				if inDetail then
 					goaltable[goalIndex]:SetRate(goaltable[goalIndex]:GetRate() + 0.05)
 					MESSAGEMAN:Broadcast("UpdateGoalDetails")
@@ -460,7 +460,7 @@ local function lowerLeftContainer()
 				self:halign(1)
 				self:faderight(0.5)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				if inDetail then
 					goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() - 0.01)
 					MESSAGEMAN:Broadcast("UpdateGoalDetails")
@@ -480,7 +480,7 @@ local function lowerLeftContainer()
 				self:halign(1)
 				self:fadeleft(0.5)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self)
 				if inDetail then
 					goaltable[goalIndex]:SetPercent(goaltable[goalIndex]:GetPercent() + 0.01)
 					MESSAGEMAN:Broadcast("UpdateGoalDetails")
@@ -567,7 +567,7 @@ local function lowerLeftContainer()
 				ShowGoalDetailMessageCommand = function(self, params)
 					goalIndex = params.goalIndex
 				end,
-				TopPressedCommand = function(self)
+				MouseDownCommand = function(self)
 					if goaltable[goalIndex] and inDetail then
 						goaltable[goalIndex]:Delete()
 						profile:SetFromAll()
@@ -619,7 +619,7 @@ local function rightContainer()
 		end,
 
 		-- The container quad
-		Def.Quad {
+		quadButton(1) .. {
 			InitCommand = function (self)
 				self:zoomto(rightSectionWidth,rightSectionHeight)
 				self:halign(0):valign(0)
@@ -637,7 +637,7 @@ local function rightContainer()
 				end
 			end,
 			MouseRightClickMessageCommand = function(self)
-				if inDetail and isOver(self) then
+				if inDetail and self:isOver() then
 					self:sleep(0.05)
 					self:queuecommand("DelayedHide")
 				end
@@ -662,6 +662,7 @@ local function rightContainer()
 			self:halign(0)
 			self:valign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:maxwidth((rightSectionWidth-15)/0.35)
 			self:settext("Left click a Goal to jump to the song for it. Right click a Goal to edit it in the left section.")
 		end
 		},
@@ -671,6 +672,7 @@ local function rightContainer()
 				self:zoom(0.35)
 				self:halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:maxwidth((rightSectionWidth-110)/0.35)
 				self:settext("Create a goal for a song by pressing Ctrl + G while on it.")
 			end
 		}
@@ -762,9 +764,9 @@ local function rightContainer()
 				self:diffusealpha(0.2)
 				self:zoomto(boxWidth, boxHeight)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self, params)
 				if goaltable[goalIndex] ~= nil then
-					if params.input == "DeviceButton_left mouse button" then
+					if params.button == "DeviceButton_left mouse button" then
 						if goaltable[goalIndex] and goalsong and goalsteps and ((inDetail and theDetail) or not inDetail) then
 							MESSAGEMAN:Broadcast("TriggerExitFromPS",{song = goalsong})
 							GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred"):MusicRate(goaltable[goalIndex]:GetRate())
@@ -772,7 +774,7 @@ local function rightContainer()
 							GAMESTATE:GetSongOptionsObject("ModsLevel_Current"):MusicRate(goaltable[goalIndex]:GetRate())
 							SCREENMAN:GetTopScreen():Cancel()
 						end
-					elseif params.input == "DeviceButton_right mouse button" then
+					elseif params.button == "DeviceButton_right mouse button" then
 						if goaltable[goalIndex] and not inDetail then
 							inDetail = true
 							MESSAGEMAN:Broadcast("ShowGoalDetail", {index = i, goalIndex = goalIndex})
@@ -788,6 +790,7 @@ local function rightContainer()
 				self:xy(45,-5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
+				self:maxwidth((boxWidth - capWideScale(90,135) - 50)/0.4)
 			end,
 			SetCommand = function(self)
 				if goalsong then
@@ -795,7 +798,6 @@ local function rightContainer()
 				else
 					self:settextf("%s", ck)
 				end
-				self:maxwidth(boxWidth * 2)
 			end
 		}
 
@@ -850,8 +852,8 @@ local function rightContainer()
 		-- Assigned date
 		r[#r+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
-				self:xy(boxWidth - 135,5):halign(0)
-				self:maxwidth(boxWidth / 2)
+				self:xy(boxWidth - capWideScale(90,135),5):halign(0)
+				self:maxwidth(boxWidth / 2 + 25)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
 			end,
@@ -864,8 +866,8 @@ local function rightContainer()
 		-- Achieved date
 		r[#r+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
-				self:xy(boxWidth - 135,-5):halign(0)
-				self:maxwidth(boxWidth / 2)
+				self:xy(boxWidth - capWideScale(90,135),-5):halign(0)
+				self:maxwidth(boxWidth / 2 + 25)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
 			end,

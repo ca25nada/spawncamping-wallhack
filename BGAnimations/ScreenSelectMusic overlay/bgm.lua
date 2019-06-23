@@ -7,6 +7,8 @@ local curPath = ""
 local sampleStart = 0
 local musicLength = 0
 local loops = 0
+local musicNotPaused = 1
+local goNow = false
 
 local sampleEvent = false
 
@@ -26,9 +28,13 @@ GHETTOGAMESTATE:setLastPlayedSecond(0)
 
 local deltaSum = 0
 local function playMusic(self, delta)
-	deltaSum = deltaSum + delta
+	deltaSum = deltaSum + delta * musicNotPaused
+	if musicLength + 3 < GAMESTATE:GetSongPosition():GetMusicSeconds() then
+		goNow = true
+	end
 
-	if deltaSum > delay and sampleEvent then
+	if (deltaSum > delay and sampleEvent) or goNow then
+		goNow = false
 		local s = GHETTOGAMESTATE:getSSM()
 		if s:GetName() == "ScreenSelectMusic" then
 			if s:GetMusicWheel():IsSettled() and loops <= 1 then
@@ -76,6 +82,8 @@ local t = Def.ActorFrame{
 		end
 	end,
 	CurrentSongChangedMessageCommand = function(self)
+		musicNotPaused = 1
+		goNow = false
 		sampleEvent = false
 		loops = 0
 		SOUND:StopMusic()
@@ -96,6 +104,8 @@ local t = Def.ActorFrame{
 		end
 	end,
 	PlayingSampleMusicMessageCommand = function(self)
+		musicNotPaused = 1
+		goNow = false
 		sampleEvent = true
 		if themeConfig:get_data().global.SongPreview ~= 1 then
 			self:SetUpdateFunctionInterval(0.002)
@@ -108,7 +118,26 @@ local t = Def.ActorFrame{
 			self:SetUpdateFunctionInterval(amountOfWait)
 		end
 	end,
+	PreviewPausedMessageCommand = function(self)
+		if themeConfig:get_data().global.SongPreview ~= 1 then
+			if musicNotPaused == 1 then
+				musicNotPaused = 0
+				goNow = false
+			else
+				musicNotPaused = 1
+				sampleEvent = true
+				startFromPreview = false
+				loops = 0
+				start = GAMESTATE:GetSongPosition():GetMusicSeconds()
+				self:SetUpdateFunctionInterval(0.002)
+				SOUND:StopMusic()
+				goNow = true
+			end
+		end
+	end,
 	PreviewNoteFieldDeletedMessageCommand = function(self)
+		musicNotPaused = 1
+		goNow = false
 		sampleEvent = true
 		loops = 0
 		if themeConfig:get_data().global.SongPreview ~= 1 then

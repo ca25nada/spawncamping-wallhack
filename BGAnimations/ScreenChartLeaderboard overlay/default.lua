@@ -311,7 +311,7 @@ local function stepsListRow()
 			self:halign(0)
 			self:faderight(0.5)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(-1)})
 			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
 
@@ -329,7 +329,7 @@ local function stepsListRow()
 			self:halign(0)
 			self:fadeleft(0.5)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			MESSAGEMAN:Broadcast("SetStepsType", {st = getNextStepsType(1)})
 			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
 
@@ -414,7 +414,7 @@ local function stepsListRow()
 				self:y(SCREEN_HEIGHT*10)
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1)-10)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				MESSAGEMAN:Broadcast("SetSteps", {steps = stepsTable[i]})
 			end
 		}
@@ -487,7 +487,7 @@ local function stepsBPMRow()
 			self:halign(1)
 			self:faderight(0.5)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			changeMusicRate(-0.05)
 			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
 
@@ -505,7 +505,7 @@ local function stepsBPMRow()
 			self:halign(1)
 			self:fadeleft(0.5)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			changeMusicRate(0.05)
 			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
 
@@ -731,16 +731,16 @@ local function scoreList()
 				self:diffusealpha(0.2)
 				self:zoomto(scoreItemWidth, scoreItemHeight)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self, params)
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
 				self:diffusealpha(0.2)
-				if params.input == "DeviceButton_left mouse button" then
+				if params.button == "DeviceButton_left mouse button" then
 					if not detail then
 						MESSAGEMAN:Broadcast("ShowOnlineScoreDetail", {index = i, scoreIndex = scoreIndex})
 					end
-				elseif params.input == "DeviceButton_right mouse button" then
+				elseif params.button == "DeviceButton_right mouse button" then
 					MESSAGEMAN:Broadcast("HideOnlineScoreDetail")
 				end
 			end,
@@ -953,7 +953,7 @@ local function scoreList()
 				end
 			end,
 
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if scoreList[scoreIndex]:HasReplayData() and inDetail then
 					self:finishtweening()
 					self:diffusealpha(1)
@@ -995,7 +995,7 @@ local function scoreList()
 				self:diffusealpha(0.8)
 			end,
 
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not inDetail then
 					return
 				end
@@ -1030,7 +1030,7 @@ local function scoreList()
 				self:diffusealpha(0.8)
 			end,
 
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not inDetail then
 					return
 				end
@@ -1150,7 +1150,7 @@ local t = Def.ActorFrame {
 	end
 }
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenChartLeaderboard")
 
 t[#t+1] = LoadActor("../_frame")
 
@@ -1253,7 +1253,7 @@ t[#t+1] = Def.ActorFrame {
 			self:diffusealpha(0)
 			self:zoomto(150, 25)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -1311,7 +1311,7 @@ t[#t+1] = Def.ActorFrame {
 			self:diffusealpha(0)
 			self:zoomto(150, 25)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)

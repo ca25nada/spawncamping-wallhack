@@ -190,7 +190,7 @@ local leftSectionWidth = 300
 local leftSectionHeight = SCREEN_HEIGHT - 60
 local leftUpperSectionHeight = leftSectionHeight / 3
 local leftLowerSectionHeight = leftSectionHeight / 2 + 63
-local rightSectionWidth = 430
+local rightSectionWidth = SCREEN_WIDTH/2 - capWideScale(10,-95)
 local rightSectionHeight = SCREEN_HEIGHT - 60
 
 local verticalSpacing = 7
@@ -235,7 +235,7 @@ local function boundBoxes(i)
 				self:zoomto(numBoxWidth,boxHeight)
 				self:diffusealpha(0.2)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				self:diffusealpha(0.4)
 				inputting = true
 				activeField = {"Lower", i}
@@ -269,7 +269,7 @@ local function boundBoxes(i)
 				self:zoomto(numBoxWidth,boxHeight)
 				self:diffusealpha(0.2)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				self:diffusealpha(0.4)
 				inputting = true
 				activeField = {"Upper", i}
@@ -300,7 +300,7 @@ local function boundBoxes(i)
 	return r
 end
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenFiltering")
 
 t[#t+1] = LoadActor("../_frame")
 
@@ -398,7 +398,7 @@ t[#t+1] = Def.ActorFrame {
 			self:diffusealpha(0.2)
 			self:zoomto(numBoxWidth, 20)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -421,7 +421,7 @@ t[#t+1] = Def.ActorFrame {
 			self:diffusealpha(0.2)
 			self:zoomto(numBoxWidth, 20)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -462,7 +462,7 @@ t[#t+1] = Def.ActorFrame {
 			self:diffusealpha(0.2)
 			self:halign(0):valign(0)
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			self:finishtweening()
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
@@ -514,7 +514,7 @@ t[#t+1] = Def.ActorFrame {
 			self:zoomto(numBoxWidth, 20)
 			self:visible( IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() )
 		end,
-		TopPressedCommand = function(self)
+		MouseDownCommand = function(self)
 			if IsNetSMOnline() and IsSMOnlineLoggedIn(PLAYER_1) and NSMAN:IsETTP() then
 				self:finishtweening()
 				self:diffusealpha(0.4)
@@ -621,7 +621,7 @@ local function rightContainer()
 				self:diffusealpha(0.2)
 				self:zoomto(numBoxWidth + 15, 35)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
@@ -647,7 +647,7 @@ local function rightContainer()
 				self:diffusealpha(0.2)
 				self:zoomto(numBoxWidth + 15, 35)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
@@ -673,7 +673,7 @@ local function rightContainer()
 				self:diffusealpha(0.2)
 				self:zoomto(numBoxWidth + 15, 35)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
@@ -706,7 +706,9 @@ local function rightContainer()
 		LoadFont("Common Normal") .. {
 			Name = "TagModeExplanation",
 			InitCommand = function(self)
-				self:xy(25 + horizontalSpacing*3 + (numBoxWidth + 15)*3, rightSectionHeight - 30)
+				local xpos = capWideScale(25 + horizontalSpacing + numBoxWidth + 15 + (numBoxWidth+15)/2, 25 + horizontalSpacing*3 + (numBoxWidth + 15)*3) -- hilarious hack
+				local ypos = rightSectionHeight - capWideScale(55,30) -- no really lmao
+				self:xy(xpos, ypos)
 				self:zoom(0.4)
 				self:halign(0)
 				self:queuecommand("Set")
@@ -779,10 +781,10 @@ local function rightContainer()
 				self:diffusealpha(0.2)
 				self:zoomto(boxWidth, boxHeight)
 			end,
-			TopPressedCommand = function(self, params)
+			MouseDownCommand = function(self, params)
 				if playertags[tagIndex] ~= nil then
 					self:finishtweening()
-					if params.input == "DeviceButton_left mouse button" then
+					if params.button == "DeviceButton_left mouse button" then
 						self:diffusealpha(0.4)
 						self:smooth(0.3)
 						self:diffusealpha(0.2)
@@ -793,7 +795,7 @@ local function rightContainer()
 						end
 						updateTagFilter()
 						self:GetParent():GetChild("Status"):queuecommand("Set")
-					elseif params.input == "DeviceButton_right mouse button" then
+					elseif params.button == "DeviceButton_right mouse button" then
 						tags:get_data().playerTags[playertags[tagIndex]] = nil
 						playertags[tagIndex] = nil
 						tags:set_dirty()

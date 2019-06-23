@@ -84,6 +84,18 @@ local function generalFrame(pn)
 		end
 	}
 
+	if not IsUsingWideScreen() then
+		t[#t+1] = Def.Quad {
+			InitCommand = function(self)
+				self:halign(0):valign(0)
+				self:xy(frameX-14,frameHeight/2)
+				self:zoomto(65,frameHeight/2)
+				self:diffuse(getMainColor("frame"))
+				self:diffusealpha(0.8)
+			end
+		}
+	end
+
 	-- Avatar background frame
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
@@ -120,8 +132,8 @@ local function generalFrame(pn)
 			self:zoomto(50,50)
 			self:visible(false)
 		end,
-		TopPressedCommand = function(self, params)
-			if params.input == "DeviceButton_left mouse button" then
+		MouseDownCommand = function(self, params)
+			if params.button == "DeviceButton_left mouse button" then
 				SCREENMAN:AddNewScreenToTop("ScreenPlayerProfile")
 			end
 		end
@@ -135,7 +147,7 @@ local function generalFrame(pn)
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(assetFolders.avatar .. findAvatar(PROFILEMAN:GetProfile(PLAYER_1):GetGUID()))
+			self:Load(getAvatarPath(PLAYER_1))
 			self:zoomto(50,50)
 		end
 	}
@@ -587,6 +599,64 @@ local function generalFrame(pn)
 		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
+	t[#t+1] = Def.Quad {
+		InitCommand = function(self)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3,0)
+			self:valign(1)
+			self:halign(1)
+			self:zoomto((frameWidth-75)/3,16)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0)
+		end,
+		SetCommand = function(self)
+			if song and ctags[3] then
+				self:diffusealpha(0.8)
+			else
+				self:diffusealpha(0)
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand("Set") end
+		
+	}
+	t[#t+1] = Def.Quad {
+		InitCommand = function(self)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3 - 2,0)
+			self:valign(1)
+			self:halign(1)
+			self:zoomto((frameWidth-75)/3,16)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0)
+		end,
+		SetCommand = function(self)
+			if song and ctags[2] then
+				self:diffusealpha(0.8)
+			else
+				self:diffusealpha(0)
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand("Set") end
+		
+	}
+	t[#t+1] = Def.Quad {
+		InitCommand = function(self)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4,0)
+			self:valign(1)
+			self:halign(1)
+			self:zoomto((frameWidth-75)/3,16)
+			self:diffuse(getMainColor("frame"))
+			self:diffusealpha(0)
+		end,
+		SetCommand = function(self)
+			if song and ctags[1] then
+				self:diffusealpha(0.8)
+			else
+				self:diffusealpha(0)
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand("Set") end
+		
+	}
+
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
 			self:xy(260 - frameWidth/5, frameHeight-40)
@@ -596,8 +666,8 @@ local function generalFrame(pn)
 			self:maxwidth(200)
 		end,
 		SetCommand = function(self)
-			if song and ctags[1] then
-				self:settext(ctags[1])
+			if song and steps[pn] then
+				self:settext(steps[pn]:GetRelevantSkillsetsByMSDRank(getCurRateValue(), 1))
 			else
 				self:settext("")
 			end
@@ -614,8 +684,8 @@ local function generalFrame(pn)
 			self:maxwidth(200)
 		end,
 		SetCommand = function(self)
-			if song and ctags[2] then
-				self:settext(ctags[2])
+			if song and steps[pn] then
+				self:settext(steps[pn]:GetRelevantSkillsetsByMSDRank(getCurRateValue(), 2))
 			else
 				self:settext("")
 			end
@@ -630,6 +700,57 @@ local function generalFrame(pn)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 			self:maxwidth(200)
+		end,
+		SetCommand = function(self)
+			if song and steps[pn] then
+				self:settext(steps[pn]:GetRelevantSkillsetsByMSDRank(getCurRateValue(), 3))
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4 - (frameWidth-75)/6, -8)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(((frameWidth-75)/3-capWideScale(5,10))/0.4)
+		end,
+		SetCommand = function(self)
+			if song and ctags[1] then
+				self:settext(ctags[1])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3 - 2 - (frameWidth-75)/6, -8)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(((frameWidth-75)/3-capWideScale(5,10))/0.4)
+		end,
+		SetCommand = function(self)
+			if song and ctags[2] then
+				self:settext(ctags[2])
+			else
+				self:settext("")
+			end
+		end,
+		BeginCommand = function(self) self:queuecommand('Set') end
+	}
+
+	t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/6, -8)
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
+			self:maxwidth(((frameWidth-75)/3-capWideScale(5,10))/0.4)
 		end,
 		SetCommand = function(self)
 			if song and ctags[3] then

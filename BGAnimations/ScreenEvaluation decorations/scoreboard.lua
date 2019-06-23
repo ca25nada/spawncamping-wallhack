@@ -127,7 +127,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 		},
 
 		--Highlight quad for the current score
-		Def.Quad{
+		quadButton(3) .. {
 			InitCommand=function(self)
 				self:xy(frameX,frameY+(drawindex*spacing)-4):zoomto(frameWidth,30):halign(0):valign(0):diffuse(getMainColor("highlight")):diffusealpha(0.3)
 			end,
@@ -137,13 +137,11 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			SetCommand = function(self)
 				self:playcommand("Begin")
 			end,
-			MouseLeftClickMessageCommand = function(self)
-				if self:isOver() then
-					self:GetParent():GetChild("grade"):visible(not self:GetParent():GetChild("grade"):GetVisible())
-					self:GetParent():GetChild("judge"):visible(not self:GetParent():GetChild("judge"):GetVisible())
-					self:GetParent():GetChild("date"):visible(not self:GetParent():GetChild("date"):GetVisible())
-					self:GetParent():GetChild("option"):visible(not self:GetParent():GetChild("option"):GetVisible())
-				end
+			MouseDownCommand = function(self)
+				self:GetParent():GetChild("grade"):visible(not self:GetParent():GetChild("grade"):GetVisible())
+				self:GetParent():GetChild("judge"):visible(not self:GetParent():GetChild("judge"):GetVisible())
+				self:GetParent():GetChild("date"):visible(not self:GetParent():GetChild("date"):GetVisible())
+				self:GetParent():GetChild("option"):visible(not self:GetParent():GetChild("option"):GetVisible())
 			end
 		},
 

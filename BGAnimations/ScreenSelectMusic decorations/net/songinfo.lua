@@ -53,18 +53,16 @@ t[#t+1] = quadButton(1)..{
 		self:zoomto(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
 		self:visible(false)
 	end,
-	TopPressedCommand = function(self, params)
-		if params.input == "DeviceButton_left mouse button" then
-					
-			if song ~= nil then 
-				SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
-
-			elseif group ~= nil and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
-				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
-			end
-
+	MouseDownCommand = function(self, params)
+		if params.button ~= "DeviceButton_left mouse button" then
+			return
 		end
+		if song ~= nil then 
+			SCREENMAN:AddNewScreenToTop("ScreenMusicInfo")
 
+		elseif group ~= nil and GAMESTATE:GetSortOrder() == "SortOrder_Group" then
+			SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
+		end
 
 	end
 }
@@ -96,7 +94,7 @@ t[#t+1] = Def.Sprite {
 t[#t+1] = Def.Sprite {
 	Name = "CDTitle",
 	InitCommand = function(self)
-		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)-40)
+		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)+40)
 		self:y(120-(capWideScale(get43size(120),120)/2)+30)
 		self:wag():effectmagnitude(0,0,5)
 		self:diffusealpha(0.8)
@@ -266,15 +264,22 @@ t[#t+1] = quadButton(6) .. {
 		self:diffusealpha(0.9)
 		self:halign(0)
 	end,
-	TopPressedCommand = function(self)
+	MouseDownCommand = function(self, params)
+		if params.button ~= "DeviceButton_left mouse button" then
+			return
+		end
 		NSMAN:SendChatMsg("/ready", 1, NSMAN:GetCurrentRoomName())
 	end,
 	UsersUpdateMessageCommand = function(self)
 		local ready = getReady()
 		if ready then
+			self:finishtweening()
+			self:linear(0.1)
 			self:diffuse(getMainColor("positive"))
 			self:diffusealpha(0.9)
 		else
+			self:finishtweening()
+			self:linear(0.1)
 			self:diffuse(getMainColor("negative"))
 			self:diffusealpha(0.9)
 		end
@@ -297,7 +302,10 @@ t[#t+1] = quadButton(6) .. {
 		self:diffusealpha(0.8)
 		self:halign(0)
 	end,
-	TopPressedCommand = function(self)
+	MouseDownCommand = function(self, params)
+		if params.button ~= "DeviceButton_left mouse button" then
+			return
+		end
 		if song then
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerOptions")
 		end
@@ -310,6 +318,34 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:zoom(0.4)
 	end
 
+}
+
+-- Force Start button
+t[#t+1] = quadButton(6) .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 57*2, 217.5)
+		self:zoomto(55,25)
+		self:diffuse(getMainColor("negative"))
+		self:diffusealpha(0.9)
+		self:halign(0)
+	end,
+	MouseDownCommand = function(self, params)
+		if params.button ~= "DeviceButton_left mouse button" then
+			return
+		end
+		NSMAN:SendChatMsg("/force", 1, NSMAN:GetCurrentRoomName())
+		self:finishtweening()
+		self:diffuse(getMainColor("highlight"))
+		self:linear(0.2)
+		self:diffuse(getMainColor("negative"))
+	end
+}
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 55/2 + 57*2, 217.5)
+		self:settext("Force\nStart")
+		self:zoom(0.4)
+	end
 }
 
 

@@ -48,7 +48,7 @@ local function input(event)
 				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
 			elseif tonumber(event.char) == 4 then
 				if CtrlPressed then
-					MESSAGEMAN:Broadcast("StartSearch")
+					MESSAGEMAN:Broadcast("StartSearch", {hotkey = true})
 				else
 					GHETTOGAMESTATE:setMusicWheel(SCREENMAN:GetTopScreen())
 					SCREENMAN:AddNewScreenToTop("ScreenFiltering")
@@ -109,7 +109,7 @@ local t = Def.ActorFrame{
 	end
 }
 
-t[#t+1] = LoadActor("../../_mouse")
+t[#t+1] = LoadActor("../../_mouse", "ScreenSelectMusic")
 
 -- Profile contains: Profile breakdown (local and online)
 -- Song Info contains: MSD, Scores, Chart Preview, Online Leaderboard, (and something to let you tag the song)
@@ -127,6 +127,9 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2 - 17)
 	end,
 	TabPressedMessageCommand = function(self, params)
+		if params.params.button ~= "DeviceButton_left mouse button" then
+			return
+		end
 		if inSongSearch then
 			MESSAGEMAN:Broadcast("EndSearch")
 			SCREENMAN:set_input_redirected(PLAYER_1, false)

@@ -37,9 +37,9 @@ t[#t+1] = Def.Quad{
 			self:zoomto(avatarHeight+avatarBorder*2,avatarWidth+avatarBorder*2)
 			self:visible(false)
 		end,
-		TopPressedCommand = function(self, params)
-			if params.input == "DeviceButton_left mouse button" then
-				SCREENMAN:AddNewScreenToTop("ScreenSelectAvatar")
+		MouseDownCommand = function(self, params)
+			if params.button == "DeviceButton_left mouse button" then
+				SCREENMAN:AddNewScreenToTop("ScreenAssetSettings")
 			end
 		end
 	}
@@ -52,7 +52,7 @@ t[#t+1] = Def.Quad{
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end,
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(assetFolders.avatar .. findAvatar(profile:GetGUID()))
+			self:Load(getAvatarPath(PLAYER_1))
 			self:zoomto(avatarHeight,avatarWidth)
 		end
 	}

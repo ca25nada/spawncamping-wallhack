@@ -8,6 +8,9 @@ local ssm
 local NF
 local NFParent
 local musicratio = 1
+local snapGraph
+local densityGraph
+local previewType = 1
 
 local validStepsType = {
 	'StepsType_Dance_Single',
@@ -51,7 +54,7 @@ local curStepIndex = 0
 local function input(event)
 	
 	if event.type == "InputEventType_FirstPress" then
-		if event.button == "Back" or event.button == "Start" then
+		if event.button == "Back" or event.button == "Start" or event.DeviceInput.button == "DeviceButton_space" then
 			SCREENMAN:GetTopScreen():Cancel()
 			ssm:DeletePreviewNoteField(NFParent)
 			MESSAGEMAN:Broadcast("PreviewNoteFieldDeleted")
@@ -75,6 +78,7 @@ local function input(event)
 
 		if event.DeviceInput.button == "DeviceButton_right mouse button" then
 			ssm:PausePreviewNoteField()
+			MESSAGEMAN:Broadcast("PreviewPaused")
 		end
 
 	end
@@ -83,7 +87,7 @@ local function input(event)
 end
 
 local top
-local frameWidth = 430
+local frameWidth = SCREEN_WIDTH/2 - capWideScale(35,-5)
 local frameHeight = 340
 
 local verticalSpacing = 7
@@ -332,7 +336,7 @@ local function stepsListRow()
 				self:y(SCREEN_HEIGHT*10)
 				self:x((-topRowFrameWidth/2)+frameWidth+5+45*(i-1)-10)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				local dir = i - curStepIndex
 				if dir ~= 0 then
 					ssm:ChangeSteps(dir)
@@ -409,7 +413,7 @@ local function stepsBPMRow()
 			self:halign(1)
 			self:faderight(0.5)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			changeMusicRate(-0.05)
 			self:GetParent():GetChild("TriangleLeft"):playcommand("Tween")
 
@@ -427,7 +431,7 @@ local function stepsBPMRow()
 			self:halign(1)
 			self:fadeleft(0.5)
 		end,
-		TopPressedCommand = function(self, params)
+		MouseDownCommand = function(self)
 			changeMusicRate(0.05)
 			self:GetParent():GetChild("TriangleRight"):playcommand("Tween")
 
@@ -514,7 +518,7 @@ local t = Def.ActorFrame {
 	end
 }
 
-t[#t+1] = LoadActor("../_mouse")
+t[#t+1] = LoadActor("../_mouse", "ScreenChartPreview")
 
 t[#t+1] = LoadActor("../_frame") .. {
 	InitCommand = function(self)
@@ -558,6 +562,8 @@ t[#t+1] = LoadActor("../ScreenMusicInfo overlay/ssrbreakdown") .. {
 	end
 }
 
+local densityGraphWidth = capWideScale(64,84)
+
 local function getColorForDensity(density, nColumns)
 	-- Generically (generally? intelligently? i dont know) set a range
 	-- Colors are color(0.1,0.1,0.1) to color(0.7,0.7,0.7)
@@ -579,14 +585,28 @@ end
 
 local function seekOrHighlight(self)
 	local pos = ssm:GetPreviewNoteFieldMusicPosition() / musicratio
-	self:GetChild("PreviewProgress"):zoomto(84, math.min(pos, frameHeight-20))
+	self:GetChild("PreviewProgress"):zoomto(densityGraphWidth, math.min(pos, frameHeight-20))
 	self:queuecommand("Highlight")
 end
+
+local function togglePreviewType()
+	if previewType == 1 then
+		previewType = 0
+		densityGraph:visible(false)
+		snapGraph:visible(true)
+		snapGraph:queuecommand("DrawSnapGraph")
+	else
+		previewType = 1
+		densityGraph:visible(true)
+		snapGraph:visible(false)
+	end
+end
+
 
 -- The container for the density graph and scrollbar
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X / 1.2 - 36 + frameWidth + horizontalSpacing, 110)
+		self:xy(SCREEN_CENTER_X / 1.2 + 5 + frameWidth + horizontalSpacing - capWideScale(0,45), 110)
 		self:GetChild("ChordDensityGraph"):queuecommand("GraphUpdate")
 		self:SetUpdateFunction(seekOrHighlight)
 		self:queuecommand("DelayedUpdateHack")
@@ -595,12 +615,14 @@ t[#t+1] = Def.ActorFrame {
 		-- i dunno maybe the song might not be ready in time, just in case bro
 		musicratio = GAMESTATE:GetCurrentSong():GetLastSecond() / (frameHeight - 20)
 	end,
-
+	OnCommand = function(self)
+		densityGraph = self:GetChild("ChordDensityGraph")
+	end,
 
 	-- container bg
 	Def.Quad {
 		InitCommand = function (self)
-			self:zoomto(84,frameHeight)
+			self:zoomto(densityGraphWidth,frameHeight)
 			self:halign(0):valign(0)
 			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
@@ -610,8 +632,8 @@ t[#t+1] = Def.ActorFrame {
 	Def.Quad {
 		Name = "PreviewProgress",
 		InitCommand = function(self)
-			self:xy(84/2, 20)
-			self:zoomto(84, 200)
+			self:xy(densityGraphWidth/2, 20)
+			self:zoomto(densityGraphWidth, 200)
 			self:diffuse(getMiscColor("PreviewProgress"))
 			self:diffusealpha(0.5)
 			self:valign(0)
@@ -654,7 +676,7 @@ t[#t+1] = Def.ActorFrame {
 				end
 
 				self:GetParent():GetChild("NPSText"):settext(mWidth / 2 .. " max NPS")
-				mWidth = 84 / mWidth
+				mWidth = densityGraphWidth / mWidth
 				local verts = {}
 				for density = 1, nColumns do
 					for row = 1, numberOfRows do
@@ -675,22 +697,36 @@ t[#t+1] = Def.ActorFrame {
 	LoadFont("Common Bold") .. {
 		Name = "NPSText",
 		InitCommand = function(self)
-			self:xy(84/2,10)
+			self:xy(densityGraphWidth/2,10)
 			self:zoom(0.4)
 			--self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("")
-			self:maxwidth(84 * 2.2)
+			self:maxwidth(densityGraphWidth * 2.2)
+		end
+	},
+
+	-- Invisible button to toggle secret scuffed graph
+	quadButton(8) .. {
+		Name = "spooky",
+		InitCommand = function(self)
+			self:zoomto(densityGraphWidth,20)
+			self:halign(0)
+			self:valign(0)
+			self:diffusealpha(0)
+		end,
+		MouseDownCommand = function(self)
+			togglePreviewType()
 		end
 	},
 
 	-- This handles the seeking through the preview
-	Def.Quad {
+	quadButton(7) .. {
 		Name = "PreviewClickable",
 		InitCommand = function(self)
 			self:diffuse(color("#000000"))
 			self:y(20)
-			self:zoomto(84,frameHeight-20)
+			self:zoomto(densityGraphWidth,frameHeight-20)
 			self:halign(0):valign(0)
 			self:diffusealpha(0)
 		end,
@@ -702,8 +738,8 @@ t[#t+1] = Def.ActorFrame {
 				self:GetParent():GetChild("PreviewSeek"):visible(false)
 			end
 		end,
-		MouseLeftClickMessageCommand = function(self)
-			if isOver(self) then
+		MouseDownCommand = function(self, params)
+			if params.button == "DeviceButton_left mouse button" then
 				ssm:SetPreviewNoteFieldMusicPosition( (INPUTFILTER:GetMouseY() - self:GetParent():GetY() - 20) * musicratio)
 			end
 		end,
@@ -724,7 +760,7 @@ t[#t+1] = Def.ActorFrame {
 		Name = "PreviewSeek",
 		InitCommand = function(self)
 			self:y(20)
-			self:zoomto(84, 1)
+			self:zoomto(densityGraphWidth, 1)
 			self:diffuse(getMiscColor("PreviewSeek"))
 			self:halign(0)
 		end
@@ -732,10 +768,103 @@ t[#t+1] = Def.ActorFrame {
 
 }
 
+local dotWidth = 7
+local dotHeight = 0.75
+local function fillVertStruct( vt, x, y, givencolor )
+	vt[#vt + 1] = {{x - dotWidth, y + dotHeight, 0}, givencolor}
+	vt[#vt + 1] = {{x + dotWidth, y + dotHeight, 0}, givencolor}
+	vt[#vt + 1] = {{x + dotWidth, y - dotHeight, 0}, givencolor}
+	vt[#vt + 1] = {{x - dotWidth, y - dotHeight, 0}, givencolor}
+end
+local function fitX( number, totalnumber ) -- find X relative to the center of the plot
+	return -densityGraphWidth / 2 + densityGraphWidth * (number / totalnumber) - (densityGraphWidth/(totalnumber*2))
+end
+
+local function fitY( number, tracks ) -- find Y relative to the middle of the screen
+	return -SCREEN_HEIGHT / 2 + SCREEN_HEIGHT * (number / tracks) * (usingreverse and -1 or 1)
+end
+
+local noteData
+
+t[#t+1] = Def.ActorFrame {
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X / 1.2 + 5 + frameWidth + horizontalSpacing + densityGraphWidth/2 - capWideScale(0,45), 110)
+		self:valign(0)
+	end,
+	OnCommand = function(self)
+		if song and steps then
+			noteData = steps:GetNonEmptyNoteData()
+		else
+			noteData = nil
+		end
+		snapGraph = self:GetChild("SnapGraph")
+	end,
+	Def.ActorMultiVertex {
+		Name = "SnapGraph",
+		OnCommand = function(self)
+			self:visible(false)
+			self:queuecommand("DrawSnapGraph")
+		end,
+		SetStepsMessageCommand = function(self, params)
+			if params.steps then
+				if song then
+					noteData = params.steps:GetNonEmptyNoteData()
+				else
+					noteData = nil
+				end
+				if previewType == 0 then
+					self:queuecommand("DrawSnapGraph")
+				end
+			end
+		end,
+		DrawSnapGraphCommand = function(self)
+			local verts = {}
+			local numtracks = #noteData - 2
+			local numrows = noteData[1][#noteData[1]]
+			dotWidth = (densityGraphWidth - numtracks) / (numtracks*2)
+			local specificwidth = (frameHeight - 20) / numrows
+			for row = 1, #noteData[1] do
+				--local y = fitY(noteData[1][row], numrows)
+				local y = 20 + math.min(noteData[1][row] * specificwidth, frameHeight-20)
+				for track = 1, numtracks do
+					local x = fitX(track, numtracks)
+					if noteData[track + 1][row] == 1 then
+						local dotcolor = color("#da5757") 
+						if noteData[6][row] == 1 then 
+							dotcolor = color("#da5757")
+						elseif noteData[6][row] == 2 then 
+							dotcolor = color("#003EFF")
+						elseif noteData[6][row] == 3 then 
+							dotcolor = color("#3F6826")
+						elseif noteData[6][row] == 4 then 
+							dotcolor = color("#dff442")
+						elseif noteData[6][row] == 5 then 
+							dotcolor = color("#7a11d6")
+						elseif noteData[6][row] == 6 then 
+							dotcolor = color("#d68311")
+						elseif noteData[6][row] == 7 then 
+							dotcolor = color("#11d6bb")
+						elseif noteData[6][row] == 8 then 
+							dotcolor = color("#5e5d60")
+						elseif noteData[6][row] == 9 then 
+							dotcolor = color("#f9f9f9")
+						end
+							
+						fillVertStruct( verts, x, y, dotcolor )
+					end
+				end
+			end
+			self:SetVertices(verts)
+			self:SetDrawState {Mode = "DrawMode_Quads", First = 1, Num = #verts}
+
+		end
+	}
+}
+
 -- The main, central container (Preview Notefield)
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X / 1.2 - 36, 110)
+		self:xy(capWideScale(SCREEN_WIDTH/2 - 50, SCREEN_CENTER_X / 1.2 - 36), 110)
 	end,
 
 	Def.Quad {
@@ -776,9 +905,8 @@ t[#t+1] = Def.ActorFrame {
 			end
 			NFParent:SortByDrawOrder()
 		end
-	}
+	},
 }
-
 
 t[#t+1] = LoadActor("../_cursor")
 

@@ -1025,16 +1025,16 @@ function BareBone()
 	setmetatable( t, t )
 	return t
 end
-function JudgementTween()
+function JudgmentEnabled()
 	local t = {
-		Name = "JudgementTween",
+		Name = "JudgmentEnabled",
 		LayoutType = "ShowAllInRow",
 		SelectType = "SelectOne",
 		OneChoiceForAllPlayers = true,
 		ExportOnChange = true,
 		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
-			local pref = themeConfig:get_data().global.JudgementTween
+			local pref = themeConfig:get_data().global.JudgmentEnabled
 			if pref then
 				list[2] = true
 			else 
@@ -1048,7 +1048,7 @@ function JudgementTween()
 			else
 				value = true
 			end
-			themeConfig:get_data().global.JudgementTween = value
+			themeConfig:get_data().global.JudgmentEnabled = value
 			themeConfig:set_dirty()
 			themeConfig:save()
 		end
@@ -1056,16 +1056,16 @@ function JudgementTween()
 	setmetatable( t, t )
 	return t
 end
-function UseAssetsJudgements()
+function JudgmentTween()
 	local t = {
-		Name = "UseAssetsJudgements",
+		Name = "JudgmentTween",
 		LayoutType = "ShowAllInRow",
 		SelectType = "SelectOne",
 		OneChoiceForAllPlayers = true,
 		ExportOnChange = true,
-		Choices = { "Native","Assets"},
+		Choices = { "Off","On"},
 		LoadSelections = function(self, list, pn)
-			local pref = themeConfig:get_data().global.UseAssetsJudgements
+			local pref = themeConfig:get_data().global.JudgmentTween
 			if pref then
 				list[2] = true
 			else 
@@ -1079,7 +1079,7 @@ function UseAssetsJudgements()
 			else
 				value = true
 			end
-			themeConfig:get_data().global.UseAssetsJudgements = value
+			themeConfig:get_data().global.JudgmentTween = value
 			themeConfig:set_dirty()
 			themeConfig:save()
 		end

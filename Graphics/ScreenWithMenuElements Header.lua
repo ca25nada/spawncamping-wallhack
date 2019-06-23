@@ -42,10 +42,8 @@ t[#t+1] = quadButton(4)..{
 		self:easeOut(0.5)
 		self:zoomy(0)
 	end,
-	TopPressedCommand = function(self, params)
-		if params.input == "DeviceButton_left mouse button" then
-			MESSAGEMAN:Broadcast("ExitScreen",{screen = top:GetName()})
-		end
+	MouseDownCommand = function(self, params)
+		MESSAGEMAN:Broadcast("ExitScreen",{screen = top:GetName()})
 	end
 }
 

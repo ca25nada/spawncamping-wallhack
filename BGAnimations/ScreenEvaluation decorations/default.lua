@@ -65,8 +65,8 @@ t[#t+1] = Def.ActorFrame {
 -- Timing/Judge Difficulty
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:xy(10,40)
-		self:zoom(0.4)
+		self:xy(10,50)
+		self:zoom(0.45)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		self:queuecommand("Set")
@@ -85,8 +85,8 @@ t[#t+1] = LoadFont("Common Normal")..{
 -- Life Difficulty
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:xy(10,55)
-		self:zoom(0.4)
+		self:xy(10,65)
+		self:zoom(0.45)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		self:settextf("Life Difficulty: %d",GetLifeDifficulty())
@@ -96,21 +96,20 @@ t[#t+1] = LoadFont("Common Normal")..{
 -- Music Rate/Haste
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:xy(10,70)
-		self:zoom(0.4)
-		self:halign(0)
+		self:xy(SCREEN_CENTER_X,120)
+		self:zoom(0.48)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-		self:settextf("Music Rate: %s", rate)
+		self:settextf("Rate: %s", rate)
 	end
 }
 
 -- Mod List
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:xy(10,85)
-		self:zoom(0.4)
+		self:xy(10,80)
+		self:zoom(0.45)
 		self:halign(0)
-		self:maxwidth(SCREEN_WIDTH - (266/2) - 45)
+		self:maxwidth((SCREEN_WIDTH/2 - 133 - 10)/0.45)
 		self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
 		local mods = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("ModsLevel_Current")
 		self:settextf("Mods: %s", mods)
@@ -211,7 +210,7 @@ local function GraphDisplay( pn )
 		LoadFont("Common Normal")..{
 			Font= "Common Normal", 
 			InitCommand= function(self)
-				self:y(50):zoom(0.6)
+				self:y(50):zoom(0.7)
 				self:halign(0)
 			end,
 			BeginCommand=function(self) 
@@ -226,23 +225,25 @@ local function GraphDisplay( pn )
 			end,
 			SetJudgeCommand = function(self, params)
 				if enabledCustomWindows then
-					self:settextf(
-						"%05.2f%% (%s)",
-						rescoredPercentage,
-						customWindow.name
-					)
-				elseif params.Name == "PrevJudge" and judge >= 1 then
-					self:settextf(
-						"%05.2f%% (%s)",
-						rescoredPercentage,
-						"Wife J" .. judge
-					)
-				elseif params.Name == "NextJudge" and judge <= 9 then
-					if judge == 9 then
+					if rescoredPercentage > 99 then
 						self:settextf(
+							"%05.4f%% (%s)",
+							rescoredPercentage,
+							customWindow.name
+						)
+						else
+							self:settextf(
 							"%05.2f%% (%s)",
 							rescoredPercentage,
-							"Wife Justice"
+							customWindow.name
+						)
+					end
+				elseif params.Name == "PrevJudge" and judge >= 1 then
+					if rescoredPercentage > 99 then
+						self:settextf(
+							"%05.4f%% (%s)",
+							rescoredPercentage,
+							"Wife J" .. judge
 						)
 					else
 						self:settextf(
@@ -250,6 +251,36 @@ local function GraphDisplay( pn )
 							rescoredPercentage,
 							"Wife J" .. judge
 						)
+					end
+				elseif params.Name == "NextJudge" and judge <= 9 then
+					if judge == 9 then
+						if rescoredPercentage > 99 then
+							self:settextf(
+								"%05.4f%% (%s)",
+								rescoredPercentage,
+								"Wife Justice"
+							)
+						else
+							self:settextf(
+								"%05.2f%% (%s)",
+								rescoredPercentage,
+								"Wife Justice"
+							)	
+						end
+					else
+						if rescoredPercentage > 99 then
+							self:settextf(
+								"%05.4f%% (%s)",
+								rescoredPercentage,
+								"Wife J" .. judge
+							)
+						else
+							self:settextf(
+								"%05.2f%% (%s)",
+								rescoredPercentage,
+								"Wife J" .. judge
+							)
+						end
 					end
 				end
 			end,
@@ -395,7 +426,7 @@ local function scoreBoard(pn)
 		InitCommand = function (self) 
 			self:xy(25+10-(frameWidth/2),5)
 			self:visible(true)
-			self:LoadBackground(assetFolders.avatar .. findAvatar(PROFILEMAN:GetProfile(PLAYER_1):GetGUID()))
+			self:Load(getAvatarPath(PLAYER_1))
 			self:zoomto(50,50)
 		end
 	}
@@ -473,7 +504,7 @@ local function scoreBoard(pn)
 		end
 	}
 
-
+	--[[ -- disabled because the game doesnt save the required stuff correctly, just stored it to xml and reads once per session
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand  = function(self)
 			self:xy(self:GetParent():GetChild("DisplayName"):GetX()+self:GetParent():GetChild("DisplayName"):GetWidth()*0.6+5,10)
@@ -488,6 +519,7 @@ local function scoreBoard(pn)
 			self:addy(-5)
 		end
 	}
+	]]
 
 	--Diff & MSD
 	t[#t+1] = LoadFont("Common Normal")..{
@@ -1429,7 +1461,7 @@ local function boardOfScores()
 					self:diffusealpha(0.4)
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					isLocal = true
 					self:GetParent():queuecommand("UpdateScores")
@@ -1482,7 +1514,7 @@ local function boardOfScores()
 					self:diffusealpha(0.4)
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if isLocal and loggedIn then
 					isLocal = false
 					self:GetParent():queuecommand("UpdateScores")
@@ -1535,7 +1567,7 @@ local function boardOfScores()
 					end
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					if not DLMAN:GetCurrentRateFilter() then
 						DLMAN:ToggleRateFilter()
@@ -1589,7 +1621,7 @@ local function boardOfScores()
 					end
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					if DLMAN:GetCurrentRateFilter() then
 						DLMAN:ToggleRateFilter()
@@ -1643,7 +1675,7 @@ local function boardOfScores()
 					end
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					if not DLMAN:GetTopScoresOnlyFilter() then
 						DLMAN:ToggleTopScoresOnlyFilter()
@@ -1697,7 +1729,7 @@ local function boardOfScores()
 					end
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if not isLocal and loggedIn then
 					if DLMAN:GetTopScoresOnlyFilter() then
 						DLMAN:ToggleTopScoresOnlyFilter()
@@ -1784,7 +1816,7 @@ local function boardOfScores()
 					self:diffusealpha(0.1)
 				end
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
 					return
 				end
@@ -1917,7 +1949,7 @@ local function boardOfScores()
 				self:diffusealpha(0.1)
 				self:zoomto(frameWidth - scoreItemWidth - scoreItemX - 20, scoreItemHeight)
 			end,
-			TopPressedCommand = function(self)
+			MouseDownCommand = function(self)
 				if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
 					return
 				end

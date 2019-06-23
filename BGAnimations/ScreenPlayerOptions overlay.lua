@@ -1,5 +1,5 @@
 local t = Def.ActorFrame{}
-t[#t+1] = LoadActor("_mouse")
+t[#t+1] = LoadActor("_mouse", "ScreenPlayerOptions")
 
 local topFrameHeight = 35
 local bottomFrameHeight = 54
@@ -104,7 +104,7 @@ t[#t+1] = Def.ActorFrame{
 		end,
 		ModifyAvatarCommand=function(self)
 			self:finishtweening()
-			self:LoadBackground(assetFolders.avatar .. findAvatar(PROFILEMAN:GetProfile(PLAYER_1):GetGUID()))
+			self:Load(getAvatarPath(PLAYER_1))
 			self:zoomto(30,30)
 		end
 	},

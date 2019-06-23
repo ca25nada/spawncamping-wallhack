@@ -25,10 +25,6 @@ t[#t+1] = quadButton(1) .. {
 		self:zoomto(capWideScale(get43size(340),340),44)
 		self:halign(0)
 		self:visible(false)
-	end,
-	TopPressedCommand = function(self, params)
-
-	
 	end
 }
 
@@ -61,10 +57,11 @@ if themeConfig:get_data().global.BannerWheel then
 			local bnpath = nil
 			if song then
 				bnpath = params.Song:GetBannerPath()
-				if bnpath then
-					self:LoadBackground(bnpath)
-					self:scaletocover(0,-22,capWideScale(get43size(340),340),22)
+				if not bnpath then
+					bnpath = THEME:GetPathG("Common", "fallback banner")
 				end
+				self:LoadBackground(bnpath)
+				self:scaletocover(0,-22,capWideScale(get43size(340),340),22)
 			end
 		end
 	}
@@ -96,7 +93,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 
 t[#t+1] = LoadActor("round_star") .. {
 	InitCommand = function(self)
-		self:xy(3,-19)
+		self:xy(3,-16)
 		self:zoom(0.25)
 		self:wag()
 		self:diffuse(Color.Yellow)

@@ -56,7 +56,9 @@ local Tips = {
     "Click your avatar to change it.",
     "Most lists allow using the scroll wheel to browse through them. Alternatively, use Left and Right.",
     "The only way to change your player options in multiplayer is by clicking the Player Options button.",
-
+    "Press Space to toggle Chart Preview.",
+    "Right click on Song Select to Pause the music.",
+    "Modify your Toasty, Avatar, and Judgment via the Assets Settings located in the Profile Tab."
 }
 
 
@@ -372,6 +374,44 @@ local Phrases = {
     "How's J1 cheating", -- etienne
     "I can jumptrill at 5 centimeters per second and with each centimeter i move through the map faster.", -- Cataclysm-
     "Etterna is for overmapped songs and people who can't play long notes", -- p3
+    "cbrush stands for cool bro rush", -- poco
+    "Etterna in 10!", -- foxfire
+    "Get a life and fucking play the game and give me feedback. Jesus some people are petty",
+    "I will find and kill you. That's not a threat that's a promise.", --shireen_gh to DourGent
+    "You've literally just made the biggest mistake in your entire life.", --KcHecKa on Future World BL
+    "FFR! here i come! better scoring there anyways", --Billmads on NoMines scores no longer counting
+    "I feel like...he looks at my charts and thinks: I'm going to chart the polar opposite of what IcyWorld would do.", --IcyWorld talking about DourGent
+    "mina is basically another kyzentun",
+    "Uhh...what's pr? (Reply: Pitch relevancy) And? How do I use it?", --Sklitter on charting methodology
+    "...their intelligence, or rather, lack of it because they most likely never had any to begin with when all they have to talk and laugh about are memes in their sad, sad depleted perpetually gay lives.", --DNAlei on Etterna elitism
+    "Mina too scared to accept my file LUL", --Leverage on having 3 submissions rejected from Minty 3
+    "I believe every file should be rate-able. Otherwise what's the point?", --Etienne on file standards
+    "hahahah xDDDD IM SOOOO BUSY work!!! LOLOLOL I HAVE A LIFE LOSER EXCUSE ME IF I DONT SPEND MORE TIME DOING DEVELOPMENT WORK THAN GOING ON FORUMS AND DEFENDING THE GAME I DONT WORK ON LOL HAHAHA xDDDDDDDDDDDDDDDDDDD", -- small excerpt of a novel of etterna defensive commentary
+    "Yeah. Framerates is BS and not a concern. That's just wasted cpu cycles",
+    "Video constantly desyncs from song audio during low impact play on sub-10 difficulty charts. Not to mention it also stutters more than an autistic child with a lisp.",
+    "Please use an actual (non garbage) Stepmania Client. Thanks",
+    "You can't judge the file this isn't even remotely jumptrillable - someone who can actually play the file", --Snover on Mario Paint from Fullerene Shift (70.13%)
+    "Beat you!! >.<", --KcHecKA on getting 0.0001% over Ice on Savage Terminal, prompting a full scale attack to resolve the issue.
+    "See that bridge over there? Jump off it.", --Mina, moments before disaster and misunderstanding causes major drama.
+    "I come from the Guitar Hero scene so it's like if there's nothing to chart, chart nothing", -- Zibang on expressive mines in DourGent's Minipack 4, or anywhere else.
+    "I feel like good musicians are only 1 step away from telepathy, it brings you into that collective mindspace", -- F14m3z
+    "Well, you honestly sound like some farty grandpa. Sure, you deserve respect for that, but it doesn't really give you some special position to tear things apart. People might tolerate you out of gratefulness or something, but it won't be forever.", -- deltaEpsilon's commentary on Mina's behavior in the community
+    "Creating a game that everybody loves and then shitting all over them -- it drives people away. You created a beautiful game, but then you ruined it.", -- pt 2 of deltaEpsilon's commentary on Mina's behavior in the community
+    "Havent you heard Etterna is developed by evil demons summoned from hell, who steal code, rob bandwidth, inject viruses into the game, are closed source, rape CPUs while wasting cpu cycles, change compiler flags and disgrace the original devs. They also don't bath", -- satirical anti-etterna copypasta
+    "pine nut is banned",
+    "their finished tbh",
+    "i dont vibro :(",
+    "we should delete all the spread packs",
+    ":map:", -- etternaonline
+    "Im not a furry", -- :denial:
+    "i dont have a table", -- void, living in 1st world poverty
+    "they say do what u love and u never work a day in your life but imo turning your hobby into a job is just retarded. thats why i refuse to take any donations for this. i'll never owe you retards anything", -- mina
+    "fucks wrong with your music taste?", -- a dd review on whitey's ice
+    "hey what the fuck guys", -- a tim review on whitey's ice
+    "who is minty?", -- dd
+    "My mother may not have a normal brain.", -- dawnx's defense
+    ":ok_mine:" -- sm6
+
 }
 
 --tip

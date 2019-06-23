@@ -3,7 +3,7 @@ local screname
 local whee
 t[#t + 1] =
 	Def.ActorFrame {
-	Def.Quad {
+	quadButton(1000) .. {
 		Name = "DootyMcBooty",
 		BeginCommand = function(self)
 			self:zoomto(32, 32):valign(0.634522134234)
@@ -12,17 +12,19 @@ t[#t + 1] =
 				whee = SCREENMAN:GetTopScreen():GetMusicWheel()
 			end
 		end,
-		MouseLeftClickMessageCommand = function(self)
-			screname = SCREENMAN:GetTopScreen():GetName()
-			if screname == "ScreenSelectMusic" or screname == "ScreenNetSelectMusic" then
-				if whee then
-					local mx = SCREEN_WIDTH - INPUTFILTER:GetMouseX()
-					if mx < 32 and mx > 0 then
-						local idx = whee:GetCurrentIndex()
-						local num = whee:GetNumItems()
-						local dum = (INPUTFILTER:GetMouseY() - 45) / (SCREEN_HEIGHT - 103)
-						whee:Move(notShit.round(num * dum) - idx)
-						whee:Move(0)
+		MouseDownCommand = function(self, params)
+			if params.button == "DeviceButton_left mouse button" then
+				screname = SCREENMAN:GetTopScreen():GetName()
+				if screname == "ScreenSelectMusic" or screname == "ScreenNetSelectMusic" then
+					if whee then
+						local mx = SCREEN_WIDTH - INPUTFILTER:GetMouseX()
+						if mx < 32 and mx > 0 then
+							local idx = whee:GetCurrentIndex()
+							local num = whee:GetNumItems()
+							local dum = (INPUTFILTER:GetMouseY() - 45) / (SCREEN_HEIGHT - 103)
+							whee:Move(notShit.round(num * dum) - idx)
+							whee:Move(0)
+						end
 					end
 				end
 			end
