@@ -679,7 +679,8 @@ local t = Def.ActorFrame {
 	BeginCommand = function(self)
 		SCREENMAN:set_input_redirected(PLAYER_1, true)
         top = SCREENMAN:GetTopScreen()
-        top:AddInputCallback(input)
+		top:AddInputCallback(input)
+		top:AddInputCallback(MPinput)
         co = coroutine.create(updateImages)
         self:SetUpdateFunction(update)
 	end
