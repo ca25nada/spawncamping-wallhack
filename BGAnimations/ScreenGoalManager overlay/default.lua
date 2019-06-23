@@ -636,8 +636,8 @@ local function rightContainer()
 					movePage(1)
 				end
 			end,
-			MouseDownCommand = function(self, params)
-				if inDetail and params.button == "DeviceButton_right mouse button" then
+			MouseRightClickMessageCommand = function(self)
+				if inDetail and self:isOver() then
 					self:sleep(0.05)
 					self:queuecommand("DelayedHide")
 				end
