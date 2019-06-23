@@ -48,7 +48,7 @@ local function input(event)
 				SCREENMAN:AddNewScreenToTop("ScreenGroupInfo")
 			elseif tonumber(event.char) == 4 then
 				if CtrlPressed then
-					MESSAGEMAN:Broadcast("StartSearch")
+					MESSAGEMAN:Broadcast("StartSearch", {hotkey = true})
 				else
 					GHETTOGAMESTATE:setMusicWheel(SCREENMAN:GetTopScreen())
 					SCREENMAN:AddNewScreenToTop("ScreenFiltering")

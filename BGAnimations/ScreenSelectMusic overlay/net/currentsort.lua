@@ -143,9 +143,12 @@ local t = Def.ActorFrame{
 		self:smooth(0.5)
 		self:y(-frameHeight/2)
 	end,
-	StartSearchMessageCommand = function(self)
+	StartSearchMessageCommand = function(self, params)
 		released = false
 		active = true
+		if params ~= nil and params.hotkey then
+			released = true
+		end
 		if searchstring == "" then
 			self:GetChild("SortBar"):settext("Type to Search..")
 			self:GetChild("SortBar"):diffusealpha(alphaInactive)
