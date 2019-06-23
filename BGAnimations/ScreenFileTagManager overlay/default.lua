@@ -390,7 +390,7 @@ local function rightContainer()
 	-- this is copied straight from the pack downloader screen
 	-- theming is so easy lol
 	local function tagItem(i)
-		local tagIndex = (curPage-1)*10+i
+		local tagIndex = (curPage-1)*maxTags+i
 
 		local r = Def.ActorFrame{
 			InitCommand = function(self)
@@ -413,7 +413,7 @@ local function rightContainer()
 				self:diffusealpha(0)
 			end,
 			UpdateListMessageCommand = function(self)
-				tagIndex = (curPage-1)*10+i
+				tagIndex = (curPage-1)*maxTags+i
 				if playertags[tagIndex] ~= nil then
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 					self:playcommand("Show")
