@@ -3,6 +3,7 @@ local frameWidth = 260
 local framex = SCREEN_WIDTH-frameWidth-WideScale(get43size(40),40)/2
 local framey = 110
 local spacing = 34
+local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
 
 --Input event for mouse clicks
 local function input(event)
@@ -109,7 +110,7 @@ local function scoreitem(pn, i)
 		Def.Quad {
 			UpdateNetScoreCommand = function(self)
 				self:xy(framex, framey + ((i - 1) * spacing) - 4):zoomto(8, 30):halign(0):valign(0):diffuse(
-					getClearTypeFromScore(pn, hs, 2)
+					getClearTypeColor(getClearType(PLAYER_1, steps, multiscores[i].highscore))
 				)
 			end
 		},
@@ -196,8 +197,8 @@ local function scoreitem(pn, i)
 					)
 				end,
 				UpdateNetScoreCommand = function(self)
-					self:settext(getClearTypeFromScore(pn, multiscores[i].highscore, 0))
-					self:diffuse(getClearTypeFromScore(pn, multiscores[i].highscore, 2))
+					self:settext(getClearTypeText(getClearType(PLAYER_1, steps, multiscores[i].highscore)))
+					self:diffuse(getClearTypeColor(getClearType(PLAYER_1, steps, multiscores[i].highscore)))
 				end
 			},
 		LoadFont("Common normal") ..
