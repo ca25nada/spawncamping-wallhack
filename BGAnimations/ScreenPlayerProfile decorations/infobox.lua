@@ -1,20 +1,20 @@
 local t = Def.ActorFrame{}
 
-local frameWidth = SCREEN_WIDTH - 300 - 30
+local frameWidth = capWideScale(SCREEN_WIDTH/2 - 5, SCREEN_WIDTH/3*1.85) ---SCREEN_WIDTH/2 - capWideScale(5,-75)
 local frameHeight = SCREEN_HEIGHT - 60
 
 
-local scoreItemX = 110
+local scoreItemX = capWideScale(75,110)
 local scoreItemY = 75
 local scoreItemYSpacing = 5
-local scoreItemWidth = 350
+local scoreItemWidth = frameWidth - (capWideScale(50,115) + 5) - capWideScale(30,0)
 local scoreItemHeight = 25
 
 local maxScoreItems = 10
-local scoreSSRItemX = 50
+local scoreSSRItemX = capWideScale(30,50)
 local scoreSSRItemY = 80
 local scoreSSRItemYSpacing = 5
-local scoreSSRItemWidth = 80
+local scoreSSRItemWidth = capWideScale(50,80)
 local scoreSSRItemHeight = 35
 local maxPages = 10
 local curPage = 1
@@ -170,6 +170,7 @@ local function scoreSSRTypes(i)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext(SkillSets[i])
 			self:zoom(0.4)
+			self:maxwidth((scoreSSRItemWidth - 5)/0.4)
 		end
 	}
 
@@ -365,6 +366,7 @@ local function scoreListItem(i)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.4)
+			self:maxwidth((scoreItemWidth-40)/0.4)
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self)
@@ -384,6 +386,7 @@ local function scoreListItem(i)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.3)
+			self:maxwidth((scoreItemWidth-40)/0.3)
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self)

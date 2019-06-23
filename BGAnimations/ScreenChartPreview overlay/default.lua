@@ -87,7 +87,7 @@ local function input(event)
 end
 
 local top
-local frameWidth = 430
+local frameWidth = SCREEN_WIDTH/2 - capWideScale(35,-5)
 local frameHeight = 340
 
 local verticalSpacing = 7
@@ -562,6 +562,8 @@ t[#t+1] = LoadActor("../ScreenMusicInfo overlay/ssrbreakdown") .. {
 	end
 }
 
+local densityGraphWidth = capWideScale(64,84)
+
 local function getColorForDensity(density, nColumns)
 	-- Generically (generally? intelligently? i dont know) set a range
 	-- Colors are color(0.1,0.1,0.1) to color(0.7,0.7,0.7)
@@ -583,7 +585,7 @@ end
 
 local function seekOrHighlight(self)
 	local pos = ssm:GetPreviewNoteFieldMusicPosition() / musicratio
-	self:GetChild("PreviewProgress"):zoomto(84, math.min(pos, frameHeight-20))
+	self:GetChild("PreviewProgress"):zoomto(densityGraphWidth, math.min(pos, frameHeight-20))
 	self:queuecommand("Highlight")
 end
 
@@ -600,10 +602,11 @@ local function togglePreviewType()
 	end
 end
 
+
 -- The container for the density graph and scrollbar
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X / 1.2 - 36 + frameWidth + horizontalSpacing, 110)
+		self:xy(SCREEN_CENTER_X / 1.2 + 5 + frameWidth + horizontalSpacing - capWideScale(0,45), 110)
 		self:GetChild("ChordDensityGraph"):queuecommand("GraphUpdate")
 		self:SetUpdateFunction(seekOrHighlight)
 		self:queuecommand("DelayedUpdateHack")
@@ -619,7 +622,7 @@ t[#t+1] = Def.ActorFrame {
 	-- container bg
 	Def.Quad {
 		InitCommand = function (self)
-			self:zoomto(84,frameHeight)
+			self:zoomto(densityGraphWidth,frameHeight)
 			self:halign(0):valign(0)
 			self:diffuse(getMainColor("frame"))
 			self:diffusealpha(0.8)
@@ -629,8 +632,8 @@ t[#t+1] = Def.ActorFrame {
 	Def.Quad {
 		Name = "PreviewProgress",
 		InitCommand = function(self)
-			self:xy(84/2, 20)
-			self:zoomto(84, 200)
+			self:xy(densityGraphWidth/2, 20)
+			self:zoomto(densityGraphWidth, 200)
 			self:diffuse(getMiscColor("PreviewProgress"))
 			self:diffusealpha(0.5)
 			self:valign(0)
@@ -673,7 +676,7 @@ t[#t+1] = Def.ActorFrame {
 				end
 
 				self:GetParent():GetChild("NPSText"):settext(mWidth / 2 .. " max NPS")
-				mWidth = 84 / mWidth
+				mWidth = densityGraphWidth / mWidth
 				local verts = {}
 				for density = 1, nColumns do
 					for row = 1, numberOfRows do
@@ -694,12 +697,12 @@ t[#t+1] = Def.ActorFrame {
 	LoadFont("Common Bold") .. {
 		Name = "NPSText",
 		InitCommand = function(self)
-			self:xy(84/2,10)
+			self:xy(densityGraphWidth/2,10)
 			self:zoom(0.4)
 			--self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("")
-			self:maxwidth(84 * 2.2)
+			self:maxwidth(densityGraphWidth * 2.2)
 		end
 	},
 
@@ -707,7 +710,7 @@ t[#t+1] = Def.ActorFrame {
 	quadButton(8) .. {
 		Name = "spooky",
 		InitCommand = function(self)
-			self:zoomto(84,20)
+			self:zoomto(densityGraphWidth,20)
 			self:halign(0)
 			self:valign(0)
 			self:diffusealpha(0)
@@ -723,7 +726,7 @@ t[#t+1] = Def.ActorFrame {
 		InitCommand = function(self)
 			self:diffuse(color("#000000"))
 			self:y(20)
-			self:zoomto(84,frameHeight-20)
+			self:zoomto(densityGraphWidth,frameHeight-20)
 			self:halign(0):valign(0)
 			self:diffusealpha(0)
 		end,
@@ -757,7 +760,7 @@ t[#t+1] = Def.ActorFrame {
 		Name = "PreviewSeek",
 		InitCommand = function(self)
 			self:y(20)
-			self:zoomto(84, 1)
+			self:zoomto(densityGraphWidth, 1)
 			self:diffuse(getMiscColor("PreviewSeek"))
 			self:halign(0)
 		end
@@ -765,7 +768,7 @@ t[#t+1] = Def.ActorFrame {
 
 }
 
-local dotWidth = 8
+local dotWidth = 7
 local dotHeight = 0.75
 local function fillVertStruct( vt, x, y, givencolor )
 	vt[#vt + 1] = {{x - dotWidth, y + dotHeight, 0}, givencolor}
@@ -774,7 +777,7 @@ local function fillVertStruct( vt, x, y, givencolor )
 	vt[#vt + 1] = {{x - dotWidth, y - dotHeight, 0}, givencolor}
 end
 local function fitX( number, totalnumber ) -- find X relative to the center of the plot
-	return -84 / 2 + 84 * (number / totalnumber) - (84/(totalnumber*2))
+	return -densityGraphWidth / 2 + densityGraphWidth * (number / totalnumber) - (densityGraphWidth/(totalnumber*2))
 end
 
 local function fitY( number, tracks ) -- find Y relative to the middle of the screen
@@ -785,7 +788,7 @@ local noteData
 
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X / 1.2 - 36 + frameWidth + horizontalSpacing + 84/2, 110)
+		self:xy(SCREEN_CENTER_X / 1.2 + 5 + frameWidth + horizontalSpacing + densityGraphWidth/2 - capWideScale(0,45), 110)
 		self:valign(0)
 	end,
 	OnCommand = function(self)
@@ -811,7 +814,6 @@ t[#t+1] = Def.ActorFrame {
 				end
 				if previewType == 0 then
 					self:queuecommand("DrawSnapGraph")
-					ms.ok(1)
 				end
 			end
 		end,
@@ -819,6 +821,7 @@ t[#t+1] = Def.ActorFrame {
 			local verts = {}
 			local numtracks = #noteData - 2
 			local numrows = noteData[1][#noteData[1]]
+			dotWidth = (densityGraphWidth - numtracks) / (numtracks*2)
 			local specificwidth = (frameHeight - 20) / numrows
 			for row = 1, #noteData[1] do
 				--local y = fitY(noteData[1][row], numrows)
@@ -861,7 +864,7 @@ t[#t+1] = Def.ActorFrame {
 -- The main, central container (Preview Notefield)
 t[#t+1] = Def.ActorFrame {
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X / 1.2 - 36, 110)
+		self:xy(capWideScale(SCREEN_WIDTH/2 - 50, SCREEN_CENTER_X / 1.2 - 36), 110)
 	end,
 
 	Def.Quad {

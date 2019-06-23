@@ -612,7 +612,7 @@ local function offsetInput(event)
 end
 
 local function scoreList()
-	local frameWidth = 430
+	local frameWidth = SCREEN_WIDTH/2 - capWideScale(25,50)
 	local frameHeight = 340
 	local t = Def.ActorFrame{
 		SetStepsMessageCommand = function(self, params)
@@ -1082,7 +1082,7 @@ t[#t+1] = LoadActor("ssrbreakdown") .. {
 t[#t+1] = scoreList() .. {
 	Name = "ScoreList",
 	InitCommand = function(self)
-		self:xy(320,110)
+		self:xy(SCREEN_WIDTH/2 - capWideScale(45,90),110)
 		self:delayedFadeIn(5)
 	end
 }

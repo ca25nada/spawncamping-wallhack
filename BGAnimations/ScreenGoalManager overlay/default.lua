@@ -662,6 +662,7 @@ local function rightContainer()
 			self:halign(0)
 			self:valign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:maxwidth((rightSectionWidth-15)/0.35)
 			self:settext("Left click a Goal to jump to the song for it. Right click a Goal to edit it in the left section.")
 		end
 		},
@@ -671,6 +672,7 @@ local function rightContainer()
 				self:zoom(0.35)
 				self:halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:maxwidth((rightSectionWidth-110)/0.35)
 				self:settext("Create a goal for a song by pressing Ctrl + G while on it.")
 			end
 		}
@@ -788,6 +790,7 @@ local function rightContainer()
 				self:xy(45,-5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
+				self:maxwidth((boxWidth - capWideScale(90,135) - 50)/0.4)
 			end,
 			SetCommand = function(self)
 				if goalsong then
@@ -795,7 +798,6 @@ local function rightContainer()
 				else
 					self:settextf("%s", ck)
 				end
-				self:maxwidth(boxWidth * 2)
 			end
 		}
 
@@ -850,8 +852,8 @@ local function rightContainer()
 		-- Assigned date
 		r[#r+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
-				self:xy(boxWidth - 135,5):halign(0)
-				self:maxwidth(boxWidth / 2)
+				self:xy(boxWidth - capWideScale(90,135),5):halign(0)
+				self:maxwidth(boxWidth / 2 + 25)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
 			end,
@@ -864,8 +866,8 @@ local function rightContainer()
 		-- Achieved date
 		r[#r+1] = LoadFont("Common Bold")..{
 			InitCommand  = function(self)
-				self:xy(boxWidth - 135,-5):halign(0)
-				self:maxwidth(boxWidth / 2)
+				self:xy(boxWidth - capWideScale(90,135),-5):halign(0)
+				self:maxwidth(boxWidth / 2 + 25)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
 			end,

@@ -62,7 +62,7 @@ local leftSectionWidth = 300
 local leftSectionHeight = SCREEN_HEIGHT - 60
 local leftUpperSectionHeight = leftSectionHeight / 3
 local leftLowerSectionHeight = leftSectionHeight / 2 + 63
-local rightSectionWidth = 430
+local rightSectionWidth = SCREEN_WIDTH/2 - capWideScale(10,-95)
 local rightSectionHeight = SCREEN_HEIGHT - 140
 
 local verticalSpacing = 7
@@ -87,8 +87,6 @@ t[#t+1] = LoadActor("../_mouse", "ScreenFileTagManager")
 
 t[#t+1] = LoadActor("../_frame")
 
-local frameWidth = 430
-local frameHeight = 340
 local function topRow()
 	local frameWidth = SCREEN_WIDTH - 20
 	local frameHeight = 40

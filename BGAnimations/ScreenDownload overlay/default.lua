@@ -167,7 +167,7 @@ local t = Def.ActorFrame {
 
 
 local function packInfo()
-	local frameWidth = 300
+	local frameWidth = SCREEN_WIDTH/2 - capWideScale(35,50)
 	local frameHeight = SCREEN_HEIGHT - 60
 
 	local packItemWidth = frameWidth-30
@@ -405,7 +405,7 @@ local function packInfo()
 end
 
 local function packList()
-	local frameWidth = 430
+	local frameWidth = SCREEN_WIDTH/2 - 0
 	local frameHeight = SCREEN_HEIGHT - 60
 
 	-- Pack item information
@@ -466,6 +466,7 @@ local function packList()
 			self:zoom(0.4)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:maxwidth((frameWidth-10) / 0.4)
 			self:settext("Click to download a pack. Searching for a pack resets the bundle filter.")
 		end
 	}
@@ -528,7 +529,7 @@ local function packList()
 	-- The toggle ascending/descending text
 	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand = function(self)
-			self:xy(packItemX + 60, packItemY - packItemHeight - packItemYSpacing):halign(0)
+			self:xy(packItemX + capWideScale(40,60), packItemY - packItemHeight - packItemYSpacing):halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:zoom(0.4)
 			self:settext("Toggle Ascending", sorts[curSort])
@@ -790,7 +791,7 @@ t[#t+1] = packInfo() .. {
 t[#t+1] = packList() .. {
 	Name = "PackList",
 	InitCommand = function(self)
-		self:xy(320,30)
+		self:xy(SCREEN_WIDTH/2 - capWideScale(35,50) + 20,30)
 		self:delayedFadeIn(2)
 	end
 }

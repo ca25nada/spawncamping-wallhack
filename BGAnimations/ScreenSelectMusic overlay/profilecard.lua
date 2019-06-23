@@ -84,6 +84,18 @@ local function generalFrame(pn)
 		end
 	}
 
+	if not IsUsingWideScreen() then
+		t[#t+1] = Def.Quad {
+			InitCommand = function(self)
+				self:halign(0):valign(0)
+				self:xy(frameX-14,frameHeight/2)
+				self:zoomto(65,frameHeight/2)
+				self:diffuse(getMainColor("frame"))
+				self:diffusealpha(0.8)
+			end
+		}
+	end
+
 	-- Avatar background frame
 	t[#t+1] = Def.Quad{
 		InitCommand = function(self)
@@ -589,7 +601,7 @@ local function generalFrame(pn)
 
 	t[#t+1] = Def.Quad {
 		InitCommand = function(self)
-			self:xy(85 + (frameWidth-75)/3,0)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3,0)
 			self:valign(1)
 			self:halign(1)
 			self:zoomto((frameWidth-75)/3,16)
@@ -608,7 +620,7 @@ local function generalFrame(pn)
 	}
 	t[#t+1] = Def.Quad {
 		InitCommand = function(self)
-			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/3 - 2,0)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3 - 2,0)
 			self:valign(1)
 			self:halign(1)
 			self:zoomto((frameWidth-75)/3,16)
@@ -627,7 +639,7 @@ local function generalFrame(pn)
 	}
 	t[#t+1] = Def.Quad {
 		InitCommand = function(self)
-			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4,0)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4,0)
 			self:valign(1)
 			self:halign(1)
 			self:zoomto((frameWidth-75)/3,16)
@@ -701,10 +713,10 @@ local function generalFrame(pn)
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
-			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4 - (frameWidth-75)/6, -8)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4 - (frameWidth-75)/6, -8)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-			self:maxwidth(200)
+			self:maxwidth(((frameWidth-75)/3-capWideScale(5,10))/0.4)
 		end,
 		SetCommand = function(self)
 			if song and ctags[1] then
@@ -718,10 +730,10 @@ local function generalFrame(pn)
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
-			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/3 - 2 - (frameWidth-75)/6, -8)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3 - 2 - (frameWidth-75)/6, -8)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-			self:maxwidth(200)
+			self:maxwidth(((frameWidth-75)/3-capWideScale(5,10))/0.4)
 		end,
 		SetCommand = function(self)
 			if song and ctags[2] then
@@ -735,10 +747,10 @@ local function generalFrame(pn)
 
 	t[#t+1] = LoadFont("Common Normal") .. {
 		InitCommand = function(self)
-			self:xy(85 + (frameWidth-75)/3 - (frameWidth-75)/6, -8)
+			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/6, -8)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-			self:maxwidth(((frameWidth-75)/3-10)/0.4)
+			self:maxwidth(((frameWidth-75)/3-capWideScale(5,10))/0.4)
 		end,
 		SetCommand = function(self)
 			if song and ctags[3] then

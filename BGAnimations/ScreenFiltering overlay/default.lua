@@ -190,7 +190,7 @@ local leftSectionWidth = 300
 local leftSectionHeight = SCREEN_HEIGHT - 60
 local leftUpperSectionHeight = leftSectionHeight / 3
 local leftLowerSectionHeight = leftSectionHeight / 2 + 63
-local rightSectionWidth = 430
+local rightSectionWidth = SCREEN_WIDTH/2 - capWideScale(10,-95)
 local rightSectionHeight = SCREEN_HEIGHT - 60
 
 local verticalSpacing = 7
@@ -706,7 +706,9 @@ local function rightContainer()
 		LoadFont("Common Normal") .. {
 			Name = "TagModeExplanation",
 			InitCommand = function(self)
-				self:xy(25 + horizontalSpacing*3 + (numBoxWidth + 15)*3, rightSectionHeight - 30)
+				local xpos = capWideScale(25 + horizontalSpacing + numBoxWidth + 15 + (numBoxWidth+15)/2, 25 + horizontalSpacing*3 + (numBoxWidth + 15)*3) -- hilarious hack
+				local ypos = rightSectionHeight - capWideScale(55,30) -- no really lmao
+				self:xy(xpos, ypos)
 				self:zoom(0.4)
 				self:halign(0)
 				self:queuecommand("Set")
