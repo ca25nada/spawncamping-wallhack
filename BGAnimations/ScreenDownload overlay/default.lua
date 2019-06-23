@@ -625,6 +625,10 @@ local function packList()
 				end
 			end,
 			StartDownloadCommand = function(self) -- Start download
+				if packlist[packIndex]:GetSize() > 2000000000 then
+					GAMESTATE:ApplyGameCommand("urlnoexit," .. packlist[packIndex]:GetURL())
+					return
+				end
 				download = packlist[packIndex]:DownloadAndInstall()
 				downloading = DLMAN:GetDownloadingPacks()
 				if not packExists(packlist[packIndex]:GetName()) then
