@@ -653,6 +653,7 @@ local function rightContainer()
 				self:smooth(0.3)
 				self:diffusealpha(0.2)
 				filterTags = {}
+				GHETTOGAMESTATE.SSMTag = nil
 				updateTagFilter()
 				updateTagsFromData()
 				MESSAGEMAN:Broadcast("UpdateList")
@@ -790,6 +791,9 @@ local function rightContainer()
 						self:diffusealpha(0.2)
 						if filterTags[playertags[tagIndex]] then
 							filterTags[playertags[tagIndex]] = nil
+							if playertags[tagIndex] == GHETTOGAMESTATE.SSMTag then
+								GHETTOGAMESTATE.SSMTag = nil
+							end
 						else
 							filterTags[playertags[tagIndex]] = 1
 						end

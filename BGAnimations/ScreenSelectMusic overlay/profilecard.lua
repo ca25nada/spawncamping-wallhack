@@ -18,6 +18,49 @@ local frameHeightShort = 61
 local song
 local course
 local ctags = {}
+local filterTags = {}
+
+local function wheelSearch()
+	local search = GHETTOGAMESTATE:getMusicSearch()
+	GHETTOGAMESTATE:getSSM():GetMusicWheel():SongSearch(search)
+end
+
+local function updateTagFilter(tag)
+	local ptags = tags:get_data().playerTags
+	local charts = {}
+
+	local playertags = {}
+	for k,v in pairs(ptags) do
+		playertags[#playertags+1] = k
+	end
+
+	local filterTags = tag
+	if filterTags then
+		local toFilterTags = {}
+		toFilterTags[1] = filterTags
+		local inCharts = {}
+
+		for k, v in pairs(ptags[toFilterTags[1]]) do
+			inCharts[k] = 1
+		end
+		toFilterTags[1] = nil
+		for k, v in pairs(toFilterTags) do
+			for key, val in pairs(inCharts) do
+				if ptags[v][key] == nil then
+					inCharts[key] = nil
+				end
+			end
+		end
+		for k, v in pairs(inCharts) do
+			charts[#charts + 1] = k
+		end
+	end
+	local out = {}
+	if tag ~= nil then out[tag] = 1	end
+	GHETTOGAMESTATE:setFilterTags(out)
+	GHETTOGAMESTATE:getSSM():GetMusicWheel():FilterByStepKeys(charts)
+	wheelSearch()
+end
 
 local steps = {
 	PlayerNumber_P1
@@ -599,7 +642,7 @@ local function generalFrame(pn)
 		BeginCommand = function(self) self:queuecommand('Set') end
 	}
 
-	t[#t+1] = Def.Quad {
+	t[#t+1] = quadButton(6) .. {
 		InitCommand = function(self)
 			self:xy(capWideScale(68,85) + (frameWidth-75)/3,0)
 			self:valign(1)
@@ -610,15 +653,32 @@ local function generalFrame(pn)
 		end,
 		SetCommand = function(self)
 			if song and ctags[3] then
-				self:diffusealpha(0.8)
+				if ctags[3] == GHETTOGAMESTATE.SSMTag then
+					self:diffusealpha(0.6)
+				else
+					self:diffusealpha(0.8)
+				end
 			else
 				self:diffusealpha(0)
 			end
 		end,
-		BeginCommand = function(self) self:queuecommand("Set") end
+		BeginCommand = function(self) self:queuecommand("Set") end,
+		MouseDownCommand = function(self, params)
+			if song and ctags[3] then
+				if ctags[3] == GHETTOGAMESTATE.SSMTag and params.button == "DeviceButton_right mouse button" then
+					GHETTOGAMESTATE.SSMTag = nil
+					self:linear(0.1):diffusealpha(0.8)
+					updateTagFilter(nil)
+				elseif ctags[3] ~= GHETTOGAMESTATE.SSMTag and params.button == "DeviceButton_left mouse button" then
+					GHETTOGAMESTATE.SSMTag = ctags[3]
+					self:linear(0.1):diffusealpha(0.6)
+					updateTagFilter(ctags[3])
+				end
+			end
+		end
 		
 	}
-	t[#t+1] = Def.Quad {
+	t[#t+1] = quadButton(6) .. {
 		InitCommand = function(self)
 			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3 - 2,0)
 			self:valign(1)
@@ -629,15 +689,32 @@ local function generalFrame(pn)
 		end,
 		SetCommand = function(self)
 			if song and ctags[2] then
-				self:diffusealpha(0.8)
+				if ctags[2] == GHETTOGAMESTATE.SSMTag then
+					self:diffusealpha(0.6)
+				else
+					self:diffusealpha(0.8)
+				end
 			else
 				self:diffusealpha(0)
 			end
 		end,
-		BeginCommand = function(self) self:queuecommand("Set") end
+		BeginCommand = function(self) self:queuecommand("Set") end,
+		MouseDownCommand = function(self, params)
+			if song and ctags[2] then
+				if ctags[2] == GHETTOGAMESTATE.SSMTag and params.button == "DeviceButton_right mouse button" then
+					GHETTOGAMESTATE.SSMTag = nil
+					self:linear(0.1):diffusealpha(0.8)
+					updateTagFilter(nil)
+				elseif ctags[2] ~= GHETTOGAMESTATE.SSMTag and params.button == "DeviceButton_left mouse button" then
+					GHETTOGAMESTATE.SSMTag = ctags[2]
+					self:linear(0.1):diffusealpha(0.6)
+					updateTagFilter(ctags[2])
+				end
+			end
+		end
 		
 	}
-	t[#t+1] = Def.Quad {
+	t[#t+1] = quadButton(6) .. {
 		InitCommand = function(self)
 			self:xy(capWideScale(68,85) + (frameWidth-75)/3 - (frameWidth-75)/3*2 - 4,0)
 			self:valign(1)
@@ -648,13 +725,29 @@ local function generalFrame(pn)
 		end,
 		SetCommand = function(self)
 			if song and ctags[1] then
-				self:diffusealpha(0.8)
+				if ctags[1] == GHETTOGAMESTATE.SSMTag then
+					self:diffusealpha(0.6)
+				else
+					self:diffusealpha(0.8)
+				end
 			else
 				self:diffusealpha(0)
 			end
 		end,
-		BeginCommand = function(self) self:queuecommand("Set") end
-		
+		BeginCommand = function(self) self:queuecommand("Set") end,
+		MouseDownCommand = function(self, params)
+			if song and ctags[1] then
+				if ctags[1] == GHETTOGAMESTATE.SSMTag and params.button == "DeviceButton_right mouse button" then
+					GHETTOGAMESTATE.SSMTag = nil
+					self:linear(0.1):diffusealpha(0.8)
+					updateTagFilter(nil)
+				elseif ctags[1] ~= GHETTOGAMESTATE.SSMTag and params.button == "DeviceButton_left mouse button" then
+					GHETTOGAMESTATE.SSMTag = ctags[1]
+					self:linear(0.1):diffusealpha(0.6)
+					updateTagFilter(ctags[1])
+				end
+			end
+		end
 	}
 
 	t[#t+1] = LoadFont("Common Normal") .. {
