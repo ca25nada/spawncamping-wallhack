@@ -9,6 +9,7 @@ GHETTOGAMESTATE = {
 	SSM = nil,
 	filterTags = {},
 	tagFilterMode = false, -- false means OR
+	SSMTag = nil,
 	goalsByChartKey = {},
 	replayScore = nil,
 	replayIsOnline = nil,
