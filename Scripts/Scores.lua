@@ -1,6 +1,6 @@
 
 WifeTiers = {
-	Grade_Tier01 = 0.9998, 
+	Grade_Tier01 = 0.9997, 
 	Grade_Tier02 = 0.9975, 
 	Grade_Tier03 = 0.93, 
 	Grade_Tier04 = 0.8, 
