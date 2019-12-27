@@ -13,6 +13,7 @@ local top
 local wheel
 local song
 local released = false
+local goneOff = false
 
 local sortTable = {
 	SortOrder_Preferred 			= 'Preferred',
@@ -66,7 +67,7 @@ local function searchInput(event)
 		pressed = false
 	end
 	if not active and event.type =="InputEventType_FirstPress" then
-		if song and event.DeviceInput.button == "DeviceButton_space" then
+		if song and not goneOff and event.DeviceInput.button == "DeviceButton_space" then
 			SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
 		end
 	end
@@ -131,6 +132,7 @@ local t = Def.ActorFrame{
 		GHETTOGAMESTATE:setSSM(top)
 		wheel = top:GetMusicWheel()
 		SCREENMAN:GetTopScreen():AddInputCallback(searchInput)
+		goneOff = false
 		self:y(-frameHeight/2)
 		self:smooth(0.5)
 		self:y(frameY)
@@ -140,6 +142,7 @@ local t = Def.ActorFrame{
 		top:PlayReplay(params.score)
 	end,
 	OffCommand = function(self)
+		goneOff = true
 		self:smooth(0.5)
 		self:y(-frameHeight/2)
 	end,
