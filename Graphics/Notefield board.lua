@@ -55,6 +55,8 @@ local function LaneHighlight()
 				local notes = params.Notes
 				local firstTrack = params.FirstTrack+1
 
+				if params.HoldNoteScore or params.FromReplay then return end
+
 				if params.TapNoteScore then
 					local enum  = Enum.Reverse(TapNoteScore)[params.TapNoteScore]
 
