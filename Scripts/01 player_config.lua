@@ -26,7 +26,9 @@ local defaultGameplayCoordinates = {
 	BPMTextX = SCREEN_CENTER_X,
 	BPMTextY = SCREEN_BOTTOM - 30,
 	MusicRateX = SCREEN_CENTER_X,
-	MusicRateY = SCREEN_BOTTOM - 20
+	MusicRateY = SCREEN_BOTTOM - 20,
+	DisplayMeanX = 80,
+	DisplayMeanY = SCREEN_CENTER_Y - 105,
 }
 
 local defaultGameplaySizes = {
@@ -50,7 +52,8 @@ local defaultGameplaySizes = {
 	PracticeCDGraphHeight = 1,
 	PracticeCDGraphHeight = 1,
 	MusicRateZoom = 1.0,
-	BPMTextZoom = 1.0
+	BPMTextZoom = 1.0,
+	DisplayMeanZoom = 1
 }
 
 
@@ -72,6 +75,7 @@ local defaultConfig = {
 	LaneCoverHeight = 0,
 	--LaneCoverLayer = 350, -- notefield_draw_order.under_explosions
 	DisplayPercent = true,
+	DisplayMean = false,
 	NPSDisplay = false,
 	NPSGraph = false,
 	--NPSUpdateRate = 0.1,

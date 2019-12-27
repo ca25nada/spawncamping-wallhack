@@ -55,6 +55,9 @@ local function loadValuesTable()
 	MovableValues.MusicRateX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].MusicRateX
 	MovableValues.MusicRateY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].MusicRateY
 	MovableValues.MusicRateZoom = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].MusicRateZoom
+	MovableValues.DisplayMeanX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].DisplayMeanX
+	MovableValues.DisplayMeanY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].DisplayMeanY
+	MovableValues.DisplayMeanZoom = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].DisplayMeanZoom
 
 	if IsUsingWideScreen() then
 		MovableValues.TargetTrackerY = MovableValues.TargetTrackerY + WIDESCREENWHY
@@ -634,6 +637,44 @@ Movable = {
 	DeviceButton_b = {
 		name = "MusicRate",
 		textHeader = "Music Rate Size:",
+		element = {},
+		properties = {"Zoom"},
+		elementTree = "GameplaySizes",
+		DeviceButton_up = {
+			property = "Zoom",
+			inc = 0.01
+		},
+		DeviceButton_down = {
+			property = "Zoom",
+			inc = -0.01
+		}
+	},
+	DeviceButton_n = {
+		name = "DisplayMean",
+		textHeader = "Current Mean Position:",
+		element = {},
+		properties = {"X", "Y"},
+		elementTree = "GameplayXYCoordinates",
+		DeviceButton_up = {
+			property = "Y",
+			inc = -5
+		},
+		DeviceButton_down = {
+			property = "Y",
+			inc = 5
+		},
+		DeviceButton_left = {
+			property = "X",
+			inc = -5
+		},
+		DeviceButton_right = {
+			property = "X",
+			inc = 5
+		}
+	},
+	DeviceButton_m = {
+		name = "DisplayMean",
+		textHeader = "Current Mean Size:",
 		element = {},
 		properties = {"Zoom"},
 		elementTree = "GameplaySizes",

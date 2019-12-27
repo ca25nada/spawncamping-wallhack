@@ -28,6 +28,8 @@ local tDiff
 local wifey
 local judgect
 local pbtarget
+local curMeanSum = 0
+local curMeanCount = 0
 local positive = getMainColor("positive")
 local highlight = getMainColor("highlight")
 local negative = getMainColor("negative")
@@ -136,6 +138,7 @@ local usingReverse
 local enabledErrorBar = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar
 local enabledTargetTracker = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).TargetTracker
 local enabledDisplayPercent = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).DisplayPercent
+local enabledDisplayMean = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).DisplayMean
 local leaderboardEnabled = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).leaderboardEnabled and DLMAN:IsLoggedIn()
 local isReplay = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerController() == "PlayerController_Replay"
 
@@ -222,6 +225,10 @@ local t =
 		jdgct = msg.Val
 		if msg.Offset ~= nil then
 			dvCur = msg.Offset
+			if not msg.HoldNoteScore then
+				curMeanSum = curMeanSum + dvCur
+				curMeanCount = curMeanCount + 1
+			end
 		else
 			dvCur = nil
 		end
@@ -238,6 +245,8 @@ local t =
 		jdgct = 0
 		dvCur = nil
 		jdgCur = nil
+		curMeanCount = 0
+		curMeanSum = 0
 		self:playcommand("SpottedOffset")
 	end
 }
@@ -394,6 +403,61 @@ local cp =
 if enabledDisplayPercent then
 	t[#t + 1] = cp
 end
+
+--[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 					    									**Current Mean**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Displays the current mean for all tap deviations so far.
+]]
+
+local mT =
+	Def.ActorFrame {
+		Name = "DisplayMean",
+		InitCommand = function(self)
+			if (allowedCustomization) then
+				Movable.DeviceButton_n.element = self
+				Movable.DeviceButton_m.element = self
+				Movable.DeviceButton_n.condition = enabledDisplayMean
+				Movable.DeviceButton_m.condition = enabledDisplayMean
+				Movable.DeviceButton_n.Border = self:GetChild("Border")
+				Movable.DeviceButton_m.Border = self:GetChild("Border")
+			end
+			self:zoom(MovableValues.DisplayMeanZoom):x(MovableValues.DisplayMeanX):y(MovableValues.DisplayMeanY)
+		end,
+		Def.Quad {
+			InitCommand = function(self)
+				self:zoomto(60, 13):diffuse(color("0,0,0,0.4")):halign(1):valign(0)
+			end
+		},
+		-- Displays your current mean
+		LoadFont("Common Large") ..
+			{
+				Name = "DisplayMeanText",
+				InitCommand = function(self)
+					self:zoom(0.3):halign(1):valign(0)
+				end,
+				OnCommand = function(self)
+					if allowedCustomization then
+						self:settextf("%5.2fms", -180)
+						setBorderAlignment(self:GetParent():GetChild("Border"), 1, 0)
+						setBorderToText(self:GetParent():GetChild("Border"), self)
+					end
+					self:settextf("%5.2fms", 0)
+				end,
+				SpottedOffsetCommand = function(self)
+					self:settextf("%5.2fms", curMeanSum / curMeanCount)
+				end
+			},
+		MovableBorder(100, 13, 1, 0, 0)
+	}
+
+
+if enabledDisplayMean then
+	t[#t + 1] = mT
+end
+
+
+
 
 --[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 														    	**Player ErrorBar**

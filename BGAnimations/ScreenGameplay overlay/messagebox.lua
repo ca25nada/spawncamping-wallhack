@@ -71,7 +71,9 @@ return Def.ActorFrame {
 				"x: BPM Text Position",
 				"c: BPM Text Size",
 				"v: Music Rate Text Position",
-				"b: Music Rate Text Size"
+				"b: Music Rate Text Size",
+				"n: Current Mean Text Position",
+				"m: Current Mean Text Size"
 			}
 			if playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCover ~= 0 then
 				local selectStr = THEME:GetString("GameButton", "Select")
