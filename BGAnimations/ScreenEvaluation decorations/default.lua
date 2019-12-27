@@ -1044,6 +1044,7 @@ local function scoreBoard(pn)
 	local devianceTable = pss:GetOffsetVector()
 	local cbl = 0
 	local cbr = 0
+	local cbm = 0
 
 	local tst = ms.JudgeScalers
 	local tso = tst[judge]
@@ -1051,31 +1052,32 @@ local function scoreBoard(pn)
 		tso = 1
 	end
 	local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
+	local middleCol = ncol / 2
 	for i = 1, #devianceTable do
 		if tracks[i] then
 			if math.abs(devianceTable[i]) > tso * 90 then
-				if tracks[i] <= math.floor(ncol/2) then
+				if tracks[i] < middleCol then
 					cbl = cbl + 1
-				else
+				elseif tracks[i] > middleCol then
 					cbr = cbr + 1
+				else
+					cbm = cbm + 1
 				end
 			end
 		end
 	end
-	local statCategory = {
-		"Mean",
-		"Mean(Abs)",
-		"Sd",
-		"Left cbs",
-		"Right cbs"
-	}
+
 	local statInfo = {
 		wifeMean(devianceTable),
 		wifeAbsMean(devianceTable),
 		wifeSd(devianceTable),
 		cbl,
-		cbr
+		cbr,
+		cbm
 	}
+
+	local showMiddle = cbm ~= 0
+	local cbYSpacing = showMiddle and 7 or 10
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand= function(self)
@@ -1145,13 +1147,29 @@ local function scoreBoard(pn)
 
 	t[#t+1] = LoadFont("Common Normal")..{
 		InitCommand= function(self)
-			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*6),285)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*6),275 + cbYSpacing)
 			self:zoom(0.30)
 		    self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 		end,
 		SetCommand=function(self) 
 			self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
 			self:settextf("Right: %d", statInfo[5])
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand= function(self)
+			self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*6),275 + cbYSpacing*2)
+			self:zoom(0.30)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+			self:visible(false)
+		end,
+		SetCommand=function(self) 
+			self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
+			self:settextf("Middle: %d", statInfo[6])
+			if showMiddle then
+				self:visible(true)
+			end
 		end
 	}
 
