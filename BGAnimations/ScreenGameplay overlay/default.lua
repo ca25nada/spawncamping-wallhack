@@ -32,7 +32,7 @@ if not inCustomize and not inPractice and not inReplay then
 	HOOKS:ShowCursor(false)
 else
 	t[#t+1] = LoadActor("../_cursor")
-	t[#t+1] = LoadActor("../_mouse", "ScreenGameplay")
+	t[#t+1] = LoadActor("../_mouse", ToGameplay())
 end
 
 local largeImageText = string.format("%s: %5.2f",profile:GetDisplayName(), profile:GetPlayerRating())
