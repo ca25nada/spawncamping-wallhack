@@ -31,7 +31,9 @@ t[#t+1] = Def.Quad{
 		self:diffusealpha(0)
 	end,
 	CurrentSongChangedMessageCommand = function(self)
-		self:diffuse(getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()))
+		if GAMESTATE:GetCurrentSteps() ~= nil then
+			self:diffuse(getDifficultyColor(GAMESTATE:GetHardestStepsDifficulty()))
+		end
 	end
 }
 
@@ -66,7 +68,9 @@ t[#t+1] = LoadFont("Common Bold") .. {
 		self:maxwidth(bannerWidth/0.6)
 	end,
 	CurrentSongChangedMessageCommand = function(self)
-		self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle())
+		if GAMESTATE:GetCurrentSong() ~= nil then
+			self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle())
+		end
 	end
 }
 
@@ -78,7 +82,9 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:maxwidth(bannerWidth/0.4)
 	end,
 	CurrentSongChangedMessageCommand = function(self)
-		self:settext(GAMESTATE:GetCurrentSong():GetDisplayArtist())
+		if GAMESTATE:GetCurrentSong() ~= nil then
+			self:settext(GAMESTATE:GetCurrentSong():GetDisplayArtist())
+		end
 	end
 }
 

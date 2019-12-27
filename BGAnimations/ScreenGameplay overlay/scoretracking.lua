@@ -33,8 +33,10 @@ local t = Def.ActorFrame{
 	end,
 	-- Reset flags and first/last second at the beginning of each song.
 	CurrentSongChangedMessageCommand = function(self)
-		firstSecond = GAMESTATE:GetCurrentSong():GetFirstSecond()
-		lastSecond = GAMESTATE:GetCurrentSong():GetLastSecond()
+		if GAMESTATE:GetCurrentSong() ~= nil then
+			firstSecond = GAMESTATE:GetCurrentSong():GetFirstSecond()
+			lastSecond = GAMESTATE:GetCurrentSong():GetLastSecond()
+		end
 		startFlag = false
 		fcFlag = false
 	end

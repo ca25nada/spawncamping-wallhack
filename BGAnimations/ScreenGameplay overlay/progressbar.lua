@@ -67,6 +67,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
     end,
     SetCommand=function(self)
         local song = GAMESTATE:GetCurrentSong()
+        if song == nil then self:settext("") end
     	self:settext(SecondsToMSSMsMs(song:GetStepsSeconds()/GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()))
     end,
     BeginCommand = function(self) self:playcommand('Set') end,
