@@ -22,7 +22,6 @@ if themeConfig:get_data().global.ProgressBar ~= 0 then
 end
 t[#t+1] = LoadActor("leaderboard")
 t[#t+1] = LoadActor("avatar")
---t[#t+1] = LoadActor("BPMDisplay")
 t[#t+1] = LoadActor("title")
 
 if inCustomize then
