@@ -90,7 +90,6 @@ end
 local t = Def.ActorFrame {
     Name = "ChordDensityGraph",
     InitCommand=function(self)
-		self:SetUpdateFunction(textmover)
 		cdg = self
 	end,
 	CurrentSongChangedMessageCommand = function(self)
@@ -107,6 +106,9 @@ local t = Def.ActorFrame {
 	ChartPreviewOnMessageCommand = function(self)
 		self:queuecommand("GraphUpdate")
 	end,
+	PracticeModeReloadMessageCommand = function(self)
+		self:queuecommand("GraphUpdate")
+	end,
 	Def.Quad {
         Name = "cdbg",
         InitCommand = function(self)
@@ -120,9 +122,12 @@ t[#t+1] =
 		Name = "CDGraphDrawer",
 		GraphUpdateCommand = function(self)
 			if self:IsVisible() then
+				self:GetParent():SetUpdateFunction(textmover)
 				updateGraphMultiVertex(cdg, self)
 				self:GetParent():linear(0.3)
 				self:GetParent():diffusealpha(1)
+			else
+				self:GetParent():SetUpdateFunction(nil)
 			end
 		end
 	}
