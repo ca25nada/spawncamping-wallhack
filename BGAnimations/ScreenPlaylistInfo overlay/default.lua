@@ -94,7 +94,7 @@ local function movePage(n)
 
 	-- Moves to next page of steps while a playlist is selected.
 	if detail then
-		if n > 0 then 
+		if n > 0 then
 			curStepsPage = ((curStepsPage+n-1) % maxPlaylistPages + 1)
 		else
 			curStepsPage = ((curStepsPage+n+maxPlaylistPages-1) % maxPlaylistPages+1)
@@ -118,6 +118,13 @@ local function input(event)
 	if event.type == "InputEventType_FirstPress" then
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
+		end
+
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			movePage(-1)
+		end
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			movePage(1)
 		end
 
 		if event.button == "MenuLeft" then
@@ -151,6 +158,9 @@ local function playlistInfo()
 		ShowPlaylistDetailMessageCommand = function(self, params)
 			playlist = params.playlist
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+		end,
+		HidePlaylistDetailMessageCommand = function(self)
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end
 	}
 
@@ -163,12 +173,12 @@ local function playlistInfo()
 		end
 	}
 
-	t[#t+1] = Def.Quad{
+	t[#t+1] = Def.Sprite {
 		InitCommand = function (self)
-			self:zoomto(256,80)
 			self:xy(frameWidth/2, 50):valign(0)
-			self:diffuse(getMainColor("frame"))
-			self:diffusealpha(0.8)
+			local bnpath = THEME:GetPathG("Common", "fallback banner")
+			self:LoadBackground(bnpath)
+			self:zoomto(256,80)
 		end
 	}
 
@@ -179,7 +189,7 @@ local function playlistInfo()
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		end,
 		SetCommand = function(self)
-			if playlist then
+			if playlist and detail then
 				self:settext(playlist:GetName())
 			else
 				self:settext("No Playlist Selected")
@@ -206,7 +216,7 @@ local function playlistInfo()
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
 		MouseDownCommand = function(self)
-			if not playlist then
+			if not playlist or not detail then
 				return
 			end
 
@@ -218,7 +228,7 @@ local function playlistInfo()
 			self:diffusealpha(0.8)
 		end,
 		SetCommand = function(self)
-			if playlist then
+			if playlist and detail then
 				self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
@@ -242,7 +252,7 @@ local function playlistInfo()
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
 		MouseDownCommand = function(self)
-			if not playlist then
+			if not playlist or not detail then
 				return
 			end
 			self:finishtweening()
@@ -251,7 +261,7 @@ local function playlistInfo()
 			self:diffusealpha(0.8)
 		end,
 		SetCommand = function(self)
-			if playlist then
+			if playlist and detail then
 				self:diffuse(color(colorConfig:get_data().main.warning)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
@@ -275,7 +285,7 @@ local function playlistInfo()
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
 		MouseDownCommand = function(self)
-			if not playlist then
+			if not playlist or not detail then
 				return
 			end
 
@@ -288,7 +298,7 @@ local function playlistInfo()
 			self:diffusealpha(0.8)
 		end,
 		SetCommand = function(self)
-			if playlist then
+			if playlist and detail then
 				self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
@@ -301,7 +311,7 @@ local function playlistInfo()
 			self:xy(frameWidth/2, frameHeight-buttonHeight/2*5-10*3)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Add to Playlist")
+			self:settext("Add Current Song to Playlist")
 		end
 	}
 
@@ -312,7 +322,7 @@ local function playlistInfo()
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
 		MouseDownCommand = function(self)
-			if not playlist or not playlist:IsPlayable() then
+			if not playlist or not playlist:IsPlayable() or not detail then
 				return
 			end
 
@@ -327,7 +337,7 @@ local function playlistInfo()
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self)
-			if playlist and playlist:IsPlayable() then
+			if playlist and playlist:IsPlayable() and detail then
 				self:diffuse(color(colorConfig:get_data().main.positive)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
@@ -418,6 +428,7 @@ local function playlistList()
 			end,
 			UpdateStepsListMessageCommand = function(self)
 				if playlist then
+					playlistIndex = (curPage-1)*maxItems+i
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 				end
 			end
@@ -525,6 +536,7 @@ local function playlistList()
 			end
 		}
 
+		--[[ --kind of redundant
 		t[#t+1] = quadButton(7) .. {
 			Name = "Add",
 			InitCommand = function(self)
@@ -559,6 +571,7 @@ local function playlistList()
 				self:settextf("Add")
 			end
 		}
+		]]
 
 		return t
 	end
@@ -591,16 +604,30 @@ local function playlistList()
 		Name = "Add Button",
 		InitCommand = function(self)
 			self:xy(frameWidth-50-10, itemY - 30)
-			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 			self:zoomto(100, 20)
+			self:playcommand("Set")
 		end,
 		MouseDownCommand = function(self)
 			-- Doesn't work yet outside of ScreenSelectMusic apparently.
+			if detail then return end
 			addPlaylist()
 			self:finishtweening()
 			self:diffusealpha(1)
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
+		end,
+		SetCommand = function(self)
+			if detail then
+				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+			else
+				self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
+			end
+		end,
+		HidePlaylistDetailMessageCommand = function(self)
+			self:playcommand("Set")
+		end,
+		ShowPlaylistDetailMessageCommand = function(self)
+			self:playcommand("Set")
 		end
 	}
 
@@ -692,8 +719,6 @@ local function playlistStepsList()
 					self:easeOut(0.5)
 					self:diffusealpha(0)
 					self:queuecommand("Hide")
-					return
-				elseif steps and key == steps:GetChartKey() then
 					return
 				end
 
@@ -813,11 +838,11 @@ local function playlistStepsList()
 				self:diffusealpha(0.8)
 			end,
 			SetCommand = function(self)
-				if song and steps then
-					self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
-				else
-					self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
-				end
+				--if song and steps then
+				self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
+				--else
+				--	self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+				--end
 			end
 		}
 
@@ -837,7 +862,7 @@ local function playlistStepsList()
 				self:zoomto(40, 17)
 			end,
 			MouseDownCommand = function(self)
-				if not playlist or hidden then
+				if not playlist or hidden or not song or not steps then
 					return
 				end
 
@@ -863,7 +888,7 @@ local function playlistStepsList()
 				self:xy(itemWidth-10-60, 0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-				self:settextf("Play")
+				self:settextf("Go To")
 			end
 		}
 
