@@ -151,6 +151,10 @@ for k,v in ipairs(judges) do
 			else
 				self:settext(pss:GetTapNoteScores(v))
 			end
+		end,
+		PracticeModeResetMessageCommand = function(self)
+			self:finishtweening()
+			self:settext(0)
 		end
 	}
 

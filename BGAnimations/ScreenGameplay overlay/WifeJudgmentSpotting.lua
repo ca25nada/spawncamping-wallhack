@@ -213,6 +213,8 @@ local t =
 			Notefield = screen:GetChild("PlayerP1"):GetChild("NoteField")
 			Notefield:addy(MovableValues.NotefieldY * (usingReverse and 1 or -1))
 		end
+		-- force update everything once when entering new song
+		self:playcommand("PracticeModeReset")
 	end,
 	JudgmentMessageCommand = function(self, msg)
 		tDiff = msg.WifeDifferential
@@ -228,7 +230,15 @@ local t =
 			tDiff = msg.WifePBDifferential
 		end
 		jdgCur = msg.Judgment
-		queuecommand(self, "SpottedOffset")
+		self:playcommand("SpottedOffset")
+	end,
+	PracticeModeResetMessageCommand = function(self)
+		tDiff = 0
+		wifey = 0
+		jdgct = 0
+		dvCur = nil
+		jdgCur = nil
+		self:playcommand("SpottedOffset")
 	end
 }
 --[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -453,7 +463,7 @@ local e =
 		if enabledErrorBar == 1 then
 			if dvCur ~= nil then
 				currentbar = ((currentbar) % barcount) + 1
-				queuecommand(ingots[currentbar], "UpdateErrorBar") -- Update the next bar in the queue
+				ingots[currentbar]:playcommand("UpdateErrorBar") -- Update the next bar in the queue
 			end
 		end
 	end,
@@ -647,6 +657,9 @@ t[#t + 1] =
 			BPM:settextf("%5.2f", GetBPS(a) * r)
 		end
 	end,
+	PracticeModeReloadMessageCommand = function(self)
+		self:playcommand("CurrentRateChanged")
+	end,
 	MovableBorder(40, 13, 1, 0, 0)
 }
 
@@ -683,18 +696,103 @@ local musicratio = 1
 local wodth = capWideScale(get43size(240), 280)
 local hidth = 40
 local cd
-local bookmarkPosition
+local loopStartPos
+local loopEndPos
+
+local function handleRegionSetting(positionGiven)
+	-- don't allow a negative region 
+	-- internally it is limited to -2
+	-- the start delay is 2 seconds, so limit this to 0
+	if positionGiven < 0 then return end
+
+	-- first time starting a region
+	if not loopStartPos and not loopEndPos then
+		loopStartPos = positionGiven
+		MESSAGEMAN:Broadcast("RegionSet")
+		return
+	end
+
+	-- reset region to bookmark only if double right click
+	if positionGiven == loopStartPos or positionGiven == loopEndPos then
+		loopEndPos = nil
+		loopStartPos = positionGiven
+		MESSAGEMAN:Broadcast("RegionSet")
+		SCREENMAN:GetTopScreen():ResetLoopRegion()
+		return
+	end
+
+	-- measure the difference of the new pos from each end
+	local startDiff = math.abs(positionGiven - loopStartPos)
+	local endDiff = startDiff + 0.1
+	if loopEndPos then
+		endDiff = math.abs(positionGiven - loopEndPos)
+	end
+
+	-- use the diff to figure out which end to move
+
+	-- if there is no end, then you place the end
+	if not loopEndPos then
+		if loopStartPos < positionGiven then
+			loopEndPos = positionGiven
+		elseif loopStartPos > positionGiven then
+			loopEndPos = loopStartPos
+			loopStartPos = positionGiven
+		else
+			-- this should never happen
+			-- but if it does, reset to bookmark
+			loopEndPos = nil
+			loopStartPos = positionGiven
+			MESSAGEMAN:Broadcast("RegionSet")
+			SCREENMAN:GetTopScreen():ResetLoopRegion()
+			return
+		end
+	else
+		-- closer to the start, move the start
+		if startDiff < endDiff then
+			loopStartPos = positionGiven
+		else
+			loopEndPos = positionGiven
+		end
+	end
+	SCREENMAN:GetTopScreen():SetLoopRegion(loopStartPos, loopEndPos)
+	MESSAGEMAN:Broadcast("RegionSet", {loopLength = loopEndPos-loopStartPos})
+end
 
 local function duminput(event)
-	if event.DeviceInput.button == "DeviceButton_backspace" and event.type == "InputEventType_FirstPress" then
-		if bookmarkPosition ~= nil then
-			SCREENMAN:GetTopScreen():SetPreviewNoteFieldMusicPosition(bookmarkPosition)
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_backspace" then
+			if loopStartPos ~= nil then
+				SCREENMAN:GetTopScreen():SetSongPositionAndUnpause(loopStartPos, 1, true)
+			end
+		elseif event.button == "EffectUp" then
+			SCREENMAN:GetTopScreen():AddToRate(0.05)
+		elseif event.button == "EffectDown" then
+			SCREENMAN:GetTopScreen():AddToRate(-0.05)
+		elseif event.button == "Coin" then
+			handleRegionSetting(SCREENMAN:GetTopScreen():GetSongPosition())
+		elseif event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			if GAMESTATE:IsPaused() then
+				local pos = SCREENMAN:GetTopScreen():GetSongPosition()
+				local dir = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse() and 1 or -1
+				local nextpos = pos + dir * 0.05
+				if loopEndPos ~= nil and nextpos >= loopEndPos then
+					handleRegionSetting(nextpos + 1)
+				end
+				SCREENMAN:GetTopScreen():SetSongPosition(nextpos, 0, false)
+			end
+		elseif event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			if GAMESTATE:IsPaused() then
+				local pos = SCREENMAN:GetTopScreen():GetSongPosition()
+				local dir = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse() and 1 or -1
+				local nextpos = pos - dir * 0.05
+				if loopEndPos ~= nil and nextpos >= loopEndPos then
+					handleRegionSetting(nextpos + 1)
+				end
+				SCREENMAN:GetTopScreen():SetSongPosition(nextpos, 0, false)
+			end
 		end
-	elseif event.button == "EffectUp" and event.type == "InputEventType_FirstPress" then
-		SCREENMAN:GetTopScreen():AddToPracticeRate(0.05)
-	elseif event.button == "EffectDown" and event.type == "InputEventType_FirstPress" then
-		SCREENMAN:GetTopScreen():AddToPracticeRate(-0.05)
 	end
+	
 	return false
 end
 
@@ -714,12 +812,7 @@ local pm =
 		if (allowedCustomization) then
 			Movable.DeviceButton_z.element = self
 			Movable.DeviceButton_z.condition = practiceMode
-		--Movable.DeviceButton_z.Border = self:GetChild("Border")
-		--Movable.DeviceButton_x.element = self
-		--Movable.DeviceButton_x.condition = practiceMode
-		--Movable.DeviceButton_x.Border = self:GetChild("Border")
 		end
-		--self:zoomto(MovableValues.PracticeCDGraphWidth, MovableValues.PracticeCDGraphHeight)
 	end,
 	BeginCommand = function(self)
 		musicratio = GAMESTATE:GetCurrentSong():GetLastSecond() / (wodth)
@@ -727,6 +820,9 @@ local pm =
 		cd:GetChild("cdbg"):diffusealpha(0)
 		self:SortByDrawOrder()
 		self:queuecommand("GraphUpdate")
+	end,
+	PracticeModeReloadMessageCommand = function(self)
+		musicratio = GAMESTATE:GetCurrentSong():GetLastSecond() / wodth
 	end,
 	Def.Quad {
 		Name = "BG",
@@ -787,16 +883,20 @@ pm[#pm + 1] =
 		end,
 		MouseDownCommand = function(self, params)
 			if params.button == "DeviceButton_left mouse button" then
-				SCREENMAN:GetTopScreen():SetPreviewNoteFieldMusicPosition(self:GetX() * musicratio)
+				local withCtrl = INPUTFILTER:IsControlPressed()
+				if withCtrl then
+					handleRegionSetting(self:GetX() * musicratio)
+				else
+					SCREENMAN:GetTopScreen():SetSongPosition(self:GetX() * musicratio, 0, false)
+				end
 			elseif params.button == "DeviceButton_right mouse button" then
-				bookmarkPosition = self:GetX() * musicratio
-				self:GetParent():GetChild("BookmarkPos"):queuecommand("Set")
+				handleRegionSetting(self:GetX() * musicratio)
 			end
 		end,
 		MouseRightClickMessageCommand = function(self)
-			if not self:IsOver() then
+			if not isOver(self) then
 				if not (allowedCustomization) then
-					SCREENMAN:GetTopScreen():TogglePracticePause()
+					SCREENMAN:GetTopScreen():TogglePause()
 				end
 			end
 		end
@@ -811,7 +911,27 @@ pm[#pm + 1] =
 	end,
 	SetCommand = function(self)
 		self:visible(true)
-		self:x(bookmarkPosition / musicratio)
+		self:zoomto(2, hidth):diffuse(color(".2,.5,1,1")):halign(0.5)
+		self:x(loopStartPos / musicratio)
+	end,
+	RegionSetMessageCommand = function(self, params)
+		if not params or not params.loopLength then
+			self:playcommand("Set")
+		else
+			self:visible(true)
+			self:x(loopStartPos / musicratio):halign(0)
+			self:zoomto(params.loopLength / musicratio, hidth):diffuse(color(".7,.2,.7,0.5"))
+		end
+	end,
+	CurrentRateChangedMessageCommand = function(self)
+		if not loopEndPos and loopStartPos then
+			self:playcommand("Set")
+		elseif loopEndPos and loopStartPos then
+			self:playcommand("RegionSet", {loopLength = (loopEndPos - loopStartPos)})
+		end
+	end,
+	PracticeModeReloadMessageCommand = function(self)
+		self:playcommand("CurrentRateChanged")
 	end
 }
 

@@ -100,7 +100,7 @@ local t = Def.ActorFrame {
 	end,
 	CurrentRateChangedMessageCommand = function(self)
 		if self:IsVisible() then
-			self:queuecommand("GraphUpdate")
+			self:playcommand("GraphUpdate")
 		end
 	end,
 	ChartPreviewOnMessageCommand = function(self)
