@@ -22,7 +22,11 @@ local defaultGameplayCoordinates = {
 	PlayerInfoP1X = 2,
 	PlayerInfoP1Y = 20,
 	PracticeCDGraphX = 0,
-	PracticeCDGraphY = SCREEN_HEIGHT - 35
+	PracticeCDGraphY = SCREEN_HEIGHT - 35,
+	BPMTextX = SCREEN_CENTER_X,
+	BPMTextY = SCREEN_BOTTOM - 30,
+	MusicRateX = SCREEN_CENTER_X,
+	MusicRateY = SCREEN_BOTTOM - 20
 }
 
 local defaultGameplaySizes = {
@@ -43,7 +47,10 @@ local defaultGameplaySizes = {
 	PlayerInfoP1Width = 1.0,
 	PlayerInfoP1Height = 1.0,
 	PracticeCDGraphWidth = 0.8,
-	PracticeCDGraphHeight = 1
+	PracticeCDGraphHeight = 1,
+	PracticeCDGraphHeight = 1,
+	MusicRateZoom = 1.0,
+	BPMTextZoom = 1.0
 }
 
 
