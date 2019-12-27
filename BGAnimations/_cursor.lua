@@ -44,9 +44,6 @@ t[#t+1] = Def.Quad{
 }
 
 local function Update(self)
-	t.InitCommand=function(self)
-		self:SetUpdateFunction(Update)
-	end
     
     if not GHETTOGAMESTATE:isWindowed() then
    		self:GetChild("Cursor"):xy(INPUTFILTER:GetMouseX(),INPUTFILTER:GetMouseY())
