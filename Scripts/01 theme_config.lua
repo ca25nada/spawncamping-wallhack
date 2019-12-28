@@ -19,6 +19,7 @@ local defaultConfig = {
 		AnimatedLeaderboard = true,
 		BareBone = false, -- Still can't beat jousway lel
 		EvalScoreboard = true,
+		SimpleEval = true, -- false means use classic eval
 		PlayerInfoType = true -- true is full, false is minimal (lifebar only)
 	},
 	NPSDisplay = {

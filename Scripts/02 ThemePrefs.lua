@@ -712,6 +712,39 @@ function EvalScoreboard()
 	return t
 end
 
+function SimpleEval()
+	local t = {
+		Name = "SimpleEval",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = {"Classic","Simple"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.SimpleEval
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.SimpleEval = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+			THEME:ReloadMetrics()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+
 function ProgressBar()
 	local t = {
 		Name = "ProgressBar",

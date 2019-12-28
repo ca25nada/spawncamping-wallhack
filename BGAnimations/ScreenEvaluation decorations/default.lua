@@ -25,7 +25,7 @@ local totalTaps = pss:GetTotalTaps()
 
 local rescoredPercentage
 
-local usingSimpleScreen = true
+local usingSimpleScreen = themeConfig:get_data().global.SimpleEval
 local offsetY2 = 0
 local offsetWidth2 = 0
 local offsetHeight2 = 0
@@ -2287,7 +2287,11 @@ local function newEvalStuff()
 	offsetHeight2 = SCREEN_HEIGHT * offsetPlotReferenceRatio
 	offsetY2 = SCREEN_HEIGHT - offsetHeight2 - screenFooterOffset
 
-	local t = Def.ActorFrame {}
+	local t = Def.ActorFrame {
+		InitCommand = function(self)
+			self:visible(usingSimpleScreen)
+		end
+	}
 
 	local function judgmentTexts()
 		local function oneText(i)
