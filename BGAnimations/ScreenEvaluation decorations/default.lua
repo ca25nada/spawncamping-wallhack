@@ -12,6 +12,7 @@ local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
 local frameHeight = 300
 local rate = getCurRate()
 local judge = GetTimingDifficulty()
+local offsetIndex
 
 -- Reset preview music starting point since song was finished.
 GHETTOGAMESTATE:setLastPlayedSecond(0)
@@ -1221,7 +1222,6 @@ local function oldEvalStuff()
 
 	local lbActor
 	local offsetScoreID
-	local offsetIndex
 	local offsetisLocal
 	local currentCountry = "Global"
 	local scoresPerPage = 5
@@ -2136,7 +2136,8 @@ local function offsetStuff()
 	local altOffsetParamWidth = offsetWidth2
 	local altOffsetParamHeight = offsetHeight2
 
-	local secretparamscopy = {}
+	local localparamscopy = {}
+	local selectedparamscopy = {}
 
 	-- im stupid
 	local function setOffsetParams()
@@ -2195,7 +2196,7 @@ local function offsetStuff()
 								ctt = ctt,
 								ntt = ntt,
 								columns = steps:GetNumColumns()}
-				secretparamscopy = params
+				localparamscopy = params
 				self:playcommand("Update", params) end
 			)
 		end,
@@ -2203,9 +2204,21 @@ local function offsetStuff()
 			setOffsetParams()
 			self:bouncy(0.3)
 			self:xy(offsetParamX, offsetParamY)
-			secretparamscopy.width = offsetParamWidth
-			secretparamscopy.height = offsetParamHeight
-			self:RunCommandsOnChildren(function(self) self:playcommand("Update", secretparamscopy) end)
+			if selectedparamscopy["width"] == nil then
+				selectedparamscopy = localparamscopy
+			end
+			if localparamscopy["width"] == nil then
+				localparamscopy = selectedparamscopy
+			end
+			selectedparamscopy.width = offsetParamWidth
+			selectedparamscopy.height = offsetParamHeight
+			localparamscopy.width = offsetParamWidth
+			localparamscopy.height = offsetParamHeight
+			if usingSimpleScreen then
+				self:RunCommandsOnChildren(function(self) self:playcommand("Update", localparamscopy) end)
+			else
+				self:RunCommandsOnChildren(function(self) self:playcommand("Update", selectedparamscopy) end)
+			end
 		end,
 		ShowScoreOffsetMessageCommand = function(self, params)
 			if scoreList[offsetIndex]:HasReplayData() then
@@ -2234,7 +2247,7 @@ local function offsetStuff()
 								ctt = scoreList[offsetIndex]:GetTrackVector(),
 								ntt = scoreList[offsetIndex]:GetTapNoteTypeVector(),
 								columns = steps:GetNumColumns()}
-				secretparamscopy = params
+				selectedparamscopy = params
 				self:playcommand("Update", params) end
 			)
 		end,
