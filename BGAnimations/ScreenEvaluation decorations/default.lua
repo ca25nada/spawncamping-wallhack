@@ -34,7 +34,20 @@ local t = Def.ActorFrame {}
 local function oldEvalStuff()
 	local t = Def.ActorFrame {
 		InitCommand = function(self)
-			self:visible(not usingSimpleScreen)
+			if usingSimpleScreen then
+				self:addy(SCREEN_HEIGHT)
+			end
+		end,
+		SwitchEvalTypesMessageCommand = function(self)
+			self:visible(true)
+			if usingSimpleScreen then
+				self:bouncy(0.3)
+				self:addy(SCREEN_HEIGHT)
+			else
+				self:bouncy(0.3)
+				self:addy(-SCREEN_HEIGHT)
+				self:diffusealpha(1)
+			end
 		end
 	}
 	t[#t+1] = Def.ActorFrame {
@@ -1580,6 +1593,42 @@ local function oldEvalStuff()
 				end
 			},
 
+			-- toggle eval type button
+			quadButton(6) .. {
+				InitCommand = function(self)
+					self:xy(3, 8 + (frameHeight / 8)*2 + spacing*2)
+					self:zoomto(frameWidth/6 - 6, frameHeight / 8)
+					self:halign(0):valign(0)
+					self:diffusealpha(0.05)
+				end,
+				SetCommand = function(self)
+					self:linear(0.1)
+					self:diffusealpha(0.4)
+				end,
+				MouseDownCommand = function(self)
+					usingSimpleScreen = true
+					MESSAGEMAN:Broadcast("SwitchEvalTypes")
+				end,
+				ListEmptyCommand = function(self)
+					self:queuecommand("Set")
+				end
+			},
+			LoadFont("Common Bold") .. {
+				InitCommand = function(self)
+					self:settext("Switch Eval")
+					self:maxwidth((frameWidth/6-6)/0.45)
+					self:zoom(0.45)
+					self:xy(3, 8 + (frameHeight / 8)*2 + spacing*2)
+					self:addx((frameWidth/6 - 6)/2)
+					self:addy((frameHeight / 8)/2)
+					self:diffusealpha(0.05)
+				end,
+				SetCommand = function(self)
+					self:linear(0.1)
+					self:diffusealpha(1)
+				end
+			},
+
 			-- Current rate button
 			quadButton(6) .. {
 				InitCommand = function(self)
@@ -2289,7 +2338,20 @@ local function newEvalStuff()
 
 	local t = Def.ActorFrame {
 		InitCommand = function(self)
-			self:visible(usingSimpleScreen)
+			if not usingSimpleScreen then
+				self:addy(SCREEN_HEIGHT)
+			end
+		end,
+		SwitchEvalTypesMessageCommand = function(self)
+			self:visible(true)
+			if not usingSimpleScreen then
+				self:bouncy(0.3)
+				self:addy(SCREEN_HEIGHT)
+			else
+				self:bouncy(0.3)
+				self:addy(-SCREEN_HEIGHT)
+				self:diffusealpha(1)
+			end
 		end
 	}
 
@@ -2683,6 +2745,28 @@ local function newEvalStuff()
 				self:diffuse(dividerColor)
 			end
 		},
+		quadButton(6) .. {
+			Name = "EvalSwitcher",
+			InitCommand = function(self)
+				self:valign(1)
+				self:xy(-playerInfoFrameWidth/2, -playerInfoFrameHeight)
+				self:zoomto(playerInfoFrameWidth/3,15)
+				self:diffuse(boardBGColor):diffusealpha(1)
+			end,
+			MouseDownCommand = function(self)
+				usingSimpleScreen = false
+				MESSAGEMAN:Broadcast("SwitchEvalTypes")
+			end
+		},
+		LoadFont("Common Normal") .. {
+			Name = "EvalSwitchText",
+			InitCommand = function(self)
+				self:xy(-playerInfoFrameWidth/2, -playerInfoFrameHeight - 15/2)
+				self:settext("Switch Eval")
+				self:zoom(msdTextScale)
+				self:maxwidth(playerInfoFrameWidth/3 / msdTextScale)
+			end
+		},
 		Def.Sprite {
 			Name = "AvatarImage",
 			InitCommand = function(self)
@@ -2751,7 +2835,6 @@ local function newEvalStuff()
 	}
 	return t
 end
-
 
 t[#t+1] = oldEvalStuff()
 t[#t+1] = newEvalStuff()
