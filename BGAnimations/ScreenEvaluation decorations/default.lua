@@ -2129,19 +2129,34 @@ local function offsetStuff()
 	local offsetParamZoom = 0.5
 	local offsetParamWidth = frameWidth
 	local offsetParamHeight = 150
-	if usingSimpleScreen then
-		offsetParamX = 41/1066 * SCREEN_WIDTH
-		offsetParamY = offsetY2
-		offsetParamZoom = 0.5
-		offsetParamWidth = offsetWidth2
-		offsetParamHeight = offsetHeight2
-	end
 
-	local t = Def.ActorFrame {
-		InitCommand = function(self)
+	local altOffsetParamX = 41/1066 * SCREEN_WIDTH
+	local altOffsetParamY = offsetY2
+	local altOffsetParamZoom = 0.5
+	local altOffsetParamWidth = offsetWidth2
+	local altOffsetParamHeight = offsetHeight2
 
+	local secretparamscopy = {}
+
+	-- im stupid
+	local function setOffsetParams()
+		if usingSimpleScreen then
+			offsetParamX = altOffsetParamX
+			offsetParamY = altOffsetParamY
+			offsetParamZoom = altOffsetParamZoom
+			offsetParamWidth = altOffsetParamWidth
+			offsetParamHeight = altOffsetParamHeight
+		else
+			offsetParamX = SCREEN_CENTER_X*3/2-frameWidth/2
+			offsetParamY = SCREEN_HEIGHT - 180
+			offsetParamZoom = 0.5
+			offsetParamWidth = frameWidth
+			offsetParamHeight = 150
 		end
-	}
+	end
+	setOffsetParams()
+
+	local t = Def.ActorFrame {}
 	local function offsetInput(event)
 		if event.type == "InputEventType_FirstPress" then
 			local outputName = ""
@@ -2180,8 +2195,17 @@ local function offsetStuff()
 								ctt = ctt,
 								ntt = ntt,
 								columns = steps:GetNumColumns()}
+				secretparamscopy = params
 				self:playcommand("Update", params) end
 			)
+		end,
+		SwitchEvalTypesMessageCommand = function(self)
+			setOffsetParams()
+			self:bouncy(0.3)
+			self:xy(offsetParamX, offsetParamY)
+			secretparamscopy.width = offsetParamWidth
+			secretparamscopy.height = offsetParamHeight
+			self:RunCommandsOnChildren(function(self) self:playcommand("Update", secretparamscopy) end)
 		end,
 		ShowScoreOffsetMessageCommand = function(self, params)
 			if scoreList[offsetIndex]:HasReplayData() then
@@ -2210,6 +2234,7 @@ local function offsetStuff()
 								ctt = scoreList[offsetIndex]:GetTrackVector(),
 								ntt = scoreList[offsetIndex]:GetTapNoteTypeVector(),
 								columns = steps:GetNumColumns()}
+				secretparamscopy = params
 				self:playcommand("Update", params) end
 			)
 		end,
