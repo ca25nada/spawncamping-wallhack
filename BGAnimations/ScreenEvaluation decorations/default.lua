@@ -57,9 +57,9 @@ local function oldEvalStuff()
 			local totalHolds =
 				pss:GetRadarPossible():GetValue("RadarCategory_Holds") + pss:GetRadarPossible():GetValue("RadarCategory_Rolls")
 			local holdsHit =
-				score:GetRadarValues():GetValue("RadarCategory_Holds") + score:GetRadarValues():GetValue("RadarCategory_Rolls")
+				pss:GetRadarActual():GetValue("RadarCategory_Holds") + pss:GetRadarActual():GetValue("RadarCategory_Rolls")
 			local minesHit =
-				pss:GetRadarPossible():GetValue("RadarCategory_Mines") - score:GetRadarValues():GetValue("RadarCategory_Mines")
+				pss:GetRadarPossible():GetValue("RadarCategory_Mines") - pss:GetRadarActual():GetValue("RadarCategory_Mines")
 			if enabledCustomWindows then
 				if params.Name == "PrevJudge" then
 					judge = judge < 2 and #customWindows or judge - 1
@@ -82,11 +82,6 @@ local function oldEvalStuff()
 				self:GetParent():playcommand("ResetJudge")
 			elseif params.Name ~= "ToggleHands" then
 				self:GetParent():playcommand("SetJudge", params)
-			end
-			if rescoredPercentage > 0.99 then
-				rescoredPercentage = math.floor((wifeScore)*1000000)/10000
-			else
-				rescoredPercentage = math.floor((wifeScore)*10000)/100
 			end
 		end
 	}
@@ -2390,6 +2385,13 @@ local function newEvalStuff()
 				self:addy(-SCREEN_HEIGHT)
 				self:diffusealpha(1)
 			end
+		end,
+		OffsetPlotModificationMessageCommand = function(self, params)
+			if params.Name == "ResetJudge" then
+				self:queuecommand("ResetJudge")
+			elseif params.Name ~= "ToggleHands" then
+				self:queuecommand("SetJudge", params)
+			end
 		end
 	}
 
@@ -2425,6 +2427,19 @@ local function newEvalStuff()
 					count = pss:GetHighScore():GetTapNoteScore(thisJudgment)
 					percent = pss:GetPercentageOfTaps(thisJudgment) * 100
 				end,
+				SetJudgeCommand = function(self)
+					if enabledCustomWindows then
+						percent = getRescoredCustomJudge(dvt, customWindow.judgeWindows, i) / totalTaps * 100
+						count = getRescoredCustomJudge(dvt, customWindow.judgeWindows, i)
+					else
+						percent = getRescoredJudge(dvt, judge, i) / totalTaps * 100
+						count = getRescoredJudge(dvt, judge, i)
+					end
+				end,
+				ResetJudgeCommand = function(self)
+					count = pss:GetHighScore():GetTapNoteScore(thisJudgment)
+					percent = pss:GetPercentageOfTaps(thisJudgment) * 100
+				end,
 				LoadFont("Common Normal") .. {
 					Name = "Counts_"..thisJudgment,
 					InitCommand = function(self)
@@ -2434,6 +2449,12 @@ local function newEvalStuff()
 					end,
 					BeginCommand = function(self)
 						self:settextf("%d", count)
+					end,
+					SetJudgeCommand = function(self)
+						self:playcommand("Begin")
+					end,
+					ResetJudgeCommand = function(self)
+						self:playcommand("Begin")
 					end
 				},
 				LoadFont("Common Normal") .. {
@@ -2506,7 +2527,7 @@ local function newEvalStuff()
 						self:settext("")
 					end,
 					BeginCommand = function(self)
-						local percent = possible/count * 100
+						local percent = count/possible * 100
 						if count == 0 then
 							percent = 100
 						end
@@ -2694,25 +2715,12 @@ local function newEvalStuff()
 						else
 							self:settextf("%05.2f%% (%s)", rescoredPercentage, customWindow.name)
 						end
-					elseif params.Name == "PrevJudge" and judge >= 1 then
+					else
+
 						if rescoredPercentage > 99 then
-							self:settextf("%05.4f%% (%s)", rescoredPercentage, "Wife J" .. judge)
+							self:settextf("%05.4f%%", rescoredPercentage)
 						else
-							self:settextf("%05.2f%% (%s)", rescoredPercentage, "Wife J" .. judge)
-						end
-					elseif params.Name == "NextJudge" and judge <= 9 then
-						if judge == 9 then
-							if rescoredPercentage > 99 then
-								self:settextf("%05.4f%% (%s)", rescoredPercentage, "Wife Justice")
-							else
-								self:settextf("%05.2f%% (%s)", rescoredPercentage, "Wife Justice")	
-							end
-						else
-							if rescoredPercentage > 99 then
-								self:settextf("%05.4f%% (%s)", rescoredPercentage, "Wife J" .. judge)
-							else
-								self:settextf("%05.2f%% (%s)", rescoredPercentage, "Wife J" .. judge)
-							end
+							self:settextf("%05.2f%%", rescoredPercentage)
 						end
 					end
 				end,
@@ -2753,7 +2761,16 @@ local function newEvalStuff()
 				BeginCommand = function(self)
 					local devianceTable = pss:GetOffsetVector()
 					tapMean = wifeMean(devianceTable)
+					self:playcommand("Set")
+				end,
+				SetCommand = function(self)
 					self:settextf("Mean:  %5.2fms  -  Judge:  %s", tapMean, judge)
+				end,
+				SetJudgeCommand = function(self)
+					self:queuecommand("Set")
+				end,
+				ResetJudgeCommand = function(self)
+					self:queuecommand("Set")
 				end
 			}
 		}
