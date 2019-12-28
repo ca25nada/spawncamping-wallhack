@@ -1495,7 +1495,7 @@ local function oldEvalStuff()
 					end
 				end,
 				MouseDownCommand = function(self)
-					if not isLocal and loggedIn then
+					if not isLocal and loggedIn and not usingSimpleScreen then
 						isLocal = true
 						self:GetParent():queuecommand("UpdateScores")
 					end
@@ -1548,7 +1548,7 @@ local function oldEvalStuff()
 					end
 				end,
 				MouseDownCommand = function(self)
-					if isLocal and loggedIn then
+					if isLocal and loggedIn and not usingSimpleScreen then
 						isLocal = false
 						self:GetParent():queuecommand("UpdateScores")
 					end
@@ -1601,7 +1601,7 @@ local function oldEvalStuff()
 					end
 				end,
 				MouseDownCommand = function(self)
-					if not isLocal and loggedIn then
+					if not isLocal and loggedIn and not usingSimpleScreen then
 						if not DLMAN:GetCurrentRateFilter() then
 							DLMAN:ToggleRateFilter()
 							self:GetParent():queuecommand("UpdateScores")
@@ -1655,7 +1655,7 @@ local function oldEvalStuff()
 					end
 				end,
 				MouseDownCommand = function(self)
-					if not isLocal and loggedIn then
+					if not isLocal and loggedIn and not usingSimpleScreen then
 						if DLMAN:GetCurrentRateFilter() then
 							DLMAN:ToggleRateFilter()
 							self:GetParent():queuecommand("UpdateScores")
@@ -1709,7 +1709,7 @@ local function oldEvalStuff()
 					end
 				end,
 				MouseDownCommand = function(self)
-					if not isLocal and loggedIn then
+					if not isLocal and loggedIn and not usingSimpleScreen then
 						if not DLMAN:GetTopScoresOnlyFilter() then
 							DLMAN:ToggleTopScoresOnlyFilter()
 							self:GetParent():queuecommand("UpdateScores")
@@ -1763,7 +1763,7 @@ local function oldEvalStuff()
 					end
 				end,
 				MouseDownCommand = function(self)
-					if not isLocal and loggedIn then
+					if not isLocal and loggedIn and not usingSimpleScreen then
 						if DLMAN:GetTopScoresOnlyFilter() then
 							DLMAN:ToggleTopScoresOnlyFilter()
 							self:GetParent():queuecommand("UpdateScores")
@@ -1850,7 +1850,7 @@ local function oldEvalStuff()
 					end
 				end,
 				MouseDownCommand = function(self)
-					if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
+					if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() or usingSimpleScreen then
 						return
 					end
 					newScoreboardInitialLocalIndex = 0
@@ -1983,7 +1983,7 @@ local function oldEvalStuff()
 					self:zoomto(frameWidth - scoreItemWidth - scoreItemX - 20, scoreItemHeight)
 				end,
 				MouseDownCommand = function(self)
-					if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() then
+					if scoreList[scoreIndex] == nil or not scoreList[scoreIndex]:HasReplayData() or usingSimpleScreen then
 						return
 					end
 					GHETTOGAMESTATE:setReplay(scoreList[scoreIndex], not isLocal)
