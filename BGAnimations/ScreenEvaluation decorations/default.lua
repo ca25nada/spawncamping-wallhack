@@ -1603,7 +1603,7 @@ local function oldEvalStuff()
 				end,
 				SetCommand = function(self)
 					self:linear(0.1)
-					self:diffusealpha(0.4)
+					self:diffusealpha(0.1)
 				end,
 				MouseDownCommand = function(self)
 					usingSimpleScreen = true
