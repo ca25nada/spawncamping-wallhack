@@ -1,5 +1,5 @@
 local lines = 4 -- number of scores to display
-local frameWidth = 260
+local frameWidth = capWideScale(160, 260)
 local frameX = SCREEN_WIDTH-frameWidth-WideScale(get43size(40),40)/2
 local frameY = 165
 local spacing = 34
