@@ -412,10 +412,14 @@ local function oldEvalStuff()
 			end
 		}
 
-		t[#t+1] = Def.Quad{
+		t[#t+1] = quadButton(5) .. {
 			InitCommand = function(self)
 				self:zoomto(frameWidth,frameHeight):valign(0)
 				self:diffuse(getMainColor("frame")):diffusealpha(0.8)
+			end,
+			MouseDownCommand = function(self)
+				usingSimpleScreen = not usingSimpleScreen
+				MESSAGEMAN:Broadcast("SwitchEvalTypes")
 			end
 		}
 
@@ -1588,42 +1592,6 @@ local function oldEvalStuff()
 				end
 			},
 
-			-- toggle eval type button
-			quadButton(6) .. {
-				InitCommand = function(self)
-					self:xy(3, 8 + (frameHeight / 8)*2 + spacing*2)
-					self:zoomto(frameWidth/6 - 6, frameHeight / 8)
-					self:halign(0):valign(0)
-					self:diffusealpha(0.05)
-				end,
-				SetCommand = function(self)
-					self:linear(0.1)
-					self:diffusealpha(0.1)
-				end,
-				MouseDownCommand = function(self)
-					usingSimpleScreen = true
-					MESSAGEMAN:Broadcast("SwitchEvalTypes")
-				end,
-				ListEmptyCommand = function(self)
-					self:queuecommand("Set")
-				end
-			},
-			LoadFont("Common Bold") .. {
-				InitCommand = function(self)
-					self:settext("Switch Eval")
-					self:maxwidth((frameWidth/6-6)/0.45)
-					self:zoom(0.45)
-					self:xy(3, 8 + (frameHeight / 8)*2 + spacing*2)
-					self:addx((frameWidth/6 - 6)/2)
-					self:addy((frameHeight / 8)/2)
-					self:diffusealpha(0.05)
-				end,
-				SetCommand = function(self)
-					self:linear(0.1)
-					self:diffusealpha(1)
-				end
-			},
-
 			-- Current rate button
 			quadButton(6) .. {
 				InitCommand = function(self)
@@ -2556,11 +2524,15 @@ local function newEvalStuff()
 		end,
 		Def.ActorFrame {
 			Name = "MainQuads",
-			Def.Quad {
+			quadButton(5) .. {
 				Name = "BoardBG",
 				InitCommand = function(self)
 					self:zoomto(frameWidth, frameHeight)
 					self:diffuse(boardBGColor)
+				end,
+				MouseDownCommand = function(self)
+					usingSimpleScreen = not usingSimpleScreen
+					MESSAGEMAN:Broadcast("SwitchEvalTypes")
 				end
 			},
 			Def.Quad {
@@ -2805,28 +2777,6 @@ local function newEvalStuff()
 				self:xy(-playerInfoFrameWidth + SCREEN_WIDTH * avatarLeftEdgeReferenceRatio,-playerInfoFrameHeight + SCREEN_HEIGHT * avatarTopEdgeReferenceRatio)
 				self:zoomto(playerInfoAvatarWH, playerInfoAvatarWH)
 				self:diffuse(dividerColor)
-			end
-		},
-		quadButton(6) .. {
-			Name = "EvalSwitcher",
-			InitCommand = function(self)
-				self:valign(1)
-				self:xy(-playerInfoFrameWidth/2, -playerInfoFrameHeight)
-				self:zoomto(playerInfoFrameWidth/3,15)
-				self:diffuse(boardBGColor):diffusealpha(1)
-			end,
-			MouseDownCommand = function(self)
-				usingSimpleScreen = false
-				MESSAGEMAN:Broadcast("SwitchEvalTypes")
-			end
-		},
-		LoadFont("Common Normal") .. {
-			Name = "EvalSwitchText",
-			InitCommand = function(self)
-				self:xy(-playerInfoFrameWidth/2, -playerInfoFrameHeight - 15/2)
-				self:settext("Switch Eval")
-				self:zoom(msdTextScale)
-				self:maxwidth(playerInfoFrameWidth/3 / msdTextScale)
 			end
 		},
 		Def.Sprite {
