@@ -2360,6 +2360,12 @@ local function newEvalStuff()
 	offsetHeight2 = SCREEN_HEIGHT * offsetPlotReferenceRatio
 	offsetY2 = SCREEN_HEIGHT - offsetHeight2 - screenFooterOffset
 
+	local player = GAMESTATE:GetEnabledPlayers()[1]
+	local profile = GetPlayerOrMachineProfile(player)
+	local hsTable = getScoreTable(player, getCurRate())
+	local score = pss:GetHighScore()
+	local scoreIndex = getHighScoreIndex(hsTable, score)
+
 	local t = Def.ActorFrame {
 		InitCommand = function(self)
 			if not usingSimpleScreen then
@@ -2665,7 +2671,7 @@ local function newEvalStuff()
 				Name = "Difficulty",
 				InitCommand = function(self)
 					self:halign(0)
-					self:xy(-frameWidth/2 + edgeTextSpacing2, upperDivider1Y + dividerHeight/2 + (frameHeight * gradeSectionReferenceRatio / 5 * 3))
+					self:xy(-frameWidth/2 + edgeTextSpacing2, upperDivider1Y + dividerHeight/2 + (frameHeight * gradeSectionReferenceRatio / 5 * 3.4))
 					self:zoom(smallerTextScale)
 					local diff = steps:GetDifficulty()
 					local difftext
@@ -2677,6 +2683,22 @@ local function newEvalStuff()
 					end
 					self:settext(difftext)
 					self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(),steps:GetDifficulty())))
+				end,
+				BeginCommand = function(self)
+					difficultySpacing = -frameWidth/2 + edgeTextSpacing2 + self:GetParent():GetChild("SSR"):GetZoomedWidth() + SCREEN_WIDTH * difficultySpacingReferenceRatio
+					self:x(difficultySpacing)
+				end
+			},
+			LoadFont("Common Normal") .. {
+				Name = "PBIndicator",
+				InitCommand = function(self)
+					self:halign(0)
+					self:xy(-frameWidth/2 + edgeTextSpacing2, upperDivider1Y + dividerHeight/2 + (frameHeight * gradeSectionReferenceRatio / 5 * 1.2))
+					self:zoom(smallerTextScale)
+					self:diffuse(getMainColor("warning"))
+					if scoreIndex == 1 and #hsTable > 0 then
+						self:settext("PB!")
+					end
 				end,
 				BeginCommand = function(self)
 					difficultySpacing = -frameWidth/2 + edgeTextSpacing2 + self:GetParent():GetChild("SSR"):GetZoomedWidth() + SCREEN_WIDTH * difficultySpacingReferenceRatio
