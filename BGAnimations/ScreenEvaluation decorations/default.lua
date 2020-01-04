@@ -2169,6 +2169,12 @@ local function offsetStuff()
 			if outputName ~= "" then
 				MESSAGEMAN:Broadcast("OffsetPlotModification", {Name = outputName})
 			end
+
+			if (INPUTFILTER:IsBeingPressed("left ctrl") or INPUTFILTER:IsBeingPressed("right ctrl")) and
+			event.DeviceInput.button == "DeviceButton_a" then
+				usingSimpleScreen = not usingSimpleScreen
+				MESSAGEMAN:Broadcast("SwitchEvalTypes")
+			end
 		end
 	end
 
