@@ -33,11 +33,18 @@ local offsetHeight2 = 0
 
 local t = Def.ActorFrame {}
 local function oldEvalStuff()
+
+	local function highlight(self)
+		self:queuecommand("Highlight")
+	end
+
+
 	local t = Def.ActorFrame {
 		InitCommand = function(self)
 			if usingSimpleScreen then
 				self:addy(SCREEN_HEIGHT)
 			end
+			self:SetUpdateFunction(highlight)
 		end,
 		SwitchEvalTypesMessageCommand = function(self)
 			self:visible(true)
@@ -553,7 +560,7 @@ local function oldEvalStuff()
 		t[#t+1] = LoadFont("Common Normal")..{
 
 			InitCommand = function(self)
-				self:xy(frameWidth/2-5,5):zoom(0.5):halign(1):valign(0)
+				self:xy(frameWidth/2-5,5):zoom(0.45):halign(1):valign(0)
 				self:glowshift():effectcolor1(color("1,1,1,0.05")):effectcolor2(color("1,1,1,0")):effectperiod(2)
 			end,
 			SetCommand=function(self) 
@@ -585,14 +592,23 @@ local function oldEvalStuff()
 
 		-- SSR
 		t[#t+1] = LoadFont("Common Normal")..{
+			Name = "SSR",
 			InitCommand = function(self) 
-				self:xy(frameWidth/2-5,19):zoom(0.4):halign(1):valign(0)
+				self:xy(frameWidth/2-5,19):zoom(0.5):halign(1):valign(0)
 			end,
 			SetCommand=function(self) 
-				
 				local meter = curScore:GetSkillsetSSR("Overall")
-				self:settextf("Score Specific Rating   %5.2f", meter)
-				self:AddAttribute(#"Score Specific Rating", {Length = -1, Diffuse = byMSD(meter)})
+				self:settextf("SSR   %5.2f", meter)
+				self:AddAttribute(#"SSR", {Length = -1, Diffuse = byMSD(meter)})
+			end,
+			HighlightCommand = function(self)
+				if isOver(self) then
+					local meter = curScore:GetSkillsetSSR("Overall")
+					self:settextf("Score Specific Rating   %5.2f", meter)
+					self:AddAttribute(#"Score Specific Rating", {Length = -1, Diffuse = byMSD(meter)})
+				else
+					self:playcommand("Set")
+				end
 			end
 		}
 
