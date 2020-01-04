@@ -2611,6 +2611,7 @@ local function newEvalStuff()
 
 		Def.ActorFrame {
 			Name = "Static Text",
+			--[[ -- not using group name because we already have group name on this screen.
 			LoadFont("Common Normal") .. {
 				Name = "PackName",
 				InitCommand = function(self)
@@ -2619,7 +2620,7 @@ local function newEvalStuff()
 					self:settext(GAMESTATE:GetCurrentSong():GetGroupName())
 					self:maxwidth(frameWidth / mainTextScale)
 				end
-			},
+			},]]
 			LoadFont("Common Normal") .. {
 				Name = "TitleAndRate",
 				InitCommand = function(self)
