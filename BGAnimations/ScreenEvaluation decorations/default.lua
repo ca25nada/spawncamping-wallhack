@@ -469,7 +469,7 @@ local function oldEvalStuff()
 
 				local text = profile:GetDisplayName()
 				if text == "" then
-					text = pn == PLAYER_1 and "Player 1" or "Player 2"
+					text = "Player 1"
 				end
 				self:settext(text)
 			end
