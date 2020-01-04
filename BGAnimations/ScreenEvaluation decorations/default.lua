@@ -327,7 +327,8 @@ local function oldEvalStuff()
 				end,
 				BeginCommand=function(self) 
 					-- Fix when maxwife is available to lua
-					local grade,diff = getNearbyGrade(pn,pss:GetWifeScore()*getMaxNotes(pn)*2,pss:GetGrade())
+					local pct = pss:GetWifeScore() * 100
+					local grade,diff = getNearbyGrade(pn,pss:GetWifeScore()*getMaxNotes(pn)*2,getWifeGradeTier(pct))
 					diff = diff >= 0 and string.format("+%0.2f", diff) or string.format("%0.2f", diff)
 					self:settextf("%s %s",THEME:GetString("Grade",ToEnumShortString(grade)),diff)
 					self:x(self:GetParent():GetChild("Grade"):GetX()+(math.min(self:GetParent():GetChild("Grade"):GetWidth()/0.8/2+15,35/0.8+15))*0.6)
