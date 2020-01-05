@@ -26,6 +26,7 @@ local totalTaps = pss:GetTotalTaps()
 local rescoredPercentage
 
 local usingSimpleScreen = themeConfig:get_data().global.SimpleEval
+local showScoreboardOnSimple = themeConfig:get_data().global.ShowScoreboardOnSimple
 local offsetY2 = 0
 local offsetWidth2 = 0
 local offsetHeight2 = 0
@@ -2887,6 +2888,15 @@ local function newEvalStuff()
 			end
 		}
 	}
+
+	if showScoreboardOnSimple then
+		if not inMulti then
+			t[#t+1] = LoadActor("scoreboard")
+		else
+			t[#t+1] = LoadActor("MPscoreboard")
+		end
+	end
+
 	return t
 end
 
