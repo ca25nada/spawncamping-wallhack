@@ -38,12 +38,6 @@ end
 
 local function scoreboardInput(event)
 	if event.type == "InputEventType_FirstPress" then
-		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
-			MESSAGEMAN:Broadcast("WheelUpSlow")
-		end
-		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
-			MESSAGEMAN:Broadcast("WheelDownSlow")
-		end
 		if event.button == "MenuLeft" then
 			movePage(-1)
 		end

@@ -1,4 +1,3 @@
-local t = Def.ActorFrame{}
 local song = GAMESTATE:GetCurrentSong()
 local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
 local steps = GAMESTATE:GetCurrentSteps(pn)
@@ -31,7 +30,18 @@ local offsetY2 = 0
 local offsetWidth2 = 0
 local offsetHeight2 = 0
 
+local function scroller(event)
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			MESSAGEMAN:Broadcast("WheelUpSlow")
+		end
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			MESSAGEMAN:Broadcast("WheelDownSlow")
+		end
+	end
+end
 local t = Def.ActorFrame {}
+
 local function oldEvalStuff()
 
 	local function highlight(self)
@@ -1277,16 +1287,9 @@ local function oldEvalStuff()
 			if maxPages <= 1 then
 				return
 			end
-			if event.DeviceInput.button == "DeviceButton_mousewheel up" then
-				MESSAGEMAN:Broadcast("WheelUpSlow")
-			end
-			if event.DeviceInput.button == "DeviceButton_mousewheel down" then
-				MESSAGEMAN:Broadcast("WheelDownSlow")
-			end
 			if event.button == "MenuLeft" then
 				movePage(-1)
 			end
-
 			if event.button == "MenuRight" then
 				movePage(1)
 			end
@@ -1364,12 +1367,12 @@ local function oldEvalStuff()
 					self:diffuse(getMainColor("frame")):diffusealpha(0.8)
 				end,
 				WheelUpSlowMessageCommand = function(self)
-					if self:isOver() then
+					if self:isOver() and maxPages > 1 then
 						movePage(-1)
 					end
 				end,
 				WheelDownSlowMessageCommand = function(self)
-					if self:isOver() then
+					if self:isOver() and maxPages > 1 then
 						movePage(1)
 					end
 				end
@@ -2890,6 +2893,18 @@ end
 t[#t+1] = oldEvalStuff()
 t[#t+1] = newEvalStuff()
 t[#t+1] = offsetStuff()
+
+-- for scrolling input. i know, its dumb
+-- but i decided to make this so carefully disorganized that it had to be done
+-- this single scroll input handler works for 3 different scoreboards
+-- so if it dies, you cant scroll on any of them
+-- they should only be loaded on this screen anyways
+-- dont mess it up (the keyboard hotkeys will work anyways though)
+t[#t+1] = Def.ActorFrame {
+	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(scroller)
+	end
+}
 
 
 
