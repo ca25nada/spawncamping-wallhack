@@ -2720,6 +2720,7 @@ local function newEvalStuff()
 				InitCommand = function(self)
 					self:y(upperDivider1Y + dividerHeight/2 + (frameHeight * gradeSectionReferenceRatio / 2))
 					self:zoom(biggerTextScale)
+					self:maxwidth(frameWidth / 4 / biggerTextScale)
 					self:settext("")
 				end,
 				BeginCommand=function(self) 
