@@ -2390,7 +2390,6 @@ local function newEvalStuff()
 	local biggerTextScale = 0.9
 	local judgmentSectionTextScale = 0.7
 
-	local tapMean = 0
 	offsetWidth2 = frameWidth
 	offsetHeight2 = SCREEN_HEIGHT * offsetPlotReferenceRatio
 	offsetY2 = SCREEN_HEIGHT - offsetHeight2 - screenFooterOffset
@@ -2400,6 +2399,10 @@ local function newEvalStuff()
 	local hsTable = getScoreTable(player, getCurRate())
 	local score = pss:GetHighScore()
 	local scoreIndex = getHighScoreIndex(hsTable, score)
+
+	local function highlightSD(self)
+		self:GetChild("Mean"):queuecommand("Highlight")
+	end
 
 	local t = Def.ActorFrame {
 		InitCommand = function(self)
@@ -2575,6 +2578,49 @@ local function newEvalStuff()
 		return t
 	end
 
+	-- stolen from earlier in this same file without any shame
+	-- stolen from Til Death without any shame
+	local tracks = pss:GetTrackVector()
+	local devianceTable = pss:GetOffsetVector()
+	local cbl = 0
+	local cbr = 0
+	local cbm = 0
+
+	local tst = ms.JudgeScalers
+	local tso = tst[judge]
+	if enabledCustomWindows then
+		tso = 1
+	end
+	local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
+	local middleCol = ncol / 2
+	local function recountCBs()
+		cbl = 0
+		cbr = 0
+		cbm = 0
+		for i = 1, #devianceTable do
+			if tracks[i] then
+				if math.abs(devianceTable[i]) > tso * 90 then
+					if tracks[i] < middleCol then
+						cbl = cbl + 1
+					elseif tracks[i] > middleCol then
+						cbr = cbr + 1
+					else
+						cbm = cbm + 1
+					end
+				end
+			end
+		end
+	end
+	recountCBs()
+
+	local statInfo = {
+		mean = wifeMean(devianceTable),
+		absmean = wifeAbsMean(devianceTable),
+		sd = wifeSd(devianceTable),
+	}
+
+	local showMiddle = middleCol == math.floor(middleCol)
+
 	t[#t+1] = Def.ActorFrame {
 		Name = "The Board",
 		InitCommand = function(self)
@@ -2641,6 +2687,9 @@ local function newEvalStuff()
 
 		Def.ActorFrame {
 			Name = "Static Text",
+			InitCommand = function(self)
+				self:SetUpdateFunction(highlightSD)
+			end,
 			--[[ -- not using group name because we already have group name on this screen.
 			LoadFont("Common Normal") .. {
 				Name = "PackName",
@@ -2741,7 +2790,38 @@ local function newEvalStuff()
 				end
 			},
 			judgmentTexts(),
-			radarTexts()
+			radarTexts(),
+			LoadFont("Common Normal") .. {
+				Name = "Mean",
+				InitCommand = function(self)
+					self:halign(0)
+					self:xy(-frameWidth/2 + edgeTextSpacing1, lowerDivider2Y + dividerHeight/2 + (frameHeight * meanTextSpacingFromDividerReferenceRatio))
+					self:zoom(smallerTextScale)
+					self:settext("")
+					self:maxwidth((frameWidth/3-5) / smallerTextScale)
+				end,
+				BeginCommand = function(self)
+					self:playcommand("Set")
+				end,
+				SetCommand = function(self)
+					self:settextf("Mean: %5.2fms", statInfo["mean"])
+				end,
+				HighlightCommand = function(self)
+					if isOver(self) then
+						self:settextf("Std Dev: %5.2fms", statInfo["sd"])
+					else
+						self:playcommand("Set")
+					end
+				end,
+			},
+			LoadFont("Common Normal") .. {
+				Name = "CBText",
+				InitCommand = function(self)
+					self:y(lowerDivider2Y + dividerHeight/2 + (frameHeight * meanTextSpacingFromDividerReferenceRatio * 2.5))
+					self:zoom(msdTextScale)
+					self:settext("CBs")
+				end
+			}
 		},
 
 		Def.ActorFrame {
@@ -2806,19 +2886,19 @@ local function newEvalStuff()
 			},
 			judgmentCounts(),
 			LoadFont("Common Normal") .. {
-				Name = "MeanAndJudge",
+				Name = "Judge",
 				InitCommand = function(self)
-					self:y(lowerDivider2Y + dividerHeight/2 + (frameHeight * meanTextSpacingFromDividerReferenceRatio))
-					self:zoom(mainTextScale)
+					self:halign(1)
+					self:xy(frameWidth/2 - edgeTextSpacing1, lowerDivider2Y + dividerHeight/2 + (frameHeight * meanTextSpacingFromDividerReferenceRatio))
+					self:zoom(smallerTextScale)
+					self:maxwidth((frameWidth/3-5) / smallerTextScale)
 					self:settext("")
 				end,
 				BeginCommand = function(self)
-					local devianceTable = pss:GetOffsetVector()
-					tapMean = wifeMean(devianceTable)
 					self:playcommand("Set")
 				end,
 				SetCommand = function(self)
-					self:settextf("Mean:  %5.2fms  -  Judge:  %s", tapMean, judge)
+					self:settextf("Judge:  %s", judge)
 				end,
 				SetJudgeCommand = function(self)
 					self:queuecommand("Set")
@@ -2826,7 +2906,38 @@ local function newEvalStuff()
 				ResetJudgeCommand = function(self)
 					self:queuecommand("Set")
 				end
-			}
+			},
+			LoadFont("Common Normal") .. {
+				Name = "CBNumbers",
+				InitCommand = function(self)
+					self:y(lowerDivider2Y + dividerHeight/2 + (frameHeight * meanTextSpacingFromDividerReferenceRatio))
+					self:zoom(smallerTextScale)
+					self:maxwidth((frameWidth/3 - 5) / smallerTextScale)
+					self:settext("")
+				end,
+				BeginCommand = function(self)
+					self:playcommand("Set")
+				end,
+				SetCommand = function(self)
+					if not showMiddle then
+						self:settextf("%d | %d", cbl, cbr)
+					else
+						self:settextf("%d | %d | %d", cbl, cbm, cbr)
+					end
+				end,
+				SetJudgeCommand = function(self)
+					tso = tst[judge]
+					if enabledCustomWindows then
+						tso = 1
+					end
+					recountCBs()
+					self:queuecommand("Set")
+				end,
+				ResetJudgeCommand = function(self)
+					self:playcommand("SetJudge")
+				end
+			},
+			
 		}
 	}
 
