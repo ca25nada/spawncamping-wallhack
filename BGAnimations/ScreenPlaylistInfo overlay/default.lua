@@ -64,15 +64,21 @@ local function playPlaylist(pl)
 	SCREENMAN:GetTopScreen():Cancel()
 end
 
+
+local function updatePlaylists()
+	detail = false
+	playlists = SONGMAN:GetPlaylists()
+	maxPages = math.ceil(#playlists/maxItems)
+	MESSAGEMAN:Broadcast("UpdateList")
+end
+
 -- NOTE: 
 -- Doesn't work as SONGMAN:NewPlaylist() failed to add the playlist outside of ScreenSelectMusic.
 -- Creates a new playlist and updates the screen.
 local function addPlaylist()
 	SONGMAN:NewPlaylist()
 	detail = false
-	playlists = SONGMAN:GetPlaylists()
-	maxPages = math.ceil(#playlists/maxItems)
-	MESSAGEMAN:Broadcast("UpdateList")
+	updatePlaylists()
 end
 
 -- Deletes the playlist and updates the screen.
@@ -165,6 +171,9 @@ local function playlistInfo()
 		end,
 		HidePlaylistDetailMessageCommand = function(self)
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+		end,
+		DisplayAllMessageCommand = function(self)
+			updatePlaylists()
 		end
 	}
 
