@@ -2721,7 +2721,7 @@ local function newEvalStuff()
 					self:settextf("By: %s", artist)
 				end,
 				BeginCommand = function(self)
-					self:maxwidth((frameWidth - self:GetParent():GetChild("MSD"):GetZoomedWidth() * 2) / mainTextScale)
+					self:maxwidth((frameWidth - self:GetParent():GetChild("MSD"):GetZoomedWidth() * 2.5) / mainTextScale)
 				end
 			},
 			LoadFont("Common Normal") .. {
