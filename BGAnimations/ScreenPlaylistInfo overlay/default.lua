@@ -367,7 +367,7 @@ end
 -- Displays available playlists
 local function playlistList()
 
-	local frameWidth = 430
+	local frameWidth = capWideScale(300, 430)
 	local frameHeight = SCREEN_HEIGHT - 60
 	local itemWidth = frameWidth-30
 	local itemHeight = 25
@@ -664,7 +664,7 @@ end
 -- Displays the steps when a playlist is clicked
 local function playlistStepsList()
 
-	local frameWidth = 430
+	local frameWidth = capWideScale(300, 430)
 	local itemWidth = frameWidth-30
 	local itemHeight = 25
 
