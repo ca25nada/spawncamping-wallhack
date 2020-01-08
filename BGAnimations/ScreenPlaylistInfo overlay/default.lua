@@ -819,6 +819,7 @@ local function playlistStepsList()
 				self:xy(40,-6):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
+				self:maxwidth((itemWidth - 40 - 10-60 - 40/2 - 10 - 20) / 0.4)
 			end,
 			SetCommand = function(self)
 				self:settext(chartlist[stepsIndex]:GetSongTitle())
@@ -831,6 +832,7 @@ local function playlistStepsList()
 				self:xy(40,5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
+				self:maxwidth((itemWidth - 40 - 10-60 - 40/2 - 10 - 20) / 0.3)
 			end,
 			SetCommand = function(self)
 				if song then
