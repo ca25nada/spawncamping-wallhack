@@ -2504,6 +2504,12 @@ local function newEvalStuff()
 					end,
 					BeginCommand = function(self)
 						self:settextf("%5.2f%%", percent)
+					end,
+					SetJudgeCommand = function(self)
+						self:playcommand("Begin")
+					end,
+					ResetJudgeCommand = function(self)
+						self:playcommand("Begin")
 					end
 				}
 			}
