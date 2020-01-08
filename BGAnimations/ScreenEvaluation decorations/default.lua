@@ -403,6 +403,56 @@ local function oldEvalStuff()
 
 		local clearType = getClearType(pn,steps,curScore)
 
+		-- stolen from Til Death without any shame
+		local tracks = pss:GetTrackVector()
+		local devianceTable = pss:GetOffsetVector()
+		local cbl = 0
+		local cbr = 0
+		local cbm = 0
+
+		local tst = ms.JudgeScalers
+		local tso = tst[judge]
+		if enabledCustomWindows then
+			tso = 1
+		end
+		local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
+		local middleCol = ncol / 2
+		local function recountCBs()
+			tso = tst[judge]
+			if enabledCustomWindows then
+				tso = 1
+			end
+			cbl = 0
+			cbr = 0
+			cbm = 0
+			for i = 1, #devianceTable do
+				if tracks[i] then
+					if math.abs(devianceTable[i]) > tso * 90 then
+						if tracks[i] < middleCol then
+							cbl = cbl + 1
+						elseif tracks[i] > middleCol then
+							cbr = cbr + 1
+						else
+							cbm = cbm + 1
+						end
+					end
+				end
+			end
+		end
+		recountCBs()
+
+		local statInfo = {
+			wifeMean(devianceTable),
+			wifeAbsMean(devianceTable),
+			wifeSd(devianceTable),
+			cbl,
+			cbr,
+			cbm
+		}
+
+		local showMiddle = middleCol == math.floor(middleCol)
+		local cbYSpacing = showMiddle and 7 or 10
+
 		local t = Def.ActorFrame{
 			InitCommand = function(self)
 				if GAMESTATE:GetNumPlayersEnabled() > 1 then
@@ -428,6 +478,9 @@ local function oldEvalStuff()
 			OffCommand = function(self)
 				self:bouncy(0.3)
 				self:y(500)
+			end,
+			SetJudgeCommand = function(self)
+				recountCBs()
 			end
 		}
 
@@ -1095,46 +1148,6 @@ local function oldEvalStuff()
 			end
 		}
 
-		-- stolen from Til Death without any shame
-		local tracks = pss:GetTrackVector()
-		local devianceTable = pss:GetOffsetVector()
-		local cbl = 0
-		local cbr = 0
-		local cbm = 0
-
-		local tst = ms.JudgeScalers
-		local tso = tst[judge]
-		if enabledCustomWindows then
-			tso = 1
-		end
-		local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
-		local middleCol = ncol / 2
-		for i = 1, #devianceTable do
-			if tracks[i] then
-				if math.abs(devianceTable[i]) > tso * 90 then
-					if tracks[i] < middleCol then
-						cbl = cbl + 1
-					elseif tracks[i] > middleCol then
-						cbr = cbr + 1
-					else
-						cbm = cbm + 1
-					end
-				end
-			end
-		end
-
-		local statInfo = {
-			wifeMean(devianceTable),
-			wifeAbsMean(devianceTable),
-			wifeSd(devianceTable),
-			cbl,
-			cbr,
-			cbm
-		}
-
-		local showMiddle = cbm ~= 0
-		local cbYSpacing = showMiddle and 7 or 10
-
 		t[#t+1] = LoadFont("Common Normal")..{
 			InitCommand= function(self)
 				self:xy(((-(frameWidth+frameWidth/6)/2)+((frameWidth+frameWidth/6)/7)*5),260)
@@ -1197,7 +1210,13 @@ local function oldEvalStuff()
 			end,
 			SetCommand=function(self) 
 				self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
-				self:settextf("Left: %d", statInfo[4])
+				self:settextf("Left: %d", cbl)
+			end,
+			SetJudgeCommand = function(self)
+				self:playcommand("Set")
+			end,
+			ResetJudgeCommand = function(self)
+				self:playcommand("Set")
 			end
 		}
 
@@ -1209,7 +1228,13 @@ local function oldEvalStuff()
 			end,
 			SetCommand=function(self) 
 				self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
-				self:settextf("Right: %d", statInfo[5])
+				self:settextf("Right: %d", cbr)
+			end,
+			SetJudgeCommand = function(self)
+				self:playcommand("Set")
+			end,
+			ResetJudgeCommand = function(self)
+				self:playcommand("Set")
 			end
 		}
 
@@ -1222,10 +1247,16 @@ local function oldEvalStuff()
 			end,
 			SetCommand=function(self) 
 				self:diffuse(Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.1),Saturation(color(colorConfig:get_data().evaluation.ScoreCardText),0.4))
-				self:settextf("Middle: %d", statInfo[6])
+				self:settextf("Middle: %d", cbm)
 				if showMiddle then
 					self:visible(true)
 				end
+			end,
+			SetJudgeCommand = function(self)
+				self:playcommand("Set")
+			end,
+			ResetJudgeCommand = function(self)
+				self:playcommand("Set")
 			end
 		}
 
