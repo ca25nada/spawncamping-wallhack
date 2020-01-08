@@ -1,5 +1,5 @@
 local lines = 4 -- number of scores to display
-local frameWidth = 260
+local frameWidth = capWideScale(160, 260)
 local frameX = SCREEN_WIDTH-frameWidth-WideScale(get43size(40),40)/2
 local frameY = 165
 local spacing = 34
@@ -38,12 +38,6 @@ end
 
 local function scoreboardInput(event)
 	if event.type == "InputEventType_FirstPress" then
-		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
-			MESSAGEMAN:Broadcast("WheelUpSlow")
-		end
-		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
-			MESSAGEMAN:Broadcast("WheelDownSlow")
-		end
 		if event.button == "MenuLeft" then
 			movePage(-1)
 		end

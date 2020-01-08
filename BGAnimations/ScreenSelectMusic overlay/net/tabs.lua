@@ -148,7 +148,7 @@ t[#t+1] = tab:makeTabActors() .. {
 			GHETTOGAMESTATE:setMusicWheel(top)
 			SCREENMAN:AddNewScreenToTop("ScreenFiltering")
 
-		--[[ -- Removed playlists for now. They are broken not just in this theme.
+		--[[ -- No playlists in multiplayer.
 			elseif params.name == "Playlist" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlaylistInfo")
 		]]

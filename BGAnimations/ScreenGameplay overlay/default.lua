@@ -22,7 +22,6 @@ if themeConfig:get_data().global.ProgressBar ~= 0 then
 end
 t[#t+1] = LoadActor("leaderboard")
 t[#t+1] = LoadActor("avatar")
---t[#t+1] = LoadActor("BPMDisplay")
 t[#t+1] = LoadActor("title")
 
 if inCustomize then
@@ -33,7 +32,7 @@ if not inCustomize and not inPractice and not inReplay then
 	HOOKS:ShowCursor(false)
 else
 	t[#t+1] = LoadActor("../_cursor")
-	t[#t+1] = LoadActor("../_mouse", "ScreenGameplay")
+	t[#t+1] = LoadActor("../_mouse", ToGameplay())
 end
 
 local largeImageText = string.format("%s: %5.2f",profile:GetDisplayName(), profile:GetPlayerRating())

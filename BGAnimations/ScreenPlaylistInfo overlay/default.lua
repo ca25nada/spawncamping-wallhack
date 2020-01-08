@@ -23,14 +23,18 @@ local curPage = 1 -- Current page for displaying playlists
 local curStepsPage = 1 -- current page for displaying steps within a playlist
 
 local playlist
+local chartlist
+local stepslist = {}
 local maxPlaylistPages
 
 local playlists = SONGMAN:GetPlaylists()
 local maxPages = math.ceil(#playlists/maxItems)
+local top
 
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local steps = GAMESTATE:GetCurrentSteps(pn)
 local song = GAMESTATE:GetCurrentSong()
+
 
 local detail = false -- True if displaying steps within a playlist, false if just displaying available playlists
 
@@ -60,15 +64,21 @@ local function playPlaylist(pl)
 	SCREENMAN:GetTopScreen():Cancel()
 end
 
+
+local function updatePlaylists()
+	detail = false
+	playlists = SONGMAN:GetPlaylists()
+	maxPages = math.ceil(#playlists/maxItems)
+	MESSAGEMAN:Broadcast("UpdateList")
+end
+
 -- NOTE: 
 -- Doesn't work as SONGMAN:NewPlaylist() failed to add the playlist outside of ScreenSelectMusic.
 -- Creates a new playlist and updates the screen.
 local function addPlaylist()
 	SONGMAN:NewPlaylist()
 	detail = false
-	playlists = SONGMAN:GetPlaylists()
-	maxPages = math.ceil(#playlists/maxItems)
-	MESSAGEMAN:Broadcast("UpdateList")
+	updatePlaylists()
 end
 
 -- Deletes the playlist and updates the screen.
@@ -94,7 +104,7 @@ local function movePage(n)
 
 	-- Moves to next page of steps while a playlist is selected.
 	if detail then
-		if n > 0 then 
+		if n > 0 then
 			curStepsPage = ((curStepsPage+n-1) % maxPlaylistPages + 1)
 		else
 			curStepsPage = ((curStepsPage+n+maxPlaylistPages-1) % maxPlaylistPages+1)
@@ -118,6 +128,13 @@ local function input(event)
 	if event.type == "InputEventType_FirstPress" then
 		if event.button == "Back" or event.button == "Start" then
 			SCREENMAN:GetTopScreen():Cancel()
+		end
+
+		if event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			movePage(-1)
+		end
+		if event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			movePage(1)
 		end
 
 		if event.button == "MenuLeft" then
@@ -151,6 +168,12 @@ local function playlistInfo()
 		ShowPlaylistDetailMessageCommand = function(self, params)
 			playlist = params.playlist
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+		end,
+		HidePlaylistDetailMessageCommand = function(self)
+			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+		end,
+		DisplayAllMessageCommand = function(self)
+			updatePlaylists()
 		end
 	}
 
@@ -163,12 +186,12 @@ local function playlistInfo()
 		end
 	}
 
-	t[#t+1] = Def.Quad{
+	t[#t+1] = Def.Sprite {
 		InitCommand = function (self)
-			self:zoomto(256,80)
 			self:xy(frameWidth/2, 50):valign(0)
-			self:diffuse(getMainColor("frame"))
-			self:diffusealpha(0.8)
+			local bnpath = THEME:GetPathG("Common", "fallback banner")
+			self:LoadBackground(bnpath)
+			self:zoomto(256,80)
 		end
 	}
 
@@ -179,7 +202,7 @@ local function playlistInfo()
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		end,
 		SetCommand = function(self)
-			if playlist then
+			if playlist and detail then
 				self:settext(playlist:GetName())
 			else
 				self:settext("No Playlist Selected")
@@ -202,11 +225,11 @@ local function playlistInfo()
 	t[#t+1] = quadButton(6) .. {
 		Name = "Delete Button",
 		InitCommand = function(self)
-			self:xy(frameWidth/2, frameHeight-buttonHeight/2-10)
+			self:xy(frameWidth/2, frameHeight-buttonHeight/2*3-10)
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
 		MouseDownCommand = function(self)
-			if not playlist then
+			if not playlist or not detail then
 				return
 			end
 
@@ -218,7 +241,7 @@ local function playlistInfo()
 			self:diffusealpha(0.8)
 		end,
 		SetCommand = function(self)
-			if playlist then
+			if playlist and detail then
 				self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
@@ -228,13 +251,14 @@ local function playlistInfo()
 
 	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand  = function(self)
-			self:xy(frameWidth/2, frameHeight-buttonHeight/2-10)
+			self:xy(frameWidth/2, frameHeight-buttonHeight/2*3-10)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Delete Playlist")
 		end
 	}
 
+	--[[
 	t[#t+1] = quadButton(6) .. {
 		Name = "Rename Button",
 		InitCommand = function(self)
@@ -242,7 +266,8 @@ local function playlistInfo()
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
 		MouseDownCommand = function(self)
-			if not playlist then
+			-- force this to do nothing for now since renaming doesnt exist
+			if true or not playlist or not detail then
 				return
 			end
 			self:finishtweening()
@@ -251,11 +276,11 @@ local function playlistInfo()
 			self:diffusealpha(0.8)
 		end,
 		SetCommand = function(self)
-			if playlist then
-				self:diffuse(color(colorConfig:get_data().main.warning)):diffusealpha(0.8)
-			else
+			--if playlist and detail then
+				--self:diffuse(color(colorConfig:get_data().main.warning)):diffusealpha(0.8)
+			--else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
-			end
+			--end
 		end
 	}
 
@@ -266,20 +291,21 @@ local function playlistInfo()
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Rename Playlist")
 		end
-	}
+	}]]
 
 	t[#t+1] = quadButton(6) .. {
 		Name = "Add Button",
 		InitCommand = function(self)
-			self:xy(frameWidth/2, frameHeight-buttonHeight/2*5-10*3)
+			self:xy(frameWidth/2, frameHeight-buttonHeight/2*5-10*2)
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
 		MouseDownCommand = function(self)
-			if not playlist then
+			if not playlist or not detail then
 				return
 			end
 
 			playlist:AddChart(steps:GetChartKey())
+			chartlist = playlist:GetAllSteps()
 			MESSAGEMAN:Broadcast("UpdateStepsList")
 
 			self:finishtweening()
@@ -288,7 +314,7 @@ local function playlistInfo()
 			self:diffusealpha(0.8)
 		end,
 		SetCommand = function(self)
-			if playlist then
+			if playlist and detail then
 				self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
@@ -298,21 +324,21 @@ local function playlistInfo()
 
 	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand  = function(self)
-			self:xy(frameWidth/2, frameHeight-buttonHeight/2*5-10*3)
+			self:xy(frameWidth/2, frameHeight-buttonHeight/2*5-10*2)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-			self:settext("Add to Playlist")
+			self:settext("Add Current Song to Playlist")
 		end
 	}
 
 	t[#t+1] = quadButton(6) .. {
 		Name = "Play Button",
 		InitCommand = function(self)
-			self:xy(frameWidth/2, frameHeight-buttonHeight/2*7-10*4)
+			self:xy(frameWidth/2, frameHeight-buttonHeight/2*7-10*3)
 			self:zoomto(buttonWidth, buttonHeight)
 		end,
 		MouseDownCommand = function(self)
-			if not playlist or not playlist:IsPlayable() then
+			if not playlist or not playlist:IsPlayable() or not detail then
 				return
 			end
 
@@ -327,7 +353,7 @@ local function playlistInfo()
 			self:playcommand("Set")
 		end,
 		SetCommand = function(self)
-			if playlist and playlist:IsPlayable() then
+			if playlist and playlist:IsPlayable() and detail then
 				self:diffuse(color(colorConfig:get_data().main.positive)):diffusealpha(0.8)
 			else
 				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
@@ -337,7 +363,7 @@ local function playlistInfo()
 
 	t[#t+1] = LoadFont("Common Bold")..{
 		InitCommand  = function(self)
-			self:xy(frameWidth/2, frameHeight-buttonHeight/2*7-10*4)
+			self:xy(frameWidth/2, frameHeight-buttonHeight/2*7-10*3)
 			self:zoom(0.4)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 			self:settext("Play Playlist")
@@ -350,7 +376,7 @@ end
 -- Displays available playlists
 local function playlistList()
 
-	local frameWidth = 430
+	local frameWidth = capWideScale(300, 430)
 	local frameHeight = SCREEN_HEIGHT - 60
 	local itemWidth = frameWidth-30
 	local itemHeight = 25
@@ -418,6 +444,7 @@ local function playlistList()
 			end,
 			UpdateStepsListMessageCommand = function(self)
 				if playlist then
+					playlistIndex = (curPage-1)*maxItems+i
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 				end
 			end
@@ -437,6 +464,12 @@ local function playlistList()
 				if params.button == "DeviceButton_left mouse button" then
 					if not detail and playlist then
 						detail = true
+						chartlist = playlist:GetAllSteps()
+						stepslist = {}
+						local keylist = playlist:GetChartkeys()
+						for j = 1, #keylist do
+							stepslist[j] = SONGMAN:GetStepsByChartKey(keylist[j])
+						end
 						MESSAGEMAN:Broadcast("ShowPlaylistDetail", {playlist = playlist, playlistIndex = playlistIndex, index = i})
 					end
 
@@ -525,6 +558,7 @@ local function playlistList()
 			end
 		}
 
+		--[[ --kind of redundant
 		t[#t+1] = quadButton(7) .. {
 			Name = "Add",
 			InitCommand = function(self)
@@ -559,6 +593,7 @@ local function playlistList()
 				self:settextf("Add")
 			end
 		}
+		]]
 
 		return t
 	end
@@ -591,16 +626,30 @@ local function playlistList()
 		Name = "Add Button",
 		InitCommand = function(self)
 			self:xy(frameWidth-50-10, itemY - 30)
-			self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
 			self:zoomto(100, 20)
+			self:playcommand("Set")
 		end,
 		MouseDownCommand = function(self)
 			-- Doesn't work yet outside of ScreenSelectMusic apparently.
+			if detail then return end
 			addPlaylist()
 			self:finishtweening()
 			self:diffusealpha(1)
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
+		end,
+		SetCommand = function(self)
+			if detail then
+				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+			else
+				self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
+			end
+		end,
+		HidePlaylistDetailMessageCommand = function(self)
+			self:playcommand("Set")
+		end,
+		ShowPlaylistDetailMessageCommand = function(self)
+			self:playcommand("Set")
 		end
 	}
 
@@ -624,7 +673,7 @@ end
 -- Displays the steps when a playlist is clicked
 local function playlistStepsList()
 
-	local frameWidth = 430
+	local frameWidth = capWideScale(300, 430)
 	local itemWidth = frameWidth-30
 	local itemHeight = 25
 
@@ -632,6 +681,7 @@ local function playlistStepsList()
 	local itemY = 70+itemHeight/2
 	local itemYSpacing = 5
 	local itemCount = maxItems-1
+	local selectedStepsIndex = -1 -- -1 for no selection
 
 	local function item(i)
 		local song
@@ -642,6 +692,7 @@ local function playlistStepsList()
 		local stepsIndex = (curStepsPage-1)*itemCount+i-1
 
 		local t = Def.ActorFrame{
+			Name = "StepsItem"..i,
 			InitCommand = function(self)
 				self:diffusealpha(0)
 				self:xy(itemX, itemY + (i-1)*(itemHeight+itemYSpacing)-10)
@@ -663,7 +714,7 @@ local function playlistStepsList()
 				hidden = true
 				self:y(SCREEN_HEIGHT*10)
 			end,
-			ShowPlaylistDetailMessageCommand = function(self, params)
+			ShowPlaylistDetailCommand = function(self, params)
 				local key = params.playlist:GetChartkeys()[stepsIndex]
 				if not key then
 					return
@@ -693,8 +744,6 @@ local function playlistStepsList()
 					self:diffusealpha(0)
 					self:queuecommand("Hide")
 					return
-				elseif steps and key == steps:GetChartKey() then
-					return
 				end
 
 				song = SONGMAN:GetSongByChartKey(key)
@@ -702,6 +751,11 @@ local function playlistStepsList()
 
 				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 				self:playcommand("Show")
+			end,
+			SetStepsListMessageCommand = function(self)
+				local key = playlist:GetChartkeys()[stepsIndex]
+				if not key then return end
+				self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 			end
 		}
 
@@ -714,11 +768,18 @@ local function playlistStepsList()
 			MouseDownCommand = function(self)
 				self:finishtweening()
 				self:diffusealpha(0.4)
-				self:smooth(0.3)
-				self:diffusealpha(0.2)
+				selectedStepsIndex = stepsIndex
+				MESSAGEMAN:Broadcast("MadeStepsSelection")
 			end,
 			SetCommand = function(self)
-				self:diffusealpha(0.2)
+				if selectedStepsIndex == stepsIndex then
+					self:diffusealpha(0.4)
+				else
+					self:diffusealpha(0.2)
+				end
+			end,
+			MadeStepsSelectionMessageCommand = function(self)
+				self:playcommand("Set")
 			end
 		}
 
@@ -752,7 +813,7 @@ local function playlistStepsList()
 			end,
 			SetCommand = function(self)
 				if steps then
-					local msd = steps:GetMSD(1, 1)
+					local msd = steps:GetMSD(chartlist[stepsIndex]:GetRate(), 1)
 					self:settextf("%5.2f", msd)
 					self:diffuse(getMSDColor(msd))
 				else
@@ -767,22 +828,20 @@ local function playlistStepsList()
 				self:xy(40,-6):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.4)
+				self:maxwidth((itemWidth - 40 - 10-60 - 40/2 - 10 - 20) / 0.4)
 			end,
 			SetCommand = function(self)
-				if song then
-					self:settextf("%s",song:GetMainTitle())
-				else
-					self:settext("")
-				end
+				self:settext(chartlist[stepsIndex]:GetSongTitle())
 			end
 		}
 
 		t[#t+1] = LoadFont("Common Normal")..{
-			Name = "Size",
+			Name = "Artist",
 			InitCommand  = function(self)
 				self:xy(40,5):halign(0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
+				self:maxwidth((itemWidth - 40 - 10-60 - 40/2 - 10 - 20) / 0.3)
 			end,
 			SetCommand = function(self)
 				if song then
@@ -790,6 +849,24 @@ local function playlistStepsList()
 				else
 					self:settext("//")
 				end
+			end
+		}
+
+		t[#t+1] = LoadFont("Common Normal")..{
+			Name = "Rate",
+			InitCommand  = function(self)
+				self:xy(itemWidth-10-60 - 40/2 - 10, 0):halign(0)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:zoom(0.3)
+				self:halign(1)
+			end,
+			SetCommand = function(self)
+				if not playlist then
+					self:settext("")
+					return
+				end
+				local ratestr = string.format("%.2f", chartlist[stepsIndex]:GetRate()):gsub("%.?0+$", "") .. "x"
+				self:settext(ratestr)
 			end
 		}
 
@@ -813,11 +890,11 @@ local function playlistStepsList()
 				self:diffusealpha(0.8)
 			end,
 			SetCommand = function(self)
-				if song and steps then
-					self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
-				else
-					self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
-				end
+				--if song and steps then
+				self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
+				--else
+				--	self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+				--end
 			end
 		}
 
@@ -837,7 +914,7 @@ local function playlistStepsList()
 				self:zoomto(40, 17)
 			end,
 			MouseDownCommand = function(self)
-				if not playlist or hidden then
+				if not playlist or hidden or not song or not steps then
 					return
 				end
 
@@ -863,7 +940,7 @@ local function playlistStepsList()
 				self:xy(itemWidth-10-60, 0)
 				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 				self:zoom(0.3)
-				self:settextf("Play")
+				self:settextf("Go To")
 			end
 		}
 
@@ -873,12 +950,124 @@ local function playlistStepsList()
 	local t = Def.ActorFrame{
 		ShowPlaylistDetailMessageCommand = function(self, params)
 			playlist = params.playlist
+
 			maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
+			selectedStepsIndex = -1
+			self:RunCommandsOnChildren(function(self) self:playcommand("ShowPlaylistDetail", params) end)
+		end,
+		HidePlaylistDetailMessageCommand = function(self)
+			selectedStepsIndex = -1
 		end,
 		UpdateStepsListMessageCommand = function(self)
+			selectedStepsIndex = -1
 			if playlist then
 				maxPlaylistPages = math.ceil(playlist:GetNumCharts()/(itemCount))
 			end
+		end
+	}
+
+	-- Edit Rate Button up
+	t[#t+1] = quadButton(6) .. {
+		Name = "Edit Rate Up",
+		InitCommand = function(self)
+			self:xy(frameWidth-50-10, itemY + 20 + maxItems * (itemHeight + itemYSpacing))
+			self:halign(0)
+			self:zoomto(50, 20)
+			self:playcommand("Set")
+		end,
+		MouseDownCommand = function(self)
+			if not detail or selectedStepsIndex == -1 then return end
+			self:finishtweening()
+			self:diffusealpha(1)
+			chartlist[selectedStepsIndex]:ChangeRate(0.05)
+			self:smooth(0.3)
+			self:diffusealpha(0.8)
+			MESSAGEMAN:Broadcast("SetStepsList")
+		end,
+		SetCommand = function(self)
+			if detail and selectedStepsIndex ~= -1 then
+				self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
+			else
+				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+			end
+		end,
+		MadeStepsSelectionMessageCommand = function(self)
+			self:playcommand("Set")
+		end,
+		HidePlaylistDetailMessageCommand = function(self)
+			self:playcommand("Set")
+		end,
+		ShowPlaylistDetailMessageCommand = function(self)
+			self:playcommand("Set")
+		end,
+		UpdateStepsListMessageCommand = function(self)
+			self:queuecommand("Set")
+		end
+	}
+	-- Edit Rate Button down
+	t[#t+1] = quadButton(6) .. {
+		Name = "Edit Rate Down",
+		InitCommand = function(self)
+			self:xy(frameWidth-50-10, itemY + 20 + maxItems * (itemHeight + itemYSpacing))
+			self:halign(1)
+			self:zoomto(50, 20)
+			self:playcommand("Set")
+		end,
+		MouseDownCommand = function(self)
+			if not detail or selectedStepsIndex == -1 then return end
+			self:finishtweening()
+			self:diffusealpha(1)
+			chartlist[selectedStepsIndex]:ChangeRate(-0.05)
+			self:smooth(0.3)
+			self:diffusealpha(0.8)
+			MESSAGEMAN:Broadcast("SetStepsList")
+		end,
+		SetCommand = function(self)
+			if detail and selectedStepsIndex ~= -1 then
+				self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
+			else
+				self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0.8)
+			end
+		end,
+		MadeStepsSelectionMessageCommand = function(self)
+			self:playcommand("Set")
+		end,
+		HidePlaylistDetailMessageCommand = function(self)
+			self:playcommand("Set")
+		end,
+		ShowPlaylistDetailMessageCommand = function(self)
+			self:playcommand("Set")
+		end,
+		UpdateStepsListMessageCommand = function(self)
+			self:queuecommand("Set")
+		end
+	}
+
+	-- Edit Rate text
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand  = function(self)
+			self:xy(frameWidth-50-10, itemY + maxItems * (itemHeight + itemYSpacing))
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("Rate")
+		end
+	}
+	-- Edit Rate button text up
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand  = function(self)
+			self:xy(frameWidth-50-10 + 25, itemY + 20 + maxItems * (itemHeight + itemYSpacing))
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("+")
+		end
+	}
+	-- Edit Rate button text up
+	t[#t+1] = LoadFont("Common Bold")..{
+		InitCommand  = function(self)
+			self:xy(frameWidth-50-10 - 25, itemY + 20 + maxItems * (itemHeight + itemYSpacing))
+			self:zoom(0.4)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:settext("-")
 		end
 	}
 

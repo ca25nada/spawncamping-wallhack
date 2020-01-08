@@ -55,6 +55,8 @@ local function input(event)
 				end
 			elseif tonumber(event.char) == 5 then
 				SCREENMAN:AddNewScreenToTop("ScreenDownload")
+			elseif tonumber(event.char) == 6 then
+				SCREENMAN:AddNewScreenToTop("ScreenPlaylistInfo")
 			end
 		end
 
@@ -116,7 +118,7 @@ t[#t+1] = LoadActor("../_mouse", "ScreenSelectMusic")
 -- Group info contains: misc info (tags in this pack?)
 -- Filtering contains: filters, tags
 -- Downloads contains: Downloads, Bundles
-local tab = TAB:new({"Profile", "Song Info", "Group Info", "Filtering", "Downloads"})
+local tab = TAB:new({"Profile", "Song Info", "Group Info", "Filtering", "Downloads", "Playlists"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -147,12 +149,8 @@ t[#t+1] = tab:makeTabActors() .. {
 		elseif params.name == "Filtering" then
 			GHETTOGAMESTATE:setMusicWheel(top)
 			SCREENMAN:AddNewScreenToTop("ScreenFiltering")
-
-		--[[ -- Removed playlists for now. They are broken not just in this theme.
-			elseif params.name == "Playlist" then
+		elseif params.name == "Playlists" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlaylistInfo")
-		]]
-
 		end
 	end
 }

@@ -28,6 +28,8 @@ local tDiff
 local wifey
 local judgect
 local pbtarget
+local curMeanSum = 0
+local curMeanCount = 0
 local positive = getMainColor("positive")
 local highlight = getMainColor("highlight")
 local negative = getMainColor("negative")
@@ -136,6 +138,7 @@ local usingReverse
 local enabledErrorBar = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar
 local enabledTargetTracker = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).TargetTracker
 local enabledDisplayPercent = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).DisplayPercent
+local enabledDisplayMean = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).DisplayMean
 local leaderboardEnabled = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).leaderboardEnabled and DLMAN:IsLoggedIn()
 local isReplay = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerController() == "PlayerController_Replay"
 
@@ -192,9 +195,11 @@ local t =
 			Movable.DeviceButton_t.condition = true
 		end
 
-		lifebar:zoomtowidth(MovableValues.PlayerInfoP1Width)
-		lifebar:zoomtoheight(MovableValues.PlayerInfoP1Height)
-		lifebar:xy(MovableValues.PlayerInfoP1X, MovableValues.PlayerInfoP1Y)
+		if lifebar ~= nil then
+			lifebar:zoomtowidth(MovableValues.PlayerInfoP1Width)
+			lifebar:zoomtoheight(MovableValues.PlayerInfoP1Height)
+			lifebar:xy(MovableValues.PlayerInfoP1X, MovableValues.PlayerInfoP1Y)
+		end
 
 		for i, actor in ipairs(noteColumns) do
 			actor:zoomtowidth(MovableValues.NotefieldWidth)
@@ -211,6 +216,8 @@ local t =
 			Notefield = screen:GetChild("PlayerP1"):GetChild("NoteField")
 			Notefield:addy(MovableValues.NotefieldY * (usingReverse and 1 or -1))
 		end
+		-- force update everything once when entering new song
+		self:playcommand("PracticeModeReset")
 	end,
 	JudgmentMessageCommand = function(self, msg)
 		tDiff = msg.WifeDifferential
@@ -218,6 +225,10 @@ local t =
 		jdgct = msg.Val
 		if msg.Offset ~= nil then
 			dvCur = msg.Offset
+			if not msg.HoldNoteScore then
+				curMeanSum = curMeanSum + dvCur
+				curMeanCount = curMeanCount + 1
+			end
 		else
 			dvCur = nil
 		end
@@ -226,7 +237,17 @@ local t =
 			tDiff = msg.WifePBDifferential
 		end
 		jdgCur = msg.Judgment
-		queuecommand(self, "SpottedOffset")
+		self:playcommand("SpottedOffset")
+	end,
+	PracticeModeResetMessageCommand = function(self)
+		tDiff = 0
+		wifey = 0
+		jdgct = 0
+		dvCur = nil
+		jdgCur = nil
+		curMeanCount = 0
+		curMeanSum = 0
+		self:playcommand("SpottedOffset")
 	end
 }
 --[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -384,6 +405,61 @@ if enabledDisplayPercent then
 end
 
 --[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 					    									**Current Mean**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Displays the current mean for all tap deviations so far.
+]]
+
+local mT =
+	Def.ActorFrame {
+		Name = "DisplayMean",
+		InitCommand = function(self)
+			if (allowedCustomization) then
+				Movable.DeviceButton_n.element = self
+				Movable.DeviceButton_m.element = self
+				Movable.DeviceButton_n.condition = enabledDisplayMean
+				Movable.DeviceButton_m.condition = enabledDisplayMean
+				Movable.DeviceButton_n.Border = self:GetChild("Border")
+				Movable.DeviceButton_m.Border = self:GetChild("Border")
+			end
+			self:zoom(MovableValues.DisplayMeanZoom):x(MovableValues.DisplayMeanX):y(MovableValues.DisplayMeanY)
+		end,
+		Def.Quad {
+			InitCommand = function(self)
+				self:zoomto(60, 13):diffuse(color("0,0,0,0.4")):halign(1):valign(0)
+			end
+		},
+		-- Displays your current mean
+		LoadFont("Common Large") ..
+			{
+				Name = "DisplayMeanText",
+				InitCommand = function(self)
+					self:zoom(0.3):halign(1):valign(0)
+				end,
+				OnCommand = function(self)
+					if allowedCustomization then
+						self:settextf("%5.2fms", -180)
+						setBorderAlignment(self:GetParent():GetChild("Border"), 1, 0)
+						setBorderToText(self:GetParent():GetChild("Border"), self)
+					end
+					self:settextf("%5.2fms", 0)
+				end,
+				SpottedOffsetCommand = function(self)
+					self:settextf("%5.2fms", curMeanSum / curMeanCount)
+				end
+			},
+		MovableBorder(100, 13, 1, 0, 0)
+	}
+
+
+if enabledDisplayMean then
+	t[#t + 1] = mT
+end
+
+
+
+
+--[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 														    	**Player ErrorBar**
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -451,7 +527,7 @@ local e =
 		if enabledErrorBar == 1 then
 			if dvCur ~= nil then
 				currentbar = ((currentbar) % barcount) + 1
-				queuecommand(ingots[currentbar], "UpdateErrorBar") -- Update the next bar in the queue
+				ingots[currentbar]:playcommand("UpdateErrorBar") -- Update the next bar in the queue
 			end
 		end
 	end,
@@ -547,10 +623,28 @@ end
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ]]
 t[#t + 1] =
+Def.ActorFrame {
+	Name = "MusicRate",
+	InitCommand = function(self)
+		if (allowedCustomization) then
+			Movable.DeviceButton_v.element = self
+			Movable.DeviceButton_b.element = self
+			Movable.DeviceButton_v.condition = true
+			Movable.DeviceButton_b.condition = true
+			Movable.DeviceButton_v.Border = self:GetChild("Border")
+			Movable.DeviceButton_b.Border = self:GetChild("Border")
+		end
+		self:xy(MovableValues.MusicRateX, MovableValues.MusicRateY):zoom(MovableValues.MusicRateZoom)
+	end,
 	LoadFont("Common Normal") ..
 	{
 		InitCommand = function(self)
-			self:xy(SCREEN_CENTER_X, SCREEN_BOTTOM - 20):zoom(0.35):settext(getCurRateDisplayString())
+			self:zoom(0.35):settext(getCurRateDisplayString())
+		end,
+		OnCommand = function(self)
+			if allowedCustomization then
+				setBorderToText(self:GetParent():GetChild("Border"), self)
+			end
 		end,
 		SetRateCommand = function(self)
 			self:settext(getCurRateDisplayString())
@@ -561,7 +655,9 @@ t[#t + 1] =
 		CurrentRateChangedMessageCommand = function(self)
 			self:playcommand("SetRate")
 		end
-	}
+	},
+	MovableBorder(100, 13, 1, 0, 0)
+}
 
 --[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 														    	**BPM Display**
@@ -581,7 +677,17 @@ end
 
 t[#t + 1] =
 	Def.ActorFrame {
+	Name = "BPMText",
 	InitCommand = function(self)
+		if (allowedCustomization) then
+			Movable.DeviceButton_x.element = self
+			Movable.DeviceButton_c.element = self
+			Movable.DeviceButton_x.condition = true
+			Movable.DeviceButton_c.condition = true
+			Movable.DeviceButton_x.Border = self:GetChild("Border")
+			Movable.DeviceButton_c.Border = self:GetChild("Border")
+		end
+		self:x(MovableValues.BPMTextX):y(MovableValues.BPMTextY):zoom(MovableValues.BPMTextZoom)
 		BPM = self:GetChild("BPM")
 		if #GAMESTATE:GetCurrentSong():GetTimingData():GetBPMs() > 1 then -- dont bother updating for single bpm files
 			self:SetUpdateFunction(UpdateBPM)
@@ -594,7 +700,12 @@ t[#t + 1] =
 		{
 			Name = "BPM",
 			InitCommand = function(self)
-				self:x(SCREEN_CENTER_X):y(SCREEN_BOTTOM - 30):halign(0.5):zoom(0.40)
+				self:halign(0.5):zoom(0.40)
+			end,
+			OnCommand = function(self)
+				if allowedCustomization then
+					setBorderToText(self:GetParent():GetChild("Border"), self)
+				end
 			end
 		},
 	DoneLoadingNextSongMessageCommand = function(self)
@@ -609,7 +720,11 @@ t[#t + 1] =
 		else
 			BPM:settextf("%5.2f", GetBPS(a) * r)
 		end
-	end
+	end,
+	PracticeModeReloadMessageCommand = function(self)
+		self:playcommand("CurrentRateChanged")
+	end,
+	MovableBorder(40, 13, 1, 0, 0)
 }
 
 --[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -645,18 +760,103 @@ local musicratio = 1
 local wodth = capWideScale(get43size(240), 280)
 local hidth = 40
 local cd
-local bookmarkPosition
+local loopStartPos
+local loopEndPos
+
+local function handleRegionSetting(positionGiven)
+	-- don't allow a negative region 
+	-- internally it is limited to -2
+	-- the start delay is 2 seconds, so limit this to 0
+	if positionGiven < 0 then return end
+
+	-- first time starting a region
+	if not loopStartPos and not loopEndPos then
+		loopStartPos = positionGiven
+		MESSAGEMAN:Broadcast("RegionSet")
+		return
+	end
+
+	-- reset region to bookmark only if double right click
+	if positionGiven == loopStartPos or positionGiven == loopEndPos then
+		loopEndPos = nil
+		loopStartPos = positionGiven
+		MESSAGEMAN:Broadcast("RegionSet")
+		SCREENMAN:GetTopScreen():ResetLoopRegion()
+		return
+	end
+
+	-- measure the difference of the new pos from each end
+	local startDiff = math.abs(positionGiven - loopStartPos)
+	local endDiff = startDiff + 0.1
+	if loopEndPos then
+		endDiff = math.abs(positionGiven - loopEndPos)
+	end
+
+	-- use the diff to figure out which end to move
+
+	-- if there is no end, then you place the end
+	if not loopEndPos then
+		if loopStartPos < positionGiven then
+			loopEndPos = positionGiven
+		elseif loopStartPos > positionGiven then
+			loopEndPos = loopStartPos
+			loopStartPos = positionGiven
+		else
+			-- this should never happen
+			-- but if it does, reset to bookmark
+			loopEndPos = nil
+			loopStartPos = positionGiven
+			MESSAGEMAN:Broadcast("RegionSet")
+			SCREENMAN:GetTopScreen():ResetLoopRegion()
+			return
+		end
+	else
+		-- closer to the start, move the start
+		if startDiff < endDiff then
+			loopStartPos = positionGiven
+		else
+			loopEndPos = positionGiven
+		end
+	end
+	SCREENMAN:GetTopScreen():SetLoopRegion(loopStartPos, loopEndPos)
+	MESSAGEMAN:Broadcast("RegionSet", {loopLength = loopEndPos-loopStartPos})
+end
 
 local function duminput(event)
-	if event.DeviceInput.button == "DeviceButton_backspace" and event.type == "InputEventType_FirstPress" then
-		if bookmarkPosition ~= nil then
-			SCREENMAN:GetTopScreen():SetPreviewNoteFieldMusicPosition(bookmarkPosition)
+	if event.type == "InputEventType_FirstPress" then
+		if event.DeviceInput.button == "DeviceButton_backspace" then
+			if loopStartPos ~= nil then
+				SCREENMAN:GetTopScreen():SetSongPositionAndUnpause(loopStartPos, 1, true)
+			end
+		elseif event.button == "EffectUp" then
+			SCREENMAN:GetTopScreen():AddToRate(0.05)
+		elseif event.button == "EffectDown" then
+			SCREENMAN:GetTopScreen():AddToRate(-0.05)
+		elseif event.button == "Coin" then
+			handleRegionSetting(SCREENMAN:GetTopScreen():GetSongPosition())
+		elseif event.DeviceInput.button == "DeviceButton_mousewheel up" then
+			if GAMESTATE:IsPaused() then
+				local pos = SCREENMAN:GetTopScreen():GetSongPosition()
+				local dir = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse() and 1 or -1
+				local nextpos = pos + dir * 0.05
+				if loopEndPos ~= nil and nextpos >= loopEndPos then
+					handleRegionSetting(nextpos + 1)
+				end
+				SCREENMAN:GetTopScreen():SetSongPosition(nextpos, 0, false)
+			end
+		elseif event.DeviceInput.button == "DeviceButton_mousewheel down" then
+			if GAMESTATE:IsPaused() then
+				local pos = SCREENMAN:GetTopScreen():GetSongPosition()
+				local dir = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse() and 1 or -1
+				local nextpos = pos - dir * 0.05
+				if loopEndPos ~= nil and nextpos >= loopEndPos then
+					handleRegionSetting(nextpos + 1)
+				end
+				SCREENMAN:GetTopScreen():SetSongPosition(nextpos, 0, false)
+			end
 		end
-	elseif event.button == "EffectUp" and event.type == "InputEventType_FirstPress" then
-		SCREENMAN:GetTopScreen():AddToPracticeRate(0.05)
-	elseif event.button == "EffectDown" and event.type == "InputEventType_FirstPress" then
-		SCREENMAN:GetTopScreen():AddToPracticeRate(-0.05)
 	end
+	
 	return false
 end
 
@@ -676,12 +876,7 @@ local pm =
 		if (allowedCustomization) then
 			Movable.DeviceButton_z.element = self
 			Movable.DeviceButton_z.condition = practiceMode
-		--Movable.DeviceButton_z.Border = self:GetChild("Border")
-		--Movable.DeviceButton_x.element = self
-		--Movable.DeviceButton_x.condition = practiceMode
-		--Movable.DeviceButton_x.Border = self:GetChild("Border")
 		end
-		--self:zoomto(MovableValues.PracticeCDGraphWidth, MovableValues.PracticeCDGraphHeight)
 	end,
 	BeginCommand = function(self)
 		musicratio = GAMESTATE:GetCurrentSong():GetLastSecond() / (wodth)
@@ -689,6 +884,9 @@ local pm =
 		cd:GetChild("cdbg"):diffusealpha(0)
 		self:SortByDrawOrder()
 		self:queuecommand("GraphUpdate")
+	end,
+	PracticeModeReloadMessageCommand = function(self)
+		musicratio = GAMESTATE:GetCurrentSong():GetLastSecond() / wodth
 	end,
 	Def.Quad {
 		Name = "BG",
@@ -749,16 +947,20 @@ pm[#pm + 1] =
 		end,
 		MouseDownCommand = function(self, params)
 			if params.button == "DeviceButton_left mouse button" then
-				SCREENMAN:GetTopScreen():SetPreviewNoteFieldMusicPosition(self:GetX() * musicratio)
+				local withCtrl = INPUTFILTER:IsControlPressed()
+				if withCtrl then
+					handleRegionSetting(self:GetX() * musicratio)
+				else
+					SCREENMAN:GetTopScreen():SetSongPosition(self:GetX() * musicratio, 0, false)
+				end
 			elseif params.button == "DeviceButton_right mouse button" then
-				bookmarkPosition = self:GetX() * musicratio
-				self:GetParent():GetChild("BookmarkPos"):queuecommand("Set")
+				handleRegionSetting(self:GetX() * musicratio)
 			end
 		end,
 		MouseRightClickMessageCommand = function(self)
-			if not self:IsOver() then
+			if not isOver(self) then
 				if not (allowedCustomization) then
-					SCREENMAN:GetTopScreen():TogglePracticePause()
+					SCREENMAN:GetTopScreen():TogglePause()
 				end
 			end
 		end
@@ -773,7 +975,27 @@ pm[#pm + 1] =
 	end,
 	SetCommand = function(self)
 		self:visible(true)
-		self:x(bookmarkPosition / musicratio)
+		self:zoomto(2, hidth):diffuse(color(".2,.5,1,1")):halign(0.5)
+		self:x(loopStartPos / musicratio)
+	end,
+	RegionSetMessageCommand = function(self, params)
+		if not params or not params.loopLength then
+			self:playcommand("Set")
+		else
+			self:visible(true)
+			self:x(loopStartPos / musicratio):halign(0)
+			self:zoomto(params.loopLength / musicratio, hidth):diffuse(color(".7,.2,.7,0.5"))
+		end
+	end,
+	CurrentRateChangedMessageCommand = function(self)
+		if not loopEndPos and loopStartPos then
+			self:playcommand("Set")
+		elseif loopEndPos and loopStartPos then
+			self:playcommand("RegionSet", {loopLength = (loopEndPos - loopStartPos)})
+		end
+	end,
+	PracticeModeReloadMessageCommand = function(self)
+		self:playcommand("CurrentRateChanged")
 	end
 }
 

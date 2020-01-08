@@ -26,9 +26,12 @@ local wuab = {} -- time corrected tap notes (?)
 local columns = 4 -- the number of columns because we dont keep track of this i guess
 local finalSecond = GAMESTATE:GetCurrentSong(PLAYER_1):GetLastSecond()
 local td = GAMESTATE:GetCurrentSteps(PLAYER_1):GetTimingData()
+local oddColumns = false
+local middleColumn = 1.5 -- middle column for 4k but accounting for trackvector indexing at 0
 
 local handspecific = false
 local left = false
+local middle = false
 local setWidth = 0
 local setHeight = 0
 local setSong
@@ -77,19 +80,25 @@ local t = Def.ActorFrame{
 			judge = judge + 1
 			tso = tst[judge]
 		elseif params.Name == "ToggleHands" and #ctt > 0 then --super ghetto toggle -mina
-			if not handspecific then
-				handspecific = true
+			if not handspecific then -- moving from none to left 
+				handspecific = true 
 				left = true
-			elseif handspecific and left then
-				left = false
-			elseif handspecific and not left then
+			elseif handspecific and left then -- moving from left to middle 
+				if oddColumns then 
+					middle = true
+				end 
+				left = false 
+			elseif handspecific and middle then -- moving from middle to right 
+				middle = false
+			elseif handspecific and not left then -- moving from right to none 
 				handspecific = false
-			end
+			end 
 		end
 		if params.Name == "ResetJudge" then
 			judge = enabledCustomWindows and 0 or GetTimingDifficulty()
 			tso = tst[GetTimingDifficulty()]
 		end
+		if params.Name ~= "ResetJudge" and params.Name ~= "PrevJudge" and params.Name ~= "NextJudge" and params.Name ~= "ToggleHands" then return end
 		maxOffset = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows.boo or math.max(180, 180 * tso)
 		MESSAGEMAN:Broadcast("JudgeDisplayChanged")
 	end
@@ -142,6 +151,8 @@ local function checkParams(params)
 		ntt = ntt,
 		columns = columns}
 	end
+	oddColumns = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() % 2 ~= 0
+	middleColumn = (GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() - 1) / 2.0
 	return fixedparams
 end
 
@@ -221,10 +232,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:xy(params.width/2, params.height - 10)
 		if ntt ~= nil and #ntt > 0 then
 			if handspecific then
-				if left then -- haha this is backwards you will never know
-					self:settext("Highlighting right hand taps")
-				else
+				if left then
 					self:settext("Highlighting left hand taps")
+				elseif middle then
+					self:settext("Highlighting middle column taps")
+				else
+					self:settext("Highlighting right hand taps")
 				end
 			else
 				self:settext("Down toggles highlights")
@@ -264,19 +277,24 @@ t[#t+1] = Def.ActorMultiVertex{
 				local color =
 					(enabledCustomWindows and judge ~= 0) and customOffsetToJudgeColor(params.dvt[i], customWindow.judgeWindows) or
 					offsetToJudgeColor(params.dvt[i], tst[judge])
+				color[4] = 1 -- force alpha = 1
 
 				local x = fitX(wuab[i]) + params.width / 2
 				local y = fitY(params.dvt[i]) + params.height / 2
 				--local x = (timestamp/songLength) * params.width
 				--local y = (offset/W5Window/2/timingWindowScale) * params.height + (params.height/2)
-				local alpha = 1 -- 1 is the default, 0.3 is the non highlight version
+				local alpha = 1 -- 1 is the default, 0.1 is the non highlight version
 
 				if handspecific and left then
-					if ctt[i] < math.floor(columns / 2) then
+					if ctt[i] >= middleColumn then -- highlighting left
+						alpha = 0.1
+					end
+				elseif handspecific and middle then
+					if ctt[i] ~= middleColumn then -- highlighting middle
 						alpha = 0.1
 					end
 				elseif handspecific then
-					if ctt[i] >= math.floor(columns / 2) then
+					if ctt[i] <= middleColumn then -- highlighting right
 						alpha = 0.1
 					end
 				end

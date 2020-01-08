@@ -49,6 +49,15 @@ local function loadValuesTable()
 	MovableValues.PlayerInfoP1Height = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].PlayerInfoP1Height
 	MovableValues.PracticeCDGraphX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].PracticeCDGraphX
 	MovableValues.PracticeCDGraphY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].PracticeCDGraphY
+	MovableValues.BPMTextX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].BPMTextX
+	MovableValues.BPMTextY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].BPMTextY
+	MovableValues.BPMTextZoom = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].BPMTextZoom
+	MovableValues.MusicRateX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].MusicRateX
+	MovableValues.MusicRateY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].MusicRateY
+	MovableValues.MusicRateZoom = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].MusicRateZoom
+	MovableValues.DisplayMeanX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].DisplayMeanX
+	MovableValues.DisplayMeanY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].DisplayMeanY
+	MovableValues.DisplayMeanZoom = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].DisplayMeanZoom
 
 	if IsUsingWideScreen() then
 		MovableValues.TargetTrackerY = MovableValues.TargetTrackerY + WIDESCREENWHY
@@ -564,6 +573,120 @@ Movable = {
 			inc = 0.01
 		}
 	},
+	DeviceButton_x = {
+		name = "BPMText",
+		textHeader = "BPM Text Position:",
+		element = {},
+		properties = {"X", "Y"},
+		elementTree = "GameplayXYCoordinates",
+		DeviceButton_up = {
+			property = "Y",
+			inc = -5
+		},
+		DeviceButton_down = {
+			property = "Y",
+			inc = 5
+		},
+		DeviceButton_left = {
+			property = "X",
+			inc = -5
+		},
+		DeviceButton_right = {
+			property = "X",
+			inc = 5
+		}
+	},
+	DeviceButton_c = {
+		name = "BPMText",
+		textHeader = "BPM Text Size:",
+		element = {},
+		properties = {"Zoom"},
+		elementTree = "GameplaySizes",
+		DeviceButton_up = {
+			property = "Zoom",
+			inc = 0.01
+		},
+		DeviceButton_down = {
+			property = "Zoom",
+			inc = -0.01
+		}
+	},
+	DeviceButton_v = {
+		name = "MusicRate",
+		textHeader = "Music Rate Position:",
+		element = {},
+		properties = {"X", "Y"},
+		elementTree = "GameplayXYCoordinates",
+		DeviceButton_up = {
+			property = "Y",
+			inc = -5
+		},
+		DeviceButton_down = {
+			property = "Y",
+			inc = 5
+		},
+		DeviceButton_left = {
+			property = "X",
+			inc = -5
+		},
+		DeviceButton_right = {
+			property = "X",
+			inc = 5
+		}
+	},
+	DeviceButton_b = {
+		name = "MusicRate",
+		textHeader = "Music Rate Size:",
+		element = {},
+		properties = {"Zoom"},
+		elementTree = "GameplaySizes",
+		DeviceButton_up = {
+			property = "Zoom",
+			inc = 0.01
+		},
+		DeviceButton_down = {
+			property = "Zoom",
+			inc = -0.01
+		}
+	},
+	DeviceButton_n = {
+		name = "DisplayMean",
+		textHeader = "Current Mean Position:",
+		element = {},
+		properties = {"X", "Y"},
+		elementTree = "GameplayXYCoordinates",
+		DeviceButton_up = {
+			property = "Y",
+			inc = -5
+		},
+		DeviceButton_down = {
+			property = "Y",
+			inc = 5
+		},
+		DeviceButton_left = {
+			property = "X",
+			inc = -5
+		},
+		DeviceButton_right = {
+			property = "X",
+			inc = 5
+		}
+	},
+	DeviceButton_m = {
+		name = "DisplayMean",
+		textHeader = "Current Mean Size:",
+		element = {},
+		properties = {"Zoom"},
+		elementTree = "GameplaySizes",
+		DeviceButton_up = {
+			property = "Zoom",
+			inc = 0.01
+		},
+		DeviceButton_down = {
+			property = "Zoom",
+			inc = -0.01
+		}
+	},
 	DeviceButton_z = {
 		name = "PracticeCDGraph",
 		textHeader = "Chord Density Graph Position:",
@@ -687,7 +810,10 @@ function MovableInput(event)
 			end
 			playerConfig:get_data(pn_to_profile_slot(PLAYER_1))[current.elementTree][keymode][prop] = newVal
 			playerConfig:set_dirty(pn_to_profile_slot(PLAYER_1))
-			playerConfig:save(pn_to_profile_slot(PLAYER_1))
+			-- commented this to save I/O time and reduce lag
+			-- just make sure to call this somewhere else to make sure stuff saves.
+			-- (like when the screen changes....)
+			--playerConfig:save(pn_to_profile_slot(PLAYER_1))
 		end
 	end
 	return false

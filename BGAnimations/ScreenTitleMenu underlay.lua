@@ -36,15 +36,6 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:xy(5,16):zoom(0.3):valign(0):halign(0)
 	end,
 	OnCommand=function(self)
-		self:settext(string.format("%s %s",VersionDate(),VersionTime()))
-	end
-}
-
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand=function(self)
-		self:xy(5,25):zoom(0.3):valign(0):halign(0)
-	end,
-	OnCommand=function(self)
 		self:settext(string.format("%s Songs in %s Groups",SONGMAN:GetNumSongs(),SONGMAN:GetNumSongGroups()))
 	end
 }

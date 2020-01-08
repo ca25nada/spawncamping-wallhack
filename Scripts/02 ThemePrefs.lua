@@ -712,6 +712,72 @@ function EvalScoreboard()
 	return t
 end
 
+function SimpleEval()
+	local t = {
+		Name = "SimpleEval",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = {"Classic","Simple"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.SimpleEval
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.SimpleEval = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+			THEME:ReloadMetrics()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+
+function ShowScoreboardOnSimple()
+	local t = {
+		Name = "ShowScoreboardOnSimple",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = true,
+		ExportOnChange = true,
+		Choices = {"Off","On"},
+		LoadSelections = function(self, list, pn)
+			local pref = themeConfig:get_data().global.ShowScoreboardOnSimple
+			if pref then
+				list[2] = true
+			else 
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			if list[1] then
+				value = false
+			else
+				value = true
+			end
+			themeConfig:get_data().global.ShowScoreboardOnSimple = value
+			themeConfig:set_dirty()
+			themeConfig:save()
+			THEME:ReloadMetrics()
+		end
+	}
+	setmetatable( t, t )
+	return t
+end
+
 function ProgressBar()
 	local t = {
 		Name = "ProgressBar",
@@ -860,6 +926,34 @@ function DisplayPercent()
 			local value
 			value = list[2]
 			playerConfig:get_data(pn_to_profile_slot(pn)).DisplayPercent = value
+			playerConfig:set_dirty(pn_to_profile_slot(pn))
+			playerConfig:save(pn_to_profile_slot(pn))
+		end
+	}
+	setmetatable(t, t)
+	return t
+end
+
+function DisplayMean()
+	local t = {
+		Name = "DisplayMean",
+		LayoutType = "ShowAllInRow",
+		SelectType = "SelectOne",
+		OneChoiceForAllPlayers = false,
+		ExportOnChange = true,
+		Choices = {THEME:GetString("OptionNames", "Off"), THEME:GetString("OptionNames", "On")},
+		LoadSelections = function(self, list, pn)
+			local pref = playerConfig:get_data(pn_to_profile_slot(pn)).DisplayMean
+			if pref then
+				list[2] = true
+			else
+				list[1] = true
+			end
+		end,
+		SaveSelections = function(self, list, pn)
+			local value
+			value = list[2]
+			playerConfig:get_data(pn_to_profile_slot(pn)).DisplayMean = value
 			playerConfig:set_dirty(pn_to_profile_slot(pn))
 			playerConfig:save(pn_to_profile_slot(pn))
 		end

@@ -410,7 +410,8 @@ local Phrases = {
     "hey what the fuck guys", -- a tim review on whitey's ice
     "who is minty?", -- dd
     "My mother may not have a normal brain.", -- dawnx's defense
-    ":ok_mine:" -- sm6
+    ":ok_mine:", -- sm6
+    "man i just played through this. it's like everyone's turned into nvlm_zk. it's all 24th and 32nd stream bursts that, alot of times, don't even go with the music. there wasn't rly any type of style/personality i picked up on from anyone." -- minty 3 ffr thread
 
 }
 

@@ -145,7 +145,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+100):zoom(0.4)
 	end,
 	OnCommand=function(self)
-		self:settextf("%s \"%s - %s\".\n\n%s",THEME:GetString("ScreenColorEdit","Description1"),selected[1],selected[2],THEME:GetString("ScreenColorEdit","Description2"))
+		self:settextf("%s \"%s - %s\".\n\n%s",THEME:GetString("ScreenColorEdit","Description1"),THEME:GetString("ScreenColorChange", selected[1]),THEME:GetString("ScreenColorChange", selected[2]),THEME:GetString("ScreenColorEdit","Description2"))
 		self:diffuse(color("#FFFFFF"))
 	end
 }

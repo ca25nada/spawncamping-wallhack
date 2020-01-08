@@ -18,6 +18,10 @@ return Def.ActorFrame {
 		SCREENMAN:GetTopScreen():AddInputCallback(MovableInput)
 		self:SetUpdateFunction(highlight)
 	end,
+	OffCommand = function(self)
+		-- save CustomizeGameplay changes when leaving the screen
+		playerConfig:save(pn_to_profile_slot(PLAYER_1))
+	end,
 	Def.BitmapText {
 		Name = "message",
 		Font = "Common Normal",
@@ -30,7 +34,7 @@ return Def.ActorFrame {
 		Name = "Instructions",
 		Font = "Common Normal",
 		InitCommand = function(self)
-			self:horizalign(left):vertalign(top):xy(SCREEN_WIDTH - 240, 20):zoom(.45):visible(true)
+			self:horizalign(left):vertalign(top):xy(SCREEN_WIDTH - 240, 20):zoom(.4):visible(true)
 		end,
 		HighlightCommand = function(self)
 			highlightIfOver(self)
@@ -63,9 +67,17 @@ return Def.ActorFrame {
 				--"h: Replay Buttons Spacing",
 				"j: Player Info Position",
 				"k: Player Info Size",
+				"l: Lifebar Rotation",
+				"x: BPM Text Position",
+				"c: BPM Text Size",
+				"v: Music Rate Text Position",
+				"b: Music Rate Text Size",
+				"n: Current Mean Text Position",
+				"m: Current Mean Text Size"
 			}
 			if playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCover ~= 0 then
-				table.insert(text, "/: Lane Cover Height")
+				local selectStr = THEME:GetString("GameButton", "Select")
+				table.insert(text, selectStr..": Lane Cover Height")
 			end
 			if isPractice then
 				table.insert(text, "z: Density Graph Position")
