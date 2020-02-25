@@ -12,9 +12,10 @@ WifeTiers = {
 	Grade_Tier10 = 0.93, 
 	Grade_Tier11 = 0.9, 
 	Grade_Tier12 = 0.85,
-	Grade_Tier14 = 0.8,
-	Grade_Tier15 = 0.7,
-	Grade_Tier16 = 0.6,
+	Grade_Tier13 = 0.8,
+	Grade_Tier14 = 0.7,
+	Grade_Tier15 = 0.6,
+	Grade_Tier16 = 0.5,
 }
 
 WifeTierList = {"Grade_Tier01","Grade_Tier02","Grade_Tier03","Grade_Tier04","Grade_Tier05","Grade_Tier06","Grade_Tier07","Grade_Tier08","Grade_Tier09","Grade_Tier10","Grade_Tier11","Grade_Tier12","Grade_Tier13","Grade_Tier14","Grade_Tier15","Grade_Tier16"}
