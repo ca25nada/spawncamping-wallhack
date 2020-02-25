@@ -30,6 +30,7 @@ local showScoreboardOnSimple = themeConfig:get_data().global.ShowScoreboardOnSim
 local offsetY2 = 0
 local offsetWidth2 = 0
 local offsetHeight2 = 0
+local offsetisLocal
 
 local function scroller(event)
 	if event.type == "InputEventType_FirstPress" then
@@ -1280,7 +1281,6 @@ local function oldEvalStuff()
 
 	local lbActor
 	local offsetScoreID
-	local offsetisLocal
 	local currentCountry = "Global"
 	local scoresPerPage = 5
 	local maxPages = math.ceil(#hsTable/scoresPerPage)
