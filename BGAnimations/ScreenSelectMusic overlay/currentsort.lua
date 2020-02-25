@@ -14,6 +14,7 @@ local wheel
 local song
 local released = false
 local goneOff = false
+local instantSearch = themeConfig:get_data().global.InstantSearch
 
 local sortTable = {
 	SortOrder_Preferred 			= 'Preferred',
@@ -79,6 +80,9 @@ local function searchInput(event)
 			MESSAGEMAN:Broadcast("EndSearch")
 
 		elseif event.button == "Start" then
+			if not instantSearch then
+				wheel:SongSearch(searchstring)
+			end
 			MESSAGEMAN:Broadcast("EndSearch")
 
 		elseif event.button == "MenuLeft" then
@@ -115,7 +119,11 @@ local function searchInput(event)
 			end
 		end
 		if lastsearchstring ~= searchstring then
-			wheel:SongSearch(searchstring)
+			if instantSearch then
+				wheel:SongSearch(searchstring)
+			else
+				sortText:playcommand("SetSortOrder")
+			end
 			lastsearchstring = searchstring
 			GHETTOGAMESTATE:setMusicSearch(searchstring)
 		end
@@ -207,6 +215,7 @@ t[#t+1] = LoadFont("Common Normal") .. {
 		self:zoom(0.45)
 		self:diffuse(color(colorConfig:get_data().main.headerFrameText))
 		self:maxwidth((frameWidth-40)/0.45)
+		sortText = self
 	end,
 	SortOrderChangedMessageCommand = function(self)
 		self:queuecommand("SetSortOrder")

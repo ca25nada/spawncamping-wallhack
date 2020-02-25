@@ -10,7 +10,7 @@ local frameY = 150
 local frameWidth = SCREEN_CENTER_X-WideScale(get43size(40),40)
 local frameHeight = 300
 local rate = getCurRate()
-local judge = GetTimingDifficulty()
+local judge = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
 local offsetIndex
 
 -- Reset preview music starting point since song was finished.
@@ -30,6 +30,7 @@ local showScoreboardOnSimple = themeConfig:get_data().global.ShowScoreboardOnSim
 local offsetY2 = 0
 local offsetWidth2 = 0
 local offsetHeight2 = 0
+local offsetisLocal
 
 local function scroller(event)
 	if event.type == "InputEventType_FirstPress" then
@@ -96,7 +97,7 @@ local function oldEvalStuff()
 				rescoredPercentage = getRescoredWifeJudge(dvt, judge, totalHolds - holdsHit, minesHit, totalTaps)
 			end
 			if params.Name == "ResetJudge" then
-				judge = enabledCustomWindows and 0 or GetTimingDifficulty()
+				judge = enabledCustomWindows and 0 or (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
 				self:GetParent():playcommand("ResetJudge")
 			elseif params.Name ~= "ToggleHands" then
 				self:GetParent():playcommand("SetJudge", params)
@@ -687,10 +688,15 @@ local function oldEvalStuff()
 				self:playcommand("Set")
 			end,
 			SetCommand = function(self)
-				self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
+				if PREFSMAN:GetPreference("SortBySSRNormPercent") then
+					self:settextf("%s (J4)", THEME:GetString("ScreenEvaluation", "CategoryClearType"))
+				else
+					self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
+				end
 			end,
 			SetJudgeCommand = function(self)
-				self:settextf("%s (J%d)", THEME:GetString("ScreenEvaluation", "CategoryClearType"), GetTimingDifficulty())
+				local jdg = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
+				self:settextf("%s (J%d)", THEME:GetString("ScreenEvaluation", "CategoryClearType"), jdg)
 			end,
 			ResetJudgeCommand = function(self)
 				self:playcommand("Set")
@@ -767,10 +773,15 @@ local function oldEvalStuff()
 				self:playcommand("Set")
 			end,
 			SetCommand = function(self)
-				self:settextf("%s - %s",THEME:GetString("ScreenEvaluation","CategoryScore"),getScoreTypeText(1))
+				if PREFSMAN:GetPreference("SortBySSRNormPercent") then
+					self:settextf("%s - %s J4", THEME:GetString("ScreenEvaluation","CategoryScore"), getScoreTypeText(1))
+				else
+					self:settextf("%s - %s", THEME:GetString("ScreenEvaluation","CategoryScore"), getScoreTypeText(1))
+				end
 			end,
 			SetJudgeCommand = function(self)
-				self:settextf("%s - %s J%d", THEME:GetString("ScreenEvaluation", "CategoryScore"), getScoreTypeText(1), GetTimingDifficulty())
+				local jdg = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
+				self:settextf("%s - %s J%d", THEME:GetString("ScreenEvaluation", "CategoryScore"), getScoreTypeText(1), jdg)
 			end,
 			ResetJudgeCommand = function(self)
 				self:playcommand("Set")
@@ -1280,7 +1291,6 @@ local function oldEvalStuff()
 
 	local lbActor
 	local offsetScoreID
-	local offsetisLocal
 	local currentCountry = "Global"
 	local scoresPerPage = 5
 	local maxPages = math.ceil(#hsTable/scoresPerPage)
