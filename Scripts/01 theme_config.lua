@@ -21,7 +21,8 @@ local defaultConfig = {
 		EvalScoreboard = true,
 		SimpleEval = true, -- false means use classic eval
 		ShowScoreboardOnSimple = false,
-		PlayerInfoType = true -- true is full, false is minimal (lifebar only)
+		PlayerInfoType = true, -- true is full, false is minimal (lifebar only)
+		InstantSearch = true, -- true = search per press, false = search on enter button
 	},
 	NPSDisplay = {
 		DynamicWindow = false, -- unused
