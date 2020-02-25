@@ -7,7 +7,7 @@ local dotHeight = 2
 -- shamelessly lifted straight from Til Death in Etterna .64:
 local judges = {"marv", "perf", "great", "good", "boo", "miss"}
 local tst = ms.JudgeScalers
-local judge = GetTimingDifficulty()
+local judge = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
 local tso = tst[judge]
 
 local enabledCustomWindows = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomEvaluationWindowTimings
@@ -95,8 +95,8 @@ local t = Def.ActorFrame{
 			end 
 		end
 		if params.Name == "ResetJudge" then
-			judge = enabledCustomWindows and 0 or GetTimingDifficulty()
-			tso = tst[GetTimingDifficulty()]
+			judge = enabledCustomWindows and 0 or (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
+			tso = tst[(PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())]
 		end
 		if params.Name ~= "ResetJudge" and params.Name ~= "PrevJudge" and params.Name ~= "NextJudge" and params.Name ~= "ToggleHands" then return end
 		maxOffset = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows.boo or math.max(180, 180 * tso)
