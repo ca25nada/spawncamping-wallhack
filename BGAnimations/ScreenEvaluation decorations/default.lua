@@ -480,8 +480,15 @@ local function oldEvalStuff()
 				self:bouncy(0.3)
 				self:y(500)
 			end,
+			ResetJudgeCommand = function(self)
+				recountCBs()
+			end,
 			SetJudgeCommand = function(self)
 				recountCBs()
+			end,
+			ForceUpdateAllInfoMessageCommand = function(self)
+				recountCBs()
+				self:RunCommandsOnChildren(function(self) self:queuecommand("SetJudge") end)
 			end
 		}
 
@@ -2410,6 +2417,49 @@ local function newEvalStuff()
 	local score = pss:GetHighScore()
 	local scoreIndex = getHighScoreIndex(hsTable, score)
 
+	-- stolen from earlier in this same file without any shame
+	-- stolen from Til Death without any shame
+	local tracks = pss:GetTrackVector()
+	local devianceTable = pss:GetOffsetVector()
+	local cbl = 0
+	local cbr = 0
+	local cbm = 0
+
+	local tst = ms.JudgeScalers
+	local tso = tst[judge]
+	if enabledCustomWindows then
+		tso = 1
+	end
+	local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
+	local middleCol = ncol / 2
+	local function recountCBs()
+		cbl = 0
+		cbr = 0
+		cbm = 0
+		for i = 1, #devianceTable do
+			if tracks[i] then
+				if math.abs(devianceTable[i]) > tso * 90 then
+					if tracks[i] < middleCol then
+						cbl = cbl + 1
+					elseif tracks[i] > middleCol then
+						cbr = cbr + 1
+					else
+						cbm = cbm + 1
+					end
+				end
+			end
+		end
+	end
+	recountCBs()
+
+	local statInfo = {
+		mean = wifeMean(devianceTable),
+		absmean = wifeAbsMean(devianceTable),
+		sd = wifeSd(devianceTable),
+	}
+
+	local showMiddle = middleCol == math.floor(middleCol)
+
 	local function highlightSD(self)
 		self:GetChild("Mean"):queuecommand("Highlight")
 	end
@@ -2433,10 +2483,21 @@ local function newEvalStuff()
 		end,
 		OffsetPlotModificationMessageCommand = function(self, params)
 			if params.Name == "ResetJudge" then
-				self:queuecommand("ResetJudge")
+				if PREFSMAN:GetPreference("SortBySSRNormPercent") then
+					judge = 4
+					rescoredPercentage = score:GetWifeScore() * 100
+					self:queuecommand("SetJudge", params)
+				else
+					recountCBs()
+					self:queuecommand("ResetJudge")
+				end
 			elseif params.Name ~= "ToggleHands" then
 				self:queuecommand("SetJudge", params)
 			end
+		end,
+		ForceUpdateAllInfoMessageCommand = function(self)
+			recountCBs()
+			self:RunCommandsOnChildren(function(self) self:queuecommand("SetJudge") end)
 		end
 	}
 
@@ -2593,49 +2654,6 @@ local function newEvalStuff()
 		end
 		return t
 	end
-
-	-- stolen from earlier in this same file without any shame
-	-- stolen from Til Death without any shame
-	local tracks = pss:GetTrackVector()
-	local devianceTable = pss:GetOffsetVector()
-	local cbl = 0
-	local cbr = 0
-	local cbm = 0
-
-	local tst = ms.JudgeScalers
-	local tso = tst[judge]
-	if enabledCustomWindows then
-		tso = 1
-	end
-	local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
-	local middleCol = ncol / 2
-	local function recountCBs()
-		cbl = 0
-		cbr = 0
-		cbm = 0
-		for i = 1, #devianceTable do
-			if tracks[i] then
-				if math.abs(devianceTable[i]) > tso * 90 then
-					if tracks[i] < middleCol then
-						cbl = cbl + 1
-					elseif tracks[i] > middleCol then
-						cbr = cbr + 1
-					else
-						cbm = cbm + 1
-					end
-				end
-			end
-		end
-	end
-	recountCBs()
-
-	local statInfo = {
-		mean = wifeMean(devianceTable),
-		absmean = wifeAbsMean(devianceTable),
-		sd = wifeSd(devianceTable),
-	}
-
-	local showMiddle = middleCol == math.floor(middleCol)
 
 	t[#t+1] = Def.ActorFrame {
 		Name = "The Board",
@@ -3072,6 +3090,14 @@ t[#t+1] = offsetStuff()
 t[#t+1] = Def.ActorFrame {
 	OnCommand = function(self)
 		SCREENMAN:GetTopScreen():AddInputCallback(scroller)
+		if PREFSMAN:GetPreference("SortBySSRNormPercent") then
+			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+			local curScore = pss:GetHighScore()
+			judge = 4
+			
+			rescoredPercentage = curScore:GetWifeScore() * 100
+			MESSAGEMAN:Broadcast("ForceUpdateAllInfo")
+		end
 	end
 }
 
