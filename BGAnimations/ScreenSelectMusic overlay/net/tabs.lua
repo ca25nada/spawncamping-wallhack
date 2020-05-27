@@ -116,7 +116,8 @@ t[#t+1] = LoadActor("../../_mouse", "ScreenSelectMusic")
 -- Group info contains: misc info (tags in this pack?)
 -- Filtering contains: filters, tags
 -- Downloads contains: Downloads, Bundles
-local tab = TAB:new({"Profile", "Song Info", "Group Info", "Filtering", "Downloads"})
+-- Random Song: left click for any song, right click for just a song in this pack
+local tab = TAB:new({"Profile", "Song Info", "Group Info", "Filtering", "Downloads", "Random Song"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2 - 17)
@@ -128,7 +129,9 @@ t[#t+1] = tab:makeTabActors() .. {
 	end,
 	TabPressedMessageCommand = function(self, params)
 		if params.params.button ~= "DeviceButton_left mouse button" then
-			return
+			if params.name ~= "Random Song" then
+				return
+			end
 		end
 		if inSongSearch then
 			MESSAGEMAN:Broadcast("EndSearch")
@@ -147,12 +150,28 @@ t[#t+1] = tab:makeTabActors() .. {
 		elseif params.name == "Filtering" then
 			GHETTOGAMESTATE:setMusicWheel(top)
 			SCREENMAN:AddNewScreenToTop("ScreenFiltering")
-
 		--[[ -- No playlists in multiplayer.
 			elseif params.name == "Playlist" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlaylistInfo")
 		]]
-
+		elseif params.name == "Random Song" then
+			if params.params.button == "DeviceButton_left mouse button" then
+				-- random all songs
+				local s = wheel:GetSongs()
+				if #s == 0 then return end
+				local rsong = s[math.random(#s)]
+				wheel:SelectSong(rsong)
+			elseif params.params.button == "DeviceButton_right mouse button" then
+				-- random pack songs
+				local song = GAMESTATE:GetCurrentSong()
+				if GAMESTATE:GetSortOrder() == "SortOrder_Group" and song ~= nil then
+					local group = song:GetGroupName()
+					local s = wheel:GetSongsInGroup(group)
+					if #s == 0 then return end
+					local rsong = s[math.random(#s)]
+					wheel:SelectSong(rsong)
+				end
+			end
 		end
 	end
 }
