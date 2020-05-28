@@ -585,8 +585,13 @@ local function generalFrame(pn)
 		    self:halign(0)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end,
-		BeginCommand = function(self)
-			self:settext(getScoreTypeText(1))
+		BeginCommand = function(self) self:queuecommand("Set") end,
+		SetCommand = function(self)
+			local version = 3
+			if topScore[pn] ~= nil then
+				version = topScore[pn]:GetWifeVers()
+			end
+			self:settextf("Wife%d", version)
 		end
 	}
 
