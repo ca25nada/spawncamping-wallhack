@@ -753,7 +753,7 @@ local function scoreList()
 				self:diffusealpha(0.2)
 				self:zoomto(scoreItemWidth, scoreItemHeight)
 			end,
-			MouseDownCommand = function(self params)
+			MouseDownCommand = function(self, params)
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
