@@ -11,6 +11,12 @@ local judge = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTiming
 local tso = tst[judge]
 local maxOffset = math.max(180, 180 * tso)
 
+local function clampJudge()
+	if judge < 4 then judge = 4 end
+	if judge > 9 then judge = 9 end
+end
+clampJudge()
+
 local dvt = {} -- offset vector
 local nrt = {} -- noterow vector
 local ctt = {} -- track vector
@@ -60,9 +66,11 @@ local t = Def.ActorFrame{
 	OffsetPlotModificationMessageCommand = function(self, params)
 		if params.Name == "PrevJudge" and judge > 1 then
 			judge = judge - 1
+			clampJudge()
 			tso = tst[judge]
 		elseif params.Name == "NextJudge" and judge < 9 then
 			judge = judge + 1
+			clampJudge()
 			tso = tst[judge]
 		elseif params.Name == "ToggleHands" and #ctt > 0 then --super ghetto toggle -mina
 			if not handspecific then -- moving from none to left 
@@ -81,6 +89,7 @@ local t = Def.ActorFrame{
 		end
 		if params.Name == "ResetJudge" then
 			judge =  PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty()
+			clampJudge()
 			tso = tst[(PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())]
 		end
 		if params.Name ~= "ResetJudge" and params.Name ~= "PrevJudge" and params.Name ~= "NextJudge" and params.Name ~= "ToggleHands" then return end

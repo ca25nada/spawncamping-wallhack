@@ -13,6 +13,12 @@ local rate = getCurRate()
 local judge = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
 local offsetIndex
 
+local function clampJudge()
+	if judge < 4 then judge = 4 end
+	if judge > 9 then judge = 9 end
+end
+clampJudge()
+
 -- Reset preview music starting point since song was finished.
 GHETTOGAMESTATE:setLastPlayedSecond(0)
 
@@ -31,6 +37,17 @@ local offsetY2 = 0
 local offsetWidth2 = 0
 local offsetHeight2 = 0
 local offsetisLocal
+
+local function getRescoreElements(pss, score)
+	local o = {}
+	o["dvt"] = dvt
+	o["totalHolds"] = pss:GetRadarPossible():GetValue("RadarCategory_Holds") + pss:GetRadarPossible():GetValue("RadarCategory_Rolls")
+	o["holdsHit"] = score:GetRadarValues():GetValue("RadarCategory_Holds") + score:GetRadarValues():GetValue("RadarCategory_Rolls")
+	o["holdsMissed"] = o["totalHolds"] - o["holdsHit"]
+	o["minesHit"] = pss:GetRadarPossible():GetValue("RadarCategory_Mines") - score:GetRadarValues():GetValue("RadarCategory_Mines")
+	o["totalTaps"] = totalTaps
+	return o
+end
 
 local function scroller(event)
 	if event.type == "InputEventType_FirstPress" then
@@ -72,22 +89,19 @@ local function oldEvalStuff()
 	}
 	t[#t+1] = Def.ActorFrame {
 		OffsetPlotModificationMessageCommand = function(self, params)
-			local score = pss:GetHighScore()
-			local totalHolds =
-				pss:GetRadarPossible():GetValue("RadarCategory_Holds") + pss:GetRadarPossible():GetValue("RadarCategory_Rolls")
-			local holdsHit =
-				pss:GetRadarActual():GetValue("RadarCategory_Holds") + pss:GetRadarActual():GetValue("RadarCategory_Rolls")
-			local minesHit =
-				pss:GetRadarPossible():GetValue("RadarCategory_Mines") - pss:GetRadarActual():GetValue("RadarCategory_Mines")
+			local rst = getRescoreElements(pss, pss:GetHighScore())
 			if params.Name == "PrevJudge" and judge > 1 then
 				judge = judge - 1
-				rescoredPercentage = getRescoredWifeJudge(dvt, judge, totalHolds - holdsHit, minesHit, totalTaps)
+				clampJudge()
+				rescoredPercentage = getRescoredWife3Judge(3, judge, rst)
 			elseif params.Name == "NextJudge" and judge < 9 then
 				judge = judge + 1
-				rescoredPercentage = getRescoredWifeJudge(dvt, judge, totalHolds - holdsHit, minesHit, totalTaps)
+				clampJudge()
+				rescoredPercentage = getRescoredWife3Judge(3, judge, rst)
 			end
 			if params.Name == "ResetJudge" then
 				judge = PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty()
+				clampJudge()
 				self:GetParent():playcommand("ResetJudge")
 			elseif params.Name ~= "ToggleHands" then
 				self:GetParent():playcommand("SetJudge", params)
@@ -751,14 +765,14 @@ local function oldEvalStuff()
 			end,
 			SetCommand = function(self)
 				if PREFSMAN:GetPreference("SortBySSRNormPercent") then
-					self:settextf("%s - %s J4", THEME:GetString("ScreenEvaluation","CategoryScore"), getScoreTypeText(1))
+					self:settextf("%s - %s%d J4", THEME:GetString("ScreenEvaluation","CategoryScore"), getScoreTypeText(1), curScore:GetWifeVers())
 				else
-					self:settextf("%s - %s", THEME:GetString("ScreenEvaluation","CategoryScore"), getScoreTypeText(1))
+					self:settextf("%s - %s%d", THEME:GetString("ScreenEvaluation","CategoryScore"), getScoreTypeText(1), curScore:GetWifeVers())
 				end
 			end,
 			SetJudgeCommand = function(self)
 				local jdg = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
-				self:settextf("%s - %s J%d", THEME:GetString("ScreenEvaluation", "CategoryScore"), getScoreTypeText(1), jdg)
+				self:settextf("%s - %s3 J%d", THEME:GetString("ScreenEvaluation", "CategoryScore"), getScoreTypeText(1), jdg)
 			end,
 			ResetJudgeCommand = function(self)
 				self:playcommand("Set")
@@ -2821,8 +2835,9 @@ local function newEvalStuff()
 					self:zoom(biggerTextScale)
 					self:maxwidth(frameWidth / 4 / biggerTextScale)
 					self:settext("")
+					self:playcommand("Begin")
 				end,
-				BeginCommand=function(self) 
+				BeginCommand = function(self) 
 					local wifeScore = pss:GetHighScore():GetWifeScore()
 					if wifeScore > 0.99 then
 						self:settextf("%.4f%%",math.floor((wifeScore)*1000000)/10000)
@@ -2841,7 +2856,30 @@ local function newEvalStuff()
 					self:playcommand("Begin")
 				end
 			},
-			LoadFont("Common Normal")..{
+			LoadFont("Common Normal") .. {
+				Name = "WifeVersion",
+				InitCommand = function(self)
+					self:halign(0)
+					self:y(upperDivider1Y + dividerHeight/2 + (frameHeight * gradeSectionReferenceRatio / 5 * 3.4))
+					self:zoom(smallerTextScale)
+					self:maxwidth(frameWidth / 4 / smallerTextScale)
+					self:settext("")
+				end,
+				PlaceCommand = function(self)
+					local xpos = 2 + self:GetParent():GetChild("WifePercent"):GetZoomedWidth() / 2
+					self:x(xpos)
+				end,
+				BeginCommand = function(self)
+					self:playcommand("Place")
+					local vers = pss:GetHighScore():GetWifeVers()
+					self:settextf("Wife%d", vers)
+				end,
+				SetJudgeCommand = function(self, params)
+					self:playcommand("Place")
+					self:settextf("Wife3")
+				end
+			},
+			LoadFont("Common Normal") .. {
 				Name = "Grade",
 				InitCommand = function(self)
 					self:halign(1)
