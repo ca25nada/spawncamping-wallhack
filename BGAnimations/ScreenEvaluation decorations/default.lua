@@ -79,17 +79,7 @@ local function oldEvalStuff()
 				pss:GetRadarActual():GetValue("RadarCategory_Holds") + pss:GetRadarActual():GetValue("RadarCategory_Rolls")
 			local minesHit =
 				pss:GetRadarPossible():GetValue("RadarCategory_Mines") - pss:GetRadarActual():GetValue("RadarCategory_Mines")
-			if enabledCustomWindows then
-				if params.Name == "PrevJudge" then
-					judge = judge < 2 and #customWindows or judge - 1
-					customWindow = timingWindowConfig:get_data()[customWindows[judge]]
-					rescoredPercentage = getRescoredCustomPercentage(dvt, customWindow, totalHolds, holdsHit, minesHit, totalTaps)
-				elseif params.Name == "NextJudge" then
-					judge = judge == #customWindows and 1 or judge + 1
-					customWindow = timingWindowConfig:get_data()[customWindows[judge]]
-					rescoredPercentage = getRescoredCustomPercentage(dvt, customWindow, totalHolds, holdsHit, minesHit, totalTaps)
-				end
-			elseif params.Name == "PrevJudge" and judge > 1 then
+			if params.Name == "PrevJudge" and judge > 1 then
 				judge = judge - 1
 				rescoredPercentage = getRescoredWifeJudge(dvt, judge, totalHolds - holdsHit, minesHit, totalTaps)
 			elseif params.Name == "NextJudge" and judge < 9 then
@@ -97,7 +87,7 @@ local function oldEvalStuff()
 				rescoredPercentage = getRescoredWifeJudge(dvt, judge, totalHolds - holdsHit, minesHit, totalTaps)
 			end
 			if params.Name == "ResetJudge" then
-				judge = enabledCustomWindows and 0 or (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
+				judge = PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty()
 				self:GetParent():playcommand("ResetJudge")
 			elseif params.Name ~= "ToggleHands" then
 				self:GetParent():playcommand("SetJudge", params)
@@ -267,21 +257,7 @@ local function oldEvalStuff()
 					end
 				end,
 				SetJudgeCommand = function(self, params)
-					if enabledCustomWindows then
-						if rescoredPercentage > 99 then
-							self:settextf(
-								"%05.4f%% (%s)",
-								rescoredPercentage,
-								customWindow.name
-							)
-							else
-								self:settextf(
-								"%05.2f%% (%s)",
-								rescoredPercentage,
-								customWindow.name
-							)
-						end
-					elseif params.Name == "PrevJudge" and judge >= 1 then
+					if params.Name == "PrevJudge" and judge >= 1 then
 						if rescoredPercentage > 99 then
 							self:settextf(
 								"%05.4f%% (%s)",
@@ -413,16 +389,10 @@ local function oldEvalStuff()
 
 		local tst = ms.JudgeScalers
 		local tso = tst[judge]
-		if enabledCustomWindows then
-			tso = 1
-		end
 		local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
 		local middleCol = ncol / 2
 		local function recountCBs()
 			tso = tst[judge]
-			if enabledCustomWindows then
-				tso = 1
-			end
 			cbl = 0
 			cbr = 0
 			cbm = 0
@@ -1040,11 +1010,7 @@ local function oldEvalStuff()
 					self:settext(pss:GetTapNoteScores(v))
 				end,
 				SetJudgeCommand = function(self)
-					if enabledCustomWindows then
-						self:settext(getRescoredCustomJudge(dvt, customWindow.judgeWindows, k))
-					else
-						self:settext(getRescoredJudge(dvt, judge, k))
-					end
+					self:settext(getRescoredJudge(dvt, judge, k))
 				end,
 				ResetJudgeCommand = function(self)
 					self:playcommand("Set")
@@ -1065,11 +1031,7 @@ local function oldEvalStuff()
 					self:settextf("(%.2f%%)",math.floor(percent*10000)/100)
 				end,
 				SetJudgeCommand = function(self)
-					if enabledCustomWindows then
-						self:settextf("(%.2f%%)", getRescoredCustomJudge(dvt, customWindow.judgeWindows, k) / totalTaps * 100)
-					else
-						self:settextf("(%.2f%%)", getRescoredJudge(dvt, judge, k) / totalTaps * 100)
-					end
+					self:settextf("(%.2f%%)", getRescoredJudge(dvt, judge, k) / totalTaps * 100)
 				end,
 				ResetJudgeCommand = function(self)
 					self:playcommand("Set")
@@ -2427,9 +2389,6 @@ local function newEvalStuff()
 
 	local tst = ms.JudgeScalers
 	local tso = tst[judge]
-	if enabledCustomWindows then
-		tso = 1
-	end
 	local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
 	local middleCol = ncol / 2
 	local function recountCBs()
@@ -2534,13 +2493,8 @@ local function newEvalStuff()
 					percent = pss:GetPercentageOfTaps(thisJudgment) * 100
 				end,
 				SetJudgeCommand = function(self)
-					if enabledCustomWindows then
-						percent = getRescoredCustomJudge(dvt, customWindow.judgeWindows, i) / totalTaps * 100
-						count = getRescoredCustomJudge(dvt, customWindow.judgeWindows, i)
-					else
-						percent = getRescoredJudge(dvt, judge, i) / totalTaps * 100
-						count = getRescoredJudge(dvt, judge, i)
-					end
+					percent = getRescoredJudge(dvt, judge, i) / totalTaps * 100
+					count = getRescoredJudge(dvt, judge, i)
 				end,
 				ResetJudgeCommand = function(self)
 					count = pss:GetHighScore():GetTapNoteScore(thisJudgment)
@@ -2877,19 +2831,10 @@ local function newEvalStuff()
 					end
 				end,
 				SetJudgeCommand = function(self, params)
-					if enabledCustomWindows then
-						if rescoredPercentage > 99 then
-							self:settextf("%05.4f%% (%s)", rescoredPercentage, customWindow.name)
-						else
-							self:settextf("%05.2f%% (%s)", rescoredPercentage, customWindow.name)
-						end
+					if rescoredPercentage > 99 then
+						self:settextf("%05.4f%%", rescoredPercentage)
 					else
-
-						if rescoredPercentage > 99 then
-							self:settextf("%05.4f%%", rescoredPercentage)
-						else
-							self:settextf("%05.2f%%", rescoredPercentage)
-						end
+						self:settextf("%05.2f%%", rescoredPercentage)
 					end
 				end,
 				ResetJudgeCommand = function(self)
@@ -2961,9 +2906,6 @@ local function newEvalStuff()
 				end,
 				SetJudgeCommand = function(self)
 					tso = tst[judge]
-					if enabledCustomWindows then
-						tso = 1
-					end
 					recountCBs()
 					self:queuecommand("Set")
 				end,

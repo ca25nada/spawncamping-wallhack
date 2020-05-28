@@ -9,14 +9,7 @@ local judges = {"marv", "perf", "great", "good", "boo", "miss"}
 local tst = ms.JudgeScalers
 local judge = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
 local tso = tst[judge]
-
-local enabledCustomWindows = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomEvaluationWindowTimings
-judge = enabledCustomWindows and 0 or judge
-local customWindowsData = timingWindowConfig:get_data()
-local customWindows = customWindowsData.customWindows
-local customWindow
 local maxOffset = math.max(180, 180 * tso)
-
 
 local dvt = {} -- offset vector
 local nrt = {} -- noterow vector
@@ -65,15 +58,7 @@ local t = Def.ActorFrame{
 		)
 	end,
 	OffsetPlotModificationMessageCommand = function(self, params)
-		if enabledCustomWindows then
-			if params.Name == "PrevJudge" then
-				judge = judge < 2 and #customWindows or judge - 1
-				customWindow = customWindowsData[customWindows[judge]]
-			elseif params.Name == "NextJudge" then
-				judge = judge == #customWindows and 1 or judge + 1
-				customWindow = customWindowsData[customWindows[judge]]
-			end
-		elseif params.Name == "PrevJudge" and judge > 1 then
+		if params.Name == "PrevJudge" and judge > 1 then
 			judge = judge - 1
 			tso = tst[judge]
 		elseif params.Name == "NextJudge" and judge < 9 then
@@ -95,11 +80,11 @@ local t = Def.ActorFrame{
 			end 
 		end
 		if params.Name == "ResetJudge" then
-			judge = enabledCustomWindows and 0 or (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
+			judge =  PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty()
 			tso = tst[(PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())]
 		end
 		if params.Name ~= "ResetJudge" and params.Name ~= "PrevJudge" and params.Name ~= "NextJudge" and params.Name ~= "ToggleHands" then return end
-		maxOffset = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows.boo or math.max(180, 180 * tso)
+		maxOffset = math.max(180, 180 * tso)
 		MESSAGEMAN:Broadcast("JudgeDisplayChanged")
 	end
 }
@@ -168,7 +153,7 @@ for i = 1, #fantabars do
 		UpdateCommand = function(self, params)
 			params = checkParams(params)
 			self:zoomto(params.width, 1):diffuse(byJudgment(bantafars[i])):diffusealpha(baralpha)
-			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows[judges[i]] or tso * fantabars[i]
+			local fit = tso * fantabars[i]
 			self:y(fitY(fit) + params.height/2)
 		end,
 		JudgeDisplayChangedMessageCommand = function(self)
@@ -183,7 +168,7 @@ for i = 1, #fantabars do
 		UpdateCommand = function(self, params)
 			params = checkParams(params)
 			self:zoomto(params.width, 1):diffuse(byJudgment(bantafars[i])):diffusealpha(baralpha)
-			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows[judges[i]] or tso * fantabars[i]
+			local fit = tso * fantabars[i]
 			self:y(fitY(-fit) + params.height/2)
 		end,
 		JudgeDisplayChangedMessageCommand = function(self)
@@ -274,9 +259,7 @@ t[#t+1] = Def.ActorMultiVertex{
 				local timestamp = params.steps:GetTimingData():GetElapsedTimeFromNoteRow(params.nrv[i])
 				local offset = params.dvt[i]/1000
 
-				local color =
-					(enabledCustomWindows and judge ~= 0) and customOffsetToJudgeColor(params.dvt[i], customWindow.judgeWindows) or
-					offsetToJudgeColor(params.dvt[i], tst[judge])
+				local color = offsetToJudgeColor(params.dvt[i], tst[judge])
 				color[4] = 1 -- force alpha = 1
 
 				local x = fitX(wuab[i]) + params.width / 2
