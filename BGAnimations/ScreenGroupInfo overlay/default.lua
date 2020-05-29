@@ -193,8 +193,8 @@ end
 t[#t+1] = LoadActor("../_mouse", "ScreenGroupInfo")
 
 t[#t+1] = LoadActor("../_frame")
---[[
-local tab = TAB:new({"Difficulty Distribution"})
+
+local tab = TAB:new({"Upload All Scores"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -205,9 +205,16 @@ t[#t+1] = tab:makeTabActors() .. {
 		self:y(SCREEN_HEIGHT+tab.height/2)
 	end,
 	TabPressedMessageCommand = function(self, params)
+		if params.name == "Upload All Scores" then
+			if DLMAN:IsLoggedIn() then
+				DLMAN:UploadScoresForPack(group)
+			else
+				SCREENMAN:SystemMessage("You must be logged in to use this.")
+			end
+		end
 	end
 }
-]]
+
 
 t[#t+1] = LoadActor("../_cursor")
 

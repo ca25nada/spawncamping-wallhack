@@ -1,5 +1,6 @@
 local screenWithNoTips = {
 	ScreenSelectMusic = true,
+	ScreenGroupInfo = true,
 	ScreenMusicInfo = true,
 	ScreenPlayerProfile = true,
 	ScreenNetEvaluation = true,
