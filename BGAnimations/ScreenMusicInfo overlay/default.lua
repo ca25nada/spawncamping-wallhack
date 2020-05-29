@@ -1177,7 +1177,7 @@ t[#t+1] = LoadActor("../_mouse", "ScreenMusicInfo")
 
 t[#t+1] = LoadActor("../_frame")
 
-local tab = TAB:new({"Manage Tags", "Preview", "Leaderboard", "", ""})
+local tab = TAB:new({"Manage Tags", "Preview", "Leaderboard", "", "Upload All For Chart"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -1194,6 +1194,9 @@ t[#t+1] = tab:makeTabActors() .. {
 			SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
 		elseif params.name == "Leaderboard" and DLMAN:IsLoggedIn() then
 			SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
+		elseif params.name == "Upload All Scores" and DLMAN:IsLoggedIn() then
+			SCREENMAN:SystemMessage("Attempting to upload all scores for this chart.")
+			DLMAN:UploadScoresForChart(steps:GetChartKey())
 		end
 	end
 }

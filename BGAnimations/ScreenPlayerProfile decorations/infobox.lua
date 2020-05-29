@@ -148,6 +148,7 @@ t[#t+1] = quadButton(3)..{
 			self:diffusealpha(1)
 			self:smooth(0.3)
 			self:diffusealpha(0.8)
+			SCREENMAN:SystemMessage("Attempting to upload all scores for all charts")
 			DLMAN:UploadAllScores()
 		end
 	end,
