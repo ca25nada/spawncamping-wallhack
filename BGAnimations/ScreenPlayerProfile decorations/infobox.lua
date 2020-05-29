@@ -127,6 +127,53 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end
 }
 
+-- upload all scores button
+t[#t+1] = quadButton(3)..{
+	InitCommand = function (self)
+		self:xy(scoreSSRItemX,30)
+		self:zoomto(90,20)
+		self:diffuse(color(colorConfig:get_data().main.disabled))
+		self:queuecommand("Set")
+	end,
+	SetCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:diffusealpha(0.8)
+		else
+			self:diffusealpha(0.4)
+		end
+	end,
+	MouseDownCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:smooth(0.3)
+			self:diffusealpha(0.8)
+			DLMAN:UploadAllScores()
+		end
+	end,
+	LoginMessageCommand = function(self) self:playcommand("Set") end,
+	LogOutMessageCommand = function(self) self:playcommand("Set") end
+}
+t[#t+1] = LoadFont("Common Bold")..{
+	InitCommand  = function(self)
+		self:xy(scoreSSRItemX,30)
+		self:zoom(0.4)
+		self:maxwidth(90 / 0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:settext("Upload All Scores")
+		self:queuecommand('Set')
+	end,
+	SetCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:diffusealpha(1)
+		else
+			self:diffusealpha(0.4)
+		end
+	end,
+	LoginMessageCommand = function(self) self:playcommand("Set") end,
+	LogOutMessageCommand = function(self) self:playcommand("Set") end
+}
+
 
 local function scoreSSRTypes(i)
 
