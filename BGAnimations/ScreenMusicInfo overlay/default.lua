@@ -1006,6 +1006,53 @@ local function scoreList()
 			end,
 		}
 
+
+		-- upload replay data button
+		t[#t+1] = quadButton(3)..{
+			InitCommand = function (self)
+				self:xy(95/2+3 + 95 + 95,30)
+				self:zoomto(90,20)
+				self:diffuse(color(colorConfig:get_data().main.disabled))
+			end,
+			ShowScoreDetailMessageCommand = function(self, params)
+				if scoreList[params.scoreIndex]:HasReplayData() then
+					self:diffusealpha(0.8)
+				else
+					self:diffusealpha(0.2)
+				end
+			end,
+
+			MouseDownCommand = function(self)
+				if scoreList[scoreIndex]:HasReplayData() then
+					self:finishtweening()
+					self:diffusealpha(1)
+					self:smooth(0.3)
+					self:diffusealpha(0.8)
+					DLMAN:SendReplayDataForOldScore(scoreList[scoreIndex]:GetScoreKey())
+					SCREENMAN:SystemMessage("Attempting to Upload Replay Data")
+				end
+			end
+		}
+		t[#t+1] = LoadFont("Common Bold")..{
+			InitCommand  = function(self)
+				self:xy(95/2+3 + 95 + 95,30)
+				self:zoom(0.4)
+				self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+				self:diffusealpha(0.4)
+				self:queuecommand('Set')
+			end,
+			SetCommand = function(self)
+				self:settext("Upload Replay")
+			end,
+			ShowScoreDetailMessageCommand = function(self, params)
+				if scoreList[params.scoreIndex]:HasReplayData() then
+					self:diffusealpha(1)
+				else
+					self:diffusealpha(0.4)
+				end
+			end,
+		}
+
 		t[#t+1] = Def.Quad{
 			InitCommand = function(self)
 				self:diffusealpha(0.2)
@@ -1130,7 +1177,7 @@ t[#t+1] = LoadActor("../_mouse", "ScreenMusicInfo")
 
 t[#t+1] = LoadActor("../_frame")
 
-local tab = TAB:new({"Manage Tags", "Preview", "Leaderboard", "", ""})
+local tab = TAB:new({"Manage Tags", "Preview", "Leaderboard", "", "Upload All For Chart"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -1147,6 +1194,9 @@ t[#t+1] = tab:makeTabActors() .. {
 			SCREENMAN:AddNewScreenToTop("ScreenChartPreview")
 		elseif params.name == "Leaderboard" and DLMAN:IsLoggedIn() then
 			SCREENMAN:AddNewScreenToTop("ScreenChartLeaderboard")
+		elseif params.name == "Upload All Scores" and DLMAN:IsLoggedIn() then
+			SCREENMAN:SystemMessage("Attempting to upload all scores for this chart.")
+			DLMAN:UploadScoresForChart(steps:GetChartKey())
 		end
 	end
 }

@@ -127,6 +127,104 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end
 }
 
+-- upload all scores button
+t[#t+1] = quadButton(3)..{
+	InitCommand = function (self)
+		self:xy(scoreSSRItemX,30)
+		self:zoomto(90,20)
+		self:diffuse(color(colorConfig:get_data().main.disabled))
+		self:queuecommand("Set")
+	end,
+	SetCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:diffusealpha(0.8)
+		else
+			self:diffusealpha(0.4)
+		end
+	end,
+	MouseDownCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:finishtweening()
+			self:diffusealpha(1)
+			self:smooth(0.3)
+			self:diffusealpha(0.8)
+			SCREENMAN:SystemMessage("Attempting to upload all scores for all charts")
+			DLMAN:UploadAllScores()
+		end
+	end,
+	LoginMessageCommand = function(self) self:playcommand("Set") end,
+	LogOutMessageCommand = function(self) self:playcommand("Set") end
+}
+t[#t+1] = LoadFont("Common Bold")..{
+	InitCommand  = function(self)
+		self:xy(scoreSSRItemX,30)
+		self:zoom(0.4)
+		self:maxwidth(90 / 0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:settext("Upload All Scores")
+		self:queuecommand('Set')
+	end,
+	SetCommand = function(self)
+		if DLMAN:IsLoggedIn() then
+			self:diffusealpha(1)
+		else
+			self:diffusealpha(0.4)
+		end
+	end,
+	LoginMessageCommand = function(self) self:playcommand("Set") end,
+	LogOutMessageCommand = function(self) self:playcommand("Set") end
+}
+
+-- score upload progress bar
+-- background
+local uploadbarwidth = 90
+local uploadbarheight = 20
+t[#t+1] = Def.Quad {
+	InitCommand = function(self)
+		self:halign(1)
+		self:xy(frameWidth - 5, 30):zoomto(uploadbarwidth, uploadbarheight)
+		self:diffuse(color(colorConfig:get_data().main.disabled)):diffusealpha(0)
+	end,
+	UploadProgressMessageCommand = function(self, params)
+		self:diffusealpha(0.8)	
+		if params.percent == 1 then
+			self:diffusealpha(0)
+		end
+	end
+}
+-- fill bar
+t[#t+1] = Def.Quad {
+	InitCommand = function(self)
+		self:halign(0)
+		self:xy(frameWidth - 5 - uploadbarwidth, 30):zoomto(0, uploadbarheight)
+		self:diffuse(color("#FFFFFF")):diffusealpha(0)
+	end,
+	UploadProgressMessageCommand = function(self, params)
+		self:diffusealpha(1)
+		self:zoomto(params.percent * uploadbarwidth, uploadbarheight)
+		if params.percent == 1 then
+			self:diffusealpha(0)
+		end
+	end
+}
+--  explanatory text
+t[#t+1] = LoadFont("Common Normal") .. {
+	InitCommand = function(self)
+		self:xy(frameWidth - 5, 10)
+		self:zoom(0.4)
+		self:halign(1)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:settext("Upload Progress")
+		self:diffusealpha(0)
+	end,
+	UploadProgressMessageCommand = function(self, params)
+		self:diffusealpha(1)
+		if params.percent == 1 then
+			self:diffusealpha(0)
+		end
+	end
+}
+
 
 local function scoreSSRTypes(i)
 
