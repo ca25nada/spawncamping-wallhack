@@ -52,7 +52,29 @@ local function setOffsetVerts(vt, x, y, c, alpha)
 	vt[#vt + 1] = {{x + dotWidth/2, y - dotWidth/2, 0}, c}
 	vt[#vt + 1] = {{x - dotWidth/2, y - dotWidth/2, 0}, c}
 end
+
+-- convert a plot x position to a noterow
+local function convertXToRow(x)
+	local output = x
+	output = output / setWidth
+
+
+	if output < 0 then output = 0 end
+	if output > 1 then output = 1 end
+
+	-- the 48 here is how many noterows there are per beat
+	-- this is a const defined in the game
+	-- and i sure hope it doesnt ever change
+	local td = GAMESTATE:GetCurrentSteps():GetTimingData()
+	local row = td:GetBeatFromElapsedTime(output * finalSecond) * 48
+
+	return row
+end
 -----
+
+local function HighlightUpdaterThing(self)
+	self:GetChild("Background"):queuecommand("Highlight")
+end
 
 local baralpha = 0.4
 
@@ -62,6 +84,15 @@ local t = Def.ActorFrame{
 			local params = {width = 0, height = 0, song = nil, steps = nil, nrv = {}, dvt = {}, ctt = {}, ntt = {}}
 			self:playcommand("Update", params) end
 		)
+	end,
+	OnCommand = function(self)
+		local name = SCREENMAN:GetTopScreen():GetName()
+		if name == "ScreenEvaluationNormal" or name == "ScreenNetEvaluation" then
+			local allowHovering = not SCREENMAN:GetTopScreen():ScoreUsedInvalidModifier()
+			if allowHovering then
+				self:SetUpdateFunction(HighlightUpdaterThing)
+			end
+		end
 	end,
 	OffsetPlotModificationMessageCommand = function(self, params)
 		if params.Name == "PrevJudge" and judge > 1 then
@@ -116,6 +147,38 @@ t[#t+1] = Def.Quad{
 		ntt = params.ntt
 		columns = params.columns
 		self:zoomto(params.width, params.height)
+	end,
+	HighlightCommand = function(self)
+		local bar = self:GetParent():GetChild("PosBar")
+		local txt = self:GetParent():GetChild("PosText")
+		local bg = self:GetParent():GetChild("PosBG")
+		if isOver(self) then
+			local xpos = INPUTFILTER:GetMouseX() - self:GetParent():GetX()
+			bar:visible(true)
+			txt:visible(true)
+			bg:visible(true)
+			bar:x(xpos)
+			txt:x(xpos - 2)
+			bg:x(xpos)
+			bg:zoomto(txt:GetZoomedWidth() + 4, txt:GetZoomedHeight() + 4)
+			local row = convertXToRow(xpos)
+			local judgments = SCREENMAN:GetTopScreen():GetReplaySnapshotJudgmentsForNoterow(row)
+			local wifescore = SCREENMAN:GetTopScreen():GetReplaySnapshotWifePercentForNoterow(row) * 100
+			local marvCount = judgments[10]
+			local perfCount = judgments[9]
+			local greatCount = judgments[8]
+			local goodCount = judgments[7]
+			local badCount = judgments[6]
+			local missCount = judgments[5]
+
+			--txt:settextf("x %f\nrow %f\nbeat %f\nfinalsecond %f", xpos, row, row/48, finalSecond)
+			-- The odd formatting here is in case we want to add translation support.
+			txt:settextf("%f%%\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d", wifescore, "Marvelous", marvCount, "Perfect", perfCount, "Great", greatCount, "Good", goodCount, "Bad", badCount, "Miss", missCount)
+		else
+			bar:visible(false)
+			txt:visible(false)
+			bg:visible(false)
+		end
 	end
 }
 
@@ -185,6 +248,19 @@ for i = 1, #fantabars do
 		end
 	}
 end
+
+t[#t+1] = Def.Quad {
+	Name = "PosBar",
+	InitCommand = function(self)
+		self:visible(false)
+		self:zoomto(2, setHeight):diffuse(color("0.5,0.5,0.5,1"))
+		self:valign(0)
+	end,
+	UpdateCommand = function(self, params)
+		params = checkParams(params)
+		self:zoomto(2, params.height)
+	end
+}
 
 -- Late ms text
 t[#t+1] = LoadFont("Common Normal")..{
@@ -310,6 +386,21 @@ t[#t+1] = Def.ActorMultiVertex{
 	end,
 	JudgeDisplayChangedMessageCommand = function(self)
 		self:queuecommand("Update")
+	end
+}
+
+t[#t+1] = Def.Quad {
+	Name = "PosBG",
+	InitCommand = function(self)
+		self:valign(1):halign(1):zoomto(30,30):diffuse(color(".1,.1,.1,.45"))
+		self:visible(false)
+	end
+}
+
+t[#t+1] = LoadFont("Common Normal") .. {
+	Name = "PosText",
+	InitCommand = function(self)
+		self:valign(1):halign(1):zoom(0.4)
 	end
 }
 
