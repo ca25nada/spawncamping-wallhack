@@ -18,6 +18,7 @@ local scoreSSRItemWidth = capWideScale(50,80)
 local scoreSSRItemHeight = 35
 local maxPages = 10
 local curPage = 1
+local recentscores = false
 
 local function movePage(n)
 	if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
@@ -175,6 +176,57 @@ t[#t+1] = LoadFont("Common Bold")..{
 	LogOutMessageCommand = function(self) self:playcommand("Set") end
 }
 
+-- toggle recent scores button
+t[#t+1] = quadButton(3)..{
+	InitCommand = function (self)
+		self:xy(scoreItemX + 45,30)
+		self:zoomto(90,20)
+		self:diffuse(color(colorConfig:get_data().main.disabled))
+		self:queuecommand("Set")
+	end,
+	SetCommand = function(self)
+		if not recentscores then
+			self:diffusealpha(0.8)
+		else
+			self:diffusealpha(0.4)
+		end
+	end,
+	MouseDownCommand = function(self)
+		if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+			return
+		end
+		recentscores = not recentscores
+		MESSAGEMAN:Broadcast("RecentScoresToggled")
+		MESSAGEMAN:Broadcast("UpdateRanking", {SSRType = "Overall"})
+	end,
+	RecentScoresToggledMessageCommand = function(self)
+		self:playcommand("Set")
+	end
+}
+t[#t+1] = LoadFont("Common Bold")..{
+	InitCommand  = function(self)
+		self:xy(scoreItemX + 45,30)
+		self:zoom(0.4)
+		self:maxwidth(90 / 0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:settext("Recent Scores")
+		self:queuecommand('Set')
+	end,
+	SetCommand = function(self)
+		if GHETTOGAMESTATE:getOnlineStatus() == "Online" then
+			return
+		end
+		if not recentscores then
+			self:diffusealpha(1)
+		else
+			self:diffusealpha(0.4)
+		end
+	end,
+	LoginMessageCommand = function(self) self:playcommand("Set") end,
+	LogOutMessageCommand = function(self) self:playcommand("Set") end,
+	RecentScoresToggledMessageCommand = function(self) self:playcommand("Set") end
+}
+
 -- score upload progress bar
 -- background
 local uploadbarwidth = 90
@@ -277,8 +329,13 @@ local function scoreSSRTypes(i)
 end
 
 local function scoreListItem(i)
-	local skillset = SkillSets[1]
-	local ths = SCOREMAN:GetTopSSRHighScore(i, SkillSets[1])
+	local skillset = SkillSets[1]	
+	local ths = nil
+	if recentscores then
+		ths = SCOREMAN:GetRecentScoreForGame(i)
+	else
+		ths = SCOREMAN:GetTopSSRHighScoreForGame(i, SkillSets[1])
+	end
 
 	if ths == nil then
 		return
@@ -314,9 +371,14 @@ local function scoreListItem(i)
 					self:visible(true)
 				end
 			else
-				SCOREMAN:SortSSRs(params.SSRType)
 				skillset = params.SSRType
-				ths = SCOREMAN:GetTopSSRHighScore(index, params.SSRType)
+				if recentscores then
+					SCOREMAN:SortRecentScoresForGame()
+					ths = SCOREMAN:GetRecentScoreForGame(index)
+				else
+					SCOREMAN:SortSSRsForGame(params.SSRType)
+					ths = SCOREMAN:GetTopSSRHighScoreForGame(index, params.SSRType)
+				end
 				chartKey = ths:GetChartKey()
 				song = SONGMAN:GetSongByChartKey(chartKey)
 				steps = SONGMAN:GetStepsByChartKey(chartKey)
@@ -336,10 +398,16 @@ local function scoreListItem(i)
 		end,
 		LogOutMessageCommand = function(self)
 			index = (curPage-1)*maxScoreItems+i
+
 			GHETTOGAMESTATE:setOnlineStatus("Local")
-			SCOREMAN:SortSSRs("Overall")
+			if recentscores then
+				SCOREMAN:SortRecentScoresForGame()
+				ths = SCOREMAN:GetRecentScoreForGame(index)
+			else
+				SCOREMAN:SortSSRsForGame("Overall")
+				ths = SCOREMAN:GetTopSSRHighScore(index, "Overall")
+			end
 			skillset = "Overall"
-			ths = SCOREMAN:GetTopSSRHighScore(index, "Overall")
 			chartKey = ths:GetChartKey()
 			song = SONGMAN:GetSongByChartKey(chartKey)
 			steps = SONGMAN:GetStepsByChartKey(chartKey)
@@ -358,9 +426,14 @@ local function scoreListItem(i)
 					self:visible(true)
 				end
 			else
-				SCOREMAN:SortSSRs("Overall")
+				if recentscores then
+					SCOREMAN:SortRecentScoresForGame()
+					ths = SCOREMAN:GetRecentScoreForGame(index)
+				else
+					SCOREMAN:SortSSRsForGame("Overall")
+					ths = SCOREMAN:GetTopSSRHighScore(index, "Overall")
+				end
 				skillset = "Overall"
-				ths = SCOREMAN:GetTopSSRHighScore(i, "Overall")
 				chartKey = ths:GetChartKey()
 				song = SONGMAN:GetSongByChartKey(chartKey)
 				steps = SONGMAN:GetStepsByChartKey(chartKey)
@@ -729,7 +802,7 @@ local function songDisplay()
 	return t
 end
 
-SCOREMAN:SortSSRs(SkillSets[1])
+SCOREMAN:SortSSRsForGame(SkillSets[1])
 
 for i=1, #SkillSets do
 	t[#t+1] = scoreSSRTypes(i)
