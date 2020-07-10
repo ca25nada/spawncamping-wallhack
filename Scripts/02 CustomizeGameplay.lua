@@ -29,6 +29,7 @@ local function loadValuesTable()
 	MovableValues.NotefieldY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].NotefieldY
 	MovableValues.NotefieldWidth = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].NotefieldWidth
 	MovableValues.NotefieldHeight = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].NotefieldHeight
+	MovableValues.NotefieldSpacing = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].NotefieldSpacing
 	MovableValues.JudgeCounterX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].JudgeCounterX
 	MovableValues.JudgeCounterY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].JudgeCounterY
 	MovableValues.NPSGraphX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].NPSGraphX
@@ -710,7 +711,24 @@ Movable = {
 			property = "X",
 			inc = 3
 		}
-	}
+	},
+	DeviceButton_f = {
+		name = "Notefield",
+		textHeader = "Notefield Columns:",
+		properties = {"Spacing"},
+		elementTree = "GameplaySizes",
+		noBorder = true,
+		DeviceButton_up = {
+			arbitraryInc = true,
+			property = "Spacing",
+			inc = 1
+		},
+		DeviceButton_down = {
+			arbitraryInc = true,
+			property = "Spacing",
+			inc = -1
+		},
+	},
 }
 
 local function updatetext(button)
