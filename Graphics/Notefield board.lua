@@ -9,7 +9,9 @@ local function ScreenFilter()
 		PlayerStateSetCommand = function(self,param)
 			local pn = param.PlayerNumber
 			local style = GAMESTATE:GetCurrentStyle(pn)
-			local width = style:GetWidth(pn) + 8
+			local cols = style:ColumnsPerPlayer()
+			local evenCols = cols - cols%2
+			local width = style:GetWidth(pn) + 8 + (MovableValues.NotefieldSpacing and MovableValues.NotefieldSpacing or 0) * evenCols
 			local filterColor = color(colorConfig:get_data().gameplay.ScreenFilter)
 			local filterAlpha = playerConfig:get_data(pn_to_profile_slot(pn)).ScreenFilter
 			if filterAlpha == 0 then
@@ -18,6 +20,7 @@ local function ScreenFilter()
 			end
 			self:visible(true)
 			self:SetWidth(width)
+			self:addx(cols % 2 == 0 and -(MovableValues.NotefieldSpacing and MovableValues.NotefieldSpacing or 0) / 2 or 0)
 			self:SetHeight(SCREEN_HEIGHT*4096)
 			self:diffuse(filterColor)
 			self:diffusealpha(filterAlpha)
@@ -34,6 +37,7 @@ local function LaneHighlight()
 	local width = style:GetWidth(PLAYER_1)
 	local cols = style:ColumnsPerPlayer()
 	local colWidth = width/cols
+	local hCols = math.floor(cols / 2)
 	local reverse = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
 	local receptor = reverse and THEME:GetMetric("Player", "ReceptorArrowsYStandard") or THEME:GetMetric("Player", "ReceptorArrowsYReverse")
 	local border = 4
@@ -48,6 +52,7 @@ local function LaneHighlight()
 				self:SetHeight(SCREEN_HEIGHT)
 				self:diffusealpha(alpha)
 				self:xy((i-(cols/2)-(1/2))*colWidth,-receptor)
+				self:addx((i - hCols - 1) * (MovableValues.NotefieldSpacing and MovableValues.NotefieldSpacing or 0))
 				self:fadebottom(0.6):fadetop(0.6)
 				self:visible(false)
 			end,

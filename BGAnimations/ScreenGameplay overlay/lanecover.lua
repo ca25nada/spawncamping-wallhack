@@ -7,11 +7,13 @@ local cover
 local laneColor = color(colorConfig:get_data().gameplay.LaneCover)
 
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer()
+local evencols = cols - cols%2
 local allowedCustomization = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomizeGameplay
 
 local isCentered = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")) and GAMESTATE:GetNumPlayersEnabled() == 1
 -- load from prefs later
-local width = 64 * cols * MovableValues.NotefieldWidth
+local nfspace = MovableValues.NotefieldSpacing and MovableValues.NotefieldSpacing or 0
+local width = 64 * cols * MovableValues.NotefieldWidth + nfspace * (evencols)
 local padding = 8
 local styleType = ToEnumShortString(GAMESTATE:GetCurrentStyle():GetStyleType())
 
@@ -25,7 +27,7 @@ end
 local heightP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCoverHeight
 
 local P1X =
-	SCREEN_CENTER_X + MovableValues.NotefieldX
+	SCREEN_CENTER_X + MovableValues.NotefieldX + (cols % 2 == 0 and -nfspace / 2 or 0)
 
 if not isCentered then
 	P1X = THEME:GetMetric("ScreenGameplay", string.format("PlayerP1%sX", styleType))
@@ -175,7 +177,6 @@ if enabledP1 then
 			end
 		end,
 		UpdateCommand = function(self)
-			P1X = SCREEN_CENTER_X + MovableValues.NotefieldX
 			if isReverseP1 then
 				self:xy(P1X, SCREEN_TOP):zoomto((width + padding) * getNoteFieldScale(PLAYER_1), heightP1):valign(0):diffuse(
 					laneColor
@@ -247,8 +248,6 @@ local function Update(self)
 	end
 	self:SetUpdateRate(5)
 	if enabledP1 then
-		P1X = SCREEN_CENTER_X + MovableValues.NotefieldX
-
 		if moveDownP1 then
 			if isReverseP1 then
 				heightP1 = math.min(SCREEN_BOTTOM, math.max(0, heightP1 + 0.1))

@@ -413,6 +413,9 @@ local Phrases = {
     ":ok_mine:", -- sm6
     "man i just played through this. it's like everyone's turned into nvlm_zk. it's all 24th and 32nd stream bursts that, alot of times, don't even go with the music. there wasn't rly any type of style/personality i picked up on from anyone.", -- minty 3 ffr thread
     "finger independence isnt a thing imo", -- eo
+    'GREAT means you "tried" but failed spectacularly but MISS says you knew you could not get a Marvelous so you missed it rather than get a horrible GREAT', -- anti wife logic
+    "you should never miss if your missing your not good enough for that map", -- anti wife logic
+    "if you get all goods in a song you will have a terrible score so why not have all Marvelous?", -- anti wife logic
 
 }
 
