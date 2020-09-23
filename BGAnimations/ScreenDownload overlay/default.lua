@@ -2,7 +2,6 @@ local top
 
 local initpacklist = PackList:new()
 local packlist = initpacklist:GetPackTable()
-local downloading = DLMAN:GetDownloadingPacks()
 
 -- make lookup table for installed packs
 local installedPacks = {}
@@ -430,8 +429,6 @@ local function packList()
 		end,
 		DFRFinishedMessageCommand = function(self) -- Download Finished, a Diff Reload happens (forced by the game)
 			refreshInstalledPacks()
-			downloading = DLMAN:GetDownloadingPacks()
-			queued = DLMAN:GetQueuedPacks()
 			MESSAGEMAN:Broadcast("UpdateList")
 		end,
 	}
@@ -642,8 +639,6 @@ local function packList()
 					return
 				end
 				download = packlist[packIndex]:DownloadAndInstall()
-				downloading = DLMAN:GetDownloadingPacks()
-				queued = DLMAN:GetQueuedPacks()
 				if not packExists(packlist[packIndex]:GetName()) then
 					self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
 					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
@@ -659,18 +654,13 @@ local function packList()
 					end
 				else
 					download:Stop()
-					downloading = DLMAN:GetDownloadingPacks()
-					queued = DLMAN:GetQueuedPacks()
 				end
 			end,
 			PackDownloadedMessageCommand = function(self, params) -- Download Stopped/Finished
-				downloading = DLMAN:GetDownloadingPacks()
-				queued = DLMAN:GetQueuedPacks()
+				-- nothing?
 			end,
 			DownloadFailedMessageCommand = function(self, params) -- Download Failed
 				if packlist[packIndex] ~= nil and packlist[packIndex]:GetName() == params.pack:GetName() then 
-					downloading = DLMAN:GetDownloadingPacks()
-					queued = DLMAN:GetQueuedPacks()
 					self:GetChild("Status"):playcommand("Set")
 					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
 					self:GetChild("Size"):settextf("Download Failed or Cancelled")
