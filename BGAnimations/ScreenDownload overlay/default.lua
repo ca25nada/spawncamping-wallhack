@@ -650,9 +650,18 @@ local function packList()
 				end
 			end,
 			StopDownloadCommand = function(self) -- Stop download
-				download:Stop()
-				downloading = DLMAN:GetDownloadingPacks()
-				queued = DLMAN:GetQueuedPacks()
+				if packlist[packIndex]:IsQueued() then
+					local success = packlist[packIndex]:RemoveFromQueue()
+					if success then
+						self:GetChild("Status"):playcommand("Set")
+						self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
+						self:GetChild("Size"):settextf("Download Removed from Queue")
+					end
+				else
+					download:Stop()
+					downloading = DLMAN:GetDownloadingPacks()
+					queued = DLMAN:GetQueuedPacks()
+				end
 			end,
 			PackDownloadedMessageCommand = function(self, params) -- Download Stopped/Finished
 				downloading = DLMAN:GetDownloadingPacks()
@@ -707,7 +716,7 @@ local function packList()
 			MouseDownCommand = function(self)
 				if packlist[packIndex] ~= nil and packlist[packIndex]:IsDownloading() and not packlist[packIndex]:IsQueued() then -- IsDownloading() returns the wrong boolean for some reason.
 					self:GetParent():playcommand("StartDownload")
-				elseif packlist[packIndex] ~= nil and not packlist[packIndex]:IsQueued() then
+				elseif packlist[packIndex] ~= nil then
 					self:GetParent():playcommand("StopDownload")
 				end
 
