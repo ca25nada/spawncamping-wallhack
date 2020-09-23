@@ -45,6 +45,13 @@ local t = Def.ActorFrame{
 			SCREENMAN:GetTopScreen():PlayReplay(replayScore)
 		end
 	end,
+	CurrentSongChangedMessageCommand = function(self)
+		if profile:IsCurrentChartPermamirror() then
+			local modslevel = "ModsLevel_Preferred"
+			local playeroptions = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptions(modslevel)
+			playeroptions:Mirror(false)
+		end
+	end,
 
 	PlayingSampleMusicMessageCommand = function(self)
 		local leaderboardEnabled =
