@@ -1367,7 +1367,7 @@ local function oldEvalStuff()
 					scoreList = getScoreTable(player, getCurRate())
 				else
 					scoreList = DLMAN:GetChartLeaderBoard(steps:GetChartKey(), currentCountry)
-					if #scoreList == 0 and not alreadyPulled then
+					if scoreList ~= nil and #scoreList == 0 and not alreadyPulled then
 						updateLeaderBoardForCurrentChart()
 					end
 				end
@@ -1377,9 +1377,9 @@ local function oldEvalStuff()
 				else
 					maxPages = 1
 				end
-				if isLocal or #scoreList ~= 0 then
+				if isLocal or (scoreList ~= nil and #scoreList ~= 0) then
 					self:queuecommand("Set")
-				elseif #scoreList == 0 then
+				elseif scoreList == nil or #scoreList == 0 then
 					self:queuecommand("ListEmpty")
 				end
 
@@ -1484,11 +1484,12 @@ local function oldEvalStuff()
 					self:diffusealpha(0)
 				end,
 				UpdateListMessageCommand = function(self)
-					local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
-					if #scoreList == 0 then
+					if scoreList == nil or #scoreList == 0 then
 						self:diffusealpha(0)
 						return
 					end
+
+					local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
 					self:stoptweening()
 					self:diffusealpha(0)
 					self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY - 8)
@@ -1515,11 +1516,12 @@ local function oldEvalStuff()
 					self:xy(scoreItemX + scoreItemWidth + 10 + (frameWidth - scoreItemWidth - scoreItemX - 20)/2, (scoreItemHeight + scoreItemSpacing + 1) * scoresPerPage + scoreItemY)
 				end,
 				UpdateListMessageCommand = function(self)
-					local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
-					if #scoreList == 0 then
+					if scoreList == nil or #scoreList == 0 then
 						self:diffusealpha(0)
 						return
 					end
+
+					local scoresOnThisPage = math.abs((curPage-1) * scoresPerPage + 1 - math.min((curPage) * scoresPerPage,#scoreList))
 					self:stoptweening()
 					self:diffusealpha(0)
 					self:y((scoreItemHeight) * (scoresOnThisPage+1) + (scoreItemSpacing*scoresOnThisPage) + scoreItemY - 8)
@@ -1887,12 +1889,14 @@ local function oldEvalStuff()
 				end,
 				UpdateScoresMessageCommand = function(self)
 					scoreIndex = (curPage - 1) * scoresPerPage + i
-					if scoreList[scoreIndex] ~= nil then
+					if scoreList ~= nil and scoreList[scoreIndex] ~= nil then
 						self:playcommand("Show")
 					else
 						self:playcommand("Hide")
 					end
-					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+					if scoreList ~= nil then
+						self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
+					end
 				end
 			}
 
