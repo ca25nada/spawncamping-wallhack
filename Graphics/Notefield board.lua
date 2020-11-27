@@ -65,7 +65,7 @@ local function LaneHighlight()
 				if params.TapNoteScore then
 					local enum  = Enum.Reverse(TapNoteScore)[params.TapNoteScore]
 
-					if enum < judgeThreshold and enum > 3 and
+					if enum <= judgeThreshold and enum > 3 and
 						i == firstTrack then
 
 						self:stoptweening()
