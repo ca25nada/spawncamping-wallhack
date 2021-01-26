@@ -6,7 +6,7 @@ local frameHeight = 60
 
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local song = GAMESTATE:GetCurrentSong()
-local steps = GAMESTATE:GetCurrentSteps(pn)
+local steps = GAMESTATE:GetCurrentSteps()
 
 t[#t+1] = Def.Quad{
 	InitCommand = function (self)

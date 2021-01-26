@@ -45,7 +45,7 @@ if fullPlayerInfo then
 			self:queuecommand('Set')
 		end,
 		SetCommand=function(self)
-			local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			local steps = GAMESTATE:GetCurrentSteps()
 			local diff = steps:GetDifficulty()
 			self:diffuse(color("#000000"))
 			self:diffusealpha(0.8)
@@ -101,7 +101,7 @@ if fullPlayerInfo then
 		end,
 		BeginCommand = function(self) self:queuecommand('Set') end,
 		SetCommand=function(self)
-			local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			local steps = GAMESTATE:GetCurrentSteps()
 			local diff = getDifficulty(steps:GetDifficulty())
 			local meter = steps:GetMSD(getCurRateValue(),1)
 			meter = meter == 0 and steps:GetMeter() or meter

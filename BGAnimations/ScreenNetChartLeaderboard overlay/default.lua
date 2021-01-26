@@ -1,6 +1,6 @@
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local song = GAMESTATE:GetCurrentSong()
-local steps = GAMESTATE:GetCurrentSteps(pn)
+local steps = GAMESTATE:GetCurrentSteps()
 local stepsType = steps:GetStepsType()
 
 local scoreList = {}

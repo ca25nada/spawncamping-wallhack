@@ -23,8 +23,8 @@ local ctt = {} -- track vector
 local ntt = {} -- tap note type vector
 local wuab = {} -- time corrected tap notes (?)
 local columns = 4 -- the number of columns because we dont keep track of this i guess
-local finalSecond = GAMESTATE:GetCurrentSong(PLAYER_1):GetLastSecond()
-local td = GAMESTATE:GetCurrentSteps(PLAYER_1):GetTimingData()
+local finalSecond = GAMESTATE:GetCurrentSong():GetLastSecond()
+local td = GAMESTATE:GetCurrentSteps():GetTimingData()
 local oddColumns = false
 local middleColumn = 1.5 -- middle column for 4k but accounting for trackvector indexing at 0
 

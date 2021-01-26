@@ -93,7 +93,7 @@ local function generalFrame(pn)
 			song = GAMESTATE:GetCurrentSong()
 			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 				profile[pn] = GetPlayerOrMachineProfile(pn)
-				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
+				steps[pn] = GAMESTATE:GetCurrentSteps()
 				topScore[pn] = getBestScore(pn, 0, getCurRate())
 				if song and steps[pn] then
 					ptags = tags:get_data().playerTags

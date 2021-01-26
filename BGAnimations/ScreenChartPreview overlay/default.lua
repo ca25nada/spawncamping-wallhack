@@ -1,6 +1,6 @@
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local song = GAMESTATE:GetCurrentSong()
-local steps = GAMESTATE:GetCurrentSteps(pn)
+local steps = GAMESTATE:GetCurrentSteps()
 local stepsType = steps:GetStepsType()
 local usingreverse = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
 
@@ -653,7 +653,7 @@ t[#t+1] = Def.ActorFrame {
 			end
 		end,
 		GraphUpdateCommand = function(self)
-			steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			steps = GAMESTATE:GetCurrentSteps()
 			if steps then
 				local nColumns = steps:GetNumColumns()
 				local rate = math.max(1, getCurRateValue())

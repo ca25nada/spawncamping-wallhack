@@ -181,7 +181,7 @@ function getBestMaxCombo(pn,ignore, rate)
 
 	local hsTable = getScoreTable(pn, rate)
 
-	local steps = GAMESTATE:GetCurrentSteps(pn)
+	local steps = GAMESTATE:GetCurrentSteps()
 
 	if hsTable ~= nil and #hsTable >= 1 then
 		while i <= #hsTable do
@@ -214,7 +214,7 @@ function getBestMissCount(pn,ignore, rate)
 
 	local hsTable = getScoreTable(pn, rate)
 
-	local steps = GAMESTATE:GetCurrentSteps(pn)
+	local steps = GAMESTATE:GetCurrentSteps()
 
 	if hsTable ~= nil and #hsTable >= 1 then
 		while i <= #hsTable do
@@ -245,7 +245,7 @@ function getBestScore(pn, ignore, rate, percent)
 	local bestScore
 
 	local hsTable = getScoreTable(pn, rate)
-	local steps = GAMESTATE:GetCurrentSteps(pn)
+	local steps = GAMESTATE:GetCurrentSteps()
 	local temp
 
 	if hsTable ~= nil and #hsTable >= 1 then

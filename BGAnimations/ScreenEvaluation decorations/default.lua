@@ -1,6 +1,6 @@
 local song = GAMESTATE:GetCurrentSong()
 local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
-local steps = GAMESTATE:GetCurrentSteps(pn)
+local steps = GAMESTATE:GetCurrentSteps()
 
 --ScoreBoard
 local judges = {'TapNoteScore_W1','TapNoteScore_W2','TapNoteScore_W3','TapNoteScore_W4','TapNoteScore_W5','TapNoteScore_Miss'}
@@ -407,7 +407,7 @@ local function oldEvalStuff()
 
 		local tst = ms.JudgeScalers
 		local tso = tst[judge]
-		local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
+		local ncol = GAMESTATE:GetCurrentSteps():GetNumColumns() - 1
 		local middleCol = ncol / 2
 		local function recountCBs()
 			tso = tst[judge]
@@ -2206,7 +2206,7 @@ local function offsetStuff()
 
 			local pn = GAMESTATE:GetEnabledPlayers()[1]
 			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
-			local steps = GAMESTATE:GetCurrentSteps(pn)
+			local steps = GAMESTATE:GetCurrentSteps()
 
 			self:RunCommandsOnChildren(function(self)
 				local params = 	{width = offsetParamWidth, 
@@ -2411,7 +2411,7 @@ local function newEvalStuff()
 
 	local tst = ms.JudgeScalers
 	local tso = tst[judge]
-	local ncol = GAMESTATE:GetCurrentSteps(PLAYER_1):GetNumColumns() - 1
+	local ncol = GAMESTATE:GetCurrentSteps():GetNumColumns() - 1
 	local middleCol = ncol / 2
 	local function recountCBs()
 		cbl = 0
@@ -2756,7 +2756,7 @@ local function newEvalStuff()
 					self:halign(0):valign(1)
 					self:xy(-frameWidth/2 + edgeTextSpacing2, upperDivider1Y - dividerHeight/2 - 3)
 					self:zoom(msdTextScale)
-					local msd = GAMESTATE:GetCurrentSteps(PLAYER_1):GetMSD(getCurRateValue(), 1)
+					local msd = GAMESTATE:GetCurrentSteps():GetMSD(getCurRateValue(), 1)
 					self:settextf("%5.2f", msd)
 					self:diffuse(byMSD(msd))
 				end
