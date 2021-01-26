@@ -39,7 +39,7 @@ local sortTable = {
 local function searchInput(event)
 	if event.type == "InputEventType_FirstPress" and (event.DeviceInput.button == "DeviceButton_left mouse button" or event.DeviceInput.button == "DeviceButton_right mouse button") then
 		if not active and event.DeviceInput.button == "DeviceButton_right mouse button" then
-			top:PausePreviewNoteField()
+			top:PauseSampleMusic()
 			MESSAGEMAN:Broadcast("PreviewPaused")
 		end
 		if released and active then

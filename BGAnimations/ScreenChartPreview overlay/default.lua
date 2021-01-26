@@ -5,8 +5,6 @@ local stepsType = steps:GetStepsType()
 local usingreverse = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
 
 local ssm
-local NF
-local NFParent
 local musicratio = 1
 local snapGraph
 local densityGraph
@@ -56,7 +54,6 @@ local function input(event)
 	if event.type == "InputEventType_FirstPress" then
 		if event.button == "Back" or event.button == "Start" or event.DeviceInput.button == "DeviceButton_space" then
 			SCREENMAN:GetTopScreen():Cancel()
-			ssm:DeletePreviewNoteField(NFParent)
 			MESSAGEMAN:Broadcast("PreviewNoteFieldDeleted")
 		end
 
@@ -77,7 +74,7 @@ local function input(event)
 		end
 
 		if event.DeviceInput.button == "DeviceButton_right mouse button" then
-			ssm:PausePreviewNoteField()
+			ssm:PauseSampleMusic()
 			MESSAGEMAN:Broadcast("PreviewPaused")
 		end
 
@@ -513,7 +510,6 @@ local t = Def.ActorFrame {
 		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
 	end,
 	ExitScreenMessageCommand = function(self)
-		ssm:DeletePreviewNoteField(NFParent)
 		MESSAGEMAN:Broadcast("PreviewNoteFieldDeleted")
 	end
 }
@@ -584,7 +580,7 @@ local function makeABar(vertices, x, y, barWidth, barHeight, thecolor)
 end
 
 local function seekOrHighlight(self)
-	local pos = ssm:GetPreviewNoteFieldMusicPosition() / musicratio
+	local pos = ssm:GetSampleMusicPosition() / musicratio
 	self:GetChild("PreviewProgress"):zoomto(densityGraphWidth, math.min(pos, frameHeight-20))
 	self:queuecommand("Highlight")
 end
@@ -740,17 +736,17 @@ t[#t+1] = Def.ActorFrame {
 		end,
 		MouseDownCommand = function(self, params)
 			if params.button == "DeviceButton_left mouse button" then
-				ssm:SetPreviewNoteFieldMusicPosition( (INPUTFILTER:GetMouseY() - self:GetParent():GetY() - 20) * musicratio)
+				ssm:SetSampleMusicPosition( (INPUTFILTER:GetMouseY() - self:GetParent():GetY() - 20) * musicratio)
 			end
 		end,
 		WheelUpSlowMessageCommand = function(self)
 			if isOver(self) then
-				ssm:SetPreviewNoteFieldMusicPosition( ssm:GetPreviewNoteFieldMusicPosition() - 0.1 )
+				ssm:SetSampleMusicPosition( ssm:GetSampleMusicPosition() - 0.1 )
 			end
 		end,
 		WheelDownSlowMessageCommand = function(self)
 			if isOver(self) then
-				ssm:SetPreviewNoteFieldMusicPosition( ssm:GetPreviewNoteFieldMusicPosition() + 0.1 )
+				ssm:SetSampleMusicPosition( ssm:GetSampleMusicPosition() + 0.1 )
 			end
 		end
 	},
@@ -887,24 +883,38 @@ t[#t+1] = Def.ActorFrame {
 	-- The Preview Notefield.
 	Def.ActorFrame {
 		InitCommand = function(self)
-			NFParent = self
 			ssm = GHETTOGAMESTATE:getSSM()
-			self:queuecommand("StartPreview")
 		end,
 
-		StartPreviewCommand = function(self)
-			NF = ssm:CreatePreviewNoteField()
-			if NF == nil then
-				return
+		Def.NoteFieldPreview {
+			Name = "NoteField",
+			DrawDistanceBeforeTargetsPixels = 800,
+			DrawDistanceAfterTargetsPixels = 0,
+			YReverseOffsetPixels = 100,
+	
+			InitCommand = function(self)
+				local s = GAMESTATE:GetCurrentSteps()
+				if s ~= nil then
+					self:LoadNoteData(s)
+				end
+			end,
+			BeginCommand = function(self)
+				self:zoom(0.5):draworder(100)
+				self:xy(frameWidth / 2, 50)
+				if usingreverse then
+					self:y(50 * 1.5 + 215)
+				end
+				self:GetParent():SortByDrawOrder()
+			end,
+			CurrentStepsChangedMessageCommand = function(self, params)
+				local steps = params.ptr
+				if steps ~= nil then
+					self:LoadNoteData(steps)
+				else
+					self:LoadDummyNoteData()
+				end
 			end
-			NF:zoom(0.5):draworder(100)
-			ssm:dootforkfive(NFParent)
-			NF:xy(frameWidth / 2, 50)
-			if usingreverse then
-				NF:y(50 * 1.5 + 215)
-			end
-			NFParent:SortByDrawOrder()
-		end
+		},
 	},
 }
 
