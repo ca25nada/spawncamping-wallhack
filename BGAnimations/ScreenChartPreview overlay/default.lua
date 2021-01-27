@@ -75,7 +75,6 @@ local function input(event)
 
 		if event.DeviceInput.button == "DeviceButton_right mouse button" then
 			ssm:PauseSampleMusic()
-			MESSAGEMAN:Broadcast("PreviewPaused")
 		end
 
 	end
@@ -905,6 +904,8 @@ t[#t+1] = Def.ActorFrame {
 					self:y(50 * 1.5 + 215)
 				end
 				self:GetParent():SortByDrawOrder()
+				SOUND:StopMusic()
+				ssm:PlayCurrentSongSampleMusic(true, true)
 			end,
 			CurrentStepsChangedMessageCommand = function(self, params)
 				local steps = params.ptr
