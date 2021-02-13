@@ -38,8 +38,8 @@ if enabled and bgType > 1 then -- 2 = Grade+Clear, 3 = Grade Only
 	-- Get the highest grade from the player (or players if 2P)
 	local pss
 	local highestGrade = "Grade_Failed" 
-	if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
-		pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
+	if GAMESTATE:IsPlayerEnabled() then
+		pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 		local playerGrade = pss:GetGrade()
 		if Enum.Reverse(Grade)[playerGrade] < Enum.Reverse(Grade)[highestGrade] then
 			highestGrade = playerGrade

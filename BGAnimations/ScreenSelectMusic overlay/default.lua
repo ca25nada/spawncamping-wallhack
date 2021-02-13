@@ -48,7 +48,7 @@ local t = Def.ActorFrame{
 	CurrentSongChangedMessageCommand = function(self)
 		if profile:IsCurrentChartPermamirror() then
 			local modslevel = "ModsLevel_Preferred"
-			local playeroptions = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptions(modslevel)
+			local playeroptions = GAMESTATE:GetPlayerState():GetPlayerOptions(modslevel)
 			playeroptions:Mirror(false)
 		end
 	end,

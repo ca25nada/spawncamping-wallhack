@@ -18,8 +18,8 @@ local padding = 8
 local styleType = ToEnumShortString(GAMESTATE:GetCurrentStyle():GetStyleType())
 
 local prefsP1 = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).LaneCover
-local enabledP1 = prefsP1 ~= 0 and GAMESTATE:IsPlayerEnabled(PLAYER_1)
-local isReverseP1 = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
+local enabledP1 = prefsP1 ~= 0 and GAMESTATE:IsPlayerEnabled()
+local isReverseP1 = GAMESTATE:GetPlayerState():GetCurrentPlayerOptions():UsingReverse()
 if prefsP1 == 2 then -- it's a Hidden LaneCover
 	isReverseP1 = not isReverseP1
 end
@@ -35,7 +35,7 @@ end
 
 local function getPlayerBPM(pn)
 	local pn = GAMESTATE:GetMasterPlayerNumber()
-	local songPosition = GAMESTATE:GetPlayerState(pn):GetSongPosition()
+	local songPosition = GAMESTATE:GetPlayerState():GetSongPosition()
 	local ts = SCREENMAN:GetTopScreen()
 	local bpm = 0
 	if ts:GetScreenType() == "ScreenType_Gameplay" then
@@ -56,7 +56,7 @@ local function getMaxDisplayBPM(pn)
 end
 
 local function getSpeed(pn)
-	local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred")
+	local po = GAMESTATE:GetPlayerState():GetPlayerOptions("ModsLevel_Preferred")
 	if po:XMod() ~= nil then
 		return po:XMod() * getPlayerBPM(pn)
 	elseif po:CMod() ~= nil then
@@ -72,7 +72,7 @@ local yoffsetreverse = THEME:GetMetric("Player", "ReceptorArrowsYReverse")
 local yoffsetstandard = THEME:GetMetric("Player", "ReceptorArrowsYStandard")
 
 local function getNoteFieldHeight(pn)
-	local usingreverse = GAMESTATE:GetPlayerState(pn):GetCurrentPlayerOptions():UsingReverse()
+	local usingreverse = GAMESTATE:GetPlayerState():GetCurrentPlayerOptions():UsingReverse()
 	if usingreverse then
 		return SCREEN_CENTER_Y + yoffsetreverse
 	else

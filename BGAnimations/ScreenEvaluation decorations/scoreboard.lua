@@ -17,9 +17,9 @@ local pss
 local player = GAMESTATE:GetEnabledPlayers()[1]
 
 
-pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 profile = GetPlayerOrMachineProfile(player)
-steps = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPlayedSteps()[1]
+steps = STATSMAN:GetCurStageStats():GetPlayerStageStats():GetPlayedSteps()[1]
 hsTable = getScoreTable(player, getCurRate())
 score = pss:GetHighScore()
 scoreIndex = getHighScoreIndex(hsTable, score)
@@ -116,7 +116,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX,frameY+(drawindex*spacing)-4):zoomto(frameWidth,30):halign(0):valign(0):diffuse(getMainColor("frame")):diffusealpha(0.8)
 			end,
 			BeginCommand=function(self)
-				self:visible(GAMESTATE:IsHumanPlayer(pn))
+				self:visible(GAMESTATE:IsHumanPlayer())
 			end
 		},
 
@@ -126,7 +126,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 				self:xy(frameX,frameY+(drawindex*spacing)-4):zoomto(frameWidth,30):halign(0):valign(0):diffuse(getMainColor("highlight")):diffusealpha(0.3)
 			end,
 			BeginCommand=function(self)
-				self:visible(GAMESTATE:IsHumanPlayer(pn) and equals)
+				self:visible(GAMESTATE:IsHumanPlayer() and equals)
 			end,
 			SetCommand = function(self)
 				self:playcommand("Begin")
@@ -161,7 +161,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			SetCommand = function(self)
 				if hsTable[index] ~= nil then
 					self:diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
-					self:visible(GAMESTATE:IsHumanPlayer(pn))
+					self:visible(GAMESTATE:IsHumanPlayer())
 				end
 			end
 		},
@@ -177,7 +177,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 			SetCommand = function(self)
 				if hsTable[index] ~= nil then
 					self:diffuse(getClearTypeColor(getClearType(pn,steps,hsTable[index])))
-					self:visible(GAMESTATE:IsHumanPlayer(pn))
+					self:visible(GAMESTATE:IsHumanPlayer())
 					self:diffuseramp()
 					self:effectoffset(0.03*(lines-drawindex))
 					self:effectcolor2(color("1,1,1,0.6"))

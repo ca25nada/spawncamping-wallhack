@@ -37,7 +37,7 @@ t[#t+1] = Def.Actor{
 		self:queuecommand("Set")
 	end,
 	SetCommand=function(self)
-		if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+		if GAMESTATE:IsPlayerEnabled() then
 			profileP1 = GetPlayerOrMachineProfile(PLAYER_1)
 			if profileP1 ~= nil then
 				if profileP1 == PROFILEMAN:GetMachineProfile() then

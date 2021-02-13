@@ -151,7 +151,7 @@ function UpdateInternal3(self, Player)
 	local smallframe = frame:GetChild('SmallFrame')
 	local bigframe = frame:GetChild('BigFrame')
 
-	if GAMESTATE:IsHumanPlayer(Player) then
+	if GAMESTATE:IsHumanPlayer() then
 		frame:visible(true)
 		--using profile if any
 		joinframe:visible(false)

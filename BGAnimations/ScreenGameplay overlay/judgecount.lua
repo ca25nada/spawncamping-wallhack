@@ -53,7 +53,7 @@ end
 
 -- The Judgment text itself (MA for marvelous, etc.)
 local highlight = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).JudgeType == 2 and not bareBone
-local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
+local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 
 local t = Def.ActorFrame {
 	Name = "JudgeCounter",

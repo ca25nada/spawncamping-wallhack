@@ -86,7 +86,7 @@ local function generalFrame(pn)
 	local t = Def.ActorFrame{
 		SetCommand = function(self)
 			self:xy(frameX,frameY)
-			self:visible(GAMESTATE:IsPlayerEnabled(pn))
+			self:visible(GAMESTATE:IsPlayerEnabled())
 		end,
 
 		UpdateInfoCommand = function(self)
@@ -426,7 +426,7 @@ local function generalFrame(pn)
 			self:stoptweening()
 			self:decelerate(0.5)
 			local meter = 0
-			local enabled = GAMESTATE:IsPlayerEnabled(pn)
+			local enabled = GAMESTATE:IsPlayerEnabled()
 			if enabled and steps[pn] ~= nil then
 				meter = steps[pn]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
@@ -469,7 +469,7 @@ local function generalFrame(pn)
 			self:stoptweening()
 			self:decelerate(0.5)
 			local meter = 0
-			local enabled = GAMESTATE:IsPlayerEnabled(pn)
+			local enabled = GAMESTATE:IsPlayerEnabled()
 			if enabled and steps[pn] ~= nil then
 				meter = steps[pn]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then

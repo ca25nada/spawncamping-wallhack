@@ -1,5 +1,5 @@
 local song = GAMESTATE:GetCurrentSong()
-local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
+local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 local steps = GAMESTATE:GetCurrentSteps()
 
 --ScoreBoard
@@ -109,7 +109,7 @@ local function oldEvalStuff()
 			end
 			if not tst[judge] then return end
 			tst = tst[judge]
-			SCREENMAN:GetTopScreen():SetPlayerStageStatsFromReplayData(SCREENMAN:GetTopScreen():GetStageStats():GetPlayerStageStats(PLAYER_1), tst)
+			SCREENMAN:GetTopScreen():SetPlayerStageStatsFromReplayData(SCREENMAN:GetTopScreen():GetStageStats():GetPlayerStageStats(), tst)
 		end
 	}
 
@@ -162,7 +162,7 @@ local function oldEvalStuff()
 			self:halign(0)
 			self:maxwidth((SCREEN_WIDTH/2 - 133 - 10)/0.45)
 			self:diffuse(color(colorConfig:get_data().evaluation.BackgroundText)):diffusealpha(0.8)
-			local mods = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("ModsLevel_Current")
+			local mods = GAMESTATE:GetPlayerState():GetPlayerOptionsString("ModsLevel_Current")
 			self:settextf("Mods: %s", mods)
 		end
 	}
@@ -376,7 +376,7 @@ local function oldEvalStuff()
 				end,
 				BeginCommand=function(self) 
 					local ss = SCREENMAN:GetTopScreen():GetStageStats() 
-					self:Set(ss,ss:GetPlayerStageStats(pn)) 
+					self:Set(ss,ss:GetPlayerStageStats()) 
 				end 
 			}
 		}
@@ -385,7 +385,7 @@ local function oldEvalStuff()
 
 	local function scoreBoard(pn)
 		local hsTable = getScoreTable(pn, rate)
-		local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+		local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 		local profile = PROFILEMAN:GetProfile(pn)
 		local index
 		if hsTable == nil then
@@ -1270,7 +1270,7 @@ local function oldEvalStuff()
 	local song = STATSMAN:GetCurStageStats():GetPlayedSongs()[1]
 	local profile = GetPlayerOrMachineProfile(player)
 	local hsTable = getScoreTable(player, getCurRate())
-	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 	local score = pss:GetHighScore()
 	local scoreIndex = getHighScoreIndex(hsTable, score)
 	local newScoreboardInitialLocalIndex = scoreIndex
@@ -2205,7 +2205,7 @@ local function offsetStuff()
 			self:zoom(offsetParamZoom)
 
 			local pn = GAMESTATE:GetEnabledPlayers()[1]
-			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 			local steps = GAMESTATE:GetCurrentSteps()
 
 			self:RunCommandsOnChildren(function(self)
@@ -3047,7 +3047,7 @@ local function newEvalStuff()
 				self:xy(-playerInfoFrameWidth/2, -playerInfoFrameHeight + SCREEN_HEIGHT * playerInfoModsTopReferenceRatio)
 				self:zoom(smallerTextScale)
 				local mods = pss:GetHighScore():GetModifiers()
-				--GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():GetInvalidatingMods()
+				--GAMESTATE:GetPlayerState():GetCurrentPlayerOptions():GetInvalidatingMods()
 				self:settext(mods)
 				self:maxwidth((playerInfoFrameWidth - 6) / smallerTextScale)
 			end
@@ -3079,7 +3079,7 @@ t[#t+1] = Def.ActorFrame {
 	OnCommand = function(self)
 		SCREENMAN:GetTopScreen():AddInputCallback(scroller)
 		if PREFSMAN:GetPreference("SortBySSRNormPercent") then
-			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+			local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 			local curScore = pss:GetHighScore()
 			judge = 4
 			

@@ -2,7 +2,7 @@ local pn = GAMESTATE:GetEnabledPlayers()[1]
 local song = GAMESTATE:GetCurrentSong()
 local steps = GAMESTATE:GetCurrentSteps()
 local stepsType = steps:GetStepsType()
-local usingreverse = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
+local usingreverse = GAMESTATE:GetPlayerState():GetCurrentPlayerOptions():UsingReverse()
 
 local ssm
 local musicratio = 1

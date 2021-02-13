@@ -11,7 +11,7 @@ local avatarPosition = {
 }
 
 local function PLife(pn)
-	local life = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentLife() or 0
+	local life = STATSMAN:GetCurStageStats():GetPlayerStageStats():GetCurrentLife() or 0
 	if life < 0 then
 		return 0
 	else
@@ -19,7 +19,7 @@ local function PLife(pn)
 	end
 end
 
-local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
+local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 local profile = GetPlayerOrMachineProfile(PLAYER_1)
 
 -- whole frame actorframe
@@ -124,7 +124,7 @@ if fullPlayerInfo then
 			self:maxwidth(200 * 2)
 		end,
 		SetCommand = function(self)
-			local mods = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("ModsLevel_Current")
+			local mods = GAMESTATE:GetPlayerState():GetPlayerOptionsString("ModsLevel_Current")
 			self:settext(mods)
 		end
 
