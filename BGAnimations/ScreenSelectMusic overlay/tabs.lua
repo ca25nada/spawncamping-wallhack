@@ -57,6 +57,24 @@ local function input(event)
 				SCREENMAN:AddNewScreenToTop("ScreenDownload")
 			elseif tonumber(event.char) == 6 then
 				SCREENMAN:AddNewScreenToTop("ScreenPlaylistInfo")
+			elseif tonumber(event.char) == 7 then
+				if not CtrlPressed then
+					-- random all songs
+					local s = wheel:GetSongs()
+					if #s == 0 then return end
+					local rsong = s[math.random(#s)]
+					wheel:SelectSong(rsong)
+				else
+					-- random pack songs
+					local song = GAMESTATE:GetCurrentSong()
+					if GAMESTATE:GetSortOrder() == "SortOrder_Group" and song ~= nil then
+						local group = song:GetGroupName()
+						local s = wheel:GetSongsInGroup(group)
+						if #s == 0 then return end
+						local rsong = s[math.random(#s)]
+						wheel:SelectSong(rsong)
+					end
+				end
 			end
 		end
 
