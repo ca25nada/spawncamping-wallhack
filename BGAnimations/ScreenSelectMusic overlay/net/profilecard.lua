@@ -84,9 +84,10 @@ local hsTable = {
 
 local function generalFrame(pn)
 	local t = Def.ActorFrame{
-		SetCommand = function(self)
+		BeginCommand = function(self)
 			self:xy(frameX,frameY)
 			self:visible(GAMESTATE:IsPlayerEnabled())
+			self:playcommand("Set")
 		end,
 
 		UpdateInfoCommand = function(self)
@@ -109,11 +110,9 @@ local function generalFrame(pn)
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end,
 
-		BeginCommand = function(self) self:playcommand('Set') end,
 		PlayerJoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
 		PlayerUnjoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
-		CurrentSongChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
-		CurrentStepsP1ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
+		CurrentStepsChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
 		CurrentRateChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end
 	}
 
