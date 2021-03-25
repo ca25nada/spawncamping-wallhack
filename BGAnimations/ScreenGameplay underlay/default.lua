@@ -7,6 +7,7 @@ if profile:IsCurrentChartPermamirror() and not replaystate then -- turn on mirro
 end
 
 setMovableKeymode(getCurrentKeyMode())
+setCurExp(PLAYER_1)
 
 
 local t = Def.ActorFrame{}

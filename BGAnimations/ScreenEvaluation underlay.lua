@@ -14,6 +14,8 @@ local brightness = 0.4
 
 local t = Def.ActorFrame{}
 
+setCurExp(PLAYER_1)
+
 t[#t+1] = LoadActor("_background")
 
 if enabled and bgType == 1 then -- SONG BG
