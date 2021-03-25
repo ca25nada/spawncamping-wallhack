@@ -1,6 +1,16 @@
 local t = Def.ActorFrame{
 	InitCommand = function(self) 
 		self:delayedFadeIn(6)
+
+		-- auto login
+		local user = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).Username
+		local passToken = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).Password
+		if passToken ~= "" and answer ~= "" then
+			if not DLMAN:IsLoggedIn() then
+				DLMAN:LoginWithToken(user, passToken)
+			end
+		end
+
 	end,
 	OffCommand = function(self)
 		self:sleep(0.05)
