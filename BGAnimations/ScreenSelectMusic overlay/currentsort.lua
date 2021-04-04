@@ -87,9 +87,6 @@ local function searchInput(event)
 		elseif event.DeviceInput.button == "DeviceButton_delete"  then
 			searchstring = ""
 
-		elseif event.DeviceInput.button == "DeviceButton_="  then
-			searchstring = searchstring.."="
-
 		elseif event.DeviceInput.button == "DeviceButton_v" and CtrlPressed then
 			searchstring = searchstring .. HOOKS:GetClipboard()
 
@@ -97,7 +94,7 @@ local function searchInput(event)
 			if CtrlPressed then
 				return false
 			end
-			if event.char and event.char:match('[%%%+%-%!%@%#%$%^%&%*%(%)%=%_%.%,%:%;%\'%"%>%<%?%/%~%|%w]') and event.char ~= "" then
+			if event.char and event.char:match('[%%%+%-%!%@%#%$%^%&%*%(%)%=%_%.%,%:%;%\'%"%>%<%?%/%~%|%w%[%]%{%}%`%\\]') and event.char ~= "" then
 				searchstring = searchstring .. event.char
 			end
 		end
