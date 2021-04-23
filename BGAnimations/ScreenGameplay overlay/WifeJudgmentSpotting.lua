@@ -184,6 +184,13 @@ local t =
 		local state = "MSD: " .. string.format("%05.2f", GAMESTATE:GetCurrentSteps():GetMSD(getCurRateValue(), 1))
 		local endTime = os.time() + GetPlayableTime()
 		GAMESTATE:UpdateDiscordPresence(largeImageTooltip, detail, state, endTime)
+		local streamerstuff =
+		"Now playing " ..
+		GAMESTATE:GetCurrentSong():GetDisplayMainTitle() ..
+			" by " ..
+				GAMESTATE:GetCurrentSong():GetDisplayArtist() ..
+					" in " .. GAMESTATE:GetCurrentSong():GetGroupName() .. " " .. state
+		File.Write("nowplaying.txt", streamerstuff)
 
 		screen = SCREENMAN:GetTopScreen()
 		usingReverse = GAMESTATE:GetPlayerState():GetCurrentPlayerOptions():UsingReverse()
