@@ -190,7 +190,7 @@ end
 
 --returns true if windowed.
 function GHETTOGAMESTATE.isWindowed()
-	return PREFSMAN:GetPreference("Windowed")
+	return PREFSMAN:GetPreference("Windowed") or PREFSMAN:GetPreference("FullscreenIsBorderlessWindow")
 end
 
 -- Values based on ArrowEffects.cpp
