@@ -34,6 +34,7 @@ local sortTable = {
 	SortOrder_JackSpeed				= 'JackSpeed Rating',
 	SortOrder_Chordjack				= 'Chordjack Rating',
 	SortOrder_Technical				= 'Technical Rating',
+	SortOrder_Ungrouped				= 'Ungrouped',
 }
 
 local function searchInput(event)
