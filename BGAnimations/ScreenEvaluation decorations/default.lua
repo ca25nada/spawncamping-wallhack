@@ -109,7 +109,7 @@ local function oldEvalStuff()
 			end
 			if not tst[judge] then return end
 			tst = tst[judge]
-			SCREENMAN:GetTopScreen():SetPlayerStageStatsFromReplayData(SCREENMAN:GetTopScreen():GetStageStats():GetPlayerStageStats(), tst)
+			SCREENMAN:GetTopScreen():SetPlayerStageStatsFromReplayData(SCREENMAN:GetTopScreen():GetStageStats():GetPlayerStageStats(), tst, pss:GetHighScore())
 		end
 	}
 
