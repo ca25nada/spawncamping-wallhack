@@ -901,7 +901,7 @@ local function oldEvalStuff()
 				self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
 			end,
 			SetCommand = function(self)
-				local missCount = getScoreMissCount(curScore)
+				local missCount = getScoreComboBreaks(curScore)
 				self:settext(missCount)
 			end
 		}
@@ -915,7 +915,7 @@ local function oldEvalStuff()
 			end,
 			SetCommand = function(self)
 				local score = getBestMissCount(pn,index, rate)
-				local missCount = getScoreMissCount(score)
+				local missCount = getScoreComboBreaks(score)
 
 				if missCount ~= nil then
 					self:settext(missCount)
@@ -934,8 +934,8 @@ local function oldEvalStuff()
 			SetCommand = function(self) 
 
 				local score = getBestMissCount(pn,index, rate)
-				local recMissCount = getScoreMissCount(score)
-				local curMissCount = getScoreMissCount(curScore)
+				local recMissCount = getScoreComboBreaks(score)
+				local curMissCount = getScoreComboBreaks(curScore)
 				local diff = 0
 
 				if score ~= nil then
@@ -966,8 +966,8 @@ local function oldEvalStuff()
 			end,
 			SetCommand = function(self) 
 				local score = getBestMissCount(pn,index, rate)
-				local recMissCount = getScoreMissCount(score)
-				local curMissCount = getScoreMissCount(curScore)
+				local recMissCount = getScoreComboBreaks(score)
+				local curMissCount = getScoreComboBreaks(curScore)
 				local diff = 0
 
 				local extra = ""

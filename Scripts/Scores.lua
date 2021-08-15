@@ -222,7 +222,7 @@ function getBestMissCount(pn,ignore, rate)
 				indexScore = hsTable[i]
 				if indexScore ~= nil then
 					if indexScore:GetGrade() ~= "Grade_Failed" then
-						temp = getScoreMissCount(indexScore)
+						temp = getScoreComboBreaks(indexScore)
 						if temp < lowest then
 							lowest = temp
 							bestScore = indexScore

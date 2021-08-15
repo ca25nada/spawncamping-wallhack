@@ -634,7 +634,7 @@ local function generalFrame(pn)
 		SetCommand = function(self)
 			local score = getBestMissCount(pn, 0, getCurRate())
 			if score ~= nil then
-				self:settext("Miss Count: "..getScoreMissCount(score))
+				self:settext("Miss Count: "..getScoreComboBreaks(score))
 			else
 				self:settext("Miss Count: -")
 			end
