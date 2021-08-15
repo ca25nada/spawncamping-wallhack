@@ -164,6 +164,10 @@ t[#t+1] = Def.Quad{
 			local row = convertXToRow(xpos)
 			local judgments = SCREENMAN:GetTopScreen():GetReplaySnapshotJudgmentsForNoterow(row)
 			local wifescore = SCREENMAN:GetTopScreen():GetReplaySnapshotWifePercentForNoterow(row) * 100
+			local mean = SCREENMAN:GetTopScreen():GetReplaySnapshotMeanForNoterow(row)
+			local sd = SCREENMAN:GetTopScreen():GetReplaySnapshotSDForNoterow(row)
+			local timebro = td:GetElapsedTimeFromNoteRow(row) / getCurRateValue()
+
 			local marvCount = judgments[10]
 			local perfCount = judgments[9]
 			local greatCount = judgments[8]
@@ -173,7 +177,18 @@ t[#t+1] = Def.Quad{
 
 			--txt:settextf("x %f\nrow %f\nbeat %f\nfinalsecond %f", xpos, row, row/48, finalSecond)
 			-- The odd formatting here is in case we want to add translation support.
-			txt:settextf("%f%%\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d", wifescore, "Marvelous", marvCount, "Perfect", perfCount, "Great", greatCount, "Good", goodCount, "Bad", badCount, "Miss", missCount)
+			txt:settextf("%f%%\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %0.2fms\n%s: %0.2fms\n%s: %0.2fs",
+				wifescore,
+				"Marvelous", marvCount,
+				"Perfect", perfCount,
+				"Great", greatCount,
+				"Good", goodCount,
+				"Bad", badCount,
+				"Miss", missCount,
+				"Std. Dev", sd,
+				"Mean", mean,
+				"Time", timebro
+			)
 		else
 			bar:visible(false)
 			txt:visible(false)
