@@ -1,3 +1,8 @@
+Refer to poco's fork for the latest theme for the etterna client.
+
+https://github.com/poco0317/spawncamping-wallhack
+
+---
 ﻿# spawncamping-wallhack
 A SM5 Theme ported for Etterna, a client aimed primarily for KB players.
 
