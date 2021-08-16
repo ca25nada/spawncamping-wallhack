@@ -2,13 +2,12 @@
 local top
 local profile = PROFILEMAN:GetProfile(PLAYER_1)
 
-local curType = 1
-local assetTypes = {}
-for k,v in pairs(assetFolders) do
-    assetTypes[curType] = k
-    curType = curType + 1
-end
-curType = 2
+local curType = 2
+local assetTypes = {
+	"toasty",
+	"avatar",
+	"judgment",
+}
 
 local maxPage = 1
 local curPage = 1
