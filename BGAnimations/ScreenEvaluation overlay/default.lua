@@ -1,7 +1,7 @@
 local t = Def.ActorFrame{}
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = GetPlayerOrMachineProfile(pn)
-local steps = GAMESTATE:GetCurrentSteps(pn)
+local steps = GAMESTATE:GetCurrentSteps()
 
 
 t[#t+1] = LoadActor("../_frame")

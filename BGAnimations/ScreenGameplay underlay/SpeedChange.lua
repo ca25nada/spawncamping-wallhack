@@ -18,8 +18,8 @@ local t = Def.ActorFrame{
 	Name="SpeedChange",
 	CodeMessageCommand = function(self, params)
 		local pn = params.PlayerNumber
-		local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred")
-		local os = GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString("ModsLevel_Preferred")
+		local po = GAMESTATE:GetPlayerState():GetPlayerOptions("ModsLevel_Preferred")
+		local os = GAMESTATE:GetPlayerState():GetPlayerOptionsString("ModsLevel_Preferred")
 		local speedType = 1 -- 1 = x, 2 = c, 3 = m
 		local xSpeed
 		local cSpeed
@@ -27,7 +27,7 @@ local t = Def.ActorFrame{
 		local topScreen = SCREENMAN:GetTopScreen()
 
 		--Grab actors for the optionlines beside the profile avatar
-		if pn == PLAYER_1 and GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+		if pn == PLAYER_1 and GAMESTATE:IsPlayerEnabled() then
 			avatarOption = topScreen:GetChildren().Overlay:GetChildren().Avatars:GetChildren().P1Avatar:GetChildren().P1AvatarOption
 		end
 
@@ -66,9 +66,9 @@ local t = Def.ActorFrame{
 		end
 
 		--Set the speedmod and set the player's option text.
-		if GAMESTATE:IsPlayerEnabled(pn) then
-			GAMESTATE:GetPlayerState(pn):SetPlayerOptions("ModsLevel_Preferred",GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString("ModsLevel_Preferred"))
-			avatarOption:settext(GAMESTATE:GetPlayerState(pn):GetPlayerOptionsString('ModsLevel_Current'))
+		if GAMESTATE:IsPlayerEnabled() then
+			GAMESTATE:GetPlayerState():SetPlayerOptions("ModsLevel_Preferred",GAMESTATE:GetPlayerState():GetPlayerOptionsString("ModsLevel_Preferred"))
+			avatarOption:settext(GAMESTATE:GetPlayerState():GetPlayerOptionsString('ModsLevel_Current'))
 		end
 
 	end

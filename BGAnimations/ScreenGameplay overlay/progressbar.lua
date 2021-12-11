@@ -78,12 +78,14 @@ t[#t+1] = LoadFont("Common Normal") .. {
 
 -- Returns the %of song played from 0~1.
 local function getMusicProgress()
-    local rate = GAMESTATE:GetSongOptionsObject('ModsLevel_Preferred'):MusicRate()
-	local songLength = GAMESTATE:GetCurrentSong():GetStepsSeconds()
-	local songPosition = GAMESTATE:GetSongPosition():GetMusicSeconds()
-    songPosition = songPosition/rate
-	songLength = math.max(1,songLength/rate)
-	return math.min(1,math.max(0,songPosition/songLength))
+    local ritenow = GAMESTATE:GetSongPosition():GetMusicSeconds() / getCurRateValue()
+    -- left half doesnt account for rate so we have to divide
+    -- but the right half does so we dont have to divide
+    -- this is really dumb
+    -- it works
+    local lastsecFORREAL = (GAMESTATE:GetCurrentSong():GetFirstSecond() / getCurRateValue() + GAMESTATE:GetCurrentSteps():GetLengthSeconds())
+    local percentage = ritenow / lastsecFORREAL
+	return math.min(1,math.max(0,percentage))
 end
 
 local function getCurrentTime()

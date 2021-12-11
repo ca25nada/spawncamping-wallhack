@@ -88,7 +88,7 @@ if isMulti then
 		onlineScores[i] = scoreUsingMultiScore(i)
 	end
 else
-	onlineScores = DLMAN:GetChartLeaderBoard(GAMESTATE:GetCurrentSteps(PLAYER_1):GetChartKey())
+	onlineScores = DLMAN:GetChartLeaderBoard(GAMESTATE:GetCurrentSteps():GetChartKey())
 end
 
 -- how to use table.sort()

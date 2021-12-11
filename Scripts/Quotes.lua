@@ -314,6 +314,7 @@ local Phrases = {
     "when you already pine nutted but she keep on gengaozo_succin", -- riktoi
     "wow -- this map -- is very -- ssibal", --jakads https://osu.ppy.sh/b/823842?m=3
     "The only mark you will leave on this world is your utterly insignificant carbon footprint. Your entire life will be obsoleted by a handful of cattle in wyoming and undone by a few fucking square meters of shrubbery in scotland.", -- mina
+    "kudzu how about you give me your address and i'll fly over and uninstall your worthless ass from this earth", -- mina
     "THIS IS NOT GOOBYE", -- Beatcraft cyclone
     "REMINDER THERE IS GIRLISH CAFE FOR O!M", -- ggsnipes
     "guilmon digivolves too Guilhermeziatomon",

@@ -190,13 +190,13 @@ end
 
 --returns true if windowed.
 function GHETTOGAMESTATE.isWindowed()
-	return PREFSMAN:GetPreference("Windowed")
+	return PREFSMAN:GetPreference("Windowed") or PREFSMAN:GetPreference("FullscreenIsBorderlessWindow")
 end
 
 -- Values based on ArrowEffects.cpp
 -- Gets the note scale from the mini mod being used.
 function GHETTOGAMESTATE.getNoteFieldScale(self, pn)
-	local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions('ModsLevel_Preferred')
+	local po = GAMESTATE:GetPlayerState():GetPlayerOptions('ModsLevel_Preferred')
 	local val,as = po:Mini()
 	local zoom = 1
 	zoom = 1-(val*0.5)

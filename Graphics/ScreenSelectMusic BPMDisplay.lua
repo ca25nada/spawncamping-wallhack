@@ -8,5 +8,5 @@ return Def.BPMDisplay {
 	CurrentSongChangedMessageCommand = function(self) self:playcommand("Set") end,
 	CurrentCourseChangedMessageCommand = function(self) self:playcommand("Set") end,
 	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end,
-	CurrentStepsP1ChangedMessageCommand = function(self) self:playcommand("Set") end
+	CurrentStepsChangedMessageCommand = function(self) self:playcommand("Set") end
 }

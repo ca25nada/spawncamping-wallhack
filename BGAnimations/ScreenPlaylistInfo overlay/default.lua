@@ -32,7 +32,7 @@ local maxPages = math.ceil(#playlists/maxItems)
 local top
 
 local pn = GAMESTATE:GetEnabledPlayers()[1]
-local steps = GAMESTATE:GetCurrentSteps(pn)
+local steps = GAMESTATE:GetCurrentSteps()
 local song = GAMESTATE:GetCurrentSong()
 
 

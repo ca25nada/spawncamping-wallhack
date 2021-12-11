@@ -3,7 +3,7 @@ local frameWidth = capWideScale(160, 260)
 local framex = SCREEN_WIDTH-frameWidth-WideScale(get43size(40),40)/2
 local framey = 110
 local spacing = 34
-local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+local steps = GAMESTATE:GetCurrentSteps()
 
 --Input event for mouse clicks
 local function input(event)

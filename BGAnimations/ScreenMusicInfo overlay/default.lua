@@ -1,6 +1,6 @@
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local song = GAMESTATE:GetCurrentSong()
-local steps = GAMESTATE:GetCurrentSteps(pn)
+local steps = GAMESTATE:GetCurrentSteps()
 local stepsType = steps:GetStepsType()
 
 local scoreList = {}
@@ -843,7 +843,13 @@ local function scoreList()
 				local w4 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W4")
 				local w5 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W5")
 				local miss = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_Miss")
-				self:settextf("%0.2f%% - %d / %d / %d / %d / %d / %d",math.floor(score*10000)/100, w1, w2, w3, w4, w5, miss)
+				if PREFSMAN:GetPreference("SortBySSRNormPercent") then
+					self:settextf("%0.2f%% - %d / %d / %d / %d / %d / %d",math.floor(score*10000)/100, w1, w2, w3, w4, w5, miss)
+				else
+					local judgestr = table.find(ms.JudgeScalers, notShit.round(scoreList[scoreIndex]:GetJudgeScale(), 2))
+					if judgestr == nil then judgestr = 4 end
+					self:settextf("%0.2f%% (J%d) - %d / %d / %d / %d / %d / %d",math.floor(score*10000)/100, judgestr, w1, w2, w3, w4, w5, miss)
+				end
 				self:x(self:GetParent():GetChild("Grade"):GetX()+(self:GetParent():GetChild("Grade"):GetWidth()*0.4)+5)
 			end
 		}

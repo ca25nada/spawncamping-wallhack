@@ -2,7 +2,6 @@ local top
 
 local initpacklist = PackList:new()
 local packlist = initpacklist:GetPackTable()
-local downloading = DLMAN:GetDownloadingPacks()
 
 -- make lookup table for installed packs
 local installedPacks = {}
@@ -144,10 +143,17 @@ local function input(event)
 end
 
 local downloading = DLMAN:GetDownloadingPacks()
+local queued = DLMAN:GetQueuedPacks()
 local function update(self, delta)
+	downloading = DLMAN:GetDownloadingPacks()
+	queued = DLMAN:GetQueuedPacks()
 	for _,pack in ipairs(downloading) do
 		local download = pack:GetDownload()
-		self:GetChild("PackList"):playcommand("DownloadStatus", {pack = pack, download = download})
+		self:GetChild("PackList"):playcommand("DownloadStatus", {pack = pack, download = download, queued = false})
+	end
+	for _,pack in ipairs(queued) do
+		local download = pack:GetDownload()
+		self:GetChild("PackList"):playcommand("DownloadStatus", {pack = pack, download = download, queued = true})
 	end
 
 end
@@ -423,7 +429,6 @@ local function packList()
 		end,
 		DFRFinishedMessageCommand = function(self) -- Download Finished, a Diff Reload happens (forced by the game)
 			refreshInstalledPacks()
-			downloading = DLMAN:GetDownloadingPacks()
 			MESSAGEMAN:Broadcast("UpdateList")
 		end,
 	}
@@ -611,17 +616,21 @@ local function packList()
 				end
 			end,
 			DownloadStatusCommand = function(self, params) -- Download status update from updatefunction
-				if not params.download then
+				if not params.download and not params.queued then
 					return 
 				end
-
 				if params.pack == packlist[packIndex] then
-					download = params.download
-
-					self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
-					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
-					self:GetChild("Size"):settextf("Downloading %5.2f MB / %5.2f MB", download:GetKBDownloaded()/1048576, download:GetTotalKB()/1048576)
-					self:GetChild("ProgressBar"):zoomx(download:GetKBDownloaded()/download:GetTotalKB()*packItemWidth)
+					if params.queued then
+						self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
+						self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
+						self:GetChild("ProgressBar"):zoomx(0)
+					else
+						download = params.download
+						self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
+						self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
+						self:GetChild("Size"):settextf("Downloading %5.2f MB / %5.2f MB", download:GetKBDownloaded()/1048576, download:GetTotalKB()/1048576)
+						self:GetChild("ProgressBar"):zoomx(download:GetKBDownloaded()/download:GetTotalKB()*packItemWidth)
+					end
 				end
 			end,
 			StartDownloadCommand = function(self) -- Start download
@@ -630,22 +639,28 @@ local function packList()
 					return
 				end
 				download = packlist[packIndex]:DownloadAndInstall()
-				downloading = DLMAN:GetDownloadingPacks()
 				if not packExists(packlist[packIndex]:GetName()) then
 					self:GetChild("Status"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.8)
 					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
 				end
 			end,
 			StopDownloadCommand = function(self) -- Stop download
-				download:Stop()
-				downloading = DLMAN:GetDownloadingPacks()
+				if packlist[packIndex]:IsQueued() then
+					local success = packlist[packIndex]:RemoveFromQueue()
+					if success then
+						self:GetChild("Status"):playcommand("Set")
+						self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
+						self:GetChild("Size"):settextf("Download Removed from Queue")
+					end
+				else
+					download:Stop()
+				end
 			end,
 			PackDownloadedMessageCommand = function(self, params) -- Download Stopped/Finished
-				downloading = DLMAN:GetDownloadingPacks()
+				-- nothing?
 			end,
 			DownloadFailedMessageCommand = function(self, params) -- Download Failed
 				if packlist[packIndex] ~= nil and packlist[packIndex]:GetName() == params.pack:GetName() then 
-					downloading = DLMAN:GetDownloadingPacks()
 					self:GetChild("Status"):playcommand("Set")
 					self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
 					self:GetChild("Size"):settextf("Download Failed or Cancelled")
@@ -689,7 +704,7 @@ local function packList()
 				self:zoomto(packItemWidth, packItemHeight)
 			end,
 			MouseDownCommand = function(self)
-				if packlist[packIndex] ~= nil and packlist[packIndex]:IsDownloading() then -- IsDownloading() returns the wrong boolean for some reason.
+				if packlist[packIndex] ~= nil and packlist[packIndex]:IsDownloading() and not packlist[packIndex]:IsQueued() then -- IsDownloading() returns the wrong boolean for some reason.
 					self:GetParent():playcommand("StartDownload")
 				elseif packlist[packIndex] ~= nil then
 					self:GetParent():playcommand("StopDownload")

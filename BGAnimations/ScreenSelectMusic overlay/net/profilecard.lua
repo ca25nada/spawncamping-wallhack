@@ -1,6 +1,16 @@
 local t = Def.ActorFrame{
 	InitCommand = function(self) 
 		self:delayedFadeIn(6)
+
+		-- auto login
+		local user = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).Username
+		local passToken = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).Password
+		if passToken ~= "" and answer ~= "" then
+			if not DLMAN:IsLoggedIn() then
+				DLMAN:LoginWithToken(user, passToken)
+			end
+		end
+
 	end,
 	OffCommand = function(self)
 		self:sleep(0.05)
@@ -84,16 +94,17 @@ local hsTable = {
 
 local function generalFrame(pn)
 	local t = Def.ActorFrame{
-		SetCommand = function(self)
+		BeginCommand = function(self)
 			self:xy(frameX,frameY)
-			self:visible(GAMESTATE:IsPlayerEnabled(pn))
+			self:visible(GAMESTATE:IsPlayerEnabled())
+			self:playcommand("Set")
 		end,
 
 		UpdateInfoCommand = function(self)
 			song = GAMESTATE:GetCurrentSong()
 			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 				profile[pn] = GetPlayerOrMachineProfile(pn)
-				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
+				steps[pn] = GAMESTATE:GetCurrentSteps()
 				topScore[pn] = getBestScore(pn, 0, getCurRate())
 				if song and steps[pn] then
 					ptags = tags:get_data().playerTags
@@ -109,11 +120,9 @@ local function generalFrame(pn)
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end,
 
-		BeginCommand = function(self) self:playcommand('Set') end,
 		PlayerJoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
 		PlayerUnjoinedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
-		CurrentSongChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
-		CurrentStepsP1ChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
+		CurrentStepsChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end,
 		CurrentRateChangedMessageCommand = function(self) self:playcommand("UpdateInfo") end
 	}
 
@@ -426,7 +435,7 @@ local function generalFrame(pn)
 			self:stoptweening()
 			self:decelerate(0.5)
 			local meter = 0
-			local enabled = GAMESTATE:IsPlayerEnabled(pn)
+			local enabled = GAMESTATE:IsPlayerEnabled()
 			if enabled and steps[pn] ~= nil then
 				meter = steps[pn]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
@@ -469,7 +478,7 @@ local function generalFrame(pn)
 			self:stoptweening()
 			self:decelerate(0.5)
 			local meter = 0
-			local enabled = GAMESTATE:IsPlayerEnabled(pn)
+			local enabled = GAMESTATE:IsPlayerEnabled()
 			if enabled and steps[pn] ~= nil then
 				meter = steps[pn]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
@@ -624,7 +633,7 @@ local function generalFrame(pn)
 		SetCommand = function(self)
 			local score = getBestMissCount(pn, 0, getCurRate())
 			if score ~= nil then
-				self:settext("Miss Count: "..getScoreMissCount(score))
+				self:settext("Miss Count: "..getScoreComboBreaks(score))
 			else
 				self:settext("Miss Count: -")
 			end

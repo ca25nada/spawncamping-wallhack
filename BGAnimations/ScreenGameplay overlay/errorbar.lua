@@ -1,7 +1,7 @@
 -- A somewhat naive implementation of the osu's error bar.
 -- Single Player only until I figure out where to put everything
 -- Hopefully I can change it so I don't have to initialize like 300 quads beforehand.
-local enabled = ((playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar == true) and GAMESTATE:IsHumanPlayer(PLAYER_1)) and 
+local enabled = ((playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).ErrorBar == true) and GAMESTATE:IsHumanPlayer()) and 
 				GAMESTATE:GetNumPlayersEnabled() == 1
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local bareBone = isBareBone()

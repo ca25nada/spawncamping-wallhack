@@ -1,6 +1,6 @@
 
 WifeTiers = {
-	Grade_Tier01 = 0.99996, 
+	Grade_Tier01 = 0.999935, 
 	Grade_Tier02 = 0.9998, 
 	Grade_Tier03 = 0.9997, 
 	Grade_Tier04 = 0.99955, 
@@ -181,7 +181,7 @@ function getBestMaxCombo(pn,ignore, rate)
 
 	local hsTable = getScoreTable(pn, rate)
 
-	local steps = GAMESTATE:GetCurrentSteps(pn)
+	local steps = GAMESTATE:GetCurrentSteps()
 
 	if hsTable ~= nil and #hsTable >= 1 then
 		while i <= #hsTable do
@@ -214,7 +214,7 @@ function getBestMissCount(pn,ignore, rate)
 
 	local hsTable = getScoreTable(pn, rate)
 
-	local steps = GAMESTATE:GetCurrentSteps(pn)
+	local steps = GAMESTATE:GetCurrentSteps()
 
 	if hsTable ~= nil and #hsTable >= 1 then
 		while i <= #hsTable do
@@ -222,7 +222,7 @@ function getBestMissCount(pn,ignore, rate)
 				indexScore = hsTable[i]
 				if indexScore ~= nil then
 					if indexScore:GetGrade() ~= "Grade_Failed" then
-						temp = getScoreMissCount(indexScore)
+						temp = getScoreComboBreaks(indexScore)
 						if temp < lowest then
 							lowest = temp
 							bestScore = indexScore
@@ -245,7 +245,7 @@ function getBestScore(pn, ignore, rate, percent)
 	local bestScore
 
 	local hsTable = getScoreTable(pn, rate)
-	local steps = GAMESTATE:GetCurrentSteps(pn)
+	local steps = GAMESTATE:GetCurrentSteps()
 	local temp
 
 	if hsTable ~= nil and #hsTable >= 1 then

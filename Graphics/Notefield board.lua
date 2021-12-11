@@ -38,7 +38,7 @@ local function LaneHighlight()
 	local cols = style:ColumnsPerPlayer()
 	local colWidth = width/cols
 	local hCols = math.floor(cols / 2)
-	local reverse = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingReverse()
+	local reverse = GAMESTATE:GetPlayerState():GetCurrentPlayerOptions():UsingReverse()
 	local receptor = reverse and THEME:GetMetric("Player", "ReceptorArrowsYStandard") or THEME:GetMetric("Player", "ReceptorArrowsYReverse")
 	local border = 4
 
@@ -65,7 +65,7 @@ local function LaneHighlight()
 				if params.TapNoteScore then
 					local enum  = Enum.Reverse(TapNoteScore)[params.TapNoteScore]
 
-					if enum < judgeThreshold and enum > 3 and
+					if enum <= judgeThreshold and enum > 3 and
 						i == firstTrack then
 
 						self:stoptweening()

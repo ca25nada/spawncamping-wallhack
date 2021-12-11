@@ -16,7 +16,7 @@ return Def.ActorFrame{
 				self:effectcolor2(Alpha(getMainColor("highlight"),0.2))
 			end
 		end,
-		CurrentStepsP1ChangedMessageCommand = function(self) self:queuecommand('Set') end
+		CurrentStepsChangedMessageCommand = function(self) self:queuecommand('Set') end
 	}
 
 }

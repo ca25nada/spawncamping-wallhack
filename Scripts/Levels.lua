@@ -9,7 +9,7 @@ local curExp = {
 function getProfileExp(pn)
 	local profile = PROFILEMAN:GetProfile(pn)
 	if profile ~= nil then
-		return math.floor(profile:GetTotalDancePoints()/10 + profile:GetTotalNumSongsPlayed()*50)
+		return math.floor(profile:GetTotalDancePoints()/10 + SCOREMAN:GetTotalNumberOfScores()*50)
 	else
 		return 0
 	end

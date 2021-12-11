@@ -9,6 +9,7 @@ local musicLength = 0
 local loops = 0
 local musicNotPaused = 1
 local goNow = false
+local nah = false
 
 local sampleEvent = false
 
@@ -32,6 +33,11 @@ local function playMusic(self, delta)
 	if musicLength + 3 < GAMESTATE:GetSongPosition():GetMusicSeconds() then
 		goNow = true
 	end
+
+	-- dont override sample music with this if in chart preview mode
+	local tscr = SCREENMAN:GetTopScreen()
+	nah = tscr ~= nil and tscr:GetName() == "ScreenChartPreview"
+	if nah then return end
 
 	if (deltaSum > delay and sampleEvent) or goNow then
 		goNow = false
@@ -104,10 +110,13 @@ local t = Def.ActorFrame{
 		end
 	end,
 	PlayingSampleMusicMessageCommand = function(self)
+		local tscr = SCREENMAN:GetTopScreen()
+		nah = tscr ~= nil and tscr:GetName() == "ScreenChartPreview"
+
 		musicNotPaused = 1
 		goNow = false
 		sampleEvent = true
-		if themeConfig:get_data().global.SongPreview ~= 1 then
+		if not nah and themeConfig:get_data().global.SongPreview ~= 1 then
 			self:SetUpdateFunctionInterval(0.002)
 			SOUND:StopMusic()
 		end

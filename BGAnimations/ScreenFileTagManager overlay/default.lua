@@ -5,7 +5,7 @@ local ptags = tags:get_data().playerTags
 local playertags = {}
 local filterTags = GHETTOGAMESTATE:getFilterTags()
 local tagName
-local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+local steps = GAMESTATE:GetCurrentSteps()
 local ck = steps:GetChartKey()
 local song = GAMESTATE:GetCurrentSong()
 

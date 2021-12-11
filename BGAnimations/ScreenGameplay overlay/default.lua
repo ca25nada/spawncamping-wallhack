@@ -1,12 +1,12 @@
 local inCustomize = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomizeGameplay
-local inPractice = GAMESTATE:GetPlayerState(PLAYER_1):GetCurrentPlayerOptions():UsingPractice()
-local inReplay = GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerController() == "PlayerController_Replay"
+local inPractice = GAMESTATE:GetPlayerState():GetCurrentPlayerOptions():UsingPractice()
+local inReplay = GAMESTATE:GetPlayerState():GetPlayerController() == "PlayerController_Replay"
 
 local t = Def.ActorFrame {}
 
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = GetPlayerOrMachineProfile(pn)
-local steps = GAMESTATE:GetCurrentSteps(pn)
+local steps = GAMESTATE:GetCurrentSteps()
 
 t[#t+1] = LoadActor("scoretracking")
 
