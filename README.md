@@ -1,4 +1,4 @@
-Refer to poco's fork for the latest theme for the etterna client.
+Refer to poco's fork for development builds of this theme.
 
 https://github.com/poco0317/spawncamping-wallhack
 
