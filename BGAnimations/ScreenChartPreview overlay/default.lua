@@ -651,7 +651,7 @@ t[#t+1] = Def.ActorFrame {
 			steps = GAMESTATE:GetCurrentSteps()
 			if steps then
 				local nColumns = steps:GetNumColumns()
-				local rate = math.max(1, getCurRateValue())
+				local rate = math.max(MIN_MUSIC_RATE, getCurRateValue())
 				local graphVectors = steps:GetCDGraphVectors(rate)
 				if graphVectors == nil then
 					self:SetVertices({})
@@ -660,7 +660,7 @@ t[#t+1] = Def.ActorFrame {
 				end
 				local npsVector = graphVectors[1] -- CPS Vector 1 (Taps per second)
 				local numberOfRows = #npsVector
-				local rowWidth = (frameHeight - 20) / numberOfRows * rate
+				local rowWidth = (frameHeight - 20) / numberOfRows
 
 				-- Width scale of graph relative to max nps
 				local mWidth = 0
