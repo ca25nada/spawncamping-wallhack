@@ -1,8 +1,6 @@
 local keymode
 local allowedCustomization
 local usingReverse
-local WIDESCREENWHY = -5
-local WIDESCREENWHX = -5
 
 MovableValues = {}
 
@@ -59,13 +57,6 @@ local function loadValuesTable()
 	MovableValues.DisplayMeanX = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].DisplayMeanX
 	MovableValues.DisplayMeanY = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplayXYCoordinates[keymode].DisplayMeanY
 	MovableValues.DisplayMeanZoom = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).GameplaySizes[keymode].DisplayMeanZoom
-
-	if IsUsingWideScreen() then
-		MovableValues.TargetTrackerY = MovableValues.TargetTrackerY + WIDESCREENWHY
-		MovableValues.TargetTrackerX = MovableValues.TargetTrackerX - WIDESCREENWHX
-		MovableValues.JudgeY = MovableValues.JudgeY - 5
-		MovableValues.JudgeX = MovableValues.JudgeX + 5
-	end
 end
 
 function setMovableKeymode(key)
