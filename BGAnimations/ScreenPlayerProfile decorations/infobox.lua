@@ -113,15 +113,26 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end,
 	UpdateRankingMessageCommand = function(self, params)
 		self:settextf("Sorted by: %s",params.SSRType)
+		self:playcommand("SortScores", {ss = params.SSRType})
 	end,
 	OnlineTogglePressedMessageCommand = function(self)
 		self:settext("Sorted by: Overall")
+		self:playcommand("SortScores", {ss = "Overall"})
 	end,
 	LoginMessageCommand = function(self)
 		self:settext("Sorted by: Overall")
 	end,
 	LogOutMessageCommand = function(self)
 		self:settext("Sorted by: Overall")
+		self:playcommand("SortScores", {ss = "Overall"})
+	end,
+	SortScoresCommand = function(self, params)
+		-- this doesnt belong here lmaoooo
+		if recentscores then
+			SCOREMAN:SortRecentScoresForGame()
+		else
+			SCOREMAN:SortSSRsForGame(params.ss)
+		end
 	end,
 	DisplaySongMessageCommand = function(self, params)
 		self:visible(false)
@@ -373,10 +384,8 @@ local function scoreListItem(i)
 			else
 				skillset = params.SSRType
 				if recentscores then
-					SCOREMAN:SortRecentScoresForGame()
 					ths = SCOREMAN:GetRecentScoreForGame(index)
 				else
-					SCOREMAN:SortSSRsForGame(params.SSRType)
 					ths = SCOREMAN:GetTopSSRHighScoreForGame(index, params.SSRType)
 				end
 				if ths == nil then
@@ -405,10 +414,8 @@ local function scoreListItem(i)
 
 			GHETTOGAMESTATE:setOnlineStatus("Local")
 			if recentscores then
-				SCOREMAN:SortRecentScoresForGame()
 				ths = SCOREMAN:GetRecentScoreForGame(index)
 			else
-				SCOREMAN:SortSSRsForGame("Overall")
 				ths = SCOREMAN:GetTopSSRHighScoreForGame(index, "Overall")
 			end
 			if ths == nil then
@@ -435,10 +442,8 @@ local function scoreListItem(i)
 				end
 			else
 				if recentscores then
-					SCOREMAN:SortRecentScoresForGame()
 					ths = SCOREMAN:GetRecentScoreForGame(index)
 				else
-					SCOREMAN:SortSSRsForGame("Overall")
 					ths = SCOREMAN:GetTopSSRHighScoreForGame(index, "Overall")
 				end
 				if ths == nil then
