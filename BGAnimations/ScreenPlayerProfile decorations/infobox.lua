@@ -379,6 +379,10 @@ local function scoreListItem(i)
 					SCOREMAN:SortSSRsForGame(params.SSRType)
 					ths = SCOREMAN:GetTopSSRHighScoreForGame(index, params.SSRType)
 				end
+				if ths == nil then
+					self:visible(false)
+					return
+				end
 				chartKey = ths:GetChartKey()
 				song = SONGMAN:GetSongByChartKey(chartKey)
 				steps = SONGMAN:GetStepsByChartKey(chartKey)
@@ -405,7 +409,11 @@ local function scoreListItem(i)
 				ths = SCOREMAN:GetRecentScoreForGame(index)
 			else
 				SCOREMAN:SortSSRsForGame("Overall")
-				ths = SCOREMAN:GetTopSSRHighScore(index, "Overall")
+				ths = SCOREMAN:GetTopSSRHighScoreForGame(index, "Overall")
+			end
+			if ths == nil then
+				self:visible(false)
+				return
 			end
 			skillset = "Overall"
 			chartKey = ths:GetChartKey()
@@ -431,7 +439,11 @@ local function scoreListItem(i)
 					ths = SCOREMAN:GetRecentScoreForGame(index)
 				else
 					SCOREMAN:SortSSRsForGame("Overall")
-					ths = SCOREMAN:GetTopSSRHighScore(index, "Overall")
+					ths = SCOREMAN:GetTopSSRHighScoreForGame(index, "Overall")
+				end
+				if ths == nil then
+					self:visible(false)
+					return
 				end
 				skillset = "Overall"
 				chartKey = ths:GetChartKey()
