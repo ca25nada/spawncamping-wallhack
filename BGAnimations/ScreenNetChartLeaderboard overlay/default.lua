@@ -1074,10 +1074,10 @@ local function scoreList()
 									height = frameHeight-140, 
 									song = song, 
 									steps = steps, 
-									nrv = scoreList[cheatIndex]:GetNoteRowVector(),
-									dvt = scoreList[cheatIndex]:GetOffsetVector(),
-									ctt = scoreList[cheatIndex]:GetTrackVector(),
-									ntt = scoreList[cheatIndex]:GetTapNoteTypeVector(),
+									nrv = scoreList[cheatIndex]:GetReplay():GetNoteRowVector(),
+									dvt = scoreList[cheatIndex]:GetReplay():GetOffsetVector(),
+									ctt = scoreList[cheatIndex]:GetReplay():GetTrackVector(),
+									ntt = scoreList[cheatIndex]:GetReplay():GetTapNoteTypeVector(),
 									columns = steps:GetNumColumns()}
 					self:playcommand("Update", params) end
 				)
@@ -1098,12 +1098,12 @@ local function scoreList()
 				end
 			end,
 			DelayedShowOffsetMessageCommand = function(self)
-				if scoreList[cheatIndex]:HasReplayData() and scoreList[cheatIndex]:GetNoteRowVector() == nil then
+				if scoreList[cheatIndex]:HasReplayData() and scoreList[cheatIndex]:GetReplay():GetNoteRowVector() == nil then
 					self:settext("Missing Noterows from Online Replay\n(゜´Д｀゜)")
 				else
 					self:settext("No replay data\n(゜´Д｀゜)")
 				end
-				self:visible(not scoreList[cheatIndex]:HasReplayData() or scoreList[cheatIndex]:GetNoteRowVector() == nil)
+				self:visible(not scoreList[cheatIndex]:HasReplayData() or scoreList[cheatIndex]:GetReplay():GetNoteRowVector() == nil)
 			end
 		}
 
