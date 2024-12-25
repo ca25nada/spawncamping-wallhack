@@ -123,7 +123,7 @@ t[#t+1] = quadButton(3)..{
 		end
 
 		easyInputStringWithFunction("Password:", 255, true, password)
-		easyInputStringWithFunction("Username:", 255, false, username)
+		easyInputStringWithFunction("Email:", 255, true, username)
 	end,
 
 	-- Save config upon successful login

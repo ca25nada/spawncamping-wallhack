@@ -994,10 +994,10 @@ local function scoreList()
 										height = frameHeight-140, 
 										song = song, 
 										steps = steps, 
-										nrv = scoreList[params.scoreIndex]:GetNoteRowVector(),
-										dvt = scoreList[params.scoreIndex]:GetOffsetVector(),
-										ctt = scoreList[params.scoreIndex]:GetTrackVector(),
-										ntt = scoreList[params.scoreIndex]:GetTapNoteTypeVector(),
+										nrv = scoreList[params.scoreIndex]:GetReplay():GetNoteRowVector(),
+										dvt = scoreList[params.scoreIndex]:GetReplay():GetOffsetVector(),
+										ctt = scoreList[params.scoreIndex]:GetReplay():GetTrackVector(),
+										ntt = scoreList[params.scoreIndex]:GetReplay():GetTapNoteTypeVector(),
 										columns = steps:GetNumColumns()}
 						self:playcommand("Update", params) end
 					)

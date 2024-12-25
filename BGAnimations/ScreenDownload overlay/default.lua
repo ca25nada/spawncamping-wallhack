@@ -1,8 +1,5 @@
 local top
 
-local initpacklist = PackList:new()
-local packlist = initpacklist:GetPackTable()
-
 -- make lookup table for installed packs
 local installedPacks = {}
 local function refreshInstalledPacks()
@@ -18,21 +15,24 @@ local function packExists(group)
 	end
 end
 
+local initpacklist = PackList:new()
+local packlist = {}
 local maxItems = 10
 local maxPages = math.ceil(#packlist/maxItems)
 local curPage = 1
+initpacklist:FilterAndSearch("", {}, true, maxItems)
 
 local sorts = {
 	"ABC",
 	"MSD",
 	"Size",
-	"Installed"
+	--"Installed"
 }
 local curSort = 1
 local ascending = true
 
 local function moveSortForward()
-	curSort = (curSort % 4) + 1
+	curSort = (curSort % #sorts) + 1
 end
 
 local function sortPacks()
@@ -40,7 +40,7 @@ local function sortPacks()
 	if sorts[curSort] == "ABC" then
 		initpacklist:SortByName()
 	elseif sorts[curSort] == "MSD" then
-		initpacklist:SortByDiff()
+		initpacklist:SortByOverall()
 	elseif sorts[curSort] == "Size" then
 		initpacklist:SortBySize()
 	else
@@ -59,7 +59,7 @@ local function sortPacks()
 		rawsort = true
 	end
 	if not rawsort then
-		packlist = initpacklist:GetPackTable()
+		packlist = initpacklist:GetPacks()
 	end
 end
 
@@ -67,22 +67,23 @@ local curInput = ""
 local inputting = false
 
 local function movePage(n)
+	maxPages = initpacklist:GetTotalPages()
 	if maxPages > 1 then
 		if n > 0 then 
-			curPage = ((curPage+n-1) % maxPages + 1)
+			initpacklist:NextPage()
 		else
-			curPage = ((curPage+n+maxPages-1) % maxPages+1)
+			initpacklist:PrevPage()
 		end
 	end
+	curPage = initpacklist:GetCurrentPage()
+	packlist = initpacklist:GetPacks()
 	MESSAGEMAN:Broadcast("UpdateList")
 end
 
 local function updateFilter()
-	initpacklist:FilterAndSearch(
-		tostring(curInput), 0, 0, 0, 0
-	)
-	packlist = initpacklist:GetPackTable()
-	maxPages = math.ceil(#packlist/maxItems)
+	initpacklist:FilterAndSearch(tostring(curInput), {}, true, maxItems)
+	packlist = initpacklist:GetPacks()
+	maxPages = initpacklist:GetTotalPages()
 	MESSAGEMAN:Broadcast("UpdateList")
 end
 
@@ -164,10 +165,17 @@ local t = Def.ActorFrame {
 		top = SCREENMAN:GetTopScreen()
 		top:AddInputCallback(input)
 		self:SetUpdateFunction(update)
+		packlist = initpacklist:GetPacks()
 		MESSAGEMAN:Broadcast("UpdateList")
 		MESSAGEMAN:Broadcast("UpdateBundleList")
 		SCREENMAN:GetTopScreen():AddInputCallback(MPinput)
-	end
+	end,
+	PackListRequestFinishedMessageCommand = function(self, params)
+		packlist = initpacklist:GetPacks()
+		curPage = initpacklist:GetCurrentPage()
+		maxPages = initpacklist:GetTotalPages()
+		self:playcommand("UpdateList")
+	end,
 }
 
 
@@ -185,15 +193,10 @@ local function packInfo()
 
 	local bundlenames = {
 		"Novice",
-		"Novice-Expanded",
 		"Beginner",
-		"Beginner-Expanded",
 		"Intermediate",
-		"Intermediate-Expanded",
 		"Advanced",
-		"Advanced-Expanded",
 		"Expert",
-		"Expert-Expanded"
 	}
 
 	local diffcolors = {"#66ccff", "#099948", "#ddaa00", "#ff6666", "#c97bff"}
@@ -245,11 +248,9 @@ local function packInfo()
 			self:smooth(0.3)
 			self:diffusealpha(0.2)
 			curPage = 1
-			initpacklist:FilterAndSearch(
-					"", 0, 0, 0, 0
-				)
-			packlist = initpacklist:GetPackTable()
-			maxPages = math.ceil(#packlist/maxItems)
+			initpacklist:FilterAndSearch("", {}, true, maxItems)
+			packlist = initpacklist:GetPacks()
+			maxPages = initpacklist:GetTotalPages()
 			curInput = ""
 			MESSAGEMAN:Broadcast("UpdateList")
 
@@ -323,12 +324,12 @@ local function packInfo()
 			end,
 			MouseDownCommand = function(self)
 				initpacklist:SetFromCoreBundle(bundlenames[bundleIndex]:lower())
-				packlist = initpacklist:GetPackTable()
+				packlist = initpacklist:GetPacks()
 				self:finishtweening()
 				self:diffusealpha(0.4)
 				self:smooth(0.3)
 				self:diffusealpha(0.2)
-				maxPages = math.ceil(#packlist/maxItems)
+				maxPages = initpacklist:GetTotalPages()
 				MESSAGEMAN:Broadcast("UpdateList")
 			end,
 			SetCommand = function(self)
@@ -361,14 +362,12 @@ local function packInfo()
 			SetCommand = function(self)
 				-- World's laziest code
 				initpacklist:SetFromCoreBundle(bundlenames[bundleIndex]:lower())
-				packlist = initpacklist:GetPackTable()
+				packlist = initpacklist:GetPacks()
 				local msd = packlist.AveragePackDifficulty
 				self:settextf("%5.2f",msd)
 				self:diffuse(getMSDColor(msd))
-				initpacklist:FilterAndSearch(
-					"", 0, 0, 0, 0
-				)
-				packlist = initpacklist:GetPackTable()
+				initpacklist:FilterAndSearch("", {}, true, maxItems)
+				packlist = initpacklist:GetPacks()
 			end
 		}
 
@@ -404,7 +403,8 @@ local function packInfo()
 	end
 
 	for i=1, #bundlenames do
-		t[#t+1] = bundleItem(i)
+		-- this is broke
+		--t[#t+1] = bundleItem(i)
 	end
 
 	return t
@@ -584,7 +584,7 @@ local function packList()
 
 	local function packItem(i)
 		local download
-		local packIndex = (curPage-1)*10+i
+		local packIndex = i
 
 		local t = Def.ActorFrame{
 			InitCommand = function(self)
@@ -607,7 +607,7 @@ local function packList()
 				self:diffusealpha(0)
 			end,
 			UpdateListMessageCommand = function(self) -- Pack List updates (e.g. new page)
-				packIndex = (curPage-1)*10+i
+				packIndex = i
 				if packlist[packIndex] ~= nil then
 					self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 					self:playcommand("Show")
@@ -676,7 +676,7 @@ local function packList()
 				self:zoom(0.3)
 			end,
 			SetCommand = function(self)
-				self:settextf("%d", packIndex)
+				self:settextf("%d", (curPage-1)*10+i)
 			end
 		}
 

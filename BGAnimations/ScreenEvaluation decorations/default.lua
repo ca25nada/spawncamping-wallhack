@@ -2264,10 +2264,10 @@ local function offsetStuff()
 								height = offsetParamHeight, 
 								song = song, 
 								steps = steps, 
-								nrv = scoreList[offsetIndex]:GetNoteRowVector(),
-								dvt = scoreList[offsetIndex]:GetOffsetVector(),
-								ctt = scoreList[offsetIndex]:GetTrackVector(),
-								ntt = scoreList[offsetIndex]:GetTapNoteTypeVector(),
+								nrv = scoreList[offsetIndex]:GetReplay():GetNoteRowVector(),
+								dvt = scoreList[offsetIndex]:GetReplay():GetOffsetVector(),
+								ctt = scoreList[offsetIndex]:GetReplay():GetTrackVector(),
+								ntt = scoreList[offsetIndex]:GetReplay():GetTapNoteTypeVector(),
 								columns = steps:GetNumColumns()}
 				selectedparamscopy = params
 				self:playcommand("Update", params) end
@@ -2302,7 +2302,7 @@ local function offsetStuff()
 			self:visible(false)
 		end,
 		DelayedShowOffsetMessageCommand = function(self)
-			if scoreList[offsetIndex]:GetNoteRowVector() == nil then
+			if scoreList[offsetIndex]:GetReplay():GetNoteRowVector() == nil then
 				self:visible(true)
 			else
 				self:visible(false)
