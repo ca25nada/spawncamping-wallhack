@@ -987,8 +987,7 @@ local function scoreList()
 				self:diffusealpha(1)
 				self:smooth(0.3)
 				self:diffusealpha(0.8)
-				local urlstring = "https://etternaonline.com/user/" .. scoreList[scoreIndex]:GetDisplayName()
-				GAMESTATE:ApplyGameCommand("urlnoexit," .. urlstring)
+				DLMAN:ShowUserPage(scoreList[scoreIndex]:GetDisplayName())
 			end
 		}
 		t[#t+1] = LoadFont("Common Bold")..{
@@ -1022,8 +1021,7 @@ local function scoreList()
 				self:diffusealpha(1)
 				self:smooth(0.3)
 				self:diffusealpha(0.8)
-				local urlstring = "https://etternaonline.com/score/view/" .. scoreList[scoreIndex]:GetScoreid() .. scoreList[scoreIndex]:GetUserid()
-				GAMESTATE:ApplyGameCommand("urlnoexit," .. urlstring)
+				DLMAN:ShowScorePage(scoreList[scoreIndex]:GetDisplayName(), scoreList[scoreIndex]:GetScoreid())
 			end
 		}
 		t[#t+1] = LoadFont("Common Bold")..{
