@@ -41,7 +41,4 @@ t[#t+1] = StandardDecorationFromFileOptional("BPMDisplay","BPMDisplay")
 t[#t+1] = StandardDecorationFromFileOptional("BPMLabel","BPMLabel")
 t[#t+1] = LoadActor("../_cursor")
 
-local largeImageText = string.format("%s: %5.2f",profile:GetDisplayName(), profile:GetPlayerRating())
-GAMESTATE:UpdateDiscordMenu(largeImageText)
-
 return t

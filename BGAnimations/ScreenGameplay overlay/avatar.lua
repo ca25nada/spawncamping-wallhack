@@ -10,16 +10,6 @@ local avatarPosition = {
 	Y = MovableValues.PlayerInfoP1Y
 }
 
-local function PLife(pn)
-	local life = STATSMAN:GetCurStageStats():GetPlayerStageStats():GetCurrentLife() or 0
-	if life < 0 then
-		return 0
-	else
-		return life
-	end
-end
-
-local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 local profile = GetPlayerOrMachineProfile(PLAYER_1)
 
 -- whole frame actorframe
@@ -153,14 +143,17 @@ t[#t+1] = Def.Quad{
 	JudgmentMessageCommand = function(self, params)
 		self:playcommand("Set", params)
 	end,
+	LifeMeterChangedP1MessageCommand = function(self, params)
+		self:playcommand("Set", params)
+	end,
 	SetCommand = function(self, params)
-		if params ~= nil and params.TapNoteScore == "TapNoteScore_AvoidMine" then
+		if params == nil or params.Life == nil then
 			return
 		end
 		self:finishtweening()
 		self:smooth(0.1)
-		self:zoomx(PLife(PLAYER_1)*120)
-	end
+		self:zoomx(params.Life * 120)
+	end,
 }
 
 -- life counter
@@ -173,11 +166,14 @@ t[#t+1] = LoadFont("Common Bold") .. {
 	JudgmentMessageCommand = function(self, params)
 		self:playcommand("Set", params)
 	end,
+	LifeMeterChangedP1MessageCommand = function(self, params)
+		self:playcommand("Set", params)
+	end,
 	SetCommand = function(self, params)
-		if params ~= nil and params.TapNoteScore == "TapNoteScore_AvoidMine" then
+		if params == nil or params.Life == nil then
 			return
 		end
-		local life = PLife(PLAYER_1)
+		local life = params.Life
 		self:settextf("%0.0f",life*100)
 		if life*100 < 30 and life*100 ~= 0 then -- replace with lifemeter danger later
 			self:diffuseshift()

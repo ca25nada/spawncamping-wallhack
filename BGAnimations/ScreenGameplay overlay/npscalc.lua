@@ -192,10 +192,6 @@ local function npsDisplay(pn)
 	return t
 end
 
-local function PLife(pn)
-	return STATSMAN:GetCurStageStats():GetPlayerStageStats():GetCurrentLife() or 0
-end
-
 local function npsGraph(pn)
 	local t =
 		Def.ActorFrame {
